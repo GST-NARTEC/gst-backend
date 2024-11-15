@@ -42,6 +42,7 @@ const options = {
   apis: [
     path.join(__dirname, "../docs/swagger/user.js"),
     path.join(__dirname, "../docs/swagger/license.js"),
+    path.join(__dirname, "../docs/swagger/product.js"),
     path.join(__dirname, "../docs/swagger/cart.js"),
     path.join(__dirname, "../docs/swagger/checkout.js"),
     path.join(__dirname, "../docs/swagger/order.js"),
