@@ -89,6 +89,62 @@ class UserController {
       next(error);
     }
   }
+
+  static async createUser(req, res, next) {
+    try {
+      const {
+        email,
+        companyLicenseNo,
+        companyNameEn,
+        companyNameAr,
+        landline,
+        mobile,
+        country,
+        region,
+        city,
+        zipCode,
+        streetAddress,
+      } = req.body;
+
+      // Check if email exists and is verified
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!existingUser) {
+        throw new MyError("Please verify your email first", 400);
+      }
+
+      if (!existingUser.isEmailVerified) {
+        throw new MyError("Please verify your email first", 400);
+      }
+
+      // Update user with all information
+      const updatedUser = await prisma.user.update({
+        where: { email },
+        data: {
+          companyLicenseNo,
+          companyNameEn,
+          companyNameAr,
+          landline,
+          mobile,
+          country,
+          region,
+          city,
+          zipCode,
+          streetAddress,
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "User information saved successfully", {
+          user: updatedUser,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default UserController;

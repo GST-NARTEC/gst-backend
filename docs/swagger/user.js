@@ -2,6 +2,43 @@
  * @swagger
  * components:
  *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         email:
+ *           type: string
+ *           format: email
+ *         isEmailVerified:
+ *           type: boolean
+ *         companyLicenseNo:
+ *           type: string
+ *         companyNameEn:
+ *           type: string
+ *         companyNameAr:
+ *           type: string
+ *         landline:
+ *           type: string
+ *         mobile:
+ *           type: string
+ *         country:
+ *           type: string
+ *         region:
+ *           type: string
+ *         city:
+ *           type: string
+ *         zipCode:
+ *           type: string
+ *         streetAddress:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *     Error:
  *       type: object
  *       properties:
@@ -37,34 +74,15 @@
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email address
  *     responses:
  *       200:
  *         description: OTP sent successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 200
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: OTP sent successfully
- *                 data:
- *                   type: null
+ *               $ref: '#/components/schemas/Response'
  *       400:
  *         description: Email already registered
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Server error
  *         content:
  *           application/json:
  *             schema:
@@ -87,15 +105,66 @@
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email address
  *               otp:
  *                 type: string
- *                 description: 4-digit OTP code
  *                 minLength: 4
  *                 maxLength: 4
  *     responses:
  *       200:
  *         description: Email verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Response'
+ *       400:
+ *         description: Invalid or expired OTP
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ * /api/user/create:
+ *   post:
+ *     summary: Create or update user with full information
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - companyLicenseNo
+ *               - companyNameEn
+ *               - companyNameAr
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               companyLicenseNo:
+ *                 type: string
+ *               companyNameEn:
+ *                 type: string
+ *               companyNameAr:
+ *                 type: string
+ *               landline:
+ *                 type: string
+ *               mobile:
+ *                 type: string
+ *               country:
+ *                 type: string
+ *               region:
+ *                 type: string
+ *               city:
+ *                 type: string
+ *               zipCode:
+ *                 type: string
+ *               streetAddress:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User information saved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -109,17 +178,14 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Email verified successfully
+ *                   example: User information saved successfully
  *                 data:
- *                   type: null
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
  *       400:
- *         description: Invalid or expired OTP
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Server error
+ *         description: Email not verified
  *         content:
  *           application/json:
  *             schema:
