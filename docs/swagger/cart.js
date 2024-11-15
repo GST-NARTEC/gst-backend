@@ -43,7 +43,7 @@
  *           type: string
  *           format: date-time
  *
- * /api/cart/add:
+ * /api/cart/v1/add:
  *   post:
  *     summary: Add items to cart
  *     tags: [Cart]

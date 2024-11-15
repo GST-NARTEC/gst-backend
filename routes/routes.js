@@ -1,15 +1,17 @@
 import express from "express";
 
 import cartRoutes from "./cart.js";
+import checkoutRoutes from "./checkout.js";
 import licenseRoutes from "./license.js";
 import productRouter from "./product.js";
 import userRoutes from "./user.js";
 
 const router = express.Router();
 
-router.use("/license", licenseRoutes);
-router.use("/user", userRoutes);
-router.use("/products", productRouter);
-router.use("/cart", cartRoutes);
+router.use("/license/v1", licenseRoutes);
+router.use("/user/v1", userRoutes);
+router.use("/products/v1", productRouter);
+router.use("/cart/v1", cartRoutes);
+router.use("/checkout/v1", checkoutRoutes);
 
 export default router;

@@ -58,7 +58,7 @@
  *   name: User
  *   description: User management and email verification endpoints
  *
- * /api/user/send-otp:
+ * /api/user/v1/send-otp:
  *   post:
  *     summary: Send OTP for email verification
  *     tags: [User]
@@ -88,7 +88,7 @@
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *
- * /api/user/verify-otp:
+ * /api/user/v1/verify-otp:
  *   post:
  *     summary: Verify email using OTP
  *     tags: [User]
@@ -123,7 +123,7 @@
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *
- * /api/user/create:
+ * /api/user/v1/create:
  *   post:
  *     summary: Create or update user with full information
  *     tags: [User]

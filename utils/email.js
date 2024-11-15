@@ -39,6 +39,28 @@ class EmailService {
       return false;
     }
   }
+
+  async sendOrderConfirmation({ email, order, password }) {
+    try {
+      const html = await ejs.renderFile(
+        path.join(__dirname, "../views/order-confirmation.ejs"),
+        { order, email, password }
+      );
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: "Order Confirmation",
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Failed to send order confirmation:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();
