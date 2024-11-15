@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-
+import prisma from "../utils/prismaClient.js";
 import MyError from "../utils/error.js";
 import response from "../utils/response.js";
-
-const prisma = new PrismaClient();
 
 class LicenseController {
   static async verifyLicense(req, res, next) {

@@ -10,9 +10,17 @@ import routes from "./routes/routes.js";
 import MyError from "./utils/error.js";
 import response from "./utils/response.js";
 
+import {
+  errorResponseHandler,
+  invalidPathHandler,
+} from "./middleware/errorHandlers.js";
+
 dotenv.config();
 
-const whitelist = [process.env.FRONTEND_URL || "http://localhost:3000"];
+const whitelist = [
+  process.env.FRONTEND_URL || "http://localhost:3000",
+  "http://localhost:5173",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -25,7 +33,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  maxAge: 86400, // 24 hours
+  maxAge: 86400,
 };
 
 const app = express();
@@ -34,6 +42,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
+
 // If you want to change the default uploads directory, you can do so here
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
@@ -63,6 +72,10 @@ app.use((error, req, res, next) => {
 
   res.status(status).json(response(status, success, message, data));
 });
+
+// Error handling middleware
+app.use(errorResponseHandler);
+app.use(invalidPathHandler);
 
 app.listen(PORT, function () {
   console.log(`Server is running on port ${PORT}`);

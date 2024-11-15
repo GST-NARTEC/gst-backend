@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import MyError from "../utils/error.js";
 import response from "../utils/response.js";
-
-const prisma = new PrismaClient();
+import prisma from "../utils/prismaClient.js";
 
 class ProductController {
   static async createProduct(req, res, next) {

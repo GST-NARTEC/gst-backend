@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-
-const prisma = new PrismaClient();
 
 class CartController {
   static async addToCart(req, res, next) {

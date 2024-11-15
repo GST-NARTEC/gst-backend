@@ -40,11 +40,11 @@ class EmailService {
     }
   }
 
-  async sendOrderConfirmation({ email, order, password }) {
+  async sendOrderConfirmation({ email, order, password, user, loginUrl }) {
     try {
       const html = await ejs.renderFile(
-        path.join(__dirname, "../views/order-confirmation.ejs"),
-        { order, email, password }
+        path.join(__dirname, "../view/order-confirmation.ejs"),
+        { order, email, password, user, loginUrl }
       );
 
       const mailOptions = {

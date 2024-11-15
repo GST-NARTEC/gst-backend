@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prismaClient.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import response from "../utils/response.js";
-
-const prisma = new PrismaClient();
 
 class CheckoutController {
   static async processCheckout(req, res, next) {
@@ -19,6 +17,7 @@ class CheckoutController {
               product: true,
             },
           },
+          user: true,
         },
       });
 
@@ -31,10 +30,10 @@ class CheckoutController {
         (sum, item) => sum + item.quantity * item.product.price,
         0
       );
-      const vat = 0; // For now it's 0
+      const vat = 0;
       const overallAmount = totalAmount + vat;
 
-      // Create order
+      // Create order with pending status
       const order = await prisma.order.create({
         data: {
           userId,
@@ -42,6 +41,7 @@ class CheckoutController {
           totalAmount,
           vat,
           overallAmount,
+          status: "pending", // Set initial status as pending
           orderItems: {
             create: cart.items.map((item) => ({
               productId: item.product.id,
@@ -59,68 +59,85 @@ class CheckoutController {
         },
       });
 
-      // Generate random numeric password
-      const password = Math.floor(100000 + Math.random() * 900000).toString();
+      // Simulate payment process here
+      const paymentSuccessful = true; // Replace with actual payment processing
 
-      // Update user with password
-      await prisma.user.update({
-        where: { id: userId },
-        data: { password },
-      });
+      if (paymentSuccessful) {
+        // Update order status to completed
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "completed" },
+        });
 
-      // Clear user's cart
-      await prisma.cartItem.deleteMany({
-        where: { cartId: cart.id },
-      });
-      await prisma.cart.delete({
-        where: { id: cart.id },
-      });
+        // Generate password and update user
+        const password = Math.floor(100000 + Math.random() * 900000).toString();
+        await prisma.user.update({
+          where: { id: userId },
+          data: { password },
+        });
 
-      // Send email
-      const emailSent = await EmailService.sendOrderConfirmation({
-        email: cart.user.email,
-        order,
-        password,
-      });
+        // Clear cart only after successful payment
+        await prisma.cartItem.deleteMany({
+          where: { cartId: cart.id },
+        });
+        await prisma.cart.delete({
+          where: { id: cart.id },
+        });
 
-      if (!emailSent) {
-        throw new MyError("Failed to send confirmation email", 500);
-      }
-
-      const invoiceNumber = `INV-${Date.now()}-${Math.floor(
-        Math.random() * 1000
-      )}`;
-
-      // Save Invoice
-
-      const invoice = await prisma.invoice.create({
-        data: {
-          orderId: order.id,
-          invoiceNumber,
-          userId,
-          totalAmount,
-          vat,
-          overallAmount,
-          paymentType,
-        },
-        include: {
-          order: {
-            include: {
-              orderItems: {
-                include: {
-                  product: true,
+        // Create invoice
+        const invoiceNumber = `INV-${Date.now()}-${Math.floor(
+          Math.random() * 1000
+        )}`;
+        const invoice = await prisma.invoice.create({
+          data: {
+            orderId: order.id,
+            invoiceNumber,
+            userId,
+            totalAmount,
+            vat,
+            overallAmount,
+            paymentType,
+            status: "completed",
+          },
+          include: {
+            order: {
+              include: {
+                orderItems: {
+                  include: {
+                    product: true,
+                  },
                 },
               },
             },
           },
-        },
-      });
+        });
 
-      res.status(200).json(
-        response(200, true, "Order placed successfully", {
+        // Send confirmation email
+        const emailSent = await EmailService.sendOrderConfirmation({
+          email: cart.user.email,
           order,
-        })
-      );
+          password,
+          user: cart.user,
+        });
+
+        if (!emailSent) {
+          throw new MyError("Failed to send confirmation email", 500);
+        }
+
+        res.status(200).json(
+          response(200, true, "Order placed successfully", {
+            order,
+            invoice,
+          })
+        );
+      } else {
+        // If payment fails, update order status and throw error
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { status: "failed" },
+        });
+        throw new MyError("Payment failed", 400);
+      }
     } catch (error) {
       next(error);
     }
