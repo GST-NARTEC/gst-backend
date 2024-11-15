@@ -21,13 +21,14 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: LOCALHOST,
-      description: "Development server",
-    },
-    {
       url: LIVE,
       description: "Production server",
     },
+    {
+      url: LOCALHOST,
+      description: "Development server",
+    },
+
     // add more hosts...
   ],
 };
