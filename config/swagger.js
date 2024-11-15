@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 dotenv.config();
 
 const LOCALHOST = process.env.LOCALHOST || "http://localhost:3000";
+const LIVE = process.env.LIVE || "https://gst.nartec.com";
 
 const swaggerDefinition = {
   openapi: "3.0.0",
