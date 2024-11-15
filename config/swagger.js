@@ -10,12 +10,12 @@ const LOCALHOST = process.env.LOCALHOST || "http://localhost:3000";
 const swaggerDefinition = {
   openapi: "3.0.0",
   info: {
-    title: "APP NAME",
+    title: "GST",
     version: "1.0.0",
     description: "APIs Documentation",
     contact: {
-      name: "Your Name",
-      email: "your_email@example.com",
+      name: "Wasim Zaman",
+      email: "wasimxaman13@gmail.com",
     },
   },
   servers: [
@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 const options = {
   swaggerDefinition: swaggerDefinition,
   apis: [
-    path.join(__dirname, "../docs/swagger/testDocs.js"),
+    path.join(__dirname, "../docs/swagger/license.js"),
     // add more paths...
   ],
 };
