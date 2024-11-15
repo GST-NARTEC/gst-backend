@@ -29,6 +29,7 @@ model User {
   streetAddress    String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  cart             Cart?
 }
 
 model License {
@@ -55,4 +56,26 @@ model Product {
   price       Float?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  cartItems   CartItem[]
 }
+
+model Cart {
+  id        String     @id @default(uuid()) @db.UniqueIdentifier
+  userId    String     @unique @db.UniqueIdentifier
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid()) @db.UniqueIdentifier
+  cartId    String   @db.UniqueIdentifier
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId String   @db.UniqueIdentifier
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
