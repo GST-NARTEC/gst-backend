@@ -1,5 +1,9 @@
-import License from "../models/license.js";
+import { PrismaClient } from "@prisma/client";
+
+import MyError from "../utils/error.js";
 import response from "../utils/response.js";
+
+const prisma = new PrismaClient();
 
 class LicenseController {
   static async verifyLicense(req, res, next) {
@@ -7,10 +11,18 @@ class LicenseController {
       const { licenseKey } = req.body;
 
       if (!licenseKey) {
-        throw new Error("License key is required");
+        throw new MyError("License key is required", 400);
       }
 
-      const license = await License.verifyLicense(licenseKey);
+      const license = await prisma.license.findFirst({
+        where: {
+          license: licenseKey,
+        },
+      });
+
+      if (!license) {
+        throw new MyError("Invalid license key", 404);
+      }
 
       res.status(200).json(
         response(200, true, "License verified successfully", {
