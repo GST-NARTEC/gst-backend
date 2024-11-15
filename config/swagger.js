@@ -24,6 +24,10 @@ const swaggerDefinition = {
       url: LOCALHOST,
       description: "Development server",
     },
+    {
+      url: LIVE,
+      description: "Production server",
+    },
     // add more hosts...
   ],
 };
