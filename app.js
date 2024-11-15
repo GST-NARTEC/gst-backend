@@ -18,7 +18,7 @@ process.env.LOCALHOST || "http://localhost:3000";
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:3000/", "http://localhost:5173/"] }));
 // If you want to change the default uploads directory, you can do so here
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
