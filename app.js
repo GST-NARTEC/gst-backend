@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import path from "path";
@@ -17,7 +18,7 @@ process.env.LOCALHOST || "http://localhost:3000";
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(cors());
 // If you want to change the default uploads directory, you can do so here
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 

@@ -1,5 +1,58 @@
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     OrderItem:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         quantity:
+ *           type: integer
+ *         price:
+ *           type: number
+ *         productId:
+ *           type: string
+ *           format: uuid
+ *         product:
+ *           $ref: '#/components/schemas/Product'
+ *
+ *     Order:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         userId:
+ *           type: string
+ *           format: uuid
+ *         paymentType:
+ *           type: string
+ *           enum: [Bank Transfer, Visa / Master Card, Credit/Debit card, STC Pay, Tabby]
+ *         totalAmount:
+ *           type: number
+ *         vat:
+ *           type: number
+ *         overallAmount:
+ *           type: number
+ *         status:
+ *           type: string
+ *           enum: [pending, completed, failed]
+ *         orderItems:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/OrderItem'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
  * /api/checkout/v1/process:
  *   post:
  *     tags: [Checkout]
