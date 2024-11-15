@@ -13,9 +13,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id               String    @id @default(uuid()) @db.UniqueIdentifier
+  email            String?   @unique
+  isEmailVerified  Boolean?   @default(false)
+  companyLicenseNo String?
+  companyNameEn    String?
+  companyNameAr    String?
+  landline         String?
+  mobile           String?
+  country          String?
+  region           String?
+  city             String?
+  zipCode          String?
+  streetAddress    String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
 model License {
   id        String    @id @default(uuid()) @db.UniqueIdentifier
   license   String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model OTP {
+  id        String   @id @default(uuid()) @db.UniqueIdentifier
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

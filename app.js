@@ -5,7 +5,7 @@ import path from "path";
 import swaggerUi from "swagger-ui-express";
 
 import swaggerSpec from "./config/swagger.js";
-import licenseRoutes from "./routes/license.js";
+import routes from "./routes/routes.js";
 import MyError from "./utils/error.js";
 import response from "./utils/response.js";
 
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 // Add your routes...
-app.use("/api/license/v1", licenseRoutes);
+app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {
