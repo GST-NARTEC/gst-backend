@@ -14,6 +14,7 @@ dotenv.config();
 const whitelist = [
   process.env.FRONTEND_URL || "http://localhost:3000",
   process.env.LOCALHOST || "http://localhost:3000",
+  process.env.LIVE || "http://localhost:3000",
 ];
 
 const corsOptions = {
