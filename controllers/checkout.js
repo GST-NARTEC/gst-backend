@@ -29,6 +29,14 @@ class CheckoutController {
 
       const { userId, paymentType } = value;
 
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
       // Get user's cart with items and product details
       const cart = await prisma.cart.findFirst({
         where: { userId },
