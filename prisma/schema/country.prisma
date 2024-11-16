@@ -1,0 +1,11 @@
+ model Country {
+  id            String   @id @db.UniqueIdentifier
+  nameEn        String?
+  nameAr        String?
+  gs1Code       String?   @default("0")
+  isActive      Boolean?  @default(true)
+  createdBy     String?
+  createdDate   DateTime  
+  updatedBy     String
+  updatedDate   DateTime
+}

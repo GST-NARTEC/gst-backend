@@ -171,12 +171,7 @@ class CheckoutController {
         // Clean up PDF file after sending
         await fs.remove(pdfPath);
 
-        res.status(200).json(
-          response(200, true, "Order placed successfully", {
-            order,
-            invoice,
-          })
-        );
+        res.status(200).json(response(200, true, "Order placed successfully"));
       } else {
         // If payment fails, update order status and throw error
         await prisma.order.update({
