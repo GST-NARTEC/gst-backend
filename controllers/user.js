@@ -26,6 +26,8 @@ const userInfoSchema = Joi.object({
   city: Joi.string().required(),
   zipCode: Joi.string().required(),
   streetAddress: Joi.string().required(),
+  latitude: Joi.number().optional(),
+  longitude: Joi.number().optional(),
 });
 
 class UserController {
@@ -142,6 +144,8 @@ class UserController {
         city,
         zipCode,
         streetAddress,
+        latitude,
+        longitude,
       } = value;
 
       // Check if email exists and is verified
@@ -199,6 +203,8 @@ class UserController {
           city,
           zipCode,
           streetAddress,
+          latitude,
+          longitude,
         },
       });
 

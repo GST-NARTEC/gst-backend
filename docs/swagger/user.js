@@ -33,6 +33,12 @@
  *           type: string
  *         streetAddress:
  *           type: string
+ *         latitude:
+ *           type: number
+ *           format: float
+ *         longitude:
+ *           type: number
+ *           format: float
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -162,6 +168,12 @@
  *                 type: string
  *               streetAddress:
  *                 type: string
+ *               latitude:
+ *                 type: number
+ *                 format: float
+ *               longitude:
+ *                 type: number
+ *                 format: float
  *     responses:
  *       200:
  *         description: User information saved successfully
