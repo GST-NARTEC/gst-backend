@@ -18,14 +18,6 @@ const checkoutSchema = Joi.object({
     .required(),
 });
 
-const orderStatusSchema = Joi.string().valid(
-  "PENDING",
-  "COMPLETED",
-  "FAILED",
-  "CANCELLED",
-  "REFUNDED"
-);
-
 class CheckoutController {
   static async processCheckout(req, res, next) {
     try {

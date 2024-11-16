@@ -77,27 +77,19 @@ model CartItem {
   updatedAt DateTime @updatedAt
 }
 
-enum OrderStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  CANCELLED
-  REFUNDED
-}
-
 model Order {
-  id            String      @id @default(uuid()) @db.UniqueIdentifier
-  userId        String      @db.UniqueIdentifier
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String         @id @default(uuid()) @db.UniqueIdentifier
+  userId        String         @db.UniqueIdentifier
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems    OrderItem[]
   invoice       Invoice?
   paymentType   String
   totalAmount   Float
-  vat           Float       @default(0)
+  vat           Float          @default(0)
   overallAmount Float
-  status        OrderStatus @default(PENDING)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  status        String         @default("pending")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model OrderItem {
