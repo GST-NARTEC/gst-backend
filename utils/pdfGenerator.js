@@ -23,13 +23,7 @@ class PDFGenerator {
     // Pipe PDF to file
     doc.pipe(fs.createWriteStream(filePath));
 
-    // Add GS1 logo
-    doc.image("path/to/gs1-logo.png", {
-      fit: [150, 150],
-      align: "center",
-    });
-
-    // Add header
+    // Add company header without logo
     doc.fontSize(20).text("GS1 Saudi Arabia", { align: "center" });
 
     // Add contact info
