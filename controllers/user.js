@@ -100,18 +100,6 @@ class UserController {
         throw new MyError("Invalid or expired OTP", 400);
       }
 
-      // Create or update user with verified email
-      await prisma.user.upsert({
-        where: { email },
-        create: {
-          email,
-          isEmailVerified: true,
-        },
-        update: {
-          isEmailVerified: true,
-        },
-      });
-
       // Delete used OTP
       await prisma.oTP.delete({
         where: { id: otpRecord.id },

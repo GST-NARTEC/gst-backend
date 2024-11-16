@@ -27,14 +27,22 @@ async function main() {
     return;
   }
 
+  let count = 0; // Initialize a counter for the number of seeds
+
   // Insert each license into the database
   for (const license of licenses) {
     try {
       await prisma.license.create({
         data: {
-          license: license,
+          license: license, // Store the license number in the 'license' field
         },
       });
+      count++; // Increment the counter
+
+      // Log progress every 100 seeds
+      if (count % 100 === 0) {
+        console.log(`${count} seeds done.`);
+      }
     } catch (error) {
       console.error(`Failed to insert license ${license}:`, error);
     }
