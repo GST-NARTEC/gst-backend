@@ -1,0 +1,13 @@
+model Region {
+  id          String    @id
+  nameEn      String?
+  nameAr      String?
+  countryId   String
+  country     Country   @relation(fields: [countryId], references: [id])
+  cities      City[]
+  isActive    Boolean?  @default(true)
+  createdBy   String?
+  createdDate DateTime  @default(now())
+  updatedBy   String?
+  updatedDate DateTime  @updatedAt
+}

@@ -1,0 +1,13 @@
+ model City {
+  id          String    @id
+  nameEn      String?
+  nameAr      String?
+  regionId    String
+  region      Region    @relation(fields: [regionId], references: [id])
+  telCode     String?   @default("0")
+  isActive    Boolean?  @default(true)
+  createdBy   String?
+  createdDate DateTime  @default(now())
+  updatedBy   String?
+  updatedDate DateTime  @updatedAt
+}

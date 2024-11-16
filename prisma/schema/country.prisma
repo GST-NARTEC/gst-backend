@@ -1,11 +1,12 @@
- model Country {
-  id            String   @id @db.UniqueIdentifier
+model Country {
+  id            String   @id
   nameEn        String?
   nameAr        String?
-  gs1Code       String?   @default("0")
-  isActive      Boolean?  @default(true)
+  gs1Code       String?  @default("0")
+  isActive      Boolean? @default(true)
   createdBy     String?
-  createdDate   DateTime  
-  updatedBy     String
-  updatedDate   DateTime
+  createdDate   DateTime @default(now())
+  updatedBy     String?
+  updatedDate   DateTime @updatedAt
+  regions       Region[]
 }
