@@ -1,12 +1,42 @@
-import prisma from "../utils/prismaClient.js";
+import Joi from "joi";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
+import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+
+// Validation schemas
+const emailSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+const otpVerificationSchema = Joi.object({
+  email: Joi.string().email().required(),
+  otp: Joi.string().length(4).pattern(/^\d+$/).required(),
+});
+
+const userInfoSchema = Joi.object({
+  email: Joi.string().email().required(),
+  companyLicenseNo: Joi.string().required(),
+  companyNameEn: Joi.string().required(),
+  companyNameAr: Joi.string().required(),
+  landline: Joi.string().allow("", null),
+  mobile: Joi.string().required(),
+  country: Joi.string().required(),
+  region: Joi.string().required(),
+  city: Joi.string().required(),
+  zipCode: Joi.string().required(),
+  streetAddress: Joi.string().required(),
+});
 
 class UserController {
   static async sendEmailOTP(req, res, next) {
     try {
-      const { email } = req.body;
+      const { error, value } = emailSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { email } = value;
 
       // Check if email already exists and is verified
       const existingUser = await prisma.user.findUnique({
@@ -47,7 +77,12 @@ class UserController {
 
   static async verifyEmailOTP(req, res, next) {
     try {
-      const { email, otp } = req.body;
+      const { error, value } = otpVerificationSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { email, otp } = value;
 
       const otpRecord = await prisma.oTP.findFirst({
         where: {
@@ -90,6 +125,11 @@ class UserController {
 
   static async createUser(req, res, next) {
     try {
+      const { error, value } = userInfoSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
       const {
         email,
         companyLicenseNo,
@@ -102,7 +142,7 @@ class UserController {
         city,
         zipCode,
         streetAddress,
-      } = req.body;
+      } = value;
 
       // Check if email exists and is verified
       const existingUser = await prisma.user.findUnique({

@@ -1,19 +1,44 @@
+import Joi from "joi";
 import MyError from "../utils/error.js";
-import response from "../utils/response.js";
+import { deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
+import response from "../utils/response.js";
+
+// Validation schemas
+const productSchema = Joi.object({
+  title: Joi.string().required().min(3).max(100),
+  description: Joi.string().allow("", null),
+  price: Joi.number().min(0).required(),
+  image: Joi.string().allow("", null),
+});
+
+const querySchema = Joi.object({
+  page: Joi.number().min(1).default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+  search: Joi.string().allow("", null),
+});
 
 class ProductController {
   static async createProduct(req, res, next) {
+    let imagePath;
     try {
-      const { title, description, price, image } = req.body;
+      const productData = {
+        ...req.body,
+        price: req.body.price ? parseFloat(req.body.price) : null,
+      };
+
+      const { error, value } = productSchema.validate(productData);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      if (req.file) {
+        imagePath = req.file.path;
+        value.image = imagePath;
+      }
 
       const product = await prisma.product.create({
-        data: {
-          title,
-          description,
-          price: price ? parseFloat(price) : null,
-          image,
-        },
+        data: value,
       });
 
       res.status(201).json(
@@ -22,13 +47,19 @@ class ProductController {
         })
       );
     } catch (error) {
+      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
 
   static async getProducts(req, res, next) {
     try {
-      const { page = 1, limit = 10, search } = req.query;
+      const { error, value } = querySchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, search } = value;
       const skip = (page - 1) * limit;
 
       const where = search
@@ -93,18 +124,38 @@ class ProductController {
   }
 
   static async updateProduct(req, res, next) {
+    let imagePath;
     try {
       const { id } = req.params;
-      const { title, description, price, image } = req.body;
+      const productData = {
+        ...req.body,
+        price: req.body.price ? parseFloat(req.body.price) : null,
+      };
+
+      const { error, value } = productSchema.validate(productData);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const existingProduct = await prisma.product.findUnique({
+        where: { id },
+      });
+
+      if (!existingProduct) {
+        throw new MyError("Product not found", 404);
+      }
+
+      if (req.file) {
+        imagePath = req.file.path;
+        value.image = imagePath;
+        if (existingProduct.image) {
+          await deleteFile(existingProduct.image);
+        }
+      }
 
       const product = await prisma.product.update({
         where: { id },
-        data: {
-          title,
-          description,
-          price: price ? parseFloat(price) : null,
-          image,
-        },
+        data: value,
       });
 
       res.status(200).json(
@@ -113,6 +164,7 @@ class ProductController {
         })
       );
     } catch (error) {
+      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
@@ -120,6 +172,18 @@ class ProductController {
   static async deleteProduct(req, res, next) {
     try {
       const { id } = req.params;
+
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
+
+      if (!product) {
+        throw new MyError("Product not found", 404);
+      }
+
+      if (product.image) {
+        await deleteFile(product.image);
+      }
 
       await prisma.product.delete({
         where: { id },

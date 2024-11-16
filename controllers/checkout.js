@@ -1,12 +1,41 @@
+import Joi from "joi";
 import prisma from "../utils/prismaClient.js";
+
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import response from "../utils/response.js";
 
+const checkoutSchema = Joi.object({
+  userId: Joi.string().uuid().required(),
+  paymentType: Joi.string()
+    .valid(
+      "Bank Transfer",
+      "Visa / Master Card",
+      "Credit/Debit card",
+      "STC Pay",
+      "Tabby"
+    )
+    .required(),
+});
+
+const orderStatusSchema = Joi.string().valid(
+  "PENDING",
+  "COMPLETED",
+  "FAILED",
+  "CANCELLED",
+  "REFUNDED"
+);
+
 class CheckoutController {
   static async processCheckout(req, res, next) {
     try {
-      const { userId, paymentType } = req.body;
+      // Validate request body
+      const { error, value } = checkoutSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { userId, paymentType } = value;
 
       // Get user's cart with items and product details
       const cart = await prisma.cart.findFirst({
@@ -66,7 +95,7 @@ class CheckoutController {
         // Update order status to completed
         await prisma.order.update({
           where: { id: order.id },
-          data: { status: "completed" },
+          data: { status: "COMPLETED" },
         });
 
         // Generate password and update user
