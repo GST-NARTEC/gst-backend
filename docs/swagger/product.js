@@ -8,15 +8,17 @@
  *         id:
  *           type: string
  *           format: uuid
- *         image:
- *           type: string
  *         title:
  *           type: string
+ *           minLength: 3
+ *           maxLength: 100
  *         description:
  *           type: string
  *         price:
  *           type: number
- *           format: float
+ *           minimum: 0
+ *         image:
+ *           type: string
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -28,10 +30,11 @@
  *   post:
  *     tags: [Products]
  *     summary: Create a new product
+ *     description: Creates a new product with image upload support
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -40,12 +43,16 @@
  *             properties:
  *               title:
  *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 100
  *               description:
  *                 type: string
  *               price:
  *                 type: number
+ *                 minimum: 0
  *               image:
  *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -56,13 +63,10 @@
  *               properties:
  *                 status:
  *                   type: number
- *                   example: 201
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
- *                   example: Product created successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -71,17 +75,21 @@
  *
  *   get:
  *     tags: [Products]
- *     summary: Get all products with pagination
+ *     summary: Get all products
+ *     description: Retrieve a list of products with pagination and search
  *     parameters:
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
+ *           minimum: 1
  *           default: 1
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
+ *           minimum: 1
+ *           maximum: 100
  *           default: 10
  *       - in: query
  *         name: search
@@ -112,11 +120,11 @@
  *                       type: object
  *                       properties:
  *                         total:
- *                           type: integer
+ *                           type: number
  *                         page:
- *                           type: integer
+ *                           type: number
  *                         totalPages:
- *                           type: integer
+ *                           type: number
  *                         hasMore:
  *                           type: boolean
  *
@@ -164,25 +172,41 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
  *               title:
  *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 100
  *               description:
  *                 type: string
  *               price:
  *                 type: number
+ *                 minimum: 0
  *               image:
  *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Product updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     product:
+ *                       $ref: '#/components/schemas/Product'
  *
  *   delete:
  *     tags: [Products]
@@ -197,4 +221,15 @@
  *     responses:
  *       200:
  *         description: Product deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */

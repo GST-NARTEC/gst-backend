@@ -10,14 +10,12 @@ import routes from "./routes/routes.js";
 import MyError from "./utils/error.js";
 import response from "./utils/response.js";
 
-import {
-  errorResponseHandler,
-  invalidPathHandler,
-} from "./middleware/errorHandlers.js";
-
 dotenv.config();
 
-const whitelist = [process.env.FRONTEND_URL || "http://localhost:3000"];
+const whitelist = [
+  process.env.FRONTEND_URL || "http://localhost:3000",
+  process.env.LOCALHOST || "http://localhost:3000",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -69,10 +67,6 @@ app.use((error, req, res, next) => {
 
   res.status(status).json(response(status, success, message, data));
 });
-
-// Error handling middleware
-app.use(errorResponseHandler);
-app.use(invalidPathHandler);
 
 app.listen(PORT, function () {
   console.log(`Server is running on port ${PORT}`);

@@ -38,11 +38,47 @@
  *           type: number
  *         status:
  *           type: string
- *           enum: [pending, completed, failed]
+ *           enum: [pending, completed, failed, cancelled, refunded]
+ *           default: pending
  *         orderItems:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/OrderItem'
+ *         invoice:
+ *           $ref: '#/components/schemas/Invoice'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     Invoice:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         invoiceNumber:
+ *           type: string
+ *         orderId:
+ *           type: string
+ *           format: uuid
+ *         userId:
+ *           type: string
+ *           format: uuid
+ *         totalAmount:
+ *           type: number
+ *         vat:
+ *           type: number
+ *         overallAmount:
+ *           type: number
+ *         paymentType:
+ *           type: string
+ *         status:
+ *           type: string
+ *           enum: [pending, completed]
+ *           default: pending
  *         createdAt:
  *           type: string
  *           format: date-time
