@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import Joi from "joi";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
@@ -40,12 +41,12 @@ class UserController {
 
       const { email } = value;
 
-      // Check if email already exists and is verified
+      // Check if email already exists and is isCreated
       const existingUser = await prisma.user.findUnique({
         where: { email },
       });
 
-      if (existingUser?.isEmailVerified) {
+      if (existingUser?.isCreated) {
         throw new MyError("Email is already registered", 400);
       }
 
@@ -100,6 +101,18 @@ class UserController {
         throw new MyError("Invalid or expired OTP", 400);
       }
 
+      // Create user with email and isCreated=false
+      await prisma.user.upsert({
+        where: { email },
+        create: {
+          email,
+          isCreated: false,
+        },
+        update: {
+          isCreated: false,
+        },
+      });
+
       // Delete used OTP
       await prisma.oTP.delete({
         where: { id: otpRecord.id },
@@ -136,7 +149,7 @@ class UserController {
         longitude,
       } = value;
 
-      // Check if email exists and is verified
+      // Check if email exists
       const existingUser = await prisma.user.findUnique({
         where: { email },
       });
@@ -145,39 +158,15 @@ class UserController {
         throw new MyError("Please verify your email first", 400);
       }
 
-      if (!existingUser.isEmailVerified) {
-        throw new MyError("Please verify your email first", 400);
+      if (existingUser.isCreated) {
+        throw new MyError("User is already registered", 400);
       }
 
-      // Check if companyLicenseNo, companyNameEn, or companyNameAr are already in use
-      const licenseCheck = await prisma.user.findUnique({
-        where: { companyLicenseNo },
-      });
-      if (licenseCheck) {
-        throw new MyError("This license is already used by another user", 400);
-      }
+      // Generate password
+      const password = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-      const nameEnCheck = await prisma.user.findUnique({
-        where: { companyNameEn },
-      });
-      if (nameEnCheck) {
-        throw new MyError(
-          "This company name in English is already used by another user",
-          400
-        );
-      }
-
-      const nameArCheck = await prisma.user.findUnique({
-        where: { companyNameAr },
-      });
-      if (nameArCheck) {
-        throw new MyError(
-          "This company name in Arabic is already used by another user",
-          400
-        );
-      }
-
-      // Update user with all information
+      // Update user with all information and mark as isCreated
       const updatedUser = await prisma.user.update({
         where: { email },
         data: {
@@ -191,13 +180,15 @@ class UserController {
           city,
           zipCode,
           streetAddress,
-          latitude,
-          longitude,
+          latitude: latitude || null,
+          longitude: longitude || null,
+          password: hashedPassword,
+          isCreated: true,
         },
       });
 
       res.status(200).json(
-        response(200, true, "User information saved successfully", {
+        response(200, true, "User isCreated successfully", {
           user: updatedUser,
         })
       );

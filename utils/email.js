@@ -40,24 +40,31 @@ class EmailService {
     }
   }
 
-  async sendOrderConfirmation({ email, order, password, user, loginUrl }) {
+  async sendWelcomeEmail({ email, order, password, user, attachments }) {
     try {
-      const html = await ejs.renderFile(
-        path.join(__dirname, "../view/order-confirmation.ejs"),
-        { order, email, password, user, loginUrl }
-      );
+      const templatePath = path.join(__dirname, "../view/welcomeEmail.ejs");
+
+      const data = {
+        user,
+        order,
+        password,
+        loginUrl: process.env.LOGIN_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
 
       const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: "Order Confirmation",
+        subject: "Welcome to GS1 Saudi Arabia - Order Confirmation",
         html,
+        attachments,
       };
 
       await this.transporter.sendMail(mailOptions);
       return true;
     } catch (error) {
-      console.error("Failed to send order confirmation:", error);
+      console.error("Error sending confirmation email:", error);
       return false;
     }
   }

@@ -1,8 +1,10 @@
 import Joi from "joi";
 import prisma from "../utils/prismaClient.js";
 
+import fs from "fs-extra";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
+import PDFGenerator from "../utils/pdfGenerator.js";
 import response from "../utils/response.js";
 
 const checkoutSchema = Joi.object({
@@ -141,17 +143,33 @@ class CheckoutController {
           },
         });
 
+        // Generate PDF with invoice details
+        const pdfPath = await PDFGenerator.generateInvoice(
+          order,
+          cart.user,
+          invoice
+        );
+
         // Send confirmation email
-        const emailSent = await EmailService.sendOrderConfirmation({
+        const emailSent = await EmailService.sendWelcomeEmail({
           email: cart.user.email,
           order,
           password,
           user: cart.user,
+          attachments: [
+            {
+              filename: "invoice.pdf",
+              path: pdfPath,
+            },
+          ],
         });
 
         if (!emailSent) {
           throw new MyError("Failed to send confirmation email", 500);
         }
+
+        // Clean up PDF file after sending
+        await fs.remove(pdfPath);
 
         res.status(200).json(
           response(200, true, "Order placed successfully", {

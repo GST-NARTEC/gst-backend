@@ -11,6 +11,10 @@
  *         email:
  *           type: string
  *           format: email
+ *         password:
+ *           type: string
+ *         isCreated:
+ *           type: boolean
  *         isEmailVerified:
  *           type: boolean
  *         companyLicenseNo:
@@ -86,9 +90,27 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Response'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: OTP sent successfully
+ *                 data:
+ *                   type: null
  *       400:
- *         description: Email already registered
+ *         description: Email already registered or invalid email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Failed to send OTP email
  *         content:
  *           application/json:
  *             schema:
@@ -113,15 +135,27 @@
  *                 format: email
  *               otp:
  *                 type: string
- *                 minLength: 4
- *                 maxLength: 4
+ *                 pattern: ^\d{4}$
+ *                 example: "1234"
  *     responses:
  *       200:
  *         description: Email verified successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Response'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Email verified successfully
+ *                 data:
+ *                   type: null
  *       400:
  *         description: Invalid or expired OTP
  *         content:
@@ -131,7 +165,7 @@
  *
  * /api/user/v1/create:
  *   post:
- *     summary: Create or update user with full information
+ *     summary: Create user with full information
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -144,6 +178,12 @@
  *               - companyLicenseNo
  *               - companyNameEn
  *               - companyNameAr
+ *               - mobile
+ *               - country
+ *               - region
+ *               - city
+ *               - zipCode
+ *               - streetAddress
  *             properties:
  *               email:
  *                 type: string
@@ -176,7 +216,7 @@
  *                 format: float
  *     responses:
  *       200:
- *         description: User information saved successfully
+ *         description: User created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -190,14 +230,20 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: User information saved successfully
+ *                   example: User created successfully
  *                 data:
  *                   type: object
  *                   properties:
  *                     user:
  *                       $ref: '#/components/schemas/User'
  *       400:
- *         description: Email not verified
+ *         description: Email not verified or user already registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Failed to send welcome email
  *         content:
  *           application/json:
  *             schema:
