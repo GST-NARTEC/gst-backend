@@ -14,6 +14,6 @@ router.use("/user/v1", userRoutes);
 router.use("/products/v1", productRouter);
 router.use("/cart/v1", cartRoutes);
 router.use("/checkout/v1", checkoutRoutes);
-router.use("/location/", locationRoutes);
+router.use("/locations/v1", locationRoutes);
 
 export default router;

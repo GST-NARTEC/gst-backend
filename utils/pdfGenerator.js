@@ -2,10 +2,37 @@ import fs from "fs-extra";
 import path from "path";
 import PDFDocument from "pdfkit";
 import QRCode from "qrcode";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class PDFGenerator {
   static async generateInvoice(order, user, invoice) {
-    // Create a new PDF document with RTL support
+    // Define fonts with correct path (just one level up)
+    const FONTS = {
+      arabic: path.join(__dirname, "../assets/fonts/DubaiRegular.ttf"),
+      // or for Amiri:
+      // arabic: path.join(__dirname, '../assets/fonts/Amiri-Regular.ttf'),
+    };
+
+    // Verify font exists
+    if (!fs.existsSync(FONTS.arabic)) {
+      console.error("Arabic font not found:", FONTS.arabic);
+      throw new Error("Arabic font file not found");
+    }
+
+    const colors = {
+      primary: "#1F3A8A",
+      secondary: "#6B7280",
+      accent: "#2563EB",
+      success: "#059669",
+      background: "#F8FAFC",
+      text: "#1F2937",
+    };
+
+    // Create PDF with custom font
     const doc = new PDFDocument({
       size: "A4",
       margin: 50,
@@ -14,93 +41,187 @@ class PDFGenerator {
       },
     });
 
+    // Register Arabic font
+    doc.registerFont("Arabic", FONTS.arabic);
+    doc.font("Arabic"); // Set as default font
+
     const fileName = `invoice-${invoice.invoiceNumber}.pdf`;
     const filePath = path.join("uploads", "pdfs", fileName);
-
-    // Ensure directory exists
     await fs.ensureDir(path.join("uploads", "pdfs"));
-
-    // Pipe PDF to file
     doc.pipe(fs.createWriteStream(filePath));
 
-    // Add company header without logo
-    doc.fontSize(20).text("GS1 Saudi Arabia", { align: "center" });
+    // Add background
+    doc.rect(0, 0, doc.page.width, doc.page.height).fill(colors.background);
 
-    // Add contact info
+    // Header section
     doc
-      .fontSize(12)
-      .text(`Phone / هاتف: ${user.mobile}`, { align: "center" })
-      .text(`${user.streetAddress}`, { align: "center" });
+      .rect(50, 50, doc.page.width - 100, 120)
+      .fillAndStroke("#FFFFFF", colors.primary);
 
-    // Add invoice details (bilingual)
+    // Company header
     doc
-      .moveDown()
+      .fillColor(colors.primary)
+      .fontSize(24)
+      .text("GST Saudi Arabia / جي إس تي السعودية", 50, 70, {
+        align: "center",
+      });
+
+    // Contact info
+    doc
       .fontSize(10)
-      .text(
-        `INVOICE DATE / تاريخ الفاتورة: ${new Date(
-          invoice.createdAt
-        ).toLocaleDateString()}`
-      )
-      .text(`INVOICE ID / رقم الفاتورة: #${invoice.invoiceNumber}`)
-      .text(`TYPE / النوع: ${order.paymentType}`)
-      .text(`CUSTOMER / العميل: ${user.companyNameEn} / ${user.companyNameAr}`);
+      .fillColor(colors.secondary)
+      .text(`📞 ${user.mobile} / هاتف`, { align: "center" })
+      .text(`📍 ${user.streetAddress}`, { align: "center" });
 
-    // Add table headers
-    let y = 300;
+    // Invoice details box
     doc
-      .text("Description / الوصف", 50, y)
-      .text("Qty / الكمية", 300, y)
-      .text("Amount / المبلغ", 400, y);
+      .rect(50, 190, doc.page.width - 100, 120)
+      .fill("#FFFFFF")
+      .strokeColor(colors.accent)
+      .stroke();
 
-    // Add items
-    y += 20;
-    order.orderItems.forEach((item) => {
+    // Invoice details
+    const invoiceDetails = [
+      {
+        label: "INVOICE DATE / تاريخ الفاتورة",
+        value: new Date(invoice.createdAt).toLocaleDateString("ar-SA"),
+      },
+      {
+        label: "INVOICE ID / رقم الفاتورة",
+        value: `#${invoice.invoiceNumber}`,
+      },
+      { label: "PAYMENT TYPE / طريقة الدفع", value: order.paymentType },
+      {
+        label: "CUSTOMER / العميل",
+        value: `${user.companyNameEn} / ${user.companyNameAr}`,
+      },
+    ];
+
+    let yPos = 210;
+    invoiceDetails.forEach((detail) => {
       doc
-        .text(item.product.title, 50, y)
-        .text(item.quantity.toString(), 300, y)
-        .text(`AED ${item.price.toFixed(2)}`, 400, y);
-      y += 15;
+        .fontSize(10)
+        .fillColor(colors.secondary)
+        .text(detail.label, 70, yPos)
+        .fillColor(colors.text)
+        .text(detail.value, 300, yPos);
+      yPos += 25;
     });
 
-    // Add totals
-    y += 20;
-    doc
-      .text(
-        `Subtotal / المجموع الفرعي: AED ${order.totalAmount.toFixed(2)}`,
-        300,
-        y
-      )
-      .text(
-        `VAT / ضريبة القيمة المضافة (0%): AED ${order.vat.toFixed(2)}`,
-        300,
-        y + 20
-      )
-      .text(
-        `Grand Total / المجموع الكلي: AED ${order.overallAmount.toFixed(2)}`,
-        300,
-        y + 40
-      );
+    // Items table
+    const tableTop = 340;
+    doc.rect(50, tableTop - 10, doc.page.width - 100, 30).fill("#F1F5F9");
 
-    // Add Terms and Signature
+    // Table headers
     doc
-      .moveDown(4)
-      .text("Terms and Conditions / الشروط والأحكام", { align: "center" })
-      .moveDown()
-      .text("Signature / التوقيع: _________________", { align: "center" });
-
-    // Generate and add QR code
-    const qrCodeData = await QRCode.toDataURL(invoice.invoiceNumber);
-    doc.image(qrCodeData, {
-      fit: [100, 100],
-      align: "center",
-    });
-
-    // Add verification text
-    doc
-      .moveDown()
+      .fillColor(colors.primary)
       .fontSize(10)
-      .text("Scan to verify / امسح للتحقق", { align: "center" })
-      .text(invoice.invoiceNumber, { align: "center" });
+      .text("Description / الوصف", 70, tableTop)
+      .text("Qty / الكمية", 350, tableTop)
+      .text("Amount / المبلغ", 450, tableTop);
+
+    // Table items
+    let y = tableTop + 30;
+    order.orderItems.forEach((item, index) => {
+      if (index % 2 === 0) {
+        doc.rect(50, y - 5, doc.page.width - 100, 25).fill("#F8FAFC");
+      }
+
+      doc
+        .fillColor(colors.text)
+        .text(item.product.title, 70, y)
+        .text(item.quantity.toString(), 350, y)
+        .text(`SAR ${item.price.toFixed(2)}`, 450, y);
+      y += 25;
+    });
+
+    // Totals section with wider box
+    const totalsY = y + 20;
+    doc
+      .rect(250, totalsY, doc.page.width - 300, 130)
+      .fill("#FFFFFF")
+      .strokeColor(colors.accent)
+      .stroke();
+
+    const totals = [
+      {
+        label: "Subtotal / المجموع الفرعي",
+        value: `SAR ${order.totalAmount.toFixed(2)}`,
+        style: "normal",
+      },
+      {
+        label: "VAT (0%) / ضريبة القيمة المضافة",
+        value: `SAR ${order.vat.toFixed(2)}`,
+        style: "normal",
+      },
+      {
+        label: "Grand Total / المجموع الكلي",
+        value: `SAR ${order.overallAmount.toFixed(2)}`,
+        style: "grand",
+      },
+    ];
+
+    let totalYPos = totalsY + 20;
+    totals.forEach((total, index) => {
+      const isGrand = total.style === "grand";
+
+      // Label (left side, English and Arabic together)
+      doc
+        .fontSize(isGrand ? 12 : 10)
+        .fillColor(isGrand ? colors.success : colors.text)
+        .text(total.label, 270, totalYPos, {
+          width: 190,
+          align: "left",
+        });
+
+      // Amount (right side with more spacing)
+      doc.text(total.value, 520, totalYPos, {
+        width: 80,
+        align: "right",
+      });
+
+      // Add separator before grand total
+      if (index === 1) {
+        doc
+          .strokeColor(colors.accent)
+          .moveTo(270, totalYPos + 25)
+          .lineTo(520, totalYPos + 25)
+          .stroke();
+        totalYPos += 15;
+      }
+
+      totalYPos += 35;
+    });
+
+    // Footer - moved up
+    const footerY = doc.page.height - 200;
+    doc
+      .rect(50, footerY, doc.page.width - 100, 100)
+      .fill("#FFFFFF")
+      .strokeColor(colors.primary)
+      .stroke();
+
+    // QR code and signature side by side
+    const qrCodeData = await QRCode.toDataURL(invoice.invoiceNumber);
+    doc.image(qrCodeData, 70, footerY + 10, {
+      fit: [80, 80],
+    });
+
+    // Verification text moved to the left side
+    doc
+      .fontSize(10)
+      .fillColor(colors.secondary)
+      .text("Scan to verify / امسح للتحقق", 70, footerY + 85)
+      .text(invoice.invoiceNumber, 70, footerY + 95);
+
+    // Signature
+    doc
+      .fontSize(10)
+      .text("Authorized Signature / التوقيع المعتمد", 350, footerY + 40)
+      .lineWidth(0.5)
+      .moveTo(350, footerY + 70)
+      .lineTo(500, footerY + 70)
+      .stroke();
 
     doc.end();
     return filePath;
