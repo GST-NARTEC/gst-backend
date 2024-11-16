@@ -157,6 +157,34 @@ class UserController {
         throw new MyError("Please verify your email first", 400);
       }
 
+      // Check if companyLicenseNo, companyNameEn, or companyNameAr are already in use
+      const licenseCheck = await prisma.user.findUnique({
+        where: { companyLicenseNo },
+      });
+      if (licenseCheck) {
+        throw new MyError("This license is already used by another user", 400);
+      }
+
+      const nameEnCheck = await prisma.user.findUnique({
+        where: { companyNameEn },
+      });
+      if (nameEnCheck) {
+        throw new MyError(
+          "This company name in English is already used by another user",
+          400
+        );
+      }
+
+      const nameArCheck = await prisma.user.findUnique({
+        where: { companyNameAr },
+      });
+      if (nameArCheck) {
+        throw new MyError(
+          "This company name in Arabic is already used by another user",
+          400
+        );
+      }
+
       // Update user with all information
       const updatedUser = await prisma.user.update({
         where: { email },

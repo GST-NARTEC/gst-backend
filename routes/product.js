@@ -4,7 +4,12 @@ import { uploadSingle } from "multermate-es";
 import controller from "../controllers/product.js";
 
 const router = express.Router();
-const config = { filename: "image", fileTypes: ["images"], fileSizeLimit: 5 };
+const config = {
+  filename: "image",
+  fileTypes: ["images"],
+  fileSizeLimit: 5,
+  destination: "/uploads/images",
+};
 
 router.post("/", uploadSingle(config), controller.createProduct);
 router.get("/", controller.getProducts);
