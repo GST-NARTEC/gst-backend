@@ -4,15 +4,13 @@ import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/generateToken.js";
+import { generatePassword } from "../utils/generatePassword.js";
 
 // Validation schemas
 const emailSchema = Joi.object({
   email: Joi.string().email().required(),
-});
-
-const otpVerificationSchema = Joi.object({
-  email: Joi.string().email().required(),
-  otp: Joi.string().length(4).pattern(/^\d+$/).required(),
 });
 
 const userInfoSchema = Joi.object({
@@ -31,6 +29,8 @@ const userInfoSchema = Joi.object({
   longitude: Joi.number().optional(),
 });
 
+// Add this helper function
+
 class UserController {
   static async sendEmailOTP(req, res, next) {
     try {
@@ -41,29 +41,18 @@ class UserController {
 
       const { email } = value;
 
-      // Check if email already exists and is isCreated
+      // Check if email already exists and is verified
       const existingUser = await prisma.user.findUnique({
         where: { email },
       });
 
-      if (existingUser?.isCreated) {
+      if (existingUser) {
         throw new MyError("Email is already registered", 400);
       }
 
-      // Generate 4 digit OTP
+      // Generate OTP and token
       const otp = Math.floor(1000 + Math.random() * 9000).toString();
-
-      // Set OTP expiry to 5 minutes from now
-      const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
-
-      // Save OTP
-      await prisma.oTP.create({
-        data: {
-          email,
-          otp,
-          expiresAt,
-        },
-      });
+      const token = generateToken({ email, otp });
 
       console.log(`OTP for ${email}: ${otp}`);
 
@@ -72,7 +61,11 @@ class UserController {
         throw new MyError("Failed to send OTP email", 500);
       }
 
-      res.status(200).json(response(200, true, "OTP sent successfully", null));
+      res.status(200).json({
+        success: true,
+        message: "OTP sent successfully",
+        token,
+      });
     } catch (error) {
       next(error);
     }
@@ -80,43 +73,20 @@ class UserController {
 
   static async verifyEmailOTP(req, res, next) {
     try {
-      const { error, value } = otpVerificationSchema.validate(req.body);
-      if (error) {
-        throw new MyError(error.details[0].message, 400);
+      const { otp, token } = req.body;
+
+      if (!token) {
+        throw new MyError("Token is required", 400);
       }
 
-      const { email, otp } = value;
-
-      const otpRecord = await prisma.oTP.findFirst({
-        where: {
-          email,
-          otp,
-          expiresAt: {
-            gt: new Date(),
-          },
-        },
-      });
-
-      if (!otpRecord) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.otp !== otp) {
+          throw new MyError("Invalid OTP", 400);
+        }
+      } catch (err) {
         throw new MyError("Invalid or expired OTP", 400);
       }
-
-      // Create user with email and isCreated=false
-      await prisma.user.upsert({
-        where: { email },
-        create: {
-          email,
-          isCreated: false,
-        },
-        update: {
-          isCreated: false,
-        },
-      });
-
-      // Delete used OTP
-      await prisma.oTP.delete({
-        where: { id: otpRecord.id },
-      });
 
       res
         .status(200)
@@ -149,27 +119,42 @@ class UserController {
         longitude,
       } = value;
 
-      // Check if email exists
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
+      // Check if unique fields are already taken
+      const existingCompany = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email },
+            { companyLicenseNo },
+            { companyNameEn },
+            { companyNameAr },
+          ],
+        },
       });
 
-      if (!existingUser) {
-        throw new MyError("Please verify your email first", 400);
-      }
-
-      if (existingUser.isCreated) {
-        throw new MyError("User is already registered", 400);
+      if (existingCompany) {
+        if (existingCompany.email === email) {
+          throw new MyError("Email already registered", 400);
+        }
+        if (existingCompany.companyLicenseNo === companyLicenseNo) {
+          throw new MyError("Company license number already registered", 400);
+        }
+        if (existingCompany.companyNameEn === companyNameEn) {
+          throw new MyError("Company name (English) already registered", 400);
+        }
+        if (existingCompany.companyNameAr === companyNameAr) {
+          throw new MyError("Company name (Arabic) already registered", 400);
+        }
       }
 
       // Generate password
-      const password = Math.random().toString(36).slice(-8);
+      const password = generatePassword();
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Update user with all information and mark as isCreated
-      const updatedUser = await prisma.user.update({
-        where: { email },
+      // Create new user
+      const newUser = await prisma.user.create({
         data: {
+          email,
+          password: hashedPassword,
           companyLicenseNo,
           companyNameEn,
           companyNameAr,
@@ -182,14 +167,17 @@ class UserController {
           streetAddress,
           latitude: latitude || null,
           longitude: longitude || null,
-          password: hashedPassword,
-          isCreated: true,
         },
       });
 
-      res.status(200).json(
-        response(200, true, "User isCreated successfully", {
-          user: updatedUser,
+      // Don't send password hash in response just for testing later we will be sending the password in
+      // payment confirmation email
+      const { password: _, ...userWithoutPassword } = newUser;
+
+      res.status(201).json(
+        response(201, true, "User created successfully", {
+          user: userWithoutPassword,
+          password, // Include the plain password in response
         })
       );
     } catch (error) {
