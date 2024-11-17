@@ -12,12 +12,20 @@ import routes from "./routes/routes.js";
 dotenv.config();
 
 const whitelist = [
-  "http://localhost:5173", // Frontend URL
-  "http://localhost:3000", // Backend URL
-];
+  process.env.FRONTEND_URL, // Frontend URL
+  process.env.LOCALHOST, // Local Backend URL
+  process.env.LIVE, // Live Backend URL
+  process.env.BASE_URL, // Base URL
+].filter(Boolean); // Remove any undefined/null values
 
 const corsOptions = {
-  origin: whitelist, // Simplified CORS config
+  origin: function (origin, callback) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -34,6 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // If you want to change the default uploads directory, you can do so here
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
+app.use("/assets", express.static(path.join(path.resolve(), "uploads")));
 
 // Add your routes...
 app.use("/api", routes);

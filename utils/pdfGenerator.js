@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Add logo path configuration
-const LOGO_PATH = "/uploads/images/gst-logo.png";
+const LOGO_PATH = "/assets/images/gst-logo.png";
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
 const LOGO_URL = `${BASE_URL}${LOGO_PATH}`;
 
