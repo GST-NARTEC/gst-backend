@@ -18,6 +18,7 @@ const checkoutSchema = Joi.object({
       "Tabby"
     )
     .required(),
+  vat: Joi.number().min(0).default(0),
 });
 
 class CheckoutController {
@@ -29,7 +30,7 @@ class CheckoutController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { userId, paymentType } = value;
+      const { userId, paymentType, vat } = value;
 
       const user = await prisma.user.findUnique({
         where: { id: userId },
@@ -56,13 +57,22 @@ class CheckoutController {
         throw new MyError("Cart is empty", 400);
       }
 
-      // Calculate totals
+      // Calculate totals including tax
       const totalAmount = cart.items.reduce(
         (sum, item) => sum + item.quantity * item.product.price,
         0
       );
-      const vat = 0;
-      const overallAmount = totalAmount + vat;
+
+      // Calculate tax amount for each item
+      const taxAmount = cart.items.reduce(
+        (sum, item) =>
+          sum + item.quantity * item.product.price * (item.product.tax / 100),
+        0
+      );
+
+      // Add VAT if provided
+      const vatAmount = totalAmount * (vat / 100);
+      const overallAmount = totalAmount + taxAmount + vatAmount;
 
       // Create order with pending status
       const order = await prisma.order.create({
@@ -70,7 +80,8 @@ class CheckoutController {
           userId,
           paymentType,
           totalAmount,
-          vat,
+          taxAmount,
+          vat: vatAmount,
           overallAmount,
           status: "pending", // Set initial status as pending
           orderItems: {
@@ -78,6 +89,7 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
+              tax: item.product.tax,
             })),
           },
         },
@@ -125,7 +137,8 @@ class CheckoutController {
             invoiceNumber,
             userId,
             totalAmount,
-            vat,
+            taxAmount,
+            vat: vatAmount,
             overallAmount,
             paymentType,
             status: "completed",

@@ -17,6 +17,11 @@
  *         price:
  *           type: number
  *           minimum: 0
+ *         tax:
+ *           type: number
+ *           minimum: 0
+ *           default: 0
+ *           description: Tax percentage to be applied on product price
  *         image:
  *           type: string
  *         createdAt:
@@ -50,6 +55,11 @@
  *               price:
  *                 type: number
  *                 minimum: 0
+ *               tax:
+ *                 type: number
+ *                 minimum: 0
+ *                 default: 0
+ *                 description: Tax percentage for the product
  *               image:
  *                 type: string
  *                 format: binary
@@ -185,6 +195,11 @@
  *               price:
  *                 type: number
  *                 minimum: 0
+ *               tax:
+ *                 type: number
+ *                 minimum: 0
+ *                 default: 0
+ *                 description: Tax percentage for the product
  *               image:
  *                 type: string
  *                 format: binary

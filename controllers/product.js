@@ -9,6 +9,7 @@ const productSchema = Joi.object({
   title: Joi.string().required().min(3).max(100),
   description: Joi.string().allow("", null),
   price: Joi.number().min(0).required(),
+  tax: Joi.number().min(0).default(0),
   image: Joi.string().allow("", null),
 });
 
@@ -25,6 +26,7 @@ class ProductController {
       const productData = {
         ...req.body,
         price: req.body.price ? parseFloat(req.body.price) : null,
+        tax: req.body.tax ? parseFloat(req.body.tax) : 0,
       };
 
       const { error, value } = productSchema.validate(productData);
@@ -130,6 +132,7 @@ class ProductController {
       const productData = {
         ...req.body,
         price: req.body.price ? parseFloat(req.body.price) : null,
+        tax: req.body.tax ? parseFloat(req.body.tax) : 0,
       };
 
       const { error, value } = productSchema.validate(productData);

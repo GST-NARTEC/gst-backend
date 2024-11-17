@@ -93,7 +93,7 @@
  *   post:
  *     tags: [Checkout]
  *     summary: Process checkout and create order
- *     description: Creates order, generates invoice, sends confirmation email with credentials
+ *     description: Creates order with tax and VAT calculations, generates invoice, sends confirmation email with credentials
  *     requestBody:
  *       required: true
  *       content:
@@ -107,9 +107,16 @@
  *               userId:
  *                 type: string
  *                 format: uuid
+ *                 description: User's unique identifier
  *               paymentType:
  *                 type: string
  *                 enum: [Bank Transfer, Visa / Master Card, Credit/Debit card, STC Pay, Tabby]
+ *                 description: Payment method for the order
+ *               vat:
+ *                 type: number
+ *                 minimum: 0
+ *                 default: 0
+ *                 description: VAT percentage to be applied on total amount
  *     responses:
  *       200:
  *         description: Checkout processed successfully
@@ -133,7 +140,9 @@
  *                     order:
  *                       $ref: '#/components/schemas/Order'
  *       400:
- *         description: Bad request (empty cart)
+ *         description: Bad request (empty cart, invalid VAT)
+ *       404:
+ *         description: User not found
  *       500:
  *         description: Server error
  */

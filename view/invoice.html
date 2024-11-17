@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GST Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+      }
+      .logo {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .logo img {
+        width: 100px;
+        height: auto;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .header h1 {
+        margin: 10px 0;
+        font-size: 24px;
+      }
+      .contact-info {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+      .invoice-details {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+      }
+      .invoice-details div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+      .items-table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+      }
+      .items-table th,
+      .items-table td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+      }
+      .totals {
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+      }
+      .totals div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+      .qr-code {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .qr-code img {
+        width: 150px;
+        height: 150px;
+      }
+      .bilingual {
+        font-size: 14px;
+      }
+      .bilingual span:last-child {
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">
+      <img
+        src="https://gs1.org.sa/assets/gs1logowhite-QWHdyWZd.png"
+        alt="GST Logo"
+      />
+    </div>
+
+    <div class="header">
+      <h1>GST</h1>
+    </div>
+
+    <div class="contact-info">
+      <div>Phone / هاتف: +966 123456789</div>
+      <div>123 Main Street, Riyadh, Saudi Arabia</div>
+    </div>
+
+    <div class="invoice-details">
+      <div class="bilingual">
+        <span>INVOICE DATE / تاريخ الفاتورة:</span>
+        <span>2024-03-20 10:30:00</span>
+      </div>
+      <div class="bilingual">
+        <span>INVOICE ID / رقم الفاتورة:</span>
+        <span>#INV-123456</span>
+      </div>
+      <div class="bilingual">
+        <span>TYPE / النوع:</span>
+        <span>Credit Card</span>
+      </div>
+      <div class="bilingual">
+        <span>CUSTOMER / العميل:</span>
+        <span>Test Company LLC</span>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th class="bilingual">Description / الوصف</th>
+          <th class="bilingual">Qty / الكمية</th>
+          <th class="bilingual">Amount / المبلغ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Product 1</td>
+          <td>2x</td>
+          <td>AED 100.00</td>
+        </tr>
+        <tr>
+          <td>Product 2</td>
+          <td>1x</td>
+          <td>AED 50.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="bilingual">
+        <span>Subtotal / المجموع الفرعي</span>
+        <span>AED 150.00</span>
+      </div>
+      <div class="bilingual">
+        <span>Grand Total / المجموع الكلي</span>
+        <span>AED 150.00</span>
+      </div>
+    </div>
+
+    <div class="bilingual" style="margin-top: 20px; text-align: center">
+      Terms and Conditions / الشروط والأحكام
+    </div>
+
+    <div class="bilingual" style="margin-top: 10px; text-align: center">
+      Signature / التوقيع
+      <div style="border-top: 1px solid #000; margin-top: 20px"></div>
+    </div>
+
+    <div class="qr-code">
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=INV-123456"
+        alt="QR Code"
+      />
+      <div>INV-123456</div>
+      <div class="bilingual">Scan to verify / امسح للتحقق</div>
+    </div>
+  </body>
+</html>
