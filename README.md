@@ -1,6 +1,4 @@
-# gst-backend
-
-# GST Backend
+# GST Backend - Saudi Arabia
 
 A Node.js backend service for GST (Goods and Services Tax) management system with invoice generation capabilities.
 
@@ -8,28 +6,34 @@ A Node.js backend service for GST (Goods and Services Tax) management system wit
 
 - 🛒 Product Management with Tax Configuration
 - 🛍️ Shopping Cart System
-- 💳 Multiple Payment Methods Support
+- 💳 Multiple Payment Methods Support (Bank Transfer, Credit/Debit Cards, STC Pay, Tabby)
 - 📊 Tax and VAT Calculations
 - 📄 PDF Invoice Generation
-- 📧 Email Notifications
-- 🔐 User Authentication
+- 📧 Email Notifications with Templates
+- 🔐 User Authentication & OTP Verification
 - 📱 REST API Endpoints
+- 🌍 Multilingual Support (English & Arabic)
+- 🏢 Company Registration System
+- 📍 Geolocation Support
 
 ## Tech Stack
 
 - Node.js & Express.js
+- MS SQL Server
 - Prisma ORM
-- PostgreSQL
 - EJS Templates
 - Puppeteer (PDF Generation)
 - Nodemailer (Email Service)
+- JWT Authentication
+- QR Code Generation
 - Swagger (API Documentation)
+- bcrypt (Password Hashing)
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
 - MS SQL Server
-- npm or yarn
+- pnpm (recommended) or npm
 
 ## Installation
 
@@ -47,13 +51,24 @@ cp .env.example .env
 
 4. Update the `.env` file with your configurations:
 
-DATABASE_URL="sqlserver://user:password@localhost:5432/gst_db"
+# Server Configuration
 
-EMAIL_APP_PASSWORD="your-app-specific-password"
+PORT=3000
+JWT_SECRET=your-jwt-secret
+LOCALHOST=http://localhost:3000
+LIVE=your-live-url
+FRONTEND_URL=http://localhost:5173
+LOGIN_URL=http://your-frontend-url/login
 
-LOGIN_URL="http://your-frontend-url/login"
+# Database Configuration
 
-LOGIN_URL="http://your-frontend-url/login"
+DATABASE_URL="sqlserver://host;database=GST;user=username;password=password;trustServerCertificate=true"
+
+# Email Configuration
+
+EMAIL_USER=your-email@gmail.com
+EMAIL_APP_PASSWORD=your-app-specific-password
+EMAIL_FROM=your-email@gmail.com
 
 ## API Documentation
 
