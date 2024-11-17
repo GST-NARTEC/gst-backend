@@ -63,16 +63,9 @@ class CheckoutController {
         0
       );
 
-      // Calculate tax amount for each item
-      const taxAmount = cart.items.reduce(
-        (sum, item) =>
-          sum + item.quantity * item.product.price * (item.product.tax / 100),
-        0
-      );
-
       // Add VAT if provided
       const vatAmount = totalAmount * (vat / 100);
-      const overallAmount = totalAmount + taxAmount + vatAmount;
+      const overallAmount = totalAmount + vatAmount;
 
       // Create order with pending status
       const order = await prisma.order.create({
@@ -80,7 +73,6 @@ class CheckoutController {
           userId,
           paymentType,
           totalAmount,
-          taxAmount,
           vat: vatAmount,
           overallAmount,
           status: "pending", // Set initial status as pending
@@ -89,7 +81,6 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
-              tax: item.product.tax,
             })),
           },
         },
@@ -137,7 +128,6 @@ class CheckoutController {
             invoiceNumber,
             userId,
             totalAmount,
-            taxAmount,
             vat: vatAmount,
             overallAmount,
             paymentType,
@@ -148,7 +138,7 @@ class CheckoutController {
               include: {
                 orderItems: {
                   include: {
-                    product: true, 
+                    product: true,
                   },
                 },
               },

@@ -31,6 +31,7 @@ class PDFGenerator {
         })),
         totals: {
           subtotal: `AED ${order.totalAmount.toFixed(2)}`,
+          vat: `AED ${invoice.vat.toFixed(2)}`,
           grandTotal: `AED ${order.overallAmount.toFixed(2)}`,
         },
         contact: {
