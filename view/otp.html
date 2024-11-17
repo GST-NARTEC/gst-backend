@@ -25,6 +25,16 @@
         padding: 20px 0;
         border-bottom: 2px solid #1b365d;
       }
+      .logo {
+        margin-bottom: 15px;
+      }
+      .logo img {
+        width: 150px;
+        height: auto;
+        background-color: white;
+        padding: 8px;
+        border-radius: 4px;
+      }
       .content {
         padding: 20px 0;
         text-align: center;
@@ -41,10 +51,9 @@
       }
       .footer {
         text-align: center;
-        padding-top: 20px;
-        color: #152a4a;
-        font-size: 12px;
-        border-top: 1px solid #1b365d;
+        padding: 20px;
+        background-color: #1b365d;
+        color: white;
       }
       .warning {
         color: #152a4a;
@@ -59,6 +68,12 @@
   <body>
     <div class="container">
       <div class="header">
+        <div class="logo">
+          <img
+            src="http://localhost:3000/uploads/images/gst-logo.png"
+            alt="GST Logo"
+          />
+        </div>
         <h2 style="color: #1b365d">Email Verification</h2>
       </div>
       <div class="content">
@@ -69,8 +84,19 @@
         <p>If you didn't request this code, please ignore this email.</p>
       </div>
       <div class="footer">
-        <p>This is an automated message, please do not reply.</p>
-        <p>&copy; 2024 GST. All rights reserved.</p>
+        <img
+          src="http://localhost:3000/uploads/images/gst-logo.png"
+          alt="GST Logo"
+          width="100"
+          style="background-color: white; padding: 8px; margin-bottom: 5px"
+        />
+        <h2 style="font-weight: bold; font-size: 16px; margin-top: 5px">
+          GST Saudi Barcode Center
+        </h2>
+        <p style="margin-top: 15px; font-size: 12px">
+          Copyright @GST Saudi Arabia - <%= new Date().getFullYear() %> All
+          rights reserved.
+        </p>
       </div>
     </div>
   </body>
