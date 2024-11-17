@@ -12,7 +12,7 @@ class PDFGenerator {
   static async generateInvoice(order, user, invoice) {
     try {
       // 1. First create the invoice HTML using EJS
-      const templatePath = path.join(__dirname, "../views/invoice.ejs");
+      const templatePath = path.join(__dirname, "../view/invoice.ejs");
       const templateContent = await fs.readFile(templatePath, "utf-8");
 
       // 2. Prepare data for the template

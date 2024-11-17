@@ -1,4 +1,3 @@
-
 model Invoice {
   id            String   @id @default(uuid()) @db.UniqueIdentifier
   orderId       String   @unique @db.UniqueIdentifier
@@ -7,6 +6,7 @@ model Invoice {
   userId        String   @db.UniqueIdentifier
   user          User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   totalAmount   Float
+  taxAmount     Float    @default(0)
   vat           Float    @default(0)
   overallAmount Float
   paymentType   String

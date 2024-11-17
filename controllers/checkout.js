@@ -148,7 +148,7 @@ class CheckoutController {
               include: {
                 orderItems: {
                   include: {
-                    product: true,
+                    product: true, 
                   },
                 },
               },

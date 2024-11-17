@@ -6,6 +6,7 @@ model Order {
   invoice       Invoice?
   paymentType   String
   totalAmount   Float
+  taxAmount     Float          @default(0)
   vat           Float          @default(0)
   overallAmount Float
   status        String         @default("pending")
@@ -21,6 +22,7 @@ model OrderItem {
   product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
+  tax       Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
