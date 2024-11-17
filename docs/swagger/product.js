@@ -17,11 +17,6 @@
  *         price:
  *           type: number
  *           minimum: 0
- *         tax:
- *           type: number
- *           minimum: 0
- *           default: 0
- *           description: Tax percentage to be applied on product price
  *         image:
  *           type: string
  *         createdAt:
@@ -55,11 +50,6 @@
  *               price:
  *                 type: number
  *                 minimum: 0
- *               tax:
- *                 type: number
- *                 minimum: 0
- *                 default: 0
- *                 description: Tax percentage for the product
  *               image:
  *                 type: string
  *                 format: binary
@@ -69,19 +59,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     product:
- *                       $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/ApiResponse'
  *
  *   get:
  *     tags: [Products]
@@ -111,32 +89,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     products:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/Product'
- *                     pagination:
- *                       type: object
- *                       properties:
- *                         total:
- *                           type: number
- *                         page:
- *                           type: number
- *                         totalPages:
- *                           type: number
- *                         hasMore:
- *                           type: boolean
+ *               $ref: '#/components/schemas/ProductListResponse'
  *
  * /api/products/v1/{id}:
  *   get:
@@ -155,19 +108,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     product:
- *                       $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/ApiResponse'
  *
  *   put:
  *     tags: [Products]
@@ -195,11 +136,6 @@
  *               price:
  *                 type: number
  *                 minimum: 0
- *               tax:
- *                 type: number
- *                 minimum: 0
- *                 default: 0
- *                 description: Tax percentage for the product
  *               image:
  *                 type: string
  *                 format: binary
@@ -209,19 +145,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     product:
- *                       $ref: '#/components/schemas/Product'
+ *               $ref: '#/components/schemas/ApiResponse'
  *
  *   delete:
  *     tags: [Products]
@@ -239,12 +163,5 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
+ *               $ref: '#/components/schemas/ApiResponse'
  */

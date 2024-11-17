@@ -25,6 +25,16 @@
         padding: 20px 0;
         border-bottom: 2px solid #1b365d;
       }
+      .logo {
+        margin-bottom: 15px;
+      }
+      .logo img {
+        width: 150px;
+        height: auto;
+        background-color: white;
+        padding: 8px;
+        border-radius: 4px;
+      }
       .content {
         padding: 20px 0;
         text-align: center;
@@ -59,6 +69,9 @@
   <body>
     <div class="container">
       <div class="header">
+        <div class="logo">
+          <img src="<%= logo %>" alt="GST Logo" />
+        </div>
         <h2 style="color: #1b365d">Email Verification</h2>
       </div>
       <div class="content">
@@ -70,7 +83,10 @@
       </div>
       <div class="footer">
         <p>This is an automated message, please do not reply.</p>
-        <p>&copy; <%= new Date().getFullYear() %> GST. All rights reserved.</p>
+        <p>
+          &copy; <%= new Date().getFullYear() %> GST Saudi Arabia. All rights
+          reserved.
+        </p>
       </div>
     </div>
   </body>

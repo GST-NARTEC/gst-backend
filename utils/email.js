@@ -9,6 +9,10 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const LOGO_PATH = "/assets/images/logo.png";
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const LOGO_URL = `${BASE_URL}${LOGO_PATH}`;
+
 class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -23,7 +27,10 @@ class EmailService {
   async sendOTP(to, otp) {
     try {
       const templatePath = path.join(__dirname, "../view/otp.ejs");
-      const html = await ejs.renderFile(templatePath, { otp });
+      const html = await ejs.renderFile(templatePath, {
+        otp,
+        logo: LOGO_URL,
+      });
 
       const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -49,6 +56,7 @@ class EmailService {
         order,
         password,
         loginUrl: process.env.LOGIN_URL,
+        logo: LOGO_URL,
       };
 
       const html = await ejs.renderFile(templatePath, data);

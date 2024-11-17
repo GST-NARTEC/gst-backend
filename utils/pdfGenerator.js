@@ -8,6 +8,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Add logo path configuration
+const LOGO_PATH = "/assets/images/logo.png";
+const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+const LOGO_URL = `${BASE_URL}${LOGO_PATH}`;
+
 class PDFGenerator {
   static async generateInvoice(order, user, invoice) {
     try {
@@ -17,7 +22,7 @@ class PDFGenerator {
 
       // 2. Prepare data for the template
       const data = {
-        logo: "https://gs1.org.sa/assets/gs1logowhite-QWHdyWZd.png",
+        logo: LOGO_URL,
         invoice: {
           date: new Date(invoice.createdAt).toLocaleString(),
           number: invoice.invoiceNumber,
