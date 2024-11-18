@@ -75,6 +75,13 @@ class CategoryController {
         prisma.category.count({ where }),
       ]);
 
+      // Format image paths for all categories
+      categories.forEach((category) => {
+        if (category.image) {
+          category.image = category.image.replace(/\\/g, "/");
+        }
+      });
+
       const totalPages = Math.ceil(total / limit);
 
       res.status(200).json(
@@ -103,6 +110,11 @@ class CategoryController {
 
       if (!category) {
         throw new MyError("Category not found", 404);
+      }
+
+      // Format the image path
+      if (category.image) {
+        category.image = category.image.replace(/\\/g, "/");
       }
 
       res.status(200).json(
