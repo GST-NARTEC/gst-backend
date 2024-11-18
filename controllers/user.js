@@ -1,12 +1,13 @@
 import bcrypt from "bcrypt";
 import Joi from "joi";
+import jwt from "jsonwebtoken";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
+import { generatePassword } from "../utils/generatePassword.js";
+import { generateToken } from "../utils/generateToken.js";
+import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import jwt from "jsonwebtoken";
-import { generateToken } from "../utils/generateToken.js";
-import { generatePassword } from "../utils/generatePassword.js";
 
 // Validation schemas
 const emailSchema = Joi.object({
@@ -27,6 +28,21 @@ const userInfoSchema = Joi.object({
   streetAddress: Joi.string().required(),
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+const searchSchema = Joi.object({
+  search: Joi.string().allow("").optional(),
+  page: Joi.number().min(1).default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+  sortBy: Joi.string()
+    .valid("email", "companyNameEn", "createdAt")
+    .default("createdAt"),
+  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 
 // Add this helper function
@@ -178,6 +194,109 @@ class UserController {
         response(201, true, "User created successfully", {
           user: userWithoutPassword,
           password, // Include the plain password in response
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async login(req, res, next) {
+    try {
+      const { error, value } = loginSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { email, password } = value;
+
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new MyError("Invalid email or password", 401);
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        throw new MyError("Invalid email or password", 401);
+      }
+
+      const token = JWT.createToken(
+        { userId: user.id, email: user.email },
+        { expiresIn: "24h" }
+      );
+
+      const { password: _, ...userWithoutPassword } = user;
+
+      res.status(200).json(
+        response(200, true, "Login successful", {
+          user: userWithoutPassword,
+          token,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async searchUsers(req, res, next) {
+    try {
+      const { error, value } = searchSchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { search, page, limit, sortBy, sortOrder } = value;
+      const skip = (page - 1) * limit;
+
+      const whereClause = search
+        ? {
+            OR: [
+              { email: { contains: search, mode: "insensitive" } },
+              { companyNameEn: { contains: search, mode: "insensitive" } },
+              { companyNameAr: { contains: search, mode: "insensitive" } },
+              { companyLicenseNo: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : {};
+
+      const [users, total] = await Promise.all([
+        prisma.user.findMany({
+          where: whereClause,
+          select: {
+            id: true,
+            email: true,
+            companyNameEn: true,
+            companyNameAr: true,
+            companyLicenseNo: true,
+            mobile: true,
+            country: true,
+            createdAt: true,
+            isEmailVerified: true,
+            password: false,
+          },
+          skip,
+          take: limit,
+          orderBy: {
+            [sortBy]: sortOrder,
+          },
+        }),
+        prisma.user.count({ where: whereClause }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Users retrieved successfully", {
+          users,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            limit,
+          },
         })
       );
     } catch (error) {
