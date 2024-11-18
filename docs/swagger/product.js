@@ -19,6 +19,11 @@
  *           minimum: 0
  *         image:
  *           type: string
+ *         categoryId:
+ *           type: string
+ *           format: uuid
+ *         category:
+ *           $ref: '#/components/schemas/Category'
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -30,7 +35,7 @@
  *   post:
  *     tags: [Products]
  *     summary: Create a new product
- *     description: Creates a new product with image upload support
+ *     description: Creates a new product with optional category and image upload support
  *     requestBody:
  *       required: true
  *       content:
@@ -50,6 +55,9 @@
  *               price:
  *                 type: number
  *                 minimum: 0
+ *               categoryId:
+ *                 type: string
+ *                 format: uuid
  *               image:
  *                 type: string
  *                 format: binary
@@ -59,12 +67,27 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 201
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Product created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     product:
+ *                       $ref: '#/components/schemas/Product'
  *
  *   get:
  *     tags: [Products]
  *     summary: Get all products
- *     description: Retrieve a list of products with pagination and search
+ *     description: Retrieve a list of products with their categories, pagination and search
  *     parameters:
  *       - in: query
  *         name: page
@@ -89,7 +112,35 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ProductListResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Products retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     products:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Product'
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         page:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         hasMore:
+ *                           type: boolean
  *
  * /api/products/v1/{id}:
  *   get:
@@ -108,7 +159,22 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Product retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     product:
+ *                       $ref: '#/components/schemas/Product'
  *
  *   put:
  *     tags: [Products]
@@ -136,6 +202,9 @@
  *               price:
  *                 type: number
  *                 minimum: 0
+ *               categoryId:
+ *                 type: string
+ *                 format: uuid
  *               image:
  *                 type: string
  *                 format: binary
@@ -145,7 +214,22 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ApiResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Product updated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     product:
+ *                       $ref: '#/components/schemas/Product'
  *
  *   delete:
  *     tags: [Products]

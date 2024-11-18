@@ -10,6 +10,7 @@ const productSchema = Joi.object({
   description: Joi.string().allow("", null),
   price: Joi.number().min(0).required(),
   image: Joi.string().allow("", null),
+  categoryId: Joi.string().uuid().allow(null, ""),
 });
 
 const querySchema = Joi.object({
@@ -74,6 +75,9 @@ class ProductController {
       const [products, total] = await Promise.all([
         prisma.product.findMany({
           where,
+          include: {
+            category: true,
+          },
           skip: parseInt(skip),
           take: parseInt(limit),
           orderBy: {
@@ -107,6 +111,9 @@ class ProductController {
 
       const product = await prisma.product.findUnique({
         where: { id },
+        include: {
+          category: true,
+        },
       });
 
       if (!product) {
