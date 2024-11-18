@@ -7,14 +7,15 @@ A Node.js backend service for GST (Goods and Services Tax) management system wit
 - 🛒 Product Management with Tax Configuration
 - 🛍️ Shopping Cart System
 - 💳 Multiple Payment Methods Support (Bank Transfer, Credit/Debit Cards, STC Pay, Tabby)
-- 📊 Tax and VAT Calculations
+- 📊 Tax and VAT Management
 - 📄 PDF Invoice Generation
 - 📧 Email Notifications with Templates
-- 🔐 User Authentication & OTP Verification
-- 📱 REST API Endpoints
+- 🔐 User Authentication & Company Registration
+- 📱 REST API Endpoints with Swagger Documentation
 - 🌍 Multilingual Support (English & Arabic)
-- 🏢 Company Registration System
 - 📍 Geolocation Support
+- 📝 License Management System
+- 💰 Currency Management
 
 ## Tech Stack
 
@@ -27,6 +28,7 @@ A Node.js backend service for GST (Goods and Services Tax) management system wit
 - JWT Authentication
 - QR Code Generation
 - Swagger (API Documentation)
+- Multermate (File Upload)
 - bcrypt (Password Hashing)
 
 ## Prerequisites
@@ -54,11 +56,12 @@ cp .env.example .env
 # Server Configuration
 
 PORT=3000
-JWT_SECRET=your-jwt-secret
-LOCALHOST=http://localhost:3000
-LIVE=your-live-url
-FRONTEND_URL=http://localhost:5173
-LOGIN_URL=http://your-frontend-url/login
+
+- JWT_SECRET=your-jwt-secret
+- LOCALHOST=http://localhost:3000
+- LIVE=your-live-url
+- FRONTEND_URL=http://localhost:5173
+- LOGIN_URL=http://your-frontend-url/login
 
 # Database Configuration
 
@@ -74,6 +77,12 @@ EMAIL_FROM=your-email@gmail.com
 
 The API documentation is available at `/api-docs` when running the server. Key endpoints include:
 
+### Authentication & Users
+
+- `POST /api/user/v1/register` - Company registration
+- `POST /api/user/v1/login` - User login
+- `POST /api/user/v1/verify-email` - Email verification
+
 ### Products
 
 - `POST /api/products/v1` - Create product with tax
@@ -81,26 +90,49 @@ The API documentation is available at `/api-docs` when running the server. Key e
 - `PUT /api/products/v1/:id` - Update product
 - `DELETE /api/products/v1/:id` - Delete product
 
-### Cart
+### Cart & Checkout
 
 - `POST /api/cart/v1/add` - Add items to cart
 - `GET /api/cart/v1/:userId` - Get user's cart
-- `DELETE /api/cart/v1/:userId` - Clear cart
-
-### Checkout
-
 - `POST /api/checkout/v1/process` - Process checkout with tax & VAT
 
-## Invoice Generation
+### License Management
 
-The system generates PDF invoices using EJS templates and Puppeteer. Each invoice includes:
+- `POST /api/license/v1` - Add new license with document
+- `POST /api/license/v1/verify` - Verify license key
 
-- Company and customer details
-- Item list with quantities and prices
-- Tax calculations
-- VAT calculations
-- QR code for verification
+### VAT & Currency
+
+- `POST /api/vat/v1` - Create VAT configuration
+- `GET /api/vat/v1` - List VAT rates
+- `POST /api/currency/v1` - Add currency
+- `GET /api/currency/v1` - List currencies
+
+## File Structure
+
+```
+├── config/
+│   ├── swagger.js
+├── controllers/
+│   ├── user.js
+│   ├── product.js
+│   ├── cart.js
+│   ├── checkout.js
+│   ├── license.js
+│   ├── vat.js
+│   └── currency.js
+├── docs/
+│   └── swagger/
+├── middlewares/
+│   ├── auth.js
+│   └── error.js
+├── prisma/
+│   └── schema/
+├── routes/
+│   └── v1/
+└── utils/
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+```
