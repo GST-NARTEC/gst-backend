@@ -7,6 +7,7 @@ import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import productRouter from "./product.js";
 import userRoutes from "./user.js";
+import vatRoutes from "./vat.js";
 
 const router = express.Router();
 
@@ -17,5 +18,6 @@ router.use("/cart/v1", cartRoutes);
 router.use("/checkout/v1", checkoutRoutes);
 router.use("/locations/v1", locationRoutes);
 router.use("/currency/v1", currencyRoutes);
+router.use("/vat/v1", vatRoutes);
 
 export default router;

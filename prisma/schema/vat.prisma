@@ -1,0 +1,6 @@
+model Vat {
+    id        String   @id @default(cuid())
+    value     Float?
+    type      String?
+}
+
