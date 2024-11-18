@@ -2,6 +2,7 @@ import express from "express";
 
 import cartRoutes from "./cart.js";
 import checkoutRoutes from "./checkout.js";
+import currencyRoutes from "./currency.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import productRouter from "./product.js";
@@ -15,5 +16,6 @@ router.use("/products/v1", productRouter);
 router.use("/cart/v1", cartRoutes);
 router.use("/checkout/v1", checkoutRoutes);
 router.use("/locations/v1", locationRoutes);
+router.use("/currency/v1", currencyRoutes);
 
 export default router;
