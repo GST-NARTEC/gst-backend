@@ -19,7 +19,7 @@
  *           type: string
  *           format: date-time
  *
- * /category/v1:
+ * /api/category/v1:
  *   post:
  *     summary: Create a new category
  *     tags: [Categories]
@@ -64,7 +64,7 @@
  *       200:
  *         description: Categories retrieved successfully
  *
- * /category/v1/{id}:
+ * /api/category/v1/{id}:
  *   get:
  *     summary: Get a category by ID
  *     tags: [Categories]
