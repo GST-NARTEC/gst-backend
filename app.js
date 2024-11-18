@@ -16,6 +16,8 @@ const whitelist = [
   process.env.LOCALHOST, // Local Backend URL
   process.env.LIVE, // Live Backend URL
   process.env.BASE_URL, // Base URL
+  "https://buybarcodeupc.com",
+  "http://www.buybarcodeupc.com",
 ].filter(Boolean); // Remove any undefined/null values
 
 const corsOptions = {
