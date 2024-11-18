@@ -8,6 +8,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.js";
 import routes from "./routes/routes.js";
+import MyError from "./utils/error.js";
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ const corsOptions = {
     if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new MyError("Not allowed by CORS"));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
