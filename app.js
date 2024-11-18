@@ -44,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // If you want to change the default uploads directory, you can do so here
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-app.use("/assets", express.static(path.join(path.resolve(), "uploads")));
+app.use("/assets", express.static(path.join(path.resolve(), "assets")));
 
 // Add your routes...
 app.use("/api", routes);
