@@ -12,5 +12,7 @@ const singleConfig = {
 
 router.post("/verify", controller.verifyLicense);
 router.post("/", uploadSingle(singleConfig), controller.addLicense);
+router.get("/", controller.getLicenses);
+router.delete("/:id", controller.deleteLicense);
 
 export default router;

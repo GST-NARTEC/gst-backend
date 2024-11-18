@@ -8,6 +8,12 @@ const licenseSchema = Joi.object({
   license: Joi.string().required().min(3).max(100),
 });
 
+const querySchema = Joi.object({
+  page: Joi.number().min(1).default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+  search: Joi.string().allow("", null),
+});
+
 class LicenseController {
   static async verifyLicense(req, res, next) {
     try {
@@ -75,6 +81,79 @@ class LicenseController {
       if (documentPath) {
         await deleteFile(documentPath);
       }
+      next(error);
+    }
+  }
+
+  static async getLicenses(req, res, next) {
+    try {
+      const { error, value } = querySchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, search } = value;
+      const skip = (page - 1) * limit;
+
+      const where = search
+        ? {
+            OR: [{ license: { contains: search } }],
+          }
+        : {};
+
+      const [licenses, total] = await Promise.all([
+        prisma.license.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.license.count({ where }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Licenses retrieved successfully", {
+          licenses,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            hasMore: page < totalPages,
+          },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteLicense(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const license = await prisma.license.findUnique({
+        where: { id },
+      });
+
+      if (!license) {
+        throw new MyError("License not found", 404);
+      }
+
+      // Delete the associated document if it exists
+      if (license.document) {
+        await deleteFile(license.document);
+      }
+
+      await prisma.license.delete({
+        where: { id },
+      });
+
+      res
+        .status(200)
+        .json(response(200, true, "License deleted successfully", null));
+    } catch (error) {
       next(error);
     }
   }
