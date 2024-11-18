@@ -18,7 +18,7 @@ class EmailService {
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
+        user: process.env.EMAIL_FROM,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
     });
@@ -33,7 +33,7 @@ class EmailService {
       });
 
       const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: process.env.EMAIL_FROM,
         to,
         subject: "Email Verification Code",
         html,
