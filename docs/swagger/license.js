@@ -1,14 +1,35 @@
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     License:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         license:
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 100
+ *         document:
+ *           type: string
+ *           format: uri
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
  * tags:
  *   name: License
- *   description: License verification endpoints
+ *   description: License management endpoints
  *
  * /api/license/v1/verify:
  *   post:
  *     summary: Verify a license key
  *     tags: [License]
- *     description: Verifies if a provided license key exists in the database
  *     requestBody:
  *       required: true
  *       content:
@@ -21,7 +42,6 @@
  *               licenseKey:
  *                 type: string
  *                 description: The license key to verify
- *                 example: "abc123-xyz789"
  *     responses:
  *       200:
  *         description: License verified successfully
@@ -38,46 +58,41 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "License verified successfully"
  *                 data:
  *                   type: object
  *                   properties:
  *                     license:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: string
- *                           format: uuid
- *                           example: "123e4567-e89b-12d3-a456-426614174000"
- *                         license:
- *                           type: string
- *                           example: "abc123-xyz789"
- *                         createdAt:
- *                           type: string
- *                           format: date-time
- *                         updatedAt:
- *                           type: string
- *                           format: date-time
+ *                       $ref: '#/components/schemas/License'
  *       400:
- *         description: Bad request - License key is missing
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 400
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "License key is required"
- *                 data:
- *                   type: null
+ *         description: Bad request
  *       404:
- *         description: License key not found
+ *         description: License not found
+ *
+ * /api/license/v1:
+ *   post:
+ *     summary: Add a new license
+ *     tags: [License]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - license
+ *               - document
+ *             properties:
+ *               license:
+ *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 100
+ *               document:
+ *                 type: string
+ *                 format: binary
+ *                 description: PDF file only
+ *     responses:
+ *       201:
+ *         description: License added successfully
  *         content:
  *           application/json:
  *             schema:
@@ -85,31 +100,19 @@
  *               properties:
  *                 status:
  *                   type: integer
- *                   example: 404
+ *                   example: 201
  *                 success:
  *                   type: boolean
- *                   example: false
+ *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Invalid license key"
  *                 data:
- *                   type: null
- *       500:
- *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                   example: 500
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Error verifying license"
- *                 data:
- *                   type: null
+ *                   type: object
+ *                   properties:
+ *                     license:
+ *                       $ref: '#/components/schemas/License'
+ *       400:
+ *         description: Bad request - Invalid input or license already exists
+ *       415:
+ *         description: Unsupported Media Type - Document must be PDF
  */
