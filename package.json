@@ -23,7 +23,7 @@
     "fs-extra": "^11.2.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "multermate-es": "^1.0.0",
+    "multermate-es": "^1.0.1",
     "nodemailer": "^6.9.16",
     "puppeteer": "^23.8.0",
     "qrcode": "^1.5.4",
