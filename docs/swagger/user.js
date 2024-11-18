@@ -373,4 +373,96 @@
  *                           type: integer
  *                         limit:
  *                           type: integer
+ *
+ * /api/user/v1/{id}:
+ *   get:
+ *     summary: Get detailed user information
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: User details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User details retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           format: uuid
+ *                         email:
+ *                           type: string
+ *                           format: email
+ *                         isCreated:
+ *                           type: boolean
+ *                         isEmailVerified:
+ *                           type: boolean
+ *                         companyLicenseNo:
+ *                           type: string
+ *                         companyNameEn:
+ *                           type: string
+ *                         companyNameAr:
+ *                           type: string
+ *                         landline:
+ *                           type: string
+ *                         mobile:
+ *                           type: string
+ *                         country:
+ *                           type: string
+ *                         region:
+ *                           type: string
+ *                         city:
+ *                           type: string
+ *                         zipCode:
+ *                           type: string
+ *                         streetAddress:
+ *                           type: string
+ *                         latitude:
+ *                           type: number
+ *                         longitude:
+ *                           type: number
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
+ *                         updatedAt:
+ *                           type: string
+ *                           format: date-time
+ *                         cart:
+ *                           $ref: '#/components/schemas/Cart'
+ *                         orders:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/Order'
+ *                         invoices:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/Invoice'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */

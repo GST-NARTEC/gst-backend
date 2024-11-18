@@ -274,7 +274,6 @@ class UserController {
             mobile: true,
             country: true,
             createdAt: true,
-            isEmailVerified: true,
             password: false,
           },
           skip,
@@ -297,6 +296,60 @@ class UserController {
             totalPages,
             limit,
           },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUserDetails(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+          cart: {
+            include: {
+              items: {
+                include: {
+                  product: {
+                    include: {
+                      category: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orders: {
+            include: {
+              orderItems: {
+                include: {
+                  product: {
+                    include: {
+                      category: true,
+                    },
+                  },
+                },
+              },
+              invoice: true,
+            },
+          },
+          invoices: true,
+        },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      const { password: _, ...userWithoutPassword } = user;
+
+      res.status(200).json(
+        response(200, true, "User details retrieved successfully", {
+          user: userWithoutPassword,
         })
       );
     } catch (error) {
