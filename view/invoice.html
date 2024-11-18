@@ -7,8 +7,7 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        max-width: 400px;
-        margin: 20px auto;
+        margin: 20px;
         padding: 20px;
         background-color: white;
       }
@@ -78,6 +77,37 @@
       .bilingual span:last-child {
         float: right;
       }
+      .bank-transfer {
+        margin: 30px 0;
+        border: 1px solid #ddd;
+        padding: 15px;
+      }
+      .section-header {
+        background-color: #003366;
+        color: white;
+        padding: 8px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
+      .bank-details {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+      }
+      .bank-details td {
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+      .bank-details td:first-child {
+        width: 200px;
+        background-color: #f9f9f9;
+      }
+      .transfer-note {
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
@@ -146,6 +176,38 @@
       <div class="bilingual">
         <span>Grand Total / المجموع الكلي</span>
         <span>AED 150.00</span>
+      </div>
+    </div>
+
+    <div class="bank-transfer">
+      <div class="section-header bilingual">
+        For transfer to our bank account / للتحويل إلى حسابنا المصرفي
+      </div>
+      <table class="bank-details">
+        <tr>
+          <td class="bilingual">Name / الاسم</td>
+          <td>Federation of Saudi Chambers</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Account Number / رقم الحساب</td>
+          <td>25350512000200</td>
+        </tr>
+        <tr>
+          <td class="bilingual">IBAN NO / رقم الآيبان</td>
+          <td>SA90 1000 0025 3506 1200 0200</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Bank Name / اسم البنك</td>
+          <td>Saudi National Bank - SNB</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Bank Swift Code / رمز السويفت</td>
+          <td>NCBKSAJE</td>
+        </tr>
+      </table>
+      <div class="transfer-note bilingual">
+        *Upon transfer, Please upload a copy of transfer receipt from your
+        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل من حسابك.
       </div>
     </div>
 
