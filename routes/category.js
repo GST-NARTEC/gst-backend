@@ -6,8 +6,8 @@ const router = express.Router();
 const config = {
   filename: "image",
   fileTypes: ["images"],
-  destination: "/uploads/images",
   fileSizeLimit: 5 * 1024 * 1024, // 5MB
+  destination: "uploads/images",
 };
 
 router.post("/", uploadSingle(config), controller.createCategory);

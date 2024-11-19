@@ -8,7 +8,7 @@ const config = {
   filename: "image",
   fileTypes: ["images"],
   fileSizeLimit: 5 * 1024 * 1024,
-  destination: "/uploads/images",
+  destination: "uploads/images",
 };
 
 router.post("/", uploadSingle(config), controller.createProduct);

@@ -1,5 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Deletes a file based on the provided file path.
@@ -9,18 +13,13 @@ import path from "path";
  */
 export const deleteFile = async (filePath) => {
   try {
-    const absolutePath = path.resolve(filePath);
+    // Remove any leading slash and convert to proper path
+    const normalizedPath = filePath.replace(/^\//, "");
+    const absolutePath = path.join(__dirname, "..", normalizedPath);
     await fs.unlink(absolutePath);
-    console.log(`File successfully deleted at ${absolutePath}`);
   } catch (error) {
-    if (error.code === "ENOENT") {
-      console.warn(
-        `File not found at ${filePath}. It may have already been deleted.`
-      );
-    } else {
-      console.error(`Error deleting file at ${filePath}:`, error);
-      throw new Error(`Unable to delete file at ${filePath}: ${error.message}`);
-    }
+    console.error("Error deleting file:", error);
+    // Don't throw the error as file deletion is not critical
   }
 };
 
