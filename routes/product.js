@@ -7,7 +7,7 @@ const router = express.Router();
 const config = {
   filename: "image",
   fileTypes: ["images"],
-  fileSizeLimit: 5,
+  fileSizeLimit: 5 * 1024 * 1024,
   destination: "/uploads/images",
 };
 
