@@ -63,6 +63,92 @@
  *           example: An error occurred while processing your request
  *         data:
  *           type: null
+ *     UserComplete:
+ *       allOf:
+ *         - $ref: '#/components/schemas/User'
+ *         - type: object
+ *           properties:
+ *             cart:
+ *               $ref: '#/components/schemas/Cart'
+ *             orders:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ *             invoices:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Invoice'
+ *
+ *     UserOrders:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         orders:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Order'
+ *
+ *     UserCart:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         cart:
+ *           $ref: '#/components/schemas/Cart'
+ *
+ *     UserInvoices:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         invoices:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Invoice'
+ *
+ *     UserProfile:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         email:
+ *           type: string
+ *           format: email
+ *         companyLicenseNo:
+ *           type: string
+ *         companyNameEn:
+ *           type: string
+ *         companyNameAr:
+ *           type: string
+ *         landline:
+ *           type: string
+ *         mobile:
+ *           type: string
+ *         country:
+ *           type: string
+ *         region:
+ *           type: string
+ *         city:
+ *           type: string
+ *         zipCode:
+ *           type: string
+ *         streetAddress:
+ *           type: string
+ *         latitude:
+ *           type: number
+ *         longitude:
+ *           type: number
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *
  * tags:
  *   name: User
@@ -376,7 +462,7 @@
  *
  * /api/user/v1/{id}:
  *   get:
- *     summary: Get detailed user information
+ *     summary: Get user information
  *     tags: [User]
  *     parameters:
  *       - in: path
@@ -386,9 +472,16 @@
  *           type: string
  *           format: uuid
  *         description: User ID
+ *       - in: query
+ *         name: fields
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [orders, cart, invoices, profile]
+ *         description: Specific field to retrieve. If not provided, returns all user data
  *     responses:
  *       200:
- *         description: User details retrieved successfully
+ *         description: User information retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -407,58 +500,12 @@
  *                   type: object
  *                   properties:
  *                     user:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: string
- *                           format: uuid
- *                         email:
- *                           type: string
- *                           format: email
- *                         isCreated:
- *                           type: boolean
- *                         isEmailVerified:
- *                           type: boolean
- *                         companyLicenseNo:
- *                           type: string
- *                         companyNameEn:
- *                           type: string
- *                         companyNameAr:
- *                           type: string
- *                         landline:
- *                           type: string
- *                         mobile:
- *                           type: string
- *                         country:
- *                           type: string
- *                         region:
- *                           type: string
- *                         city:
- *                           type: string
- *                         zipCode:
- *                           type: string
- *                         streetAddress:
- *                           type: string
- *                         latitude:
- *                           type: number
- *                         longitude:
- *                           type: number
- *                         createdAt:
- *                           type: string
- *                           format: date-time
- *                         updatedAt:
- *                           type: string
- *                           format: date-time
- *                         cart:
- *                           $ref: '#/components/schemas/Cart'
- *                         orders:
- *                           type: array
- *                           items:
- *                             $ref: '#/components/schemas/Order'
- *                         invoices:
- *                           type: array
- *                           items:
- *                             $ref: '#/components/schemas/Invoice'
+ *                       oneOf:
+ *                         - $ref: '#/components/schemas/UserComplete'
+ *                         - $ref: '#/components/schemas/UserOrders'
+ *                         - $ref: '#/components/schemas/UserCart'
+ *                         - $ref: '#/components/schemas/UserInvoices'
+ *                         - $ref: '#/components/schemas/UserProfile'
  *       404:
  *         description: User not found
  *         content:

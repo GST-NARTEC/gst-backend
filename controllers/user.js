@@ -45,6 +45,12 @@ const searchSchema = Joi.object({
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 
+const userDetailsSchema = Joi.object({
+  fields: Joi.string()
+    .valid("orders", "cart", "invoices", "profile")
+    .optional(),
+});
+
 // Add this helper function
 
 class UserController {
@@ -306,10 +312,19 @@ class UserController {
   static async getUserDetails(req, res, next) {
     try {
       const { id } = req.params;
+      const { error, value } = userDetailsSchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
 
-      const user = await prisma.user.findUnique({
+      const { fields } = value;
+      let queryObject = {
         where: { id },
-        include: {
+      };
+
+      // If no field specified, return all user data
+      if (!fields) {
+        queryObject.include = {
           cart: {
             include: {
               items: {
@@ -338,20 +353,87 @@ class UserController {
             },
           },
           invoices: true,
-        },
-      });
+        };
+      } else {
+        // Return only specific field data
+        switch (fields) {
+          case "orders":
+            queryObject.select = {
+              id: true,
+              orders: {
+                include: {
+                  orderItems: {
+                    include: {
+                      product: {
+                        include: {
+                          category: true,
+                        },
+                      },
+                    },
+                  },
+                  invoice: true,
+                },
+              },
+            };
+            break;
+          case "cart":
+            queryObject.select = {
+              id: true,
+              cart: {
+                include: {
+                  items: {
+                    include: {
+                      product: {
+                        include: {
+                          category: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            };
+            break;
+          case "invoices":
+            queryObject.select = {
+              id: true,
+              invoices: true,
+            };
+            break;
+          case "profile":
+            queryObject.select = {
+              id: true,
+              email: true,
+              companyLicenseNo: true,
+              companyNameEn: true,
+              companyNameAr: true,
+              landline: true,
+              mobile: true,
+              country: true,
+              region: true,
+              city: true,
+              zipCode: true,
+              streetAddress: true,
+              latitude: true,
+              longitude: true,
+              createdAt: true,
+              updatedAt: true,
+            };
+            break;
+        }
+      }
+
+      const user = await prisma.user.findUnique(queryObject);
 
       if (!user) {
         throw new MyError("User not found", 404);
       }
 
-      const { password: _, ...userWithoutPassword } = user;
+      const responseMessage = fields
+        ? `User ${fields} retrieved successfully`
+        : "User details retrieved successfully";
 
-      res.status(200).json(
-        response(200, true, "User details retrieved successfully", {
-          user: userWithoutPassword,
-        })
-      );
+      res.status(200).json(response(200, true, responseMessage, { user }));
     } catch (error) {
       next(error);
     }
