@@ -8,6 +8,12 @@
  *         id:
  *           type: string
  *           format: uuid
+ *         name:
+ *           type: string
+ *           example: "Standard VAT"
+ *         description:
+ *           type: string
+ *           example: "Standard VAT rate for general goods and services"
  *         value:
  *           type: number
  *           example: 15
@@ -33,9 +39,16 @@
  *           schema:
  *             type: object
  *             required:
+ *               - name
  *               - value
  *               - type
  *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Standard VAT"
+ *               description:
+ *                 type: string
+ *                 example: "Standard VAT rate for general goods and services"
  *               value:
  *                 type: number
  *                 example: 15

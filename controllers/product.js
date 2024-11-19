@@ -11,6 +11,8 @@ const productSchema = Joi.object({
   price: Joi.number().min(0).required(),
   image: Joi.string().allow("", null),
   categoryId: Joi.string().uuid().allow(null, ""),
+  qty: Joi.number().integer().min(0).default(0),
+  status: Joi.string().valid("active", "inactive").default("active"),
 });
 
 const querySchema = Joi.object({

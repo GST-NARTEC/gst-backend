@@ -17,6 +17,14 @@
  *         price:
  *           type: number
  *           minimum: 0
+ *         qty:
+ *           type: integer
+ *           minimum: 0
+ *           default: 0
+ *         status:
+ *           type: string
+ *           enum: [active, inactive]
+ *           default: active
  *         image:
  *           type: string
  *         categoryId:
@@ -61,6 +69,14 @@
  *               image:
  *                 type: string
  *                 format: binary
+ *               qty:
+ *                 type: integer
+ *                 minimum: 0
+ *                 default: 0
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 default: active
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -208,6 +224,14 @@
  *               image:
  *                 type: string
  *                 format: binary
+ *               qty:
+ *                 type: integer
+ *                 minimum: 0
+ *                 default: 0
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 default: active
  *     responses:
  *       200:
  *         description: Product updated successfully

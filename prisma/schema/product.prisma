@@ -4,6 +4,8 @@ model Product {
   title       String?
   description String?
   price       Float?
+  qty         Int       @default(0)
+  status      String    @default("active")
   categoryId  String?   @db.UniqueIdentifier
   category    Category? @relation(fields: [categoryId], references: [id])
   createdAt   DateTime  @default(now())

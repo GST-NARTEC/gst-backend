@@ -4,6 +4,8 @@ import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
 const vatSchema = Joi.object({
+  name: Joi.string().required().min(2).max(50),
+  description: Joi.string().allow("", null),
   value: Joi.number().required().min(0),
   type: Joi.string().valid("PERCENTAGE", "FIXED").required(),
 });
