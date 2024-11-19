@@ -254,10 +254,10 @@ class UserController {
       const whereClause = search
         ? {
             OR: [
-              { email: { contains: search, mode: "insensitive" } },
-              { companyNameEn: { contains: search, mode: "insensitive" } },
-              { companyNameAr: { contains: search, mode: "insensitive" } },
-              { companyLicenseNo: { contains: search, mode: "insensitive" } },
+              { email: { contains: search } },
+              { companyNameEn: { contains: search } },
+              { companyNameAr: { contains: search } },
+              { companyLicenseNo: { contains: search } },
             ],
           }
         : {};
