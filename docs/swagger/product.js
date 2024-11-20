@@ -195,6 +195,7 @@
  *   put:
  *     tags: [Products]
  *     summary: Update a product
+ *     description: Update a product with optional fields. Only provided fields will be updated.
  *     parameters:
  *       - in: path
  *         name: id
@@ -203,11 +204,12 @@
  *           type: string
  *           format: uuid
  *     requestBody:
- *       required: true
+ *       required: false
  *       content:
  *         multipart/form-data:
  *           schema:
  *             type: object
+ *             minProperties: 1
  *             properties:
  *               title:
  *                 type: string
@@ -215,23 +217,24 @@
  *                 maxLength: 100
  *               description:
  *                 type: string
+ *                 nullable: true
  *               price:
  *                 type: number
  *                 minimum: 0
  *               categoryId:
  *                 type: string
  *                 format: uuid
+ *                 nullable: true
  *               image:
  *                 type: string
  *                 format: binary
+ *                 nullable: true
  *               qty:
  *                 type: integer
  *                 minimum: 0
- *                 default: 0
  *               status:
  *                 type: string
  *                 enum: [active, inactive]
- *                 default: active
  *     responses:
  *       200:
  *         description: Product updated successfully

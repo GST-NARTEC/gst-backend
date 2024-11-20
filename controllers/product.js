@@ -1,6 +1,7 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
+import { getImageUrl, getRelativePath } from "../utils/imageUrl.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -20,6 +21,16 @@ const querySchema = Joi.object({
   limit: Joi.number().min(1).max(100).default(10),
   search: Joi.string().allow("", null),
 });
+
+const productUpdateSchema = Joi.object({
+  title: Joi.string().min(3).max(100),
+  description: Joi.string().allow("", null),
+  price: Joi.number().min(0),
+  image: Joi.string().allow("", null),
+  categoryId: Joi.string().uuid().allow(null, ""),
+  qty: Joi.number().integer().min(0),
+  status: Joi.string().valid("active", "inactive"),
+}).min(1);
 
 class ProductController {
   static async createProduct(req, res, next) {
@@ -91,9 +102,14 @@ class ProductController {
 
       const totalPages = Math.ceil(total / limit);
 
+      const transformedProducts = products.map((product) => ({
+        ...product,
+        image: getImageUrl(product.image),
+      }));
+
       res.status(200).json(
         response(200, true, "Products retrieved successfully", {
-          products,
+          products: transformedProducts,
           pagination: {
             total,
             page: parseInt(page),
@@ -122,9 +138,14 @@ class ProductController {
         throw new MyError("Product not found", 404);
       }
 
+      const transformedProduct = {
+        ...product,
+        image: getImageUrl(product.image),
+      };
+
       res.status(200).json(
         response(200, true, "Product retrieved successfully", {
-          product,
+          product: transformedProduct,
         })
       );
     } catch (error) {
@@ -138,10 +159,11 @@ class ProductController {
       const { id } = req.params;
       const productData = {
         ...req.body,
-        price: req.body.price ? parseFloat(req.body.price) : null,
+        price: req.body.price ? parseFloat(req.body.price) : undefined,
+        categoryId: req.body.categoryId || null,
       };
 
-      const { error, value } = productSchema.validate(productData);
+      const { error, value } = productUpdateSchema.validate(productData);
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
@@ -154,11 +176,24 @@ class ProductController {
         throw new MyError("Product not found", 404);
       }
 
+      if (value.categoryId) {
+        const categoryExists = await prisma.category.findUnique({
+          where: { id: value.categoryId },
+        });
+        if (!categoryExists) {
+          throw new MyError("Category not found", 404);
+        }
+      }
+
       if (req.file) {
-        imagePath = req.file.path;
+        imagePath = getRelativePath(req.file.path);
         value.image = imagePath;
         if (existingProduct.image) {
-          await deleteFile(existingProduct.image);
+          try {
+            await deleteFile(existingProduct.image);
+          } catch (err) {
+            console.warn("Error deleting old image:", err);
+          }
         }
       }
 
@@ -167,9 +202,14 @@ class ProductController {
         data: value,
       });
 
+      const transformedProduct = {
+        ...product,
+        image: getImageUrl(product.image),
+      };
+
       res.status(200).json(
         response(200, true, "Product updated successfully", {
-          product,
+          product: transformedProduct,
         })
       );
     } catch (error) {
