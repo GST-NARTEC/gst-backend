@@ -3,6 +3,7 @@ import Joi from "joi";
 import jwt from "jsonwebtoken";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
+import { deleteFile } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import JWT from "../utils/jwt.js";
@@ -434,6 +435,95 @@ class UserController {
         : "User details retrieved successfully";
 
       res.status(200).json(response(200, true, responseMessage, { user }));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteUser(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      // First check if user exists
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+          cart: true,
+          orders: {
+            include: {
+              invoice: true,
+              orderItems: true,
+            },
+          },
+          invoices: true,
+        },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      // Start transaction to ensure all related data is deleted
+      await prisma.$transaction(async (prisma) => {
+        // Delete cart items first if cart exists
+        if (user.cart) {
+          await prisma.cartItem.deleteMany({
+            where: { cartId: user.cart.id },
+          });
+        }
+
+        // Delete order items and invoices
+        for (const order of user.orders) {
+          // Delete order items
+          await prisma.orderItem.deleteMany({
+            where: { orderId: order.id },
+          });
+
+          // Delete invoice if exists
+          if (order.invoice) {
+            // Delete the physical PDF file if it exists
+            if (order.invoice.pdf) {
+              try {
+                await deleteFile(order.invoice.pdf);
+              } catch (err) {
+                console.warn(`Failed to delete invoice PDF: ${err.message}`);
+              }
+            }
+
+            await prisma.invoice.delete({
+              where: { id: order.invoice.id },
+            });
+          }
+
+          // Delete the order
+          await prisma.order.delete({
+            where: { id: order.id },
+          });
+        }
+
+        // Delete cart if exists
+        if (user.cart) {
+          await prisma.cart.delete({
+            where: { id: user.cart.id },
+          });
+        }
+
+        // Finally delete the user
+        await prisma.user.delete({
+          where: { id },
+        });
+      });
+
+      res
+        .status(200)
+        .json(
+          response(
+            200,
+            true,
+            "User and all related data deleted successfully",
+            null
+          )
+        );
     } catch (error) {
       next(error);
     }
