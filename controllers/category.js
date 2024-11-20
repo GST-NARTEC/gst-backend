@@ -1,9 +1,8 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
-import { getImageUrl } from "../utils/imageUrl.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+import { deleteImage, addImage } from "../utils/imageUtils.js";
 
 // Validation schemas
 const categorySchema = Joi.object({
@@ -29,7 +28,7 @@ class CategoryController {
       }
 
       if (req.file) {
-        imagePath = req.file.path;
+        imagePath = addImage(req.file);
         value.image = imagePath;
       }
 
@@ -43,7 +42,6 @@ class CategoryController {
         })
       );
     } catch (error) {
-      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
@@ -78,14 +76,9 @@ class CategoryController {
 
       const totalPages = Math.ceil(total / limit);
 
-      const transformedCategories = categories.map((category) => ({
-        ...category,
-        image: getImageUrl(category.image),
-      }));
-
       res.status(200).json(
         response(200, true, "Categories retrieved successfully", {
-          categories: transformedCategories,
+          categories,
           pagination: {
             total,
             page: parseInt(page),
@@ -111,14 +104,9 @@ class CategoryController {
         throw new MyError("Category not found", 404);
       }
 
-      const transformedCategory = {
-        ...category,
-        image: getImageUrl(category.image),
-      };
-
       res.status(200).json(
         response(200, true, "Category retrieved successfully", {
-          category: transformedCategory,
+          category,
         })
       );
     } catch (error) {
@@ -127,7 +115,6 @@ class CategoryController {
   }
 
   static async updateCategory(req, res, next) {
-    let imagePath;
     try {
       const { id } = req.params;
       const categoryData = { ...req.body };
@@ -146,11 +133,10 @@ class CategoryController {
       }
 
       if (req.file) {
-        imagePath = req.file.path;
-        value.image = imagePath;
         if (existingCategory.image) {
-          await deleteFile(existingCategory.image);
+          await deleteImage(existingCategory.image);
         }
+        value.image = addImage(req.file);
       }
 
       const category = await prisma.category.update({
@@ -164,7 +150,6 @@ class CategoryController {
         })
       );
     } catch (error) {
-      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
@@ -182,7 +167,7 @@ class CategoryController {
       }
 
       if (category.image) {
-        await deleteFile(category.image);
+        await deleteImage(category.image);
       }
 
       await prisma.category.delete({

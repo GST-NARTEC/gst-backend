@@ -1,9 +1,8 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
-import { getImageUrl } from "../utils/imageUrl.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+import { deleteImage, addImage } from "../utils/imageUtils.js";
 
 // Validation schemas
 const productSchema = Joi.object({
@@ -47,8 +46,7 @@ class ProductController {
       }
 
       if (req.file) {
-        imagePath = req.file.path;
-        value.image = imagePath;
+        value.image = addImage(req.file);
       }
 
       const product = await prisma.product.create({
@@ -61,7 +59,6 @@ class ProductController {
         })
       );
     } catch (error) {
-      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
@@ -102,14 +99,9 @@ class ProductController {
 
       const totalPages = Math.ceil(total / limit);
 
-      const transformedProducts = products.map((product) => ({
-        ...product,
-        image: product.image ? getImageUrl(product.image) : null,
-      }));
-
       res.status(200).json(
         response(200, true, "Products retrieved successfully", {
-          products: transformedProducts,
+          products,
           pagination: {
             total,
             page: parseInt(page),
@@ -138,14 +130,9 @@ class ProductController {
         throw new MyError("Product not found", 404);
       }
 
-      const transformedProduct = {
-        ...product,
-        image: getImageUrl(product.image),
-      };
-
       res.status(200).json(
         response(200, true, "Product retrieved successfully", {
-          product: transformedProduct,
+          product,
         })
       );
     } catch (error) {
@@ -154,7 +141,6 @@ class ProductController {
   }
 
   static async updateProduct(req, res, next) {
-    let imagePath;
     try {
       const { id } = req.params;
       const productData = {};
@@ -196,15 +182,14 @@ class ProductController {
       }
 
       if (req.file) {
-        imagePath = req.file.path;
-        value.image = imagePath;
         if (existingProduct.image) {
           try {
-            await deleteFile(existingProduct.image);
+            await deleteImage(existingProduct.image);
           } catch (err) {
             console.warn("Error deleting old image:", err);
           }
         }
+        value.image = addImage(req.file);
       }
 
       const product = await prisma.product.update({
@@ -215,18 +200,12 @@ class ProductController {
         },
       });
 
-      const transformedProduct = {
-        ...product,
-        image: getImageUrl(product.image),
-      };
-
       res.status(200).json(
         response(200, true, "Product updated successfully", {
-          product: transformedProduct,
+          product,
         })
       );
     } catch (error) {
-      if (imagePath) await deleteFile(imagePath);
       next(error);
     }
   }
@@ -244,7 +223,7 @@ class ProductController {
       }
 
       if (product.image) {
-        await deleteFile(product.image);
+        await deleteImage(product.image);
       }
 
       await prisma.product.delete({
