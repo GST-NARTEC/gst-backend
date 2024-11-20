@@ -7,6 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
+    "prisma-push": "npx prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
