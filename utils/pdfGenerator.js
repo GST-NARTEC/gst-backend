@@ -10,8 +10,8 @@ const __dirname = dirname(__filename);
 
 // Add logo path configuration
 const LOGO_PATH = "/assets/images/gst-logo.png";
-const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
-const LOGO_URL = `${BASE_URL}${LOGO_PATH}`;
+const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
+const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
 class PDFGenerator {
   static async generateInvoice(order, user, invoice) {

@@ -6,6 +6,7 @@ import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
+import { getImageUrl } from "../utils/imageUrl.js";
 import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -430,11 +431,48 @@ class UserController {
         throw new MyError("User not found", 404);
       }
 
+      const transformResponse = (data) => {
+        if (!data) return null;
+
+        // Transform cart items if they exist
+        if (data.cart?.items) {
+          data.cart.items = data.cart.items.map((item) => ({
+            ...item,
+            product: {
+              ...item.product,
+              image: getImageUrl(item.product.image),
+            },
+          }));
+        }
+
+        // Transform orders if they exist
+        if (data.orders) {
+          data.orders = data.orders.map((order) => ({
+            ...order,
+            orderItems: order.orderItems.map((item) => ({
+              ...item,
+              product: {
+                ...item.product,
+                image: getImageUrl(item.product.image),
+              },
+            })),
+          }));
+        }
+
+        return data;
+      };
+
+      const transformedUser = transformResponse(user);
+
       const responseMessage = fields
         ? `User ${fields} retrieved successfully`
         : "User details retrieved successfully";
 
-      res.status(200).json(response(200, true, responseMessage, { user }));
+      res.status(200).json(
+        response(200, true, responseMessage, {
+          user: transformedUser,
+        })
+      );
     } catch (error) {
       next(error);
     }

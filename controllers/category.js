@@ -1,6 +1,7 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
+import { getImageUrl } from "../utils/imageUrl.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -77,9 +78,14 @@ class CategoryController {
 
       const totalPages = Math.ceil(total / limit);
 
+      const transformedCategories = categories.map((category) => ({
+        ...category,
+        image: getImageUrl(category.image),
+      }));
+
       res.status(200).json(
         response(200, true, "Categories retrieved successfully", {
-          categories,
+          categories: transformedCategories,
           pagination: {
             total,
             page: parseInt(page),
@@ -105,14 +111,14 @@ class CategoryController {
         throw new MyError("Category not found", 404);
       }
 
-      // Format the image path
-      if (category.image) {
-        category.image = category.image.replace(/\\/g, "/");
-      }
+      const transformedCategory = {
+        ...category,
+        image: getImageUrl(category.image),
+      };
 
       res.status(200).json(
         response(200, true, "Category retrieved successfully", {
-          category,
+          category: transformedCategory,
         })
       );
     } catch (error) {

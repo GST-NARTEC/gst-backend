@@ -15,9 +15,7 @@ dotenv.config();
 
 const whitelist = [
   process.env.FRONTEND_URL, // Frontend URL
-  process.env.LOCALHOST, // Local Backend URL
-  process.env.LIVE, // Live Backend URL
-  process.env.BASE_URL, // Base URL
+  process.env.DOMAIN, // Backend URL
   "https://buybarcodeupc.com",
   "http://www.buybarcodeupc.com",
 ].filter(Boolean); // Remove any undefined/null values

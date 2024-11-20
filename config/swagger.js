@@ -5,8 +5,7 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-const LOCALHOST = process.env.LOCALHOST || "http://localhost:3000";
-const LIVE = process.env.BASE_URL || "https://gst.nartec.com";
+const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -21,12 +20,8 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: LIVE,
-      description: "Production server",
-    },
-    {
-      url: LOCALHOST,
-      description: "Development server",
+      url: DOMAIN,
+      description: "Running server",
     },
 
     // add more hosts...
