@@ -75,7 +75,7 @@ class PDFGenerator {
       const pdfFileName = `invoice-${invoice.invoiceNumber}.pdf`;
       const pdfPath = path.join("uploads", "pdfs", pdfFileName);
       const relativePath = path
-        .join("/uploads", "pdfs", pdfFileName)
+        .join("uploads", "pdfs", pdfFileName)
         .replace(/\\/g, "/");
 
       await fs.ensureDir(path.join("uploads", "pdfs"));

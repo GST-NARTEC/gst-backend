@@ -324,7 +324,7 @@ class UserController {
         where: { id },
       };
 
-      // If no field specified, return all user data
+      // If no field specified, return all user data except invoices
       if (!fields) {
         queryObject.include = {
           cart: {
@@ -354,7 +354,6 @@ class UserController {
               invoice: true,
             },
           },
-          invoices: true,
         };
       } else {
         // Return only specific field data
@@ -399,7 +398,6 @@ class UserController {
           case "invoices":
             queryObject.select = {
               id: true,
-              invoices: true,
             };
             break;
           case "profile":
@@ -431,7 +429,29 @@ class UserController {
         throw new MyError("User not found", 404);
       }
 
-      const transformResponse = (data) => {
+      // Fetch invoices separately if needed
+      let invoices = null;
+      if (!fields || fields === "invoices") {
+        invoices = await prisma.invoice.findMany({
+          where: { userId: id },
+          include: {
+            order: {
+              include: {
+                orderItems: {
+                  include: {
+                    product: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      }
+
+      const transformResponse = (data, invoiceData) => {
         if (!data) return null;
 
         // Transform cart items if they exist
@@ -459,10 +479,18 @@ class UserController {
           }));
         }
 
+        // Add invoices to response if they exist
+        if (invoiceData) {
+          data.invoices = invoiceData.map((invoice) => ({
+            ...invoice,
+            pdf: getImageUrl(invoice.pdf),
+          }));
+        }
+
         return data;
       };
 
-      const transformedUser = transformResponse(user);
+      const transformedUser = transformResponse(user, invoices);
 
       const responseMessage = fields
         ? `User ${fields} retrieved successfully`

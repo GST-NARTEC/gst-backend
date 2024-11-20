@@ -1,7 +1,7 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
-import { getImageUrl, getRelativePath } from "../utils/imageUrl.js";
+import { getImageUrl } from "../utils/imageUrl.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -23,14 +23,14 @@ const querySchema = Joi.object({
 });
 
 const productUpdateSchema = Joi.object({
-  title: Joi.string().min(3).max(100),
-  description: Joi.string().allow("", null),
-  price: Joi.number().min(0),
-  image: Joi.string().allow("", null),
-  categoryId: Joi.string().uuid().allow(null, ""),
-  qty: Joi.number().integer().min(0),
-  status: Joi.string().valid("active", "inactive"),
-}).min(1);
+  title: Joi.string().min(3).max(100).optional(),
+  description: Joi.string().allow("", null).optional(),
+  price: Joi.number().min(0).optional(),
+  image: Joi.string().allow("", null).optional(),
+  categoryId: Joi.string().uuid().allow(null, "").optional(),
+  qty: Joi.number().integer().min(0).optional(),
+  status: Joi.string().valid("active", "inactive").optional(),
+});
 
 class ProductController {
   static async createProduct(req, res, next) {
@@ -104,7 +104,7 @@ class ProductController {
 
       const transformedProducts = products.map((product) => ({
         ...product,
-        image: getImageUrl(product.image),
+        image: product.image ? getImageUrl(product.image) : null,
       }));
 
       res.status(200).json(
@@ -157,11 +157,18 @@ class ProductController {
     let imagePath;
     try {
       const { id } = req.params;
-      const productData = {
-        ...req.body,
-        price: req.body.price ? parseFloat(req.body.price) : undefined,
-        categoryId: req.body.categoryId || null,
-      };
+      const productData = {};
+
+      // Only include fields that are actually provided
+      if (req.body.title !== undefined) productData.title = req.body.title;
+      if (req.body.description !== undefined)
+        productData.description = req.body.description;
+      if (req.body.price !== undefined)
+        productData.price = parseFloat(req.body.price);
+      if (req.body.categoryId !== undefined)
+        productData.categoryId = req.body.categoryId || null;
+      if (req.body.qty !== undefined) productData.qty = parseInt(req.body.qty);
+      if (req.body.status !== undefined) productData.status = req.body.status;
 
       const { error, value } = productUpdateSchema.validate(productData);
       if (error) {
@@ -170,6 +177,9 @@ class ProductController {
 
       const existingProduct = await prisma.product.findUnique({
         where: { id },
+        include: {
+          category: true,
+        },
       });
 
       if (!existingProduct) {
@@ -186,7 +196,7 @@ class ProductController {
       }
 
       if (req.file) {
-        imagePath = getRelativePath(req.file.path);
+        imagePath = req.file.path;
         value.image = imagePath;
         if (existingProduct.image) {
           try {
@@ -200,6 +210,9 @@ class ProductController {
       const product = await prisma.product.update({
         where: { id },
         data: value,
+        include: {
+          category: true,
+        },
       });
 
       const transformedProduct = {
