@@ -1,9 +1,9 @@
 import Joi from "joi";
 import prisma from "../utils/prismaClient.js";
 
-import fs from "fs-extra";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
+import { generatePassword } from "../utils/generatePassword.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import response from "../utils/response.js";
 
@@ -104,7 +104,8 @@ class CheckoutController {
         });
 
         // Generate password and update user
-        const password = Math.floor(100000 + Math.random() * 900000).toString();
+        const password = generatePassword();
+
         await prisma.user.update({
           where: { id: userId },
           data: { password },
@@ -147,11 +148,19 @@ class CheckoutController {
         });
 
         // Generate PDF with invoice details
-        const pdfPath = await PDFGenerator.generateInvoice(
+        const pdfResult = await PDFGenerator.generateInvoice(
           order,
           cart.user,
           invoice
         );
+
+        // Update the invoice with the PDF path
+        await prisma.invoice.update({
+          where: { id: invoice.id },
+          data: {
+            pdf: pdfResult.relativePath,
+          },
+        });
 
         // Send confirmation email
         const emailSent = await EmailService.sendWelcomeEmail({
@@ -162,7 +171,7 @@ class CheckoutController {
           attachments: [
             {
               filename: "invoice.pdf",
-              path: pdfPath,
+              path: pdfResult.absolutePath,
             },
           ],
         });
@@ -171,8 +180,8 @@ class CheckoutController {
           throw new MyError("Failed to send confirmation email", 500);
         }
 
-        // Clean up PDF file after sending
-        await fs.remove(pdfPath);
+        // Clean up PDF file after sending email (optional, remove if you want to keep the file)
+        // await fs.remove(pdfResult.absolutePath);
 
         res.status(200).json(response(200, true, "Order placed successfully"));
       } else {

@@ -72,12 +72,10 @@ class PDFGenerator {
         waitUntil: "networkidle0",
       });
 
-      // 7. Generate PDF
-      const pdfPath = path.join(
-        "uploads",
-        "pdfs",
-        `invoice-${invoice.invoiceNumber}.pdf`
-      );
+      const pdfFileName = `invoice-${invoice.invoiceNumber}.pdf`;
+      const pdfPath = path.join("uploads", "pdfs", pdfFileName);
+      const relativePath = path.join("pdfs", pdfFileName).replace(/\\/g, "/");
+
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
       await page.pdf({
@@ -93,11 +91,12 @@ class PDFGenerator {
       });
 
       await browser.close();
-
-      // 8. Clean up temporary HTML file
       await fs.remove(tempHtmlPath);
 
-      return pdfPath;
+      return {
+        absolutePath: pdfPath,
+        relativePath: relativePath,
+      };
     } catch (error) {
       console.error("Error generating invoice:", error);
       throw error;
