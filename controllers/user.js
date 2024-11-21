@@ -52,6 +52,21 @@ const userDetailsSchema = Joi.object({
     .optional(),
 });
 
+const userUpdateSchema = Joi.object({
+  companyLicenseNo: Joi.string(),
+  companyNameEn: Joi.string(),
+  companyNameAr: Joi.string(),
+  landline: Joi.string().allow("", null),
+  mobile: Joi.string(),
+  country: Joi.string(),
+  region: Joi.string(),
+  city: Joi.string(),
+  zipCode: Joi.string(),
+  streetAddress: Joi.string(),
+  latitude: Joi.number().optional(),
+  longitude: Joi.number().optional(),
+}).min(1);
+
 // Add this helper function
 
 class UserController {
@@ -589,6 +604,98 @@ class UserController {
             null
           )
         );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateUser(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { error, value } = userUpdateSchema.validate(req.body);
+
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      // Check if user exists
+      const existingUser = await prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!existingUser) {
+        throw new MyError("User not found", 404);
+      }
+
+      // Check for unique constraints if updating company details
+      if (
+        value.companyLicenseNo ||
+        value.companyNameEn ||
+        value.companyNameAr
+      ) {
+        const uniqueCheck = await prisma.user.findFirst({
+          where: {
+            AND: [
+              { id: { not: id } },
+              {
+                OR: [
+                  value.companyLicenseNo
+                    ? { companyLicenseNo: value.companyLicenseNo }
+                    : {},
+                  value.companyNameEn
+                    ? { companyNameEn: value.companyNameEn }
+                    : {},
+                  value.companyNameAr
+                    ? { companyNameAr: value.companyNameAr }
+                    : {},
+                ],
+              },
+            ],
+          },
+        });
+
+        if (uniqueCheck) {
+          if (uniqueCheck.companyLicenseNo === value.companyLicenseNo) {
+            throw new MyError("Company license number already exists", 400);
+          }
+          if (uniqueCheck.companyNameEn === value.companyNameEn) {
+            throw new MyError("Company name (English) already exists", 400);
+          }
+          if (uniqueCheck.companyNameAr === value.companyNameAr) {
+            throw new MyError("Company name (Arabic) already exists", 400);
+          }
+        }
+      }
+
+      // Update user
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: value,
+        select: {
+          id: true,
+          email: true,
+          companyLicenseNo: true,
+          companyNameEn: true,
+          companyNameAr: true,
+          landline: true,
+          mobile: true,
+          country: true,
+          region: true,
+          city: true,
+          zipCode: true,
+          streetAddress: true,
+          latitude: true,
+          longitude: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "User updated successfully", {
+          user: updatedUser,
+        })
+      );
     } catch (error) {
       next(error);
     }
