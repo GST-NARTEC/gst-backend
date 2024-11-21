@@ -3,10 +3,9 @@ import Joi from "joi";
 import jwt from "jsonwebtoken";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
-import { getImageUrl } from "../utils/imageUrl.js";
 import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -460,7 +459,7 @@ class UserController {
             ...item,
             product: {
               ...item.product,
-              image: getImageUrl(item.product.image),
+              image: addDomain(item.product.image),
             },
           }));
         }
@@ -473,7 +472,7 @@ class UserController {
               ...item,
               product: {
                 ...item.product,
-                image: getImageUrl(item.product.image),
+                image: addDomain(item.product.image),
               },
             })),
           }));
@@ -483,7 +482,7 @@ class UserController {
         if (invoiceData) {
           data.invoices = invoiceData.map((invoice) => ({
             ...invoice,
-            pdf: getImageUrl(invoice.pdf),
+            pdf: addDomain(invoice.pdf),
           }));
         }
 

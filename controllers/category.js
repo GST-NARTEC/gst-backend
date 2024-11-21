@@ -1,8 +1,8 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import { deleteImage, addImage } from "../utils/imageUtils.js";
 
 // Validation schemas
 const categorySchema = Joi.object({
@@ -28,7 +28,7 @@ class CategoryController {
       }
 
       if (req.file) {
-        imagePath = addImage(req.file);
+        imagePath = addDomain(req.file.path);
         value.image = imagePath;
       }
 
@@ -42,6 +42,9 @@ class CategoryController {
         })
       );
     } catch (error) {
+      if (imagePath) {
+        await deleteFile(imagePath);
+      }
       next(error);
     }
   }
@@ -115,6 +118,7 @@ class CategoryController {
   }
 
   static async updateCategory(req, res, next) {
+    let imagePath;
     try {
       const { id } = req.params;
       const categoryData = { ...req.body };
@@ -133,10 +137,11 @@ class CategoryController {
       }
 
       if (req.file) {
+        imagePath = addDomain(req.file.path);
         if (existingCategory.image) {
-          await deleteImage(existingCategory.image);
+          await deleteFile(existingCategory.image);
         }
-        value.image = addImage(req.file);
+        value.image = imagePath;
       }
 
       const category = await prisma.category.update({
@@ -150,6 +155,9 @@ class CategoryController {
         })
       );
     } catch (error) {
+      if (imagePath) {
+        await deleteFile(imagePath);
+      }
       next(error);
     }
   }
@@ -167,7 +175,7 @@ class CategoryController {
       }
 
       if (category.image) {
-        await deleteImage(category.image);
+        await deleteFile(category.image);
       }
 
       await prisma.category.delete({
