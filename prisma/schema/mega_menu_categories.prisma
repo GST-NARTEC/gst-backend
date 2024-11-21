@@ -1,0 +1,20 @@
+model mega_menu_categories {
+  id               String    @id @default(cuid())
+  parent_id        String
+  megamenu_id      String?
+  category_name_en String?   @db.NVarChar(Max)
+  category_name_ar String?   @db.NVarChar(Max)
+  image            String?   @db.NVarChar(Max)
+  caption          String?   @db.NVarChar(Max)
+  caption_ar       String?   @db.NVarChar(Max)
+  description      String?   @db.NVarChar(Max)
+  url              String?   @db.NVarChar(Max)
+  meta_title       String?   @db.NVarChar(Max)
+  meta_description String?   @db.NVarChar(Max)
+  meta_keywords    String?   @db.NVarChar(Max)
+  status           Int?
+  created_at       DateTime? @default(now()) @db.DateTime
+  updated_at       DateTime  @default(now()) @db.DateTime
+   footer_menus     footer_menus[]
+  mega_menus       mega_menus?    @relation(fields: [megamenu_id], references: [id])
+}

@@ -1,0 +1,11 @@
+model footer_menus {
+  id               String    @id @default(cuid())
+  parent_id        String
+  category_name_en String?   @db.NVarChar(Max)
+  category_name_ar String?   @db.NVarChar(Max)
+  url              String?   @db.NVarChar(Max)
+  status           Int?
+  created_at       DateTime? @default(now()) @db.DateTime
+  updated_at       DateTime  @default(now()) @db.DateTime
+   mega_menu_categorie mega_menu_categories @relation(fields: [parent_id], references: [id])
+}
