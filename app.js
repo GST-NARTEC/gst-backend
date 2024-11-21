@@ -18,6 +18,7 @@ const whitelist = [
   process.env.FRONTEND_URL, // Frontend URL
   "https://gstsa1.org",
   "https://www.gstsa1.org",
+  "https://buybarcodeupc.com",
 ].filter(Boolean); // Remove any undefined/null values
 
 const corsOptions = {
