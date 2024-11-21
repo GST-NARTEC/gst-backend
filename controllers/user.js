@@ -3,7 +3,7 @@ import Joi from "joi";
 import jwt from "jsonwebtoken";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
-import { addDomain, deleteFile } from "../utils/file.js";
+import { deleteFile } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import JWT from "../utils/jwt.js";
@@ -386,7 +386,7 @@ class UserController {
                       },
                     },
                   },
-                  invoice: true,
+                  //   invoice: true,
                 },
               },
             };
@@ -468,40 +468,15 @@ class UserController {
       const transformResponse = (data, invoiceData) => {
         if (!data) return null;
 
-        // Transform cart items if they exist
-        if (data.cart?.items) {
-          data.cart.items = data.cart.items.map((item) => ({
-            ...item,
-            product: {
-              ...item.product,
-              image: addDomain(item.product.image),
-            },
-          }));
-        }
-
-        // Transform orders if they exist
-        if (data.orders) {
-          data.orders = data.orders.map((order) => ({
-            ...order,
-            orderItems: order.orderItems.map((item) => ({
-              ...item,
-              product: {
-                ...item.product,
-                image: addDomain(item.product.image),
-              },
-            })),
-          }));
-        }
+        // Create a deep clone to avoid mutating the original data
+        const transformedData = JSON.parse(JSON.stringify(data));
 
         // Add invoices to response if they exist
         if (invoiceData) {
-          data.invoices = invoiceData.map((invoice) => ({
-            ...invoice,
-            pdf: addDomain(invoice.pdf),
-          }));
+          transformedData.invoices = invoiceData;
         }
 
-        return data;
+        return transformedData;
       };
 
       const transformedUser = transformResponse(user, invoices);
