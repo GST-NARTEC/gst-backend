@@ -11,10 +11,6 @@
         padding: 20px;
         background-color: white;
       }
-      .logo {
-        text-align: right;
-        margin-bottom: 20px;
-      }
       .logo img {
         width: 100px;
         height: auto;
@@ -68,8 +64,8 @@
         margin-top: 20px;
       }
       .qr-code img {
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
       }
       .bilingual {
         font-size: 14px;
@@ -111,12 +107,20 @@
     </style>
   </head>
   <body>
-    <div class="logo">
-      <img src="<%= logo %>" alt="GST Logo" />
-    </div>
-
-    <div style="background-color: #e8ffe8; padding: 10px; margin-bottom: 20px">
-      <div>Invoice</div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e8ffe8;
+        padding: 10px;
+        margin-bottom: 20px;
+      "
+    >
+      <div style="font-size: 24px; font-weight: bold">Invoice</div>
+      <div class="logo">
+        <img src="<%= logo %>" alt="GST Logo" />
+      </div>
     </div>
 
     <div class="header">
