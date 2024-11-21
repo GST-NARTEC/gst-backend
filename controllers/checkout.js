@@ -3,7 +3,6 @@ import prisma from "../utils/prismaClient.js";
 
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
-import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import response from "../utils/response.js";
@@ -159,7 +158,7 @@ class CheckoutController {
         await prisma.invoice.update({
           where: { id: invoice.id },
           data: {
-            pdf: addDomain(pdfResult.relativePath),
+            pdf: pdfResult.relativePath,
           },
         });
 
