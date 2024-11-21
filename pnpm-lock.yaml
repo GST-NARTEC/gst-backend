@@ -38,6 +38,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
+      multer:
+        specifier: ^1.4.5-lts.1
+        version: 1.4.5-lts.1
       multermate-es:
         specifier: ^1.0.1
         version: 1.0.1
