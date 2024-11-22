@@ -1,13 +1,18 @@
 import express from "express";
+import { uploadSingle } from "multermate-es";
 import controller from "../controllers/category.js";
-import upload from "../utils/multerConfig.js";
 
 const router = express.Router();
+const singleConfig = uploadSingle({
+  destination: "uploads/images",
+  filename: "image",
+  fileTypes: ["images"],
+});
 
-router.post("/", upload.single("image"), controller.createCategory);
+router.post("/", singleConfig, controller.createCategory);
 router.get("/", controller.getCategories);
 router.get("/:id", controller.getCategory);
-router.put("/:id", upload.single("image"), controller.updateCategory);
+router.put("/:id", singleConfig, controller.updateCategory);
 router.delete("/:id", controller.deleteCategory);
 
 export default router;

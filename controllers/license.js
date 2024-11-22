@@ -1,6 +1,6 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -51,7 +51,6 @@ class LicenseController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      // Check if license already exists
       const existingLicense = await prisma.license.findFirst({
         where: { license: value.license },
       });
@@ -60,24 +59,19 @@ class LicenseController {
         throw new MyError("License already exists", 400);
       }
 
-      // Handle document upload
       if (req.file) {
-        documentPath = req.file.path;
+        documentPath = addDomain(req.file.path);
+        value.document = documentPath;
       }
 
-      // Create license record
       const license = await prisma.license.create({
-        data: {
-          ...value,
-          document: documentPath,
-        },
+        data: value,
       });
 
       res
         .status(201)
         .json(response(201, true, "License added successfully", { license }));
     } catch (error) {
-      // Clean up uploaded file if there's an error
       if (documentPath) {
         await deleteFile(documentPath);
       }
@@ -141,7 +135,6 @@ class LicenseController {
         throw new MyError("License not found", 404);
       }
 
-      // Delete the associated document if it exists
       if (license.document) {
         await deleteFile(license.document);
       }

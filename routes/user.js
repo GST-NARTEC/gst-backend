@@ -10,6 +10,7 @@ router.post("/create", controller.createUser);
 router.post("/login", controller.login);
 router.get("/search", controller.searchUsers);
 router.get("/:id", controller.getUserDetails);
+router.put("/:id", controller.updateUser);
 router.delete("/:id", controller.deleteUser);
 
 export default router;
