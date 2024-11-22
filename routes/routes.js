@@ -4,12 +4,12 @@ import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
 import currencyRoutes from "./currency.js";
+import frontend from "./frontend.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import productRouter from "./product.js";
 import userRoutes from "./user.js";
 import vatRoutes from "./vat.js";
-import Frontend from "./frontendRoutes.js";
 
 const router = express.Router();
 
@@ -22,5 +22,5 @@ router.use("/locations/v1", locationRoutes);
 router.use("/currency/v1", currencyRoutes);
 router.use("/vat/v1", vatRoutes);
 router.use("/category/v1", categoryRoutes);
-router.use("/masterdata/v1", Frontend);
+router.use("/masterdata/v1", frontend);
 export default router;
