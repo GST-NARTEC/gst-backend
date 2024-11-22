@@ -20,8 +20,8 @@
         height: auto;
       }
       .header {
-        text-align: center;
-        margin-bottom: 20px;
+        text-align: left;
+        margin: 10px;
       }
       .header h1 {
         margin: 10px 0;
@@ -52,6 +52,10 @@
         text-align: left;
         padding: 8px;
         border-bottom: 1px solid #ddd;
+      }
+      .items-table th:last-child,
+      .items-table td:last-child {
+        text-align: right;
       }
       .totals {
         margin-top: 20px;
@@ -121,7 +125,7 @@
         margin-bottom: 20px;
       "
     >
-      <div style="font-size: 24px; font-weight: bold">Invoice</div>
+      <div style="font-size: 32px; font-weight: bold">Invoice</div>
       <div class="logo">
         <img
           src="http://localhost:3000/assets/images/gst-logo.png"
@@ -131,15 +135,15 @@
     </div>
 
     <div class="header">
-      <h1>GST</h1>
+      <h2>Bill To:</h2>
     </div>
 
-    <div class="contact-info">
+    <!-- <div class="contact-info">
       <div>Phone / هاتف: +966 123456789</div>
       <div>123 Main Street, Riyadh, Saudi Arabia</div>
-    </div>
+    </div> -->
 
-    <div class="invoice-details">
+    <!-- <div class="invoice-details">
       <div class="bilingual">
         <span>INVOICE DATE / تاريخ الفاتورة:</span>
         <span>2024-03-20 10:30:00</span>
@@ -156,7 +160,7 @@
         <span>CUSTOMER / العميل:</span>
         <span>Test Company LLC</span>
       </div>
-    </div>
+    </div> -->
 
     <table class="items-table">
       <thead>
@@ -203,6 +207,14 @@
         <tr>
           <td class="bilingual">Bank Name / اسم البنك</td>
           <td>Saudi British Bank</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Account Number / رقم الحساب</td>
+          <td>25350612000200</td>
+        </tr>
+        <tr>
+          <td class="bilingual">IBAN / رقم الآيبان</td>
+          <td>SA90 1000 0025 3506 1200 0200</td>
         </tr>
         <tr>
           <td class="bilingual">Bank Branch / فرع البنك</td>

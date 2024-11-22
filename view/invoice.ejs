@@ -16,8 +16,8 @@
         height: auto;
       }
       .header {
-        text-align: center;
-        margin-bottom: 20px;
+        text-align: left;
+        margin: 10px;
       }
       .header h1 {
         margin: 10px 0;
@@ -48,6 +48,10 @@
         text-align: left;
         padding: 8px;
         border-bottom: 1px solid #ddd;
+      }
+      .items-table th:last-child,
+      .items-table td:last-child {
+        text-align: right;
       }
       .totals {
         margin-top: 20px;
@@ -117,17 +121,17 @@
         margin-bottom: 20px;
       "
     >
-      <div style="font-size: 24px; font-weight: bold">Invoice</div>
+      <div style="font-size: 32px; font-weight: bold">Invoice</div>
       <div class="logo">
         <img src="<%= logo %>" alt="GST Logo" />
       </div>
     </div>
 
     <div class="header">
-      <h1>GST</h1>
+      <h1>Bill To:</h1>
     </div>
 
-    <div class="contact-info">
+    <!-- <div class="contact-info">
       <div>Phone / هاتف: <%= contact.phone %></div>
       <div><%= contact.address %></div>
     </div>
@@ -149,7 +153,7 @@
         <span>CUSTOMER / العميل:</span>
         <span><%= invoice.customer %></span>
       </div>
-    </div>
+    </div> -->
 
     <table class="items-table">
       <thead>
@@ -193,6 +197,14 @@
         <tr>
           <td class="bilingual">Bank Name / اسم البنك</td>
           <td>Saudi British Bank</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Account Number / رقم الحساب</td>
+          <td>25350612000200</td>
+        </tr>
+        <tr>
+          <td class="bilingual">IBAN / رقم الآيبان</td>
+          <td>SA90 1000 0025 3506 1200 0200</td>
         </tr>
         <tr>
           <td class="bilingual">Bank Branch / فرع البنك</td>
