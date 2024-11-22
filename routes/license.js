@@ -5,6 +5,7 @@ import controller from "../controllers/license.js";
 
 const router = express.Router();
 const singleConfig = uploadSingle({
+  // pdfs is the folder name where the pdfs will be stored
   destination: "uploads/pdfs",
   filename: "document",
   fileTypes: ["pdfs"],
