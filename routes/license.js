@@ -5,7 +5,7 @@ import controller from "../controllers/license.js";
 
 const router = express.Router();
 const singleConfig = uploadSingle({
-  destination: "uploads/documents",
+  destination: "uploads/pdfs",
   filename: "document",
   fileTypes: ["pdfs"],
 });
