@@ -1,13 +1,18 @@
 import express from "express";
+import { uploadSingle } from "multermate-es";
 import controller from "../controllers/product.js";
-import upload from "../utils/multerConfig.js";
 
 const router = express.Router();
+const singleConfig = uploadSingle({
+  destination: "uploads/images",
+  filename: "image",
+  fileTypes: ["images"],
+});
 
-router.post("/", upload.single("image"), controller.createProduct);
+router.post("/", singleConfig, controller.createProduct);
 router.get("/", controller.getProducts);
 router.get("/:id", controller.getProduct);
-router.put("/:id", upload.single("image"), controller.updateProduct);
+router.put("/:id", singleConfig, controller.updateProduct);
 router.delete("/:id", controller.deleteProduct);
 
 export default router;

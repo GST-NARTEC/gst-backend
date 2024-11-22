@@ -5,6 +5,8 @@ import response from "../utils/response.js";
 
 const vatSchema = Joi.object({
   name: Joi.string().required().min(2).max(50),
+  taxId: Joi.string().allow("", null),
+  isActive: Joi.boolean().required(),
   description: Joi.string().allow("", null),
   value: Joi.number().required().min(0),
   type: Joi.string().valid("PERCENTAGE", "FIXED").required(),

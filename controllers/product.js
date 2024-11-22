@@ -1,8 +1,8 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import { deleteImage, addImage } from "../utils/imageUtils.js";
 
 // Validation schemas
 const productSchema = Joi.object({
@@ -45,8 +45,16 @@ class ProductController {
         throw new MyError(error.details[0].message, 400);
       }
 
+      const category = await prisma.category.findUnique({
+        where: { id: value.categoryId },
+      });
+      if (!category) {
+        throw new MyError("Category not found");
+      }
+
       if (req.file) {
-        value.image = addImage(req.file);
+        imagePath = addDomain(req.file.path);
+        value.image = imagePath;
       }
 
       const product = await prisma.product.create({
@@ -59,6 +67,9 @@ class ProductController {
         })
       );
     } catch (error) {
+      if (imagePath) {
+        await deleteFile(imagePath);
+      }
       next(error);
     }
   }
@@ -141,6 +152,7 @@ class ProductController {
   }
 
   static async updateProduct(req, res, next) {
+    let imagePath;
     try {
       const { id } = req.params;
       const productData = {};
@@ -182,14 +194,11 @@ class ProductController {
       }
 
       if (req.file) {
+        imagePath = addDomain(req.file.path);
         if (existingProduct.image) {
-          try {
-            await deleteImage(existingProduct.image);
-          } catch (err) {
-            console.warn("Error deleting old image:", err);
-          }
+          await deleteFile(existingProduct.image);
         }
-        value.image = addImage(req.file);
+        value.image = imagePath;
       }
 
       const product = await prisma.product.update({
@@ -206,6 +215,10 @@ class ProductController {
         })
       );
     } catch (error) {
+      // Delete uploaded file if there was an error
+      if (imagePath) {
+        await deleteFile(req.file.path);
+      }
       next(error);
     }
   }
@@ -223,7 +236,7 @@ class ProductController {
       }
 
       if (product.image) {
-        await deleteImage(product.image);
+        await deleteFile(product.image);
       }
 
       await prisma.product.delete({
