@@ -440,3 +440,107 @@ const footer_menus = Joi.object({
       next(error);
     }
   };
+  const languageSchema = Joi.object({
+    type: Joi.string(),         // No maximum length constraint
+    key: Joi.string().required(), // No maximum length constraint, but required
+    value: Joi.string().required(), // No maximum length constraint, but required
+
+});
+export const translations = async (req, res, next) =>
+    {
+        try {
+            const AllUNSPSC = await prisma.languages.findMany();
+    
+            // Create an empty object to store the formatted data
+            let formattedData = {};
+    
+            // Loop through the data and populate the formatted object
+            AllUNSPSC.forEach(item =>
+            {
+                formattedData[item.key] = item.value;
+            });
+    
+            res.json(formattedData);
+        } catch (error) {
+            next(error);
+        }
+    };
+   
+    export const translations_table = async (req, res, next) =>
+    {
+        try {
+            const AllUNSPSC = await prisma.languages.findMany();
+    
+    
+            res.json(AllUNSPSC);
+        } catch (error) {
+            next(error);
+        }
+    };
+    
+    export const translations_put = async (req, res, next) =>
+    {
+        try {
+            const languageSchema = Joi.object({
+                value: Joi.string().required(),
+            });
+    
+            const schema = Joi.object({
+                id: Joi.string().required(),
+            });
+    
+            const {
+                error: idError
+            } = schema.validate(req.params);
+            if (idError) {
+                throw createError(400, idError.details[0].message);
+            }
+    
+            const {
+                id
+            } = req.params;
+    
+            const {
+                error: validationError
+            } = languageSchema.validate(req.body);
+            if (validationError) {
+                throw createError(400, validationError.details[0].message);
+            }
+    
+            const {
+                value
+            } = req.body;
+            const updatedTranslation = await prisma.languages.update({
+                where: {
+                    id: id, // Assuming "key" is the correct field to identify the record
+                },
+                data: {
+                    value: value,
+                },
+            });
+    
+            res.json(updatedTranslation);
+        } catch (error) {
+            next(error);
+        }
+    };
+    export const translations_post = async (req, res, next) =>
+        {
+            try {
+                const {
+                    error,
+                    value
+                } = languageSchema.validate(req.body);
+                if (error) {
+                    return res.status(400).json({
+                        error: error.details[0].message
+                    });
+                }
+                const unit = await prisma.languages.create({
+                    data: value,
+                });
+                res.status(201).json(unit);
+            } catch (error) {
+                next(error);
+            }
+        };

@@ -14,7 +14,8 @@ import {getAllmega_menu,
     getfooter_menusById,
     updatefooter_menus,
     deletefooter_menus,
-    mega_menu_categories_frontSide} from "../controllers/frontendController.js";
+    mega_menu_categories_frontSide,
+    translations,translations_table,translations_put,translations_post,} from "../controllers/frontendController.js";
 import upload from "../utils/multerConfig.js";
 
 const router = express.Router();
@@ -39,4 +40,9 @@ router.get("/getfooter_menusById/:id", getfooter_menusById);
 router.put("/updatefooter_menus/:id",updatefooter_menus);
 router.delete("/deletefooter_menus/:id", deletefooter_menus);
 
+//----------------------------translate----------------------------------------------------
+router.get('/translations', translations)
+router.get("/translations_table",translations_table)
+router.put("/translations_put/:id", translations_put)
+router.post("/translations_post", translations_post)
 export default router;
