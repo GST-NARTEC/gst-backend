@@ -74,7 +74,8 @@ class CheckoutController {
       );
 
       // Add VAT if provided
-      const vatAmount = totalAmount * (vat / 100);
+      //   const vatAmount = totalAmount * (vat / 100);
+      const vatAmount = vat;
       const overallAmount = totalAmount + vatAmount;
 
       // Create order with pending status
