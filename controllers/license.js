@@ -30,7 +30,7 @@ class LicenseController {
       });
 
       if (!license) {
-        throw new MyError("Invalid license key", 404);
+        throw new MyError("Invalid license number", 404);
       }
 
       res.status(200).json(

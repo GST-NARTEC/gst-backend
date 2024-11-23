@@ -174,12 +174,22 @@ class CategoryController {
         throw new MyError("Category not found", 404);
       }
 
-      if (category.image) {
-        await deleteFile(category.image);
-      }
+      await prisma.$transaction(async (prisma) => {
+        // Set categoryId to null for all associated products
+        await prisma.product.updateMany({
+          where: { categoryId: id },
+          data: { categoryId: null },
+        });
 
-      await prisma.category.delete({
-        where: { id },
+        // Delete category image if exists
+        if (category.image) {
+          await deleteFile(category.image);
+        }
+
+        // Delete the category
+        await prisma.category.delete({
+          where: { id },
+        });
       });
 
       res

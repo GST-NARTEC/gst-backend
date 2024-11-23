@@ -235,6 +235,18 @@ class ProductController {
         throw new MyError("Product not found", 404);
       }
 
+      // Only check category if categoryId exists
+      if (product.categoryId) {
+        const category = await prisma.category.findUnique({
+          where: { id: product.categoryId },
+        });
+
+        if (!category) {
+          // Just log a warning instead of throwing error
+          console.warn(`Category not found for product ${id}`);
+        }
+      }
+
       if (product.image) {
         await deleteFile(product.image);
       }
