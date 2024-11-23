@@ -5,6 +5,8 @@ import puppeteer from "puppeteer";
 import QRCode from "qrcode";
 import { fileURLToPath } from "url";
 
+import prisma from "./prismaClient.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
