@@ -32,6 +32,15 @@ class PDFGenerator {
         throw new MyError("No active VAT configuration found", 400);
       }
 
+      // Add after getting active VAT
+      const currency = await prisma.currency.findFirst({
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!currency) {
+        throw new MyError("No currency configuration found", 400);
+      }
+
       const data = {
         logo: LOGO_URL,
         invoice: {
@@ -39,6 +48,10 @@ class PDFGenerator {
           number: invoice.invoiceNumber,
           type: order.paymentType,
           customer: user.companyNameEn,
+        },
+        currency: {
+          name: currency.name,
+          symbol: currency.symbol,
         },
         items: order.orderItems.map((item) => ({
           description: item.product.title,

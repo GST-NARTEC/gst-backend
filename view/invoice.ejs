@@ -177,24 +177,24 @@
     <div class="totals">
       <div class="bilingual">
         <span>Subtotal / المجموع الفرعي</span>
-        <span>SAR <%= totals.subtotal %></span>
+        <span><%= currency.symbol %> <%= totals.subtotal %></span>
       </div>
 
       <% if (tax.type === 'PERCENTAGE') { %>
       <div class="bilingual">
         <span>VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span>
-        <span>SAR <%= tax.computed %></span>
+        <span><%= currency.symbol %> <%= tax.computed %></span>
       </div>
       <% } else { %>
       <div class="bilingual">
         <span>VAT (Fixed) / ضريبة القيمة المضافة</span>
-        <span>SAR <%= tax.computed %></span>
+        <span><%= currency.symbol %> <%= tax.computed %></span>
       </div>
       <% } %>
 
       <div class="bilingual">
         <span>Grand Total / المجموع الكلي</span>
-        <span>SAR <%= totals.grandTotal %></span>
+        <span><%= currency.symbol %> <%= totals.grandTotal %></span>
       </div>
     </div>
 
