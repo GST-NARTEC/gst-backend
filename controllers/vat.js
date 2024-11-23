@@ -103,6 +103,26 @@ class VatController {
       next(error);
     }
   }
+  static async getActiveVat(req, res, next) {
+    try {
+      const activeVat = await prisma.vat.findFirst({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!activeVat) {
+        throw new MyError("No active VAT found", 404);
+      }
+
+      res.status(200).json(
+        response(200, true, "Active VAT retrieved successfully", {
+          vat: activeVat,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default VatController;

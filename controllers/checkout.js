@@ -33,6 +33,15 @@ class CheckoutController {
 
       const { userId, paymentType, vat } = value;
 
+      const activeVat = await prisma.vat.findFirst({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!activeVat) {
+        throw new MyError("No active VAT configuration found", 400);
+      }
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
       });
@@ -76,7 +85,7 @@ class CheckoutController {
           totalAmount,
           vat: vatAmount,
           overallAmount,
-          status: "pending", // Set initial status as pending
+          status: "pending",
           orderItems: {
             create: cart.items.map((item) => ({
               productId: item.product.id,

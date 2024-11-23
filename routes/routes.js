@@ -23,4 +23,5 @@ router.use("/currency/v1", currencyRoutes);
 router.use("/vat/v1", vatRoutes);
 router.use("/category/v1", categoryRoutes);
 router.use("/masterdata/v1", frontend);
+
 export default router;

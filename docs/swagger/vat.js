@@ -141,4 +141,38 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ApiResponse'
+ *
+ * /api/vat/v1/active:
+ *   get:
+ *     tags: [VAT]
+ *     summary: Get active VAT configuration
+ *     description: Retrieves the currently active VAT configuration
+ *     responses:
+ *       200:
+ *         description: Active VAT retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Active VAT retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     vat:
+ *                       $ref: '#/components/schemas/Vat'
+ *       404:
+ *         description: No active VAT found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
  */

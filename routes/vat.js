@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/", controller.createVat);
 router.get("/", controller.getVats);
+router.get("/active", controller.getActiveVat);
 router.get("/:id", controller.getVat);
 router.put("/:id", controller.updateVat);
 router.delete("/:id", controller.deleteVat);

@@ -40,6 +40,8 @@ export const isAuth = async (req, res, next) => {
       throw new CustomError("User not found.", 404);
     }
 
+    // req.user = user;
+
     req.user = {
       id: user.id,
       email: user.email,

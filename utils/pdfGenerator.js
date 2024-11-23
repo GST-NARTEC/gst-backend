@@ -21,6 +21,15 @@ class PDFGenerator {
       const templateContent = await fs.readFile(templatePath, "utf-8");
 
       // 2. Prepare data for the template
+      const activeVat = await prisma.vat.findFirst({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!activeVat) {
+        throw new MyError("No active VAT configuration found", 400);
+      }
+
       const data = {
         logo: LOGO_URL,
         invoice: {
@@ -42,6 +51,13 @@ class PDFGenerator {
         contact: {
           phone: user.mobile,
           address: user.streetAddress,
+        },
+        tax: {
+          type: activeVat.type,
+          value: activeVat.value,
+          computed: invoice.vat.toFixed(2),
+          id: activeVat.taxId,
+          name: activeVat.name,
         },
       };
 

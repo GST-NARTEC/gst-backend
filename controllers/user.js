@@ -240,7 +240,7 @@ class UserController {
         throw new MyError("Invalid email or password", 401);
       }
 
-      const isValidPassword = await bcrypt.compare(password, user.password);
+      const isValidPassword = bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         throw new MyError("Invalid email or password", 401);
       }

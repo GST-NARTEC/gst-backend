@@ -177,11 +177,34 @@
     <div class="totals">
       <div class="bilingual">
         <span>Subtotal / المجموع الفرعي</span>
-        <span><%= totals.subtotal %></span>
+        <span>SAR <%= totals.subtotal %></span>
       </div>
+
+      <% if (tax.type === 'PERCENTAGE') { %>
+      <div class="bilingual">
+        <span>VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span>
+        <span>SAR <%= tax.computed %></span>
+      </div>
+      <% } else { %>
+      <div class="bilingual">
+        <span>VAT (Fixed) / ضريبة القيمة المضافة</span>
+        <span>SAR <%= tax.computed %></span>
+      </div>
+      <% } %>
+
       <div class="bilingual">
         <span>Grand Total / المجموع الكلي</span>
-        <span><%= totals.grandTotal %></span>
+        <span>SAR <%= totals.grandTotal %></span>
+      </div>
+    </div>
+
+    <div
+      class="invoice-details"
+      style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px"
+    >
+      <div class="bilingual">
+        <span>Tax Registration Number / الرقم الضريبي:</span>
+        <span><%= tax.id %></span>
       </div>
     </div>
 
