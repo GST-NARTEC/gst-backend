@@ -2,7 +2,7 @@ model Menu {
   id        String   @id @default(uuid())
   nameEn    String?
   nameAr    String?
-  status    Int?
+  status    Int? @default(1)
   image     String?  
   subMenus  SubMenu[]
   createdAt DateTime @default(now())

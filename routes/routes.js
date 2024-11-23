@@ -9,6 +9,7 @@ import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
 import productRouter from "./product.js";
+import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import userRoutes from "./user.js";
 import vatRoutes from "./vat.js";
@@ -27,5 +28,6 @@ router.use("/category/v1", categoryRoutes);
 router.use("/masterdata/v1", frontend);
 router.use("/menu/v1", menuRoutes);
 router.use("/submenu/v1", subMenuRoutes);
+router.use("/slider/v1", sliderRoutes);
 
 export default router;

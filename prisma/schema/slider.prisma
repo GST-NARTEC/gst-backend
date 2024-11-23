@@ -1,0 +1,14 @@
+model Slider {
+    id                  String      @id     @default(uuid())
+    titleEn             String?
+    titleAr             String?
+    descriptionEn       String?
+    descriptionAr       String?
+    captionEn           String?
+    captionAr           String?
+    imageEn             String?
+    imageAr             String?
+    status              Int?    @default(1)
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
+}
