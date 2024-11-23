@@ -1,5 +1,6 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -7,14 +8,21 @@ const menuSchema = Joi.object({
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
   status: Joi.number().valid(0, 1).required(),
+  image: Joi.string().allow("", null),
 });
 
 class MenuController {
   static async createMenu(req, res, next) {
+    let imagePath;
     try {
       const { error, value } = menuSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (req.file) {
+        imagePath = addDomain(req.file.path);
+        value.image = imagePath;
       }
 
       const menu = await prisma.menu.create({
@@ -25,6 +33,9 @@ class MenuController {
         .status(201)
         .json(response(201, true, "Menu created successfully", { menu }));
     } catch (error) {
+      if (imagePath) {
+        await deleteFile(imagePath);
+      }
       next(error);
     }
   }
@@ -96,12 +107,29 @@ class MenuController {
   }
 
   static async updateMenu(req, res, next) {
+    let imagePath;
     try {
       const { id } = req.params;
       const { error, value } = menuSchema.validate(req.body);
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      const existingMenu = await prisma.menu.findUnique({
+        where: { id },
+      });
+
+      if (!existingMenu) {
+        throw new MyError("Menu not found", 404);
+      }
+
+      if (req.file) {
+        imagePath = addDomain(req.file.path);
+        if (existingMenu.image) {
+          await deleteFile(existingMenu.image);
+        }
+        value.image = imagePath;
       }
 
       const menu = await prisma.menu.update({
@@ -116,6 +144,9 @@ class MenuController {
         .status(200)
         .json(response(200, true, "Menu updated successfully", { menu }));
     } catch (error) {
+      if (imagePath) {
+        await deleteFile(imagePath);
+      }
       next(error);
     }
   }
@@ -123,6 +154,18 @@ class MenuController {
   static async deleteMenu(req, res, next) {
     try {
       const { id } = req.params;
+
+      const existingMenu = await prisma.menu.findUnique({
+        where: { id },
+      });
+
+      if (!existingMenu) {
+        throw new MyError("Menu not found", 404);
+      }
+
+      if (existingMenu.image) {
+        await deleteFile(existingMenu.image);
+      }
 
       await prisma.menu.delete({
         where: { id },

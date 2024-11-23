@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /submenu:
+ * /api/submenu/v1:
  *   post:
  *     summary: Create a new submenu
  *     tags: [SubMenu]
@@ -48,7 +48,7 @@
  *       200:
  *         description: List of submenus
  *
- * /submenu/{id}:
+ * /api/submenu/v1/{id}:
  *   get:
  *     summary: Get a submenu by ID
  *     tags: [SubMenu]

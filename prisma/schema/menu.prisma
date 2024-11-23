@@ -3,6 +3,7 @@ model Menu {
   nameEn    String?
   nameAr    String?
   status    Int?
+  image     String?  
   subMenus  SubMenu[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
