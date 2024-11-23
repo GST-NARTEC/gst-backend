@@ -3,7 +3,6 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import config from "../config/config.js";
-import MyError from "./error.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,7 +22,6 @@ export const deleteFile = (imageUrl) => {
     fs.unlink(fullPath, (err) => {
       if (err) {
         console.error("Failed to delete image:", err);
-        throw MyError("Failed to delete file");
       }
       resolve();
     });
