@@ -1,0 +1,12 @@
+// create another model that will have relation with menu model
+model SubMenu {
+  id        String   @id @default(uuid())
+  nameEn    String?
+  nameAr    String?
+  headingEn String?
+  headingAr String?
+  menu      Menu     @relation(fields: [menuId], references: [id])
+  menuId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

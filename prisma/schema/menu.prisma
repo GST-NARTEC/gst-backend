@@ -1,0 +1,9 @@
+model Menu {
+  id        String   @id @default(uuid())
+  nameEn    String?
+  nameAr    String?
+  status    Int?
+  subMenus  SubMenu[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

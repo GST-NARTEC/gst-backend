@@ -7,7 +7,9 @@ import currencyRoutes from "./currency.js";
 import frontend from "./frontend.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
+import menuRoutes from "./menu.js";
 import productRouter from "./product.js";
+import subMenuRoutes from "./subMenu.js";
 import userRoutes from "./user.js";
 import vatRoutes from "./vat.js";
 
@@ -23,5 +25,7 @@ router.use("/currency/v1", currencyRoutes);
 router.use("/vat/v1", vatRoutes);
 router.use("/category/v1", categoryRoutes);
 router.use("/masterdata/v1", frontend);
+router.use("/menu/v1", menuRoutes);
+router.use("/submenu/v1", subMenuRoutes);
 
 export default router;
