@@ -2,8 +2,13 @@ model CoreSolution {
     id              String  @id @default(uuid())
     titleEn         String?
     titleAr         String?
+    descriptionEn   String?
+    descriptionAr   String?
     date            DateTime?
     image           String?
+    isActive        Boolean  @default(true)
+    captionEn       String?
+    captionAr       String?
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }

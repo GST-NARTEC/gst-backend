@@ -7,8 +7,13 @@ import response from "../utils/response.js";
 const coreSolutionSchema = Joi.object({
   titleEn: Joi.string().allow("", null),
   titleAr: Joi.string().allow("", null),
+  descriptionEn: Joi.string().allow("", null),
+  descriptionAr: Joi.string().allow("", null),
   date: Joi.date().allow(null),
   image: Joi.string().allow("", null),
+  captionEn: Joi.string().allow("", null),
+  captionAr: Joi.string().allow("", null),
+  isActive: Joi.boolean().default(true),
 });
 
 class CoreSolutionController {
@@ -122,6 +127,25 @@ class CoreSolutionController {
       if (imagePath) {
         await deleteFile(imagePath);
       }
+      next(error);
+    }
+  }
+
+  static async getActiveCoreSolutions(req, res, next) {
+    try {
+      const coreSolutions = await prisma.coreSolution.findMany({
+        where: { isActive: true },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "Active Core Solutions retrieved successfully", {
+          coreSolutions,
+        })
+      );
+    } catch (error) {
       next(error);
     }
   }

@@ -10,6 +10,9 @@ const whyBarcodeSchema = Joi.object({
   descriptionEn: Joi.string().allow("", null),
   descriptionAr: Joi.string().allow("", null),
   image: Joi.string().allow("", null),
+  captionEn: Joi.string().allow("", null),
+  captionAr: Joi.string().allow("", null),
+  isActive: Joi.boolean().default(true),
 });
 
 class WhyBarcodeController {
@@ -76,6 +79,25 @@ class WhyBarcodeController {
       res.status(200).json(
         response(200, true, "Why Barcode retrieved successfully", {
           whyBarcode,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getActiveWhyBarcodes(req, res, next) {
+    try {
+      const whyBarcodes = await prisma.whyBarcode.findMany({
+        where: { isActive: true },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "Active Why Barcodes retrieved successfully", {
+          whyBarcodes,
         })
       );
     } catch (error) {

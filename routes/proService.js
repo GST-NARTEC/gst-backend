@@ -17,4 +17,5 @@ router.get("/:id", ProServiceController.getProService);
 router.put("/:id", imageConfig, ProServiceController.updateProService);
 router.delete("/:id", ProServiceController.deleteProService);
 
+
 export default router;

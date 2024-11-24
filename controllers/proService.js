@@ -11,6 +11,8 @@ const proServiceSchema = Joi.object({
   descriptionAr: Joi.string().required(),
   image: Joi.string().allow("", null),
   status: Joi.number().valid(0, 1).default(1),
+  captionEn: Joi.string().allow("", null),
+  captionAr: Joi.string().allow("", null),
 });
 
 class ProServiceController {

@@ -16,5 +16,5 @@ router.get("/", WhyBarcodeController.getWhyBarcodes);
 router.get("/:id", WhyBarcodeController.getWhyBarcode);
 router.put("/:id", imageConfig, WhyBarcodeController.updateWhyBarcode);
 router.delete("/:id", WhyBarcodeController.deleteWhyBarcode);
-
+router.get("/active", WhyBarcodeController.getActiveWhyBarcodes);
 export default router;

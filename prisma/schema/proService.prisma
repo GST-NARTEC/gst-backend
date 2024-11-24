@@ -5,6 +5,8 @@ model ProService {
     titleAr         String?
     descriptionEn   String?
     descriptionAr   String?
+    captionEn       String?
+    captionAr       String?
     status          Int     @default(1)
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
