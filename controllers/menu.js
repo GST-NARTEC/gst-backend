@@ -46,6 +46,9 @@ class MenuController {
         include: {
           subMenus: true,
         },
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       res
@@ -66,7 +69,7 @@ class MenuController {
           subMenus: true,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       });
 

@@ -54,6 +54,9 @@ class SubMenuController {
         include: {
           menu: true,
         },
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       res

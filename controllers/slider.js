@@ -58,7 +58,7 @@ class SliderController {
     try {
       const sliders = await prisma.slider.findMany({
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       });
 
@@ -79,7 +79,7 @@ class SliderController {
           status: 1,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       });
 

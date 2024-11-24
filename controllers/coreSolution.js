@@ -46,7 +46,7 @@ class CoreSolutionController {
     try {
       const coreSolutions = await prisma.coreSolution.findMany({
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       });
 
