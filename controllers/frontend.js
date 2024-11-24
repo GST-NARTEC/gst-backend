@@ -149,7 +149,7 @@ export const creatmega_menu_categories = async (req, res, next) => {
   try {
     const { error, value } = mega_menu_categories.validate(req.body);
     if (error) {
-      throw new MyError(error.details[0].message, 400);
+      throw new createError(error.details[0].message, 400);
     }
 
     if (req.file) {
@@ -203,7 +203,7 @@ export const updatemega_menu_categories = async (req, res, next) => {
     const { error, value } = mega_menu_categories.validate(req.body);
 
     if (error) {
-      throw new MyError(error.details[0].message, 400);
+      throw new createError(error.details[0].message, 400);
     }
 
     const existingCategory = await prisma.mega_menu_categories.findUnique({
@@ -211,7 +211,7 @@ export const updatemega_menu_categories = async (req, res, next) => {
     });
 
     if (!existingCategory) {
-      throw new MyError("Mega menu category not found", 404);
+      throw new createError("Mega menu category not found", 404);
     }
 
     if (req.file) {
@@ -245,7 +245,7 @@ export const deletemega_menu_categories = async (req, res, next) => {
     });
 
     if (!category) {
-      throw new MyError("Mega menu category not found", 404);
+      throw new createError("Mega menu category not found", 404);
     }
 
     if (category.image) {
