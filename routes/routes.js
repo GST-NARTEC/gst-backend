@@ -10,6 +10,7 @@ import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
 import productRouter from "./product.js";
+import proServiceRoutes from "./proService.js";
 import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import userRoutes from "./user.js";
@@ -31,5 +32,6 @@ router.use("/menu/v1", menuRoutes);
 router.use("/submenu/v1", subMenuRoutes);
 router.use("/slider/v1", sliderRoutes);
 router.use("/core-solution/v1", coreSolutionRoutes);
+router.use("/pro-service/v1", proServiceRoutes);
 
 export default router;

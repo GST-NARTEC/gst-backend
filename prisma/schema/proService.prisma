@@ -1,0 +1,11 @@
+model ProService {
+    id              String  @id @default(uuid())
+    image           String?
+    titleEn         String?
+    titleAr         String?
+    descriptionEn   String?
+    descriptionAr   String?
+    status          Int     @default(1)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+}
