@@ -21,7 +21,7 @@
  *           type: number
  *           enum: [0, 1]
  *
- * /slider/v1:
+ * /api/slider/v1:
  *   post:
  *     security:
  *       - bearerAuth: []
@@ -65,7 +65,7 @@
  *       200:
  *         description: List of sliders retrieved successfully
  *
- * /slider/v1/{id}:
+ * /api/slider/v1/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []

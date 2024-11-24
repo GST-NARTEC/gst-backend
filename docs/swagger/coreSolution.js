@@ -15,7 +15,7 @@
  *         image:
  *           type: string
  *
- * /core-solution/v1:
+ * /api/core-solution/v1:
  *   post:
  *     security:
  *       - bearerAuth: []
@@ -49,7 +49,7 @@
  *       200:
  *         description: List of core solutions retrieved successfully
  *
- * /core-solution/v1/{id}:
+ * /api/core-solution/v1/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []

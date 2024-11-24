@@ -16,7 +16,7 @@
  *         menuId:
  *           type: string
  *
- * /submenu/v1:
+ * /api/submenu/v1:
  *   post:
  *     security:
  *       - bearerAuth: []
@@ -39,7 +39,7 @@
  *       200:
  *         description: List of submenus retrieved successfully
  *
- * /submenu/v1/{id}:
+ * /api/submenu/v1/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []
