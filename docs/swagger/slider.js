@@ -5,9 +5,6 @@
  *     Slider:
  *       type: object
  *       properties:
- *         id:
- *           type: string
- *           format: uuid
  *         titleEn:
  *           type: string
  *         titleAr:
@@ -20,24 +17,16 @@
  *           type: string
  *         captionAr:
  *           type: string
- *         imageEn:
- *           type: string
- *         imageAr:
- *           type: string
  *         status:
- *           type: integer
+ *           type: number
  *           enum: [0, 1]
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
  *
- * /api/slider/v1:
+ * /slider/v1:
  *   post:
- *     tags: [Sliders]
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new slider
+ *     tags: [Slider]
  *     requestBody:
  *       required: true
  *       content:
@@ -64,46 +53,24 @@
  *                 type: string
  *                 format: binary
  *               status:
- *                 type: integer
- *                 enum: [0, 1]
+ *                 type: number
  *     responses:
  *       201:
  *         description: Slider created successfully
  *
  *   get:
- *     tags: [Sliders]
  *     summary: Get all sliders
+ *     tags: [Slider]
  *     responses:
  *       200:
  *         description: List of sliders retrieved successfully
  *
- * /api/slider/v1/active:
- *   get:
- *     tags: [Sliders]
- *     summary: Get all active sliders
- *     responses:
- *       200:
- *         description: List of active sliders retrieved successfully
- *
- * /api/slider/v1/{id}:
- *   get:
- *     tags: [Sliders]
- *     summary: Get a slider by ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Slider retrieved successfully
- *       404:
- *         description: Slider not found
- *
+ * /slider/v1/{id}:
  *   put:
- *     tags: [Sliders]
+ *     security:
+ *       - bearerAuth: []
  *     summary: Update a slider
+ *     tags: [Slider]
  *     parameters:
  *       - in: path
  *         name: id
@@ -115,38 +82,16 @@
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               titleEn:
- *                 type: string
- *               titleAr:
- *                 type: string
- *               descriptionEn:
- *                 type: string
- *               descriptionAr:
- *                 type: string
- *               captionEn:
- *                 type: string
- *               captionAr:
- *                 type: string
- *               imageEn:
- *                 type: string
- *                 format: binary
- *               imageAr:
- *                 type: string
- *                 format: binary
- *               status:
- *                 type: integer
- *                 enum: [0, 1]
+ *             $ref: '#/components/schemas/Slider'
  *     responses:
  *       200:
  *         description: Slider updated successfully
- *       404:
- *         description: Slider not found
  *
  *   delete:
- *     tags: [Sliders]
+ *     security:
+ *       - bearerAuth: []
  *     summary: Delete a slider
+ *     tags: [Slider]
  *     parameters:
  *       - in: path
  *         name: id
@@ -156,6 +101,4 @@
  *     responses:
  *       200:
  *         description: Slider deleted successfully
- *       404:
- *         description: Slider not found
  */

@@ -23,9 +23,16 @@ const swaggerDefinition = {
       url: DOMAIN,
       description: "Running server",
     },
-
-    // add more hosts...
   ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+  },
 };
 
 // To get __dirname in ES modules
@@ -50,6 +57,7 @@ const options = {
     path.join(__dirname, "../docs/swagger/menu.js"),
     path.join(__dirname, "../docs/swagger/subMenu.js"),
     path.join(__dirname, "../docs/swagger/slider.js"),
+    path.join(__dirname, "../docs/swagger/coreSolution.js"),
     // add more paths...
   ],
 };

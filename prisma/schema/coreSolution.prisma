@@ -1,0 +1,9 @@
+model CoreSolution {
+    id              String  @id @default(uuid())
+    titleEn         String?
+    titleAr         String?
+    date            DateTime?
+    image           String?
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+}

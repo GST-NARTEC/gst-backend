@@ -1,7 +1,25 @@
 /**
  * @swagger
- * /api/submenu/v1:
+ * components:
+ *   schemas:
+ *     SubMenu:
+ *       type: object
+ *       properties:
+ *         nameEn:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         headingEn:
+ *           type: string
+ *         headingAr:
+ *           type: string
+ *         menuId:
+ *           type: string
+ *
+ * /submenu/v1:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new submenu
  *     tags: [SubMenu]
  *     requestBody:
@@ -9,62 +27,22 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - nameEn
- *               - nameAr
- *               - headingEn
- *               - headingAr
- *               - menuId
- *             properties:
- *               nameEn:
- *                 type: string
- *               nameAr:
- *                 type: string
- *               headingEn:
- *                 type: string
- *               headingAr:
- *                 type: string
- *               menuId:
- *                 type: string
+ *             $ref: '#/components/schemas/SubMenu'
  *     responses:
  *       201:
  *         description: SubMenu created successfully
- *       400:
- *         description: Invalid input
- *       404:
- *         description: Menu not found
  *
  *   get:
  *     summary: Get all submenus
  *     tags: [SubMenu]
- *     parameters:
- *       - in: query
- *         name: menuId
- *         schema:
- *           type: string
- *         description: Filter submenus by menu ID
  *     responses:
  *       200:
- *         description: List of submenus
+ *         description: List of submenus retrieved successfully
  *
- * /api/submenu/v1/{id}:
- *   get:
- *     summary: Get a submenu by ID
- *     tags: [SubMenu]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: SubMenu details
- *       404:
- *         description: SubMenu not found
- *
+ * /submenu/v1/{id}:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Update a submenu
  *     tags: [SubMenu]
  *     parameters:
@@ -78,31 +56,14 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - nameEn
- *               - nameAr
- *               - headingEn
- *               - headingAr
- *               - menuId
- *             properties:
- *               nameEn:
- *                 type: string
- *               nameAr:
- *                 type: string
- *               headingEn:
- *                 type: string
- *               headingAr:
- *                 type: string
- *               menuId:
- *                 type: string
+ *             $ref: '#/components/schemas/SubMenu'
  *     responses:
  *       200:
  *         description: SubMenu updated successfully
- *       404:
- *         description: SubMenu not found
  *
  *   delete:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Delete a submenu
  *     tags: [SubMenu]
  *     parameters:
@@ -114,6 +75,4 @@
  *     responses:
  *       200:
  *         description: SubMenu deleted successfully
- *       404:
- *         description: SubMenu not found
  */

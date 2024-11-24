@@ -2,25 +2,25 @@
  * @swagger
  * components:
  *   schemas:
- *     Menu:
+ *     CoreSolution:
  *       type: object
  *       properties:
- *         nameEn:
+ *         titleEn:
  *           type: string
- *         nameAr:
+ *         titleAr:
  *           type: string
- *         status:
- *           type: number
- *           enum: [0, 1]
+ *         date:
+ *           type: string
+ *           format: date-time
  *         image:
  *           type: string
  *
- * /api/menu/v1:
+ * /core-solution/v1:
  *   post:
  *     security:
  *       - bearerAuth: []
- *     summary: Create a new menu
- *     tags: [Menu]
+ *     summary: Create a new core solution
+ *     tags: [CoreSolution]
  *     requestBody:
  *       required: true
  *       content:
@@ -28,32 +28,33 @@
  *           schema:
  *             type: object
  *             properties:
- *               nameEn:
+ *               titleEn:
  *                 type: string
- *               nameAr:
+ *               titleAr:
  *                 type: string
- *               status:
- *                 type: number
+ *               date:
+ *                 type: string
+ *                 format: date-time
  *               image:
  *                 type: string
  *                 format: binary
  *     responses:
  *       201:
- *         description: Menu created successfully
+ *         description: Core Solution created successfully
  *
  *   get:
- *     summary: Get all menus
- *     tags: [Menu]
+ *     summary: Get all core solutions
+ *     tags: [CoreSolution]
  *     responses:
  *       200:
- *         description: List of menus retrieved successfully
+ *         description: List of core solutions retrieved successfully
  *
- * /api/menu/v1/{id}:
+ * /core-solution/v1/{id}:
  *   put:
  *     security:
  *       - bearerAuth: []
- *     summary: Update a menu
- *     tags: [Menu]
+ *     summary: Update a core solution
+ *     tags: [CoreSolution]
  *     parameters:
  *       - in: path
  *         name: id
@@ -65,16 +66,16 @@
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Menu'
+ *             $ref: '#/components/schemas/CoreSolution'
  *     responses:
  *       200:
- *         description: Menu updated successfully
+ *         description: Core Solution updated successfully
  *
  *   delete:
  *     security:
  *       - bearerAuth: []
- *     summary: Delete a menu
- *     tags: [Menu]
+ *     summary: Delete a core solution
+ *     tags: [CoreSolution]
  *     parameters:
  *       - in: path
  *         name: id
@@ -83,5 +84,5 @@
  *           type: string
  *     responses:
  *       200:
- *         description: Menu deleted successfully
+ *         description: Core Solution deleted successfully
  */
