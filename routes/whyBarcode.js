@@ -1,5 +1,6 @@
 import express from "express";
 import { uploadSingle } from "multermate-es";
+
 import WhyBarcodeController from "../controllers/whyBarcode.js";
 
 const router = express.Router();
