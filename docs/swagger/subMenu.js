@@ -4,7 +4,13 @@
  *   schemas:
  *     SubMenu:
  *       type: object
+ *       required:
+ *         - nameEn
+ *         - nameAr
+ *         - menuId
  *       properties:
+ *         id:
+ *           type: string
  *         nameEn:
  *           type: string
  *         nameAr:
@@ -16,35 +22,84 @@
  *         menuId:
  *           type: string
  *
- * /api/submenu/v1:
+ * /api/submenus:
+ *   get:
+ *     tags: [SubMenus]
+ *     summary: Get all submenus
+ *     parameters:
+ *       - in: query
+ *         name: menuId
+ *         schema:
+ *           type: string
+ *         description: Filter by menu ID
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     subMenus:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/SubMenu'
+ *
  *   post:
- *     security:
- *       - bearerAuth: []
+ *     tags: [SubMenus]
  *     summary: Create a new submenu
- *     tags: [SubMenu]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/SubMenu'
- *     responses:
- *       201:
- *         description: SubMenu created successfully
+ *             type: object
+ *             required:
+ *               - nameEn
+ *               - nameAr
+ *               - menuId
+ *             properties:
+ *               nameEn:
+ *                 type: string
+ *               nameAr:
+ *                 type: string
+ *               headingEn:
+ *                 type: string
+ *               headingAr:
+ *                 type: string
+ *               menuId:
+ *                 type: string
  *
+ * /api/submenus/{id}:
  *   get:
- *     summary: Get all submenus
- *     tags: [SubMenu]
+ *     tags: [SubMenus]
+ *     summary: Get submenu by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: List of submenus retrieved successfully
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SubMenu'
  *
- * /api/submenu/v1/{id}:
  *   put:
- *     security:
- *       - bearerAuth: []
- *     summary: Update a submenu
- *     tags: [SubMenu]
+ *     tags: [SubMenus]
+ *     summary: Update submenu
  *     parameters:
  *       - in: path
  *         name: id
@@ -56,23 +111,26 @@
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/SubMenu'
- *     responses:
- *       200:
- *         description: SubMenu updated successfully
+ *             type: object
+ *             properties:
+ *               nameEn:
+ *                 type: string
+ *               nameAr:
+ *                 type: string
+ *               headingEn:
+ *                 type: string
+ *               headingAr:
+ *                 type: string
+ *               menuId:
+ *                 type: string
  *
  *   delete:
- *     security:
- *       - bearerAuth: []
- *     summary: Delete a submenu
- *     tags: [SubMenu]
+ *     tags: [SubMenus]
+ *     summary: Delete submenu
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *     responses:
- *       200:
- *         description: SubMenu deleted successfully
  */

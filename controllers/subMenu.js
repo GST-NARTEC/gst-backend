@@ -6,8 +6,8 @@ import response from "../utils/response.js";
 const subMenuSchema = Joi.object({
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
-  headingEn: Joi.string().required(),
-  headingAr: Joi.string().required(),
+  headingEn: Joi.string().allow("", null),
+  headingAr: Joi.string().allow("", null),
   menuId: Joi.string().required(),
 });
 
@@ -53,9 +53,6 @@ class SubMenuController {
         where: whereClause,
         include: {
           menu: true,
-        },
-        orderBy: {
-          createdAt: "desc",
         },
       });
 

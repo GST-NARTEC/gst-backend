@@ -4,23 +4,108 @@
  *   schemas:
  *     Menu:
  *       type: object
+ *       required:
+ *         - nameEn
+ *         - nameAr
+ *         - status
  *       properties:
+ *         id:
+ *           type: string
  *         nameEn:
  *           type: string
  *         nameAr:
  *           type: string
  *         status:
- *           type: number
+ *           type: integer
  *           enum: [0, 1]
  *         image:
  *           type: string
+ *         subMenus:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/SubMenu'
+ */
+
+/**
+ * @swagger
+ * /api/menus:
+ *   get:
+ *     tags: [Menus]
+ *     summary: Get all menus
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     menus:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Menu'
  *
- * /api/menu/v1:
  *   post:
- *     security:
- *       - bearerAuth: []
+ *     tags: [Menus]
  *     summary: Create a new menu
- *     tags: [Menu]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nameEn
+ *               - nameAr
+ *               - status
+ *             properties:
+ *               nameEn:
+ *                 type: string
+ *               nameAr:
+ *                 type: string
+ *               status:
+ *                 type: integer
+ *                 enum: [0, 1]
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *
+ * /api/menus/{id}:
+ *   get:
+ *     tags: [Menus]
+ *     summary: Get menu by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Menu'
+ *
+ *   put:
+ *     tags: [Menus]
+ *     summary: Update menu
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -33,55 +118,19 @@
  *               nameAr:
  *                 type: string
  *               status:
- *                 type: number
+ *                 type: integer
+ *                 enum: [0, 1]
  *               image:
  *                 type: string
  *                 format: binary
- *     responses:
- *       201:
- *         description: Menu created successfully
- *
- *   get:
- *     summary: Get all menus
- *     tags: [Menu]
- *     responses:
- *       200:
- *         description: List of menus retrieved successfully
- *
- * /api/menu/v1/{id}:
- *   put:
- *     security:
- *       - bearerAuth: []
- *     summary: Update a menu
- *     tags: [Menu]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             $ref: '#/components/schemas/Menu'
- *     responses:
- *       200:
- *         description: Menu updated successfully
  *
  *   delete:
- *     security:
- *       - bearerAuth: []
- *     summary: Delete a menu
- *     tags: [Menu]
+ *     tags: [Menus]
+ *     summary: Delete menu
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *     responses:
- *       200:
- *         description: Menu deleted successfully
  */

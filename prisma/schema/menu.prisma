@@ -4,7 +4,7 @@ model Menu {
   nameAr    String?
   status    Int? @default(1)
   image     String?  
-  subMenus  SubMenu[]
+  subMenus  SubMenu[] @relation("MenuToSubMenu")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
