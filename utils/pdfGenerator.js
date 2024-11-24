@@ -47,7 +47,7 @@ class PDFGenerator {
           date: new Date(invoice.createdAt).toLocaleString(),
           number: invoice.invoiceNumber,
           type: order.paymentType,
-          customer: user.companyNameEn,
+          customer: user.companyNameEn + " / " + user.companyNameAr,
         },
         currency: {
           name: currency.name,
@@ -56,15 +56,16 @@ class PDFGenerator {
         items: order.orderItems.map((item) => ({
           description: item.product.title,
           quantity: item.quantity,
-          amount: `AED ${item.price.toFixed(2)}`,
+          amount: `${currency.symbol} ${item.price.toFixed(2)}`,
         })),
         totals: {
-          subtotal: `AED ${order.totalAmount.toFixed(2)}`,
-          vat: `AED ${invoice.vat.toFixed(2)}`,
-          grandTotal: `AED ${order.overallAmount.toFixed(2)}`,
+          subtotal: `${currency.symbol} ${order.totalAmount.toFixed(2)}`,
+          vat: `${currency.symbol} ${invoice.vat.toFixed(2)}`,
+          grandTotal: `${currency.symbol} ${order.overallAmount.toFixed(2)}`,
         },
         contact: {
           phone: user.mobile,
+          email: user.email,
           address: user.streetAddress,
         },
         tax: {

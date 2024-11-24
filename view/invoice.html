@@ -107,6 +107,26 @@
         font-style: italic;
         margin-top: 10px;
       }
+      .billing-details {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      .billing-details td {
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+      .billing-details td:first-child {
+        width: 200px;
+        background-color: #f9f9f9;
+      }
+      .section-header.bill-to {
+        background-color: #003366;
+        color: white;
+        padding: 8px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -122,36 +142,41 @@
     >
       <div style="font-size: 26px; font-weight: bold">Invoice</div>
       <div class="logo">
-        <img src="https://via.placeholder.com/80" alt="GST Logo" />
+        <img
+          src="http://localhost:3000/assets/images/gst-logo.png"
+          alt="GST Logo"
+        />
       </div>
     </div>
 
     <div class="header">
-      <h1>Bill To:</h1>
-    </div>
-
-    <div class="contact-info">
-      <div>Phone / هاتف: +966 50 123 4567</div>
-      <div>123 King Fahd Road, Riyadh, Saudi Arabia</div>
-    </div>
-
-    <div class="invoice-details">
-      <div class="bilingual">
-        <span>INVOICE DATE / تاريخ الفاتورة:</span>
-        <span>2024-03-20</span>
-      </div>
-      <div class="bilingual">
-        <span>INVOICE ID / رقم الفاتورة:</span>
-        <span>#INV-2024-001</span>
-      </div>
-      <div class="bilingual">
-        <span>TYPE / النوع:</span>
-        <span>Standard Invoice</span>
-      </div>
-      <div class="bilingual">
-        <span>CUSTOMER / العميل:</span>
-        <span>Sample Company LLC</span>
-      </div>
+      <div class="section-header bill-to bilingual">Bill To / فاتورة إلى</div>
+      <table class="billing-details">
+        <tr>
+          <td class="bilingual">Company Name / اسم الشركة</td>
+          <td>Test Company Name EN / شركة اختبار</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Mobile Number / رقم الجوال</td>
+          <td>+966 50 123 4567</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Email / البريد الإلكتروني</td>
+          <td>test@company.com</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Address / العنوان</td>
+          <td>123 Test Street, Riyadh, Saudi Arabia</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Invoice No / رقم الفاتورة</td>
+          <td>#INV-2024-001</td>
+        </tr>
+        <tr>
+          <td class="bilingual">Invoice Date / تاريخ الفاتورة</td>
+          <td>2024-03-20 12:00:00</td>
+        </tr>
+      </table>
     </div>
 
     <table class="items-table">
@@ -164,19 +189,14 @@
       </thead>
       <tbody>
         <tr>
-          <td>Web Development Services</td>
-          <td>1x</td>
-          <td>SAR 5,000.00</td>
-        </tr>
-        <tr>
-          <td>UI/UX Design</td>
+          <td>Test Product 1</td>
           <td>2x</td>
-          <td>SAR 3,000.00</td>
+          <td>AED 100.00</td>
         </tr>
         <tr>
-          <td>Server Maintenance</td>
+          <td>Test Product 2</td>
           <td>1x</td>
-          <td>SAR 1,500.00</td>
+          <td>AED 150.00</td>
         </tr>
       </tbody>
     </table>
@@ -184,24 +204,17 @@
     <div class="totals">
       <div class="bilingual">
         <span>Subtotal / المجموع الفرعي</span>
-        <span>SAR 9,500.00</span>
+        <span>AED 350.00</span>
       </div>
 
-      <!-- Example with percentage tax -->
       <div class="bilingual">
         <span>VAT (15%) / ضريبة القيمة المضافة</span>
-        <span>SAR 1,425.00</span>
+        <span>AED 52.50</span>
       </div>
-
-      <!-- OR Example with fixed tax -->
-      <!-- <div class="bilingual">
-        <span>VAT (Fixed) / ضريبة القيمة المضافة</span>
-        <span>SAR 500.00</span>
-      </div> -->
 
       <div class="bilingual">
         <span>Grand Total / المجموع الكلي</span>
-        <span>SAR 10,925.00</span>
+        <span>AED 402.50</span>
       </div>
     </div>
 

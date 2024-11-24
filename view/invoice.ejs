@@ -108,6 +108,26 @@
         font-style: italic;
         margin-top: 10px;
       }
+      .billing-details {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      .billing-details td {
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+      .billing-details td:first-child {
+        width: 200px;
+        background-color: #f9f9f9;
+      }
+      .section-header.bill-to {
+        background-color: #003366;
+        color: white;
+        padding: 8px;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -125,10 +145,6 @@
       <div class="logo">
         <img src="<%= logo %>" alt="GST Logo" />
       </div>
-    </div>
-
-    <div class="header">
-      <h1>Bill To:</h1>
     </div>
 
     <!-- <div class="contact-info">
@@ -154,6 +170,36 @@
         <span><%= invoice.customer %></span>
       </div>
     </div> -->
+
+    <div class="header">
+      <div class="section-header bill-to bilingual">Bill To / فاتورة إلى</div>
+      <table class="billing-details">
+        <tr>
+          <td class="bilingual">Company Name / اسم الشركة</td>
+          <td><%= invoice.customer %></td>
+        </tr>
+        <tr>
+          <td class="bilingual">Mobile Number / رقم الجوال</td>
+          <td><%= contact.phone %></td>
+        </tr>
+        <tr>
+          <td class="bilingual">Email / البريد الإلكتروني</td>
+          <td><%= contact.email %></td>
+        </tr>
+        <tr>
+          <td class="bilingual">Address / العنوان</td>
+          <td><%= contact.address %></td>
+        </tr>
+        <tr>
+          <td class="bilingual">Invoice No / رقم الفاتورة</td>
+          <td>#<%= invoice.number %></td>
+        </tr>
+        <tr>
+          <td class="bilingual">Invoice Date / تاريخ الفاتورة</td>
+          <td><%= invoice.date %></td>
+        </tr>
+      </table>
+    </div>
 
     <table class="items-table">
       <thead>
