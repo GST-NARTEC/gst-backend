@@ -43,7 +43,7 @@
 
 /**
  * @swagger
- * /api/pro-services/v1:
+ * /api/pro-service/v1:
  *   post:
  *     summary: Create a new pro service
  *     security:
@@ -85,7 +85,7 @@
  *       200:
  *         description: List of pro services retrieved successfully
  *
- * /api/pro-services/v1/active:
+ * /api/pro-service/v1/active:
  *   get:
  *     summary: Get all active pro services
  *     tags: [ProServices]
@@ -93,7 +93,7 @@
  *       200:
  *         description: List of active pro services retrieved successfully
  *
- * /api/pro-services/v1/{id}:
+ * /api/pro-service/v1/{id}:
  *   get:
  *     summary: Get a pro service by ID
  *     tags: [ProServices]
