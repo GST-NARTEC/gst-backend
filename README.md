@@ -16,6 +16,10 @@ A Node.js backend service for GST (Goods and Services Tax) management system wit
 - 📍 Geolocation Support
 - 📝 License Management System
 - 💰 Currency Management
+- 🎯 Core Solutions Management
+- 🖼️ Slider Management
+- 🌟 Pro Services Management
+- 📚 Menu & SubMenu System
 
 ## Tech Stack
 
@@ -83,12 +87,45 @@ The API documentation is available at `/api-docs` when running the server. Key e
 - `POST /api/user/v1/login` - User login
 - `POST /api/user/v1/verify-email` - Email verification
 
-### Products
+### Products & Categories
 
 - `POST /api/products/v1` - Create product with tax
 - `GET /api/products/v1` - List products
 - `PUT /api/products/v1/:id` - Update product
 - `DELETE /api/products/v1/:id` - Delete product
+- `POST /api/categories` - Create category
+- `GET /api/categories` - List categories
+
+### Pro Services
+
+- `POST /api/pro-services` - Create pro service
+- `GET /api/pro-services` - List all pro services
+- `GET /api/pro-services/active` - List active pro services
+- `PUT /api/pro-services/:id` - Update pro service
+- `DELETE /api/pro-services/:id` - Delete pro service
+
+### Sliders
+
+- `POST /api/sliders` - Create slider
+- `GET /api/sliders` - List all sliders
+- `GET /api/sliders/active` - List active sliders
+- `PUT /api/sliders/:id` - Update slider
+- `DELETE /api/sliders/:id` - Delete slider
+
+### Menu Management
+
+- `POST /api/menus` - Create menu
+- `GET /api/menus` - List all menus
+- `GET /api/menus/active` - List active menus
+- `POST /api/sub-menus` - Create sub-menu
+- `GET /api/sub-menus` - List sub-menus
+
+### Core Solutions
+
+- `POST /api/core-solutions` - Create core solution
+- `GET /api/core-solutions` - List core solutions
+- `PUT /api/core-solutions/:id` - Update core solution
+- `DELETE /api/core-solutions/:id` - Delete core solution
 
 ### Cart & Checkout
 
@@ -107,6 +144,8 @@ The API documentation is available at `/api-docs` when running the server. Key e
 - `GET /api/vat/v1` - List VAT rates
 - `POST /api/currency/v1` - Add currency
 - `GET /api/currency/v1` - List currencies
+
+## File Structure
 
 ## File Structure
 
