@@ -160,6 +160,13 @@ class MenuController {
         throw new MyError("Menu not found", 404);
       }
 
+      // First update all associated submenus to set menuId to null
+      await prisma.subMenu.updateMany({
+        where: { menuId: id },
+        data: { menuId: null },
+      });
+
+      // Then delete the menu
       if (existingMenu.image) {
         await deleteFile(existingMenu.image);
       }

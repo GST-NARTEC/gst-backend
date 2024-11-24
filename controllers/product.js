@@ -9,9 +9,9 @@ const productSchema = Joi.object({
   title: Joi.string().required().min(3).max(100),
   description: Joi.string().allow("", null),
   price: Joi.number().min(0).required(),
-  image: Joi.string().allow("", null),
-  categoryId: Joi.string().uuid().allow(null, ""),
-  qty: Joi.number().integer().min(0).default(0),
+  image: Joi.string().allow("", null).optional(),
+  categoryId: Joi.string().uuid().allow(null, "").optional(),
+  qty: Joi.number().integer().min(0).optional(),
   status: Joi.string().valid("active", "inactive").default("active"),
 });
 
