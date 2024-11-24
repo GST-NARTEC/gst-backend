@@ -15,6 +15,7 @@ import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import userRoutes from "./user.js";
 import vatRoutes from "./vat.js";
+import whyBarcodeRoutes from "./whyBarcode.js";
 
 const router = express.Router();
 
@@ -33,5 +34,6 @@ router.use("/submenu/v1", subMenuRoutes);
 router.use("/slider/v1", sliderRoutes);
 router.use("/core-solution/v1", coreSolutionRoutes);
 router.use("/pro-service/v1", proServiceRoutes);
+router.use("/v1/whybarcode", whyBarcodeRoutes);
 
 export default router;
