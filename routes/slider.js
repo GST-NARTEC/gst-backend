@@ -2,7 +2,6 @@ import express from "express";
 import { uploadMultiple } from "multermate-es";
 
 import SliderController from "../controllers/slider.js";
-import { isAuth } from "../middlewares/isAuth.js";
 
 const router = express.Router();
 
@@ -23,11 +22,11 @@ const imageConfig = uploadMultiple({
   fileSizeLimit: 5 * 1024 * 1024, // 5MB per file
 });
 
-router.post("/", isAuth, imageConfig, SliderController.createSlider);
+router.post("/", imageConfig, SliderController.createSlider);
 router.get("/", SliderController.getSliders);
 router.get("/active", SliderController.getActiveSliders);
 router.get("/:id", SliderController.getSlider);
-router.put("/:id", isAuth, imageConfig, SliderController.updateSlider);
-router.delete("/:id", isAuth, SliderController.deleteSlider);
+router.put("/:id", imageConfig, SliderController.updateSlider);
+router.delete("/:id", SliderController.deleteSlider);
 
 export default router;
