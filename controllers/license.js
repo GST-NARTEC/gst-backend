@@ -20,7 +20,7 @@ class LicenseController {
       const { licenseKey } = req.body;
 
       if (!licenseKey) {
-        throw new MyError("License key is required", 400);
+        throw new MyError("License number is required", 400);
       }
 
       const license = await prisma.license.findFirst({
@@ -31,6 +31,16 @@ class LicenseController {
 
       if (!license) {
         throw new MyError("Invalid license number", 404);
+      }
+
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          companyLicenseNo: licenseKey,
+        },
+      });
+
+      if (existingUser) {
+        throw new MyError("License is already in use by another company", 400);
       }
 
       res.status(200).json(
