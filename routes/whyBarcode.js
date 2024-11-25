@@ -11,10 +11,11 @@ const imageConfig = uploadSingle({
   fileTypes: ["images"],
 });
 
-router.post("/", imageConfig, WhyBarcodeController.createWhyBarcode);
+// sometime get router making conflict with other routes so give priority to get routes
+router.get("/active", WhyBarcodeController.getActiveWhyBarcodes);
 router.get("/", WhyBarcodeController.getWhyBarcodes);
 router.get("/:id", WhyBarcodeController.getWhyBarcode);
+router.post("/", imageConfig, WhyBarcodeController.createWhyBarcode);
 router.put("/:id", imageConfig, WhyBarcodeController.updateWhyBarcode);
 router.delete("/:id", WhyBarcodeController.deleteWhyBarcode);
-router.get("/active", WhyBarcodeController.getActiveWhyBarcodes);
 export default router;

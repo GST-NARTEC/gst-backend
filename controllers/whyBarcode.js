@@ -89,11 +89,21 @@ class WhyBarcodeController {
   static async getActiveWhyBarcodes(req, res, next) {
     try {
       const whyBarcodes = await prisma.whyBarcode.findMany({
-        where: { isActive: true },
+        where: { 
+          isActive: true,
+        },
         orderBy: {
-          createdAt: "asc",
+          createdAt: 'asc',
         },
       });
+
+      if (!whyBarcodes || whyBarcodes.length === 0) {
+        return res.status(200).json(
+          response(200, true, "No active why barcodes found", {
+            whyBarcodes: [],
+          })
+        );
+      }
 
       res.status(200).json(
         response(200, true, "Active Why Barcodes retrieved successfully", {
