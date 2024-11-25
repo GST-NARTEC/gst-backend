@@ -7,22 +7,23 @@
  *       properties:
  *         id:
  *           type: string
- *           description: Auto-generated unique identifier
+ *           format: uuid
  *         titleEn:
  *           type: string
- *           description: Title in English
  *         titleAr:
  *           type: string
- *           description: Title in Arabic
  *         descriptionEn:
  *           type: string
- *           description: Description in English
  *         descriptionAr:
  *           type: string
- *           description: Description in Arabic
  *         image:
  *           type: string
- *           description: Image URL
+ *         captionEn:
+ *           type: string
+ *         captionAr:
+ *           type: string
+ *         isActive:
+ *           type: boolean
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -30,10 +31,25 @@
  *           type: string
  *           format: date-time
  *
- * /v1/api/whybarcode:
+ * /api/why-barcode:
+ *   get:
+ *     tags: [Why Barcode]
+ *     summary: Get all why barcodes
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/WhyBarcode'
+ *
  *   post:
  *     tags: [Why Barcode]
- *     summary: Create a new why barcode entry
+ *     summary: Create a new why barcode
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -52,21 +68,25 @@
  *               image:
  *                 type: string
  *                 format: binary
- *     responses:
- *       201:
- *         description: Why Barcode created successfully
+ *               captionEn:
+ *                 type: string
+ *               captionAr:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
  *
+ * /api/why-barcode/active:
  *   get:
  *     tags: [Why Barcode]
- *     summary: Get all why barcode entries
+ *     summary: Get active why barcodes
  *     responses:
  *       200:
- *         description: List of why barcode entries retrieved successfully
+ *         description: Success
  *
- * /v1/api/whybarcode/{id}:
+ * /api/why-barcode/{id}:
  *   get:
  *     tags: [Why Barcode]
- *     summary: Get a specific why barcode entry
+ *     summary: Get why barcode by ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -75,13 +95,13 @@
  *           type: string
  *     responses:
  *       200:
- *         description: Why Barcode retrieved successfully
- *       404:
- *         description: Why Barcode not found
+ *         description: Success
  *
  *   put:
  *     tags: [Why Barcode]
- *     summary: Update a why barcode entry
+ *     summary: Update why barcode
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -89,7 +109,6 @@
  *         schema:
  *           type: string
  *     requestBody:
- *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
@@ -106,15 +125,18 @@
  *               image:
  *                 type: string
  *                 format: binary
- *     responses:
- *       200:
- *         description: Why Barcode updated successfully
- *       404:
- *         description: Why Barcode not found
+ *               captionEn:
+ *                 type: string
+ *               captionAr:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
  *
  *   delete:
  *     tags: [Why Barcode]
- *     summary: Delete a why barcode entry
+ *     summary: Delete why barcode
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,5 +145,5 @@
  *           type: string
  *     responses:
  *       200:
- *         description: Why Barcode deleted successfully
+ *         description: Success
  */
