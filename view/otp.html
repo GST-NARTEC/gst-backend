@@ -6,62 +6,117 @@
     <title>Email Verification</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         line-height: 1.6;
         margin: 0;
         padding: 0;
-        background-color: #f4f4f4;
+        background-color: #f8f9fa;
+        color: #333;
       }
       .container {
         max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
+        margin: 40px auto;
+        padding: 0;
         background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #1b365d 0%, #2c5282 100%);
+        padding: 30px 20px;
+        text-align: center;
+      }
+      .logo {
+        margin-bottom: 20px;
+      }
+      .logo img {
+        width: 180px;
+        height: auto;
+        background-color: white;
+        padding: 12px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-      .header {
-        text-align: center;
-        padding: 20px 0;
-        border-bottom: 2px solid #1b365d;
-      }
-      .logo {
-        margin-bottom: 15px;
-      }
-      .logo img {
-        width: 150px;
-        height: auto;
-        background-color: white;
-        padding: 8px;
-        border-radius: 4px;
+      .header h2 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
       }
       .content {
-        padding: 20px 0;
+        padding: 40px 30px;
         text-align: center;
+        background-color: #ffffff;
+      }
+      .content p {
+        color: #4a5568;
+        font-size: 16px;
+        margin: 0 0 20px 0;
       }
       .otp-code {
-        font-size: 32px;
-        letter-spacing: 4px;
+        font-size: 36px;
+        letter-spacing: 8px;
         color: #1b365d;
         font-weight: bold;
         padding: 20px;
-        background: #f9f9f9;
-        border-radius: 4px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin: 30px 0;
+        border: 2px dashed #e2e8f0;
+      }
+      .warning {
+        color: #718096;
+        background-color: #f7fafc;
+        padding: 15px;
+        border-radius: 8px;
         margin: 20px 0;
+        font-size: 14px;
+        border-left: 4px solid #1b365d;
       }
       .footer {
         text-align: center;
-        padding: 20px;
+        padding: 30px 20px;
         background-color: #1b365d;
         color: white;
       }
-      .warning {
-        color: #152a4a;
-        background-color: rgba(27, 54, 93, 0.1);
+      .footer img {
+        width: 120px;
+        height: auto;
+        background-color: white;
         padding: 10px;
-        border-radius: 4px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .footer h2 {
+        font-weight: 600;
+        font-size: 18px;
+        margin: 10px 0;
+        color: #e2e8f0;
+      }
+      .footer p {
+        margin: 15px 0 0 0;
+        font-size: 13px;
+        color: #a0aec0;
+      }
+      .divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
         margin: 20px 0;
-        font-size: 14px;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          margin: 0;
+          border-radius: 0;
+        }
+        .content {
+          padding: 30px 20px;
+        }
+        .otp-code {
+          font-size: 32px;
+          letter-spacing: 6px;
+        }
       }
     </style>
   </head>
@@ -74,27 +129,33 @@
             alt="GST Logo"
           />
         </div>
-        <h2 style="color: #1b365d">Email Verification</h2>
+        <h2>Email Verification</h2>
       </div>
       <div class="content">
         <p>Hello!</p>
-        <p>Your verification code is:</p>
+        <p>
+          Thank you for registering with GST Saudi Barcode Center. To complete
+          your registration, please use the following verification code:
+        </p>
         <div class="otp-code">123456</div>
-        <div class="warning">This code will expire in 5 minutes.</div>
-        <p>If you didn't request this code, please ignore this email.</p>
+        <div class="warning">
+          <strong>Important:</strong> This verification code will expire in 5
+          minutes for security purposes.
+        </div>
+        <p style="color: #718096; font-size: 14px">
+          If you didn't request this code, please ignore this email or contact
+          support if you have concerns.
+        </p>
       </div>
       <div class="footer">
         <img
           src="http://localhost:3000/assets/images/gst-logo.png"
           alt="GST Logo"
-          width="100"
-          style="background-color: white; padding: 8px; margin-bottom: 5px"
         />
-        <h2 style="font-weight: bold; font-size: 16px; margin-top: 5px">
-          GST Saudi Barcode Center
-        </h2>
-        <p style="margin-top: 15px; font-size: 12px">
-          Copyright @GST Saudi Arabia - <%= new Date().getFullYear() %> All
+        <h2>GST Saudi Barcode Center</h2>
+        <div class="divider"></div>
+        <p>
+          Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
           rights reserved.
         </p>
       </div>
