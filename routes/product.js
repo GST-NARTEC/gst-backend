@@ -9,6 +9,7 @@ const singleConfig = uploadSingle({
   fileTypes: ["images"],
 });
 
+router.get("/active", controller.getActiveProducts);
 router.post("/", singleConfig, controller.createProduct);
 router.get("/", controller.getProducts);
 router.get("/:id", controller.getProduct);

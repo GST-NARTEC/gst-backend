@@ -262,6 +262,61 @@ class ProductController {
       next(error);
     }
   }
+
+  static async getActiveProducts(req, res, next) {
+    try {
+      const { error, value } = querySchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, search } = value;
+      const skip = (page - 1) * limit;
+
+      const where = {
+        status: "active",
+        ...(search
+          ? {
+              OR: [
+                { title: { contains: search } },
+                { description: { contains: search } },
+              ],
+            }
+          : {}),
+      };
+
+      const [products, total] = await Promise.all([
+        prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+          },
+          skip: parseInt(skip),
+          take: parseInt(limit),
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        prisma.product.count({ where }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Active Products retrieved successfully", {
+          products,
+          pagination: {
+            total,
+            page: parseInt(page),
+            totalPages,
+            hasMore: page < totalPages,
+          },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default ProductController;
