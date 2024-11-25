@@ -214,7 +214,7 @@
         <tr>
           <td><%= item.description %></td>
           <td><%= item.quantity %>x</td>
-          <td><%= item.amount %></td>
+          <td><%= currency.symbol %> <%= item.amount %></td>
         </tr>
         <% }); %>
       </tbody>

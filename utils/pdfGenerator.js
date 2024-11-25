@@ -56,12 +56,12 @@ class PDFGenerator {
         items: order.orderItems.map((item) => ({
           description: item.product.title,
           quantity: item.quantity,
-          amount: `${currency.symbol} ${item.price.toFixed(2)}`,
+          amount: item.price.toFixed(2),
         })),
         totals: {
-          subtotal: `${currency.symbol} ${order.totalAmount.toFixed(2)}`,
-          vat: `${currency.symbol} ${invoice.vat.toFixed(2)}`,
-          grandTotal: `${currency.symbol} ${order.overallAmount.toFixed(2)}`,
+          subtotal: order.totalAmount.toFixed(2),
+          vat: invoice.vat.toFixed(2),
+          grandTotal: order.overallAmount.toFixed(2),
         },
         contact: {
           phone: user.mobile,
