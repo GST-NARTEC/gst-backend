@@ -20,7 +20,6 @@ const __dirname = dirname(__filename);
 app.use(cors);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 // Statically serverd routes
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
