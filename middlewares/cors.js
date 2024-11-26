@@ -15,7 +15,7 @@ const corsOptions = {
     if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new MyError("Not allowed by CORS"));
+      callback(new MyError("Origin not allowed by CORS"));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
