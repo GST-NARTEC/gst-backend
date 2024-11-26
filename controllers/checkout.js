@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import Joi from "joi";
 import prisma from "../utils/prismaClient.js";
 
@@ -116,10 +117,14 @@ class CheckoutController {
 
         // Generate password and update user
         const password = generatePassword();
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         await prisma.user.update({
           where: { id: userId },
-          data: { password },
+          data: {
+            password: hashedPassword,
+            isCreated: true,
+          },
         });
 
         // Clear cart only after successful payment

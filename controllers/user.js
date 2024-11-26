@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
-import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -184,17 +183,10 @@ class UserController {
         }
       }
 
-      // Generate password
-      const password = generatePassword();
-      console.log("Original password:", password);
-      const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("Hashed password:", hashedPassword);
-
-      // Create new user
+      // Create new user without password
       const newUser = await prisma.user.create({
         data: {
           email,
-          password: hashedPassword,
           companyLicenseNo,
           companyNameEn,
           companyNameAr,
@@ -210,14 +202,9 @@ class UserController {
         },
       });
 
-      // Don't send password hash in response just for testing later we will be sending the password in
-      // payment confirmation email
-      const { password: _, ...userWithoutPassword } = newUser;
-
       res.status(201).json(
         response(201, true, "User created successfully", {
-          user: userWithoutPassword,
-          password, // Include the plain password in response
+          user: newUser,
         })
       );
     } catch (error) {
@@ -242,6 +229,14 @@ class UserController {
         throw new MyError("Invalid email or password", 401);
       }
 
+      // Check if user has completed checkout process
+      if (!user.password) {
+        throw new MyError(
+          "Please complete checkout process to activate your account",
+          403
+        );
+      }
+
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         throw new MyError("Invalid email or password", 401);
@@ -256,7 +251,7 @@ class UserController {
         data: {
           token: refreshToken,
           userId: user.id,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
 
