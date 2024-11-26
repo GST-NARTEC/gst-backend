@@ -21,4 +21,5 @@ model User {
   cart             Cart?
   orders           Order[]
   invoices         Invoice[]
+ refreshTokens RefreshToken[]
 }

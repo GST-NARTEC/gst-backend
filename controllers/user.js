@@ -6,9 +6,9 @@ import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
-import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+import TokenManager from "../utils/tokenManager.js";
 
 // Validation schemas
 const emailSchema = Joi.object({
@@ -240,22 +240,31 @@ class UserController {
         throw new MyError("Invalid email or password", 401);
       }
 
-      const isValidPassword = bcrypt.compare(password, user.password);
+      const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         throw new MyError("Invalid email or password", 401);
       }
 
-      const token = JWT.createToken(
-        { userId: user.id, email: user.email },
-        { expiresIn: "24h" }
-      );
+      const tokenPayload = { userId: user.id, email: user.email };
+      const accessToken = TokenManager.generateAccessToken(tokenPayload);
+      const refreshToken = TokenManager.generateRefreshToken(tokenPayload);
+
+      // Store refresh token in database
+      await prisma.refreshToken.create({
+        data: {
+          token: refreshToken,
+          userId: user.id,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+        },
+      });
 
       const { password: _, ...userWithoutPassword } = user;
 
       res.status(200).json(
         response(200, true, "Login successful", {
           user: userWithoutPassword,
-          token,
+          accessToken,
+          refreshToken,
         })
       );
     } catch (error) {
@@ -669,6 +678,38 @@ class UserController {
       res.status(200).json(
         response(200, true, "User updated successfully", {
           user: updatedUser,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async refreshToken(req, res, next) {
+    try {
+      const user = req.user;
+      const tokenPayload = { userId: user.id, email: user.email };
+
+      const accessToken = TokenManager.generateAccessToken(tokenPayload);
+      const refreshToken = TokenManager.generateRefreshToken(tokenPayload);
+
+      // Update refresh token in database
+      await prisma.refreshToken.deleteMany({
+        where: { userId: user.id },
+      });
+
+      await prisma.refreshToken.create({
+        data: {
+          token: refreshToken,
+          userId: user.id,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "Tokens refreshed successfully", {
+          accessToken,
+          refreshToken,
         })
       );
     } catch (error) {
