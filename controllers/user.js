@@ -186,7 +186,9 @@ class UserController {
 
       // Generate password
       const password = generatePassword();
+      console.log("Original password:", password);
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log("Hashed password:", hashedPassword);
 
       // Create new user
       const newUser = await prisma.user.create({
