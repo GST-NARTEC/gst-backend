@@ -1,5 +1,7 @@
 import cors from "cors";
 
+import MyError from "../utils/error.js";
+
 const whitelist = [
   process.env.DOMAIN,
   process.env.FRONTEND_URL,
