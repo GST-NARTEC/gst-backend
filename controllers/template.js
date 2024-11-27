@@ -4,39 +4,34 @@ import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
-const templateSchema = Joi.object({
+// Base template schema with common fields
+const baseTemplateSchema = {
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
   slug: Joi.string().required(),
   isActive: Joi.boolean().default(true),
-  seoDescriptionEn: Joi.string().allow("", null),
-  seoDescriptionAr: Joi.string().allow("", null),
-  description1En: Joi.string().allow("", null),
-  description1Ar: Joi.string().allow("", null),
-  description2En: Joi.string().allow("", null),
-  description2Ar: Joi.string().allow("", null),
-  description3En: Joi.string().allow("", null),
-  description3Ar: Joi.string().allow("", null),
   pageId: Joi.string().required(),
-});
+};
 
-const templateUpdateSchema = Joi.object({
-  nameEn: Joi.string(),
-  nameAr: Joi.string(),
-  slug: Joi.string(),
-  isActive: Joi.boolean(),
-  seoDescriptionEn: Joi.string().allow("", null),
-  seoDescriptionAr: Joi.string().allow("", null),
-  description1En: Joi.string().allow("", null),
-  description1Ar: Joi.string().allow("", null),
-  description2En: Joi.string().allow("", null),
-  description2Ar: Joi.string().allow("", null),
-  description3En: Joi.string().allow("", null),
-  description3Ar: Joi.string().allow("", null),
-  pageId: Joi.string(),
-}).min(1);
+// Template specific schemas
+const templateSchemas = {
+  template1: Joi.object({
+    ...baseTemplateSchema,
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+  }).unknown(false),
+  // Add other template schemas as needed
+};
 
-// Add a separate schema for templateType validation
 const templateTypeSchema = Joi.object({
   templateType: Joi.string()
     .required()
@@ -51,19 +46,33 @@ const templateTypeSchema = Joi.object({
     ),
 });
 
+// Move getSchemaForType outside the class as a standalone function
+const getSchemaForType = (templateType) => {
+  const schema = templateSchemas[templateType];
+  if (!schema) {
+    throw new MyError(`Invalid template type: ${templateType}`, 400);
+  }
+  return schema;
+};
+
 class TemplateController {
   static async createTemplate(req, res, next) {
     let imagePaths = [];
     try {
-      // Validate templateType from query
+      const { templateType } = req.params;
+
+      // Validate templateType
       const { error: typeError } = templateTypeSchema.validate({
-        templateType: req.query.templateType,
+        templateType,
       });
       if (typeError) {
         throw new MyError(typeError.details[0].message, 400);
       }
 
-      const { error, value } = templateSchema.validate(req.body);
+      // Use the standalone function instead of this.getSchemaForType
+      const schema = getSchemaForType(templateType);
+      const { error, value } = schema.validate(req.body);
+
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
@@ -78,15 +87,12 @@ class TemplateController {
       }
 
       // Check if slug already exists in the specified template
-      const existingTemplate = await prisma[req.query.templateType].findFirst({
+      const existingTemplate = await prisma[templateType].findFirst({
         where: { slug: value.slug },
       });
 
       if (existingTemplate) {
-        throw new MyError(
-          `Slug already exists in ${req.query.templateType}`,
-          400
-        );
+        throw new MyError(`Slug already exists in ${templateType}`, 400);
       }
 
       // Handle image uploads
@@ -100,7 +106,7 @@ class TemplateController {
         }
       }
 
-      const template = await prisma[req.query.templateType].create({
+      const template = await prisma[templateType].create({
         data: value,
       });
 
@@ -120,7 +126,8 @@ class TemplateController {
 
   static async getTemplateBySlug(req, res, next) {
     try {
-      const { templateType, slug } = req.params;
+      const { templateType } = req.params;
+      const slug = req.query.slug;
 
       if (!prisma[templateType]) {
         throw new MyError("Invalid template type", 400);
@@ -128,9 +135,9 @@ class TemplateController {
 
       const template = await prisma[templateType].findFirst({
         where: { slug },
-        include: {
-          page: true,
-        },
+        // include: {
+        //   page: true,
+        // },
       });
 
       if (!template) {
@@ -150,27 +157,30 @@ class TemplateController {
   static async updateTemplate(req, res, next) {
     let imagePaths = [];
     try {
-      // Validate templateType from query
+      const { templateType, id } = req.params;
+
+      // Validate templateType
       const { error: typeError } = templateTypeSchema.validate({
-        templateType: req.query.templateType,
+        templateType,
       });
       if (typeError) {
         throw new MyError(typeError.details[0].message, 400);
       }
 
-      const { id } = req.params;
-      const { error, value } = templateUpdateSchema.validate(req.body);
+      // Use the standalone function instead of this.getSchemaForType
+      const schema = getSchemaForType(templateType);
+      const { error, value } = schema.validate(req.body);
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
 
-      if (!prisma[req.query.templateType]) {
+      if (!prisma[templateType]) {
         throw new MyError("Invalid template type", 400);
       }
 
       // Check if template exists
-      const existingTemplate = await prisma[req.query.templateType].findUnique({
+      const existingTemplate = await prisma[templateType].findUnique({
         where: { id },
       });
 
@@ -180,7 +190,7 @@ class TemplateController {
 
       // Check if new slug conflicts with existing ones
       if (value.slug && value.slug !== existingTemplate.slug) {
-        const slugExists = await prisma[req.query.templateType].findFirst({
+        const slugExists = await prisma[templateType].findFirst({
           where: {
             slug: value.slug,
             NOT: { id },
@@ -188,13 +198,9 @@ class TemplateController {
         });
 
         if (slugExists) {
-          throw new MyError(
-            `Slug already exists in ${req.query.templateType}`,
-            400
-          );
+          throw new MyError(`Slug already exists in ${templateType}`, 400);
         }
       }
-
       // Handle image uploads
       if (req.files) {
         for (let i = 1; i <= 3; i++) {
@@ -209,7 +215,7 @@ class TemplateController {
         }
       }
 
-      const template = await prisma[req.query.templateType].update({
+      const template = await prisma[templateType].update({
         where: { id },
         data: value,
         include: {

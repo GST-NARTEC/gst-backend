@@ -14,8 +14,8 @@ const templateUpload = uploadMultiple({
   fileSizeLimit: 5 * 1024 * 1024, // 5MB per file
 });
 
-router.post("/", templateUpload, controller.createTemplate);
-router.get("/:templateType/:slug", controller.getTemplateBySlug);
+router.post("/:templateType", templateUpload, controller.createTemplate);
+router.get("/:templateType", controller.getTemplateBySlug);
 router.put("/:templateType/:id", templateUpload, controller.updateTemplate);
 router.delete("/:templateType/:id", controller.deleteTemplate);
 
