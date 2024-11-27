@@ -114,7 +114,7 @@
  *         schema:
  *           type: string
  *           enum: [template1, template2, template3, template4, template5, template6, template7]
- *       - in: path
+ *       - in: query
  *         name: slug
  *         required: true
  *         schema:
