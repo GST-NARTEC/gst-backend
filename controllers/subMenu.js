@@ -9,6 +9,7 @@ const subMenuSchema = Joi.object({
   headingEn: Joi.string().allow("", null),
   headingAr: Joi.string().allow("", null),
   menuId: Joi.string().required(),
+  pageId: Joi.string().allow(null, ""),
 });
 
 class SubMenuController {
@@ -28,10 +29,22 @@ class SubMenuController {
         throw new MyError("Menu not found", 404);
       }
 
+      // Check if page exists if pageId is provided
+      if (value.pageId) {
+        const page = await prisma.page.findUnique({
+          where: { id: value.pageId },
+        });
+
+        if (!page) {
+          throw new MyError("Page not found", 404);
+        }
+      }
+
       const subMenu = await prisma.subMenu.create({
         data: value,
         include: {
           menu: true,
+          page: true,
         },
       });
 
@@ -53,6 +66,7 @@ class SubMenuController {
         where: whereClause,
         include: {
           menu: true,
+          page: true,
         },
         orderBy: {
           createdAt: "asc",

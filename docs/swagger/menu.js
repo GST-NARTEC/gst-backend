@@ -28,7 +28,7 @@
 
 /**
  * @swagger
- * /api/menus:
+ * /api/menu/v1:
  *   get:
  *     tags: [Menus]
  *     summary: Get all menus
@@ -79,7 +79,7 @@
  *                 type: string
  *                 format: binary
  *
- * /api/menus/{id}:
+ * /api/menu/v1/{id}:
  *   get:
  *     tags: [Menus]
  *     summary: Get menu by ID

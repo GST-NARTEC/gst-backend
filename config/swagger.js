@@ -60,6 +60,8 @@ const options = {
     path.join(__dirname, "../docs/swagger/coreSolution.js"),
     path.join(__dirname, "../docs/swagger/proService.js"),
     path.join(__dirname, "../docs/swagger/whyBarcode.js"),
+    path.join(__dirname, "../docs/swagger/page.js"),
+    path.join(__dirname, "../docs/swagger/template.js"),
     // add more paths...
   ],
 };

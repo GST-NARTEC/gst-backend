@@ -1,0 +1,11 @@
+model Page {
+  id        String   @id @default(cuid())
+  nameEn    String?
+  nameAr    String?
+  slug      String?
+  template  String?
+  subMenus  SubMenu[]
+  template1 Template1[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

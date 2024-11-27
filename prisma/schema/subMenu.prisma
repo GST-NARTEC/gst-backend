@@ -6,6 +6,8 @@ model SubMenu {
   headingAr String?
   menu      Menu?    @relation("MenuToSubMenu", fields: [menuId], references: [id], onDelete: Cascade)
   menuId    String?
+  page      Page?    @relation(fields: [pageId], references: [id])
+  pageId    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

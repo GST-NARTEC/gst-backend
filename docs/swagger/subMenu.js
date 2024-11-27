@@ -21,8 +21,20 @@
  *           type: string
  *         menuId:
  *           type: string
+ *         pageId:
+ *           type: string
+ *         menu:
+ *           $ref: '#/components/schemas/Menu'
+ *         page:
+ *           $ref: '#/components/schemas/Page'
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *
- * /api/submenus:
+ * /api/submenu/v1:
  *   get:
  *     tags: [SubMenus]
  *     summary: Get all submenus
@@ -78,8 +90,10 @@
  *                 type: string
  *               menuId:
  *                 type: string
+ *               pageId:
+ *                 type: string
  *
- * /api/submenus/{id}:
+ * /api/submenu/v1/{id}:
  *   get:
  *     tags: [SubMenus]
  *     summary: Get submenu by ID
@@ -122,6 +136,8 @@
  *               headingAr:
  *                 type: string
  *               menuId:
+ *                 type: string
+ *               pageId:
  *                 type: string
  *
  *   delete:

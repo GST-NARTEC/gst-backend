@@ -1,0 +1,22 @@
+model Template1 {
+  id              String   @id @default(cuid())
+  nameEn          String?
+  nameAr          String?
+  slug            String?  @unique
+  isActive        Boolean?  @default(true)
+  seoDescriptionEn String?
+  seoDescriptionAr String?
+  description1En  String?
+  description1Ar  String?
+  description2En  String?
+  description2Ar  String?
+  description3En  String?
+  description3Ar  String?
+  image1          String?
+  image2          String?
+  image3          String?
+  page            Page?    @relation(fields: [pageId], references: [id])
+  pageId          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
