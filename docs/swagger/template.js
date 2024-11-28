@@ -1,9 +1,5 @@
 /**
  * @swagger
- * tags:
- *   name: Templates
- *   description: Template management endpoints
- *
  * components:
  *   schemas:
  *     BaseTemplate:
@@ -15,147 +11,67 @@
  *       properties:
  *         nameEn:
  *           type: string
- *           description: Template name in English
  *         nameAr:
  *           type: string
- *           description: Template name in Arabic
  *         isActive:
  *           type: boolean
  *           default: true
- *           description: Template status
  *         pageId:
  *           type: string
- *           description: Associated page ID
  *
  *     Template1:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         nameEn:
- *           type: string
- *         nameAr:
- *           type: string
- *         isActive:
- *           type: boolean
- *         seoDescriptionEn:
- *           type: string
- *         seoDescriptionAr:
- *           type: string
- *         description1En:
- *           type: string
- *         description1Ar:
- *           type: string
- *         description2En:
- *           type: string
- *         description2Ar:
- *           type: string
- *         description3En:
- *           type: string
- *         description3Ar:
- *           type: string
- *         image1:
- *           type: string
- *         image2:
- *           type: string
- *         image3:
- *           type: string
- *         pageId:
- *           type: string
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
+ *       allOf:
+ *         - $ref: '#/components/schemas/BaseTemplate'
+ *         - type: object
+ *           properties:
+ *             seoDescriptionEn:
+ *               type: string
+ *             seoDescriptionAr:
+ *               type: string
+ *             description1En:
+ *               type: string
+ *             description1Ar:
+ *               type: string
+ *             description2En:
+ *               type: string
+ *             description2Ar:
+ *               type: string
+ *             description3En:
+ *               type: string
+ *             description3Ar:
+ *               type: string
  *
  *     Template2:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         nameEn:
- *           type: string
- *         nameAr:
- *           type: string
- *         seoDescriptionEn:
- *           type: string
- *         seoDescriptionAr:
- *           type: string
- *         isActive:
- *           type: boolean
- *         headingEn:
- *           type: string
- *         headingAr:
- *           type: string
- *         description1En:
- *           type: string
- *         description1Ar:
- *           type: string
- *         description2En:
- *           type: string
- *         description2Ar:
- *           type: string
- *         description3En:
- *           type: string
- *         description3Ar:
- *           type: string
- *         image1:
- *           type: string
- *         image2:
- *           type: string
- *         image3:
- *           type: string
- *         pageId:
- *           type: string
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *
- *     TemplateResponse:
- *       type: object
- *       properties:
- *         status:
- *           type: number
- *           example: 200
- *         success:
- *           type: boolean
- *           example: true
- *         message:
- *           type: string
- *           example: Templates retrieved successfully
- *         data:
- *           type: object
+ *       allOf:
+ *         - $ref: '#/components/schemas/BaseTemplate'
+ *         - type: object
  *           properties:
- *             templates:
- *               type: array
- *               items:
- *                 oneOf:
- *                   - $ref: '#/components/schemas/Template1'
- *                   - $ref: '#/components/schemas/Template2'
- *             pagination:
- *               type: object
- *               properties:
- *                 total:
- *                   type: number
- *                   example: 100
- *                 page:
- *                   type: number
- *                   example: 1
- *                 totalPages:
- *                   type: number
- *                   example: 10
- *                 limit:
- *                   type: number
- *                   example: 10
+ *             seoDescriptionEn:
+ *               type: string
+ *             seoDescriptionAr:
+ *               type: string
+ *             headingEn:
+ *               type: string
+ *             headingAr:
+ *               type: string
+ *             description1En:
+ *               type: string
+ *             description1Ar:
+ *               type: string
+ *             description2En:
+ *               type: string
+ *             description2Ar:
+ *               type: string
+ *             description3En:
+ *               type: string
+ *             description3Ar:
+ *               type: string
  *
  * /api/templates/{templateType}:
  *   post:
+ *     tags:
+ *       - Templates
  *     summary: Create a new template
- *     tags: [Templates]
  *     parameters:
  *       - in: path
  *         name: templateType
@@ -163,40 +79,52 @@
  *         schema:
  *           type: string
  *           enum: [template1, template2, template3, template4, template5, template6, template7]
- *         description: Type of template to create
  *     requestBody:
  *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Template1'
+ *             type: object
+ *             properties:
+ *               nameEn:
+ *                 type: string
+ *               nameAr:
+ *                 type: string
+ *               pageId:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *               seoDescriptionEn:
+ *                 type: string
+ *               seoDescriptionAr:
+ *                 type: string
+ *               description1En:
+ *                 type: string
+ *               description1Ar:
+ *                 type: string
+ *               description2En:
+ *                 type: string
+ *               description2Ar:
+ *                 type: string
+ *               description3En:
+ *                 type: string
+ *               description3Ar:
+ *                 type: string
+ *               image1:
+ *                 type: file
+ *               image2:
+ *                 type: file
+ *               image3:
+ *                 type: file
  *     responses:
  *       201:
  *         description: Template created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     template:
- *                       $ref: '#/components/schemas/Template1'
- *       400:
- *         description: Invalid input or template type
- *       404:
- *         description: Page not found
  *
+ * /api/templates/{templateType}/list:
  *   get:
- *     summary: Get template by page ID
- *     tags: [Templates]
+ *     tags:
+ *       - Templates
+ *     summary: Get list of templates by type
  *     parameters:
  *       - in: path
  *         name: templateType
@@ -205,36 +133,27 @@
  *           type: string
  *           enum: [template1, template2, template3, template4, template5, template6, template7]
  *       - in: query
- *         name: pageId
- *         required: true
+ *         name: page
  *         schema:
- *           type: string
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
  *     responses:
  *       200:
- *         description: Template retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     template:
- *                       $ref: '#/components/schemas/Template1'
- *       404:
- *         description: Template not found
+ *         description: Successfully retrieved templates
  *
  * /api/templates/{templateType}/{id}:
  *   put:
+ *     tags:
+ *       - Templates
  *     summary: Update a template
- *     tags: [Templates]
  *     parameters:
  *       - in: path
  *         name: templateType
@@ -258,30 +177,40 @@
  *                 type: string
  *               nameAr:
  *                 type: string
- *               slug:
+ *               pageId:
  *                 type: string
  *               isActive:
  *                 type: boolean
+ *               seoDescriptionEn:
+ *                 type: string
+ *               seoDescriptionAr:
+ *                 type: string
+ *               description1En:
+ *                 type: string
+ *               description1Ar:
+ *                 type: string
+ *               description2En:
+ *                 type: string
+ *               description2Ar:
+ *                 type: string
+ *               description3En:
+ *                 type: string
+ *               description3Ar:
+ *                 type: string
  *               image1:
- *                 type: string
- *                 format: binary
+ *                 type: file
  *               image2:
- *                 type: string
- *                 format: binary
+ *                 type: file
  *               image3:
- *                 type: string
- *                 format: binary
+ *                 type: file
  *     responses:
  *       200:
  *         description: Template updated successfully
- *       400:
- *         description: Invalid input
- *       404:
- *         description: Template not found
  *
  *   delete:
+ *     tags:
+ *       - Templates
  *     summary: Delete a template
- *     tags: [Templates]
  *     parameters:
  *       - in: path
  *         name: templateType
@@ -297,72 +226,4 @@
  *     responses:
  *       200:
  *         description: Template deleted successfully
- *       404:
- *         description: Template not found
- *
- * /api/templates/{templateType}/list:
- *   get:
- *     summary: Get paginated templates by type
- *     tags: [Templates]
- *     parameters:
- *       - in: path
- *         name: templateType
- *         required: true
- *         schema:
- *           type: string
- *           enum: [template1, template2]
- *         description: Type of template to retrieve
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 100
- *           default: 10
- *         description: Number of items per page
- *     responses:
- *       200:
- *         description: Successfully retrieved templates
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: integer
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     templates:
- *                       type: array
- *                       items:
- *                         oneOf:
- *                           - $ref: '#/components/schemas/Template1'
- *                           - $ref: '#/components/schemas/Template2'
- *                     pagination:
- *                       type: object
- *                       properties:
- *                         total:
- *                           type: integer
- *                         page:
- *                           type: integer
- *                         totalPages:
- *                           type: integer
- *                         limit:
- *                           type: integer
- *       400:
- *         description: Invalid template type or pagination parameters
- *       500:
- *         description: Server error
  */
