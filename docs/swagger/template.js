@@ -58,6 +58,43 @@
  *               type: string
  *               format: binary
  *
+ *     TemplateResponse:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: number
+ *           example: 200
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *           example: Templates retrieved successfully
+ *         data:
+ *           type: object
+ *           properties:
+ *             templates:
+ *               type: array
+ *               items:
+ *                 oneOf:
+ *                   - $ref: '#/components/schemas/Template1'
+ *                   - $ref: '#/components/schemas/Template2'
+ *             pagination:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: number
+ *                   example: 100
+ *                 page:
+ *                   type: number
+ *                   example: 1
+ *                 totalPages:
+ *                   type: number
+ *                   example: 10
+ *                 limit:
+ *                   type: number
+ *                   example: 10
+ *
  * /api/templates/{templateType}:
  *   post:
  *     summary: Create a new template
@@ -205,4 +242,43 @@
  *         description: Template deleted successfully
  *       404:
  *         description: Template not found
+ *
+ * /api/templates/{templateType}/list:
+ *   get:
+ *     summary: Get paginated templates by type
+ *     tags: [Templates]
+ *     parameters:
+ *       - in: path
+ *         name: templateType
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [template1, template2]
+ *         description: Type of template to retrieve
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved templates
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TemplateResponse'
+ *       400:
+ *         description: Invalid template type or pagination parameters
+ *       500:
+ *         description: Server error
  */

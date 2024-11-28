@@ -286,6 +286,57 @@ class TemplateController {
       next(error);
     }
   }
+
+  static async getTemplatesByType(req, res, next) {
+    try {
+      const { templateType } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+
+      // Validate templateType
+      const { error: typeError } = templateTypeSchema.validate({
+        templateType,
+      });
+      if (typeError) {
+        throw new MyError(typeError.details[0].message, 400);
+      }
+
+      if (!prisma[templateType]) {
+        throw new MyError("Invalid template type", 400);
+      }
+
+      const skip = (page - 1) * limit;
+
+      const [templates, total] = await Promise.all([
+        prisma[templateType].findMany({
+          take: Number(limit),
+          skip: Number(skip),
+          include: {
+            page: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        prisma[templateType].count(),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Templates retrieved successfully", {
+          templates,
+          pagination: {
+            total,
+            page: Number(page),
+            totalPages,
+            limit: Number(limit),
+          },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default TemplateController;

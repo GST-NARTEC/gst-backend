@@ -16,6 +16,7 @@ const templateUpload = uploadMultiple({
 
 router.post("/:templateType", templateUpload, controller.createTemplate);
 router.get("/:templateType", controller.getTemplateByPageId);
+router.get("/:templateType/list", controller.getTemplatesByType);
 router.put("/:templateType/:id", templateUpload, controller.updateTemplate);
 router.delete("/:templateType/:id", controller.deleteTemplate);
 
