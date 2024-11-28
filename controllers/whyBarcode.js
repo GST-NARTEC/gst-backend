@@ -13,6 +13,7 @@ const whyBarcodeSchema = Joi.object({
   captionEn: Joi.string().allow("", null),
   captionAr: Joi.string().allow("", null),
   isActive: Joi.boolean().default(true),
+  pageId: Joi.string().allow("", null),
 });
 
 class WhyBarcodeController {
@@ -49,6 +50,9 @@ class WhyBarcodeController {
   static async getWhyBarcodes(req, res, next) {
     try {
       const whyBarcodes = await prisma.whyBarcode.findMany({
+        include: {
+          page: true,
+        },
         orderBy: {
           createdAt: "asc",
         },
@@ -70,6 +74,9 @@ class WhyBarcodeController {
 
       const whyBarcode = await prisma.whyBarcode.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!whyBarcode) {
@@ -89,11 +96,14 @@ class WhyBarcodeController {
   static async getActiveWhyBarcodes(req, res, next) {
     try {
       const whyBarcodes = await prisma.whyBarcode.findMany({
-        where: { 
+        where: {
           isActive: true,
         },
+        include: {
+          page: true,
+        },
         orderBy: {
-          createdAt: 'asc',
+          createdAt: "asc",
         },
       });
 
@@ -127,6 +137,9 @@ class WhyBarcodeController {
 
       const existingWhyBarcode = await prisma.whyBarcode.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingWhyBarcode) {
@@ -144,6 +157,9 @@ class WhyBarcodeController {
       const whyBarcode = await prisma.whyBarcode.update({
         where: { id },
         data: value,
+        include: {
+          page: true,
+        },
       });
 
       res.status(200).json(
@@ -165,6 +181,9 @@ class WhyBarcodeController {
 
       const existingWhyBarcode = await prisma.whyBarcode.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingWhyBarcode) {
@@ -177,6 +196,9 @@ class WhyBarcodeController {
 
       await prisma.whyBarcode.delete({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       res

@@ -5,15 +5,46 @@
  *     CoreSolution:
  *       type: object
  *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
  *         titleEn:
  *           type: string
  *         titleAr:
+ *           type: string
+ *         descriptionEn:
+ *           type: string
+ *         descriptionAr:
  *           type: string
  *         date:
  *           type: string
  *           format: date-time
  *         image:
  *           type: string
+ *         captionEn:
+ *           type: string
+ *         captionAr:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         pageId:
+ *           type: string
+ *           description: ID of the associated page
+ *         page:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *             nameEn:
+ *               type: string
+ *             nameAr:
+ *               type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *
  * /api/core-solution/v1:
  *   post:
@@ -32,12 +63,24 @@
  *                 type: string
  *               titleAr:
  *                 type: string
+ *               descriptionEn:
+ *                 type: string
+ *               descriptionAr:
+ *                 type: string
  *               date:
  *                 type: string
  *                 format: date-time
  *               image:
  *                 type: string
  *                 format: binary
+ *               captionEn:
+ *                 type: string
+ *               captionAr:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *               pageId:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Core Solution created successfully

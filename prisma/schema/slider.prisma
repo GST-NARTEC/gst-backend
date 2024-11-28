@@ -8,6 +8,8 @@ model Slider {
     captionAr           String?
     imageEn             String?
     imageAr             String?
+    page                Page?    @relation(fields: [pageId], references: [id])
+    pageId              String?
     status              Int?    @default(1)
     createdAt           DateTime @default(now())
     updatedAt           DateTime @updatedAt

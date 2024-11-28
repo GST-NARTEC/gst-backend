@@ -17,6 +17,8 @@
  *           type: string
  *         captionAr:
  *           type: string
+ *         pageId:
+ *           type: string
  *         status:
  *           type: number
  *           enum: [0, 1]
@@ -52,6 +54,8 @@
  *               imageAr:
  *                 type: string
  *                 format: binary
+ *               pageId:
+ *                 type: string
  *               status:
  *                 type: number
  *     responses:

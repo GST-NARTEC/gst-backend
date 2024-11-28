@@ -13,6 +13,7 @@ const sliderSchema = Joi.object({
   captionAr: Joi.string().allow("", null),
   imageEn: Joi.string().allow("", null),
   imageAr: Joi.string().allow("", null),
+  pageId: Joi.string().allow(null, ""),
   status: Joi.number().valid(0, 1).default(1),
 });
 
@@ -57,6 +58,9 @@ class SliderController {
   static async getSliders(req, res, next) {
     try {
       const sliders = await prisma.slider.findMany({
+        include: {
+          page: true,
+        },
         orderBy: {
           createdAt: "asc",
         },
@@ -99,6 +103,9 @@ class SliderController {
 
       const slider = await prisma.slider.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!slider) {

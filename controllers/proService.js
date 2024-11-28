@@ -13,6 +13,7 @@ const proServiceSchema = Joi.object({
   status: Joi.number().valid(0, 1).default(1),
   captionEn: Joi.string().allow("", null),
   captionAr: Joi.string().allow("", null),
+  pageId: Joi.string().allow("", null),
 });
 
 class ProServiceController {
@@ -49,6 +50,9 @@ class ProServiceController {
   static async getProServices(req, res, next) {
     try {
       const proServices = await prisma.proService.findMany({
+        include: {
+          page: true,
+        },
         orderBy: {
           createdAt: "asc",
         },
@@ -69,6 +73,9 @@ class ProServiceController {
       const proServices = await prisma.proService.findMany({
         where: {
           status: 1,
+        },
+        include: {
+          page: true,
         },
         orderBy: {
           createdAt: "asc",
@@ -91,6 +98,9 @@ class ProServiceController {
 
       const proService = await prisma.proService.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!proService) {
@@ -119,6 +129,9 @@ class ProServiceController {
 
       const existingProService = await prisma.proService.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingProService) {
@@ -136,6 +149,9 @@ class ProServiceController {
       const proService = await prisma.proService.update({
         where: { id },
         data: value,
+        include: {
+          page: true,
+        },
       });
 
       res.status(200).json(
@@ -157,6 +173,9 @@ class ProServiceController {
 
       const existingProService = await prisma.proService.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingProService) {
@@ -169,6 +188,9 @@ class ProServiceController {
 
       await prisma.proService.delete({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       res

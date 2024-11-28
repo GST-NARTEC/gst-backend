@@ -24,6 +24,18 @@
  *           type: string
  *         isActive:
  *           type: boolean
+ *         pageId:
+ *           type: string
+ *           description: ID of the associated page
+ *         page:
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *             nameEn:
+ *               type: string
+ *             nameAr:
+ *               type: string
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -31,7 +43,7 @@
  *           type: string
  *           format: date-time
  *
- * /api/why-barcode:
+ * /api/v1/whybarcode:
  *   get:
  *     tags: [Why Barcode]
  *     summary: Get all why barcodes
@@ -74,8 +86,13 @@
  *                 type: string
  *               isActive:
  *                 type: boolean
+ *               pageId:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Why Barcode created successfully
  *
- * /api/why-barcode/active:
+ * /api/v1/whybarcode/active:
  *   get:
  *     tags: [Why Barcode]
  *     summary: Get active why barcodes
@@ -83,7 +100,7 @@
  *       200:
  *         description: Success
  *
- * /api/why-barcode/{id}:
+ * /api/v1/whybarcode/{id}:
  *   get:
  *     tags: [Why Barcode]
  *     summary: Get why barcode by ID

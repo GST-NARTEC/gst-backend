@@ -8,6 +8,8 @@ model ProService {
     captionEn       String?
     captionAr       String?
     status          Int     @default(1)
+    page          Page?     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+    pageId        String?
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }

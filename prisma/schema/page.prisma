@@ -7,6 +7,10 @@ model Page {
   subMenus  SubMenu[]
   template1 Template1[]
   template2 Template2[]
+  slider    Slider[]
+  whyBarcode WhyBarcode[]
+  coreSolution CoreSolution[]
+  proService ProService[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

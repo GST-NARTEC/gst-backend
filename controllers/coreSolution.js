@@ -14,6 +14,7 @@ const coreSolutionSchema = Joi.object({
   captionEn: Joi.string().allow("", null),
   captionAr: Joi.string().allow("", null),
   isActive: Joi.boolean().default(true),
+  pageId: Joi.string().allow("", null),
 });
 
 class CoreSolutionController {
@@ -50,6 +51,9 @@ class CoreSolutionController {
   static async getCoreSolutions(req, res, next) {
     try {
       const coreSolutions = await prisma.coreSolution.findMany({
+        include: {
+          page: true,
+        },
         orderBy: {
           createdAt: "asc",
         },

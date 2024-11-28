@@ -39,6 +39,13 @@
  *         updatedAt:
  *           type: string
  *           format: date-time
+ *         captionEn:
+ *           type: string
+ *         captionAr:
+ *           type: string
+ *         pageId:
+ *           type: string
+ *           description: ID of the associated page
  */
 
 /**
