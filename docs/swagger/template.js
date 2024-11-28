@@ -28,35 +28,92 @@
  *           description: Associated page ID
  *
  *     Template1:
- *       allOf:
- *         - $ref: '#/components/schemas/BaseTemplate'
- *         - type: object
- *           properties:
- *             seoDescriptionEn:
- *               type: string
- *             seoDescriptionAr:
- *               type: string
- *             description1En:
- *               type: string
- *             description1Ar:
- *               type: string
- *             description2En:
- *               type: string
- *             description2Ar:
- *               type: string
- *             description3En:
- *               type: string
- *             description3Ar:
- *               type: string
- *             image1:
- *               type: string
- *               format: binary
- *             image2:
- *               type: string
- *               format: binary
- *             image3:
- *               type: string
- *               format: binary
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         seoDescriptionEn:
+ *           type: string
+ *         seoDescriptionAr:
+ *           type: string
+ *         description1En:
+ *           type: string
+ *         description1Ar:
+ *           type: string
+ *         description2En:
+ *           type: string
+ *         description2Ar:
+ *           type: string
+ *         description3En:
+ *           type: string
+ *         description3Ar:
+ *           type: string
+ *         image1:
+ *           type: string
+ *         image2:
+ *           type: string
+ *         image3:
+ *           type: string
+ *         pageId:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     Template2:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         nameEn:
+ *           type: string
+ *         nameAr:
+ *           type: string
+ *         seoDescriptionEn:
+ *           type: string
+ *         seoDescriptionAr:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         headingEn:
+ *           type: string
+ *         headingAr:
+ *           type: string
+ *         description1En:
+ *           type: string
+ *         description1Ar:
+ *           type: string
+ *         description2En:
+ *           type: string
+ *         description2Ar:
+ *           type: string
+ *         description3En:
+ *           type: string
+ *         description3Ar:
+ *           type: string
+ *         image1:
+ *           type: string
+ *         image2:
+ *           type: string
+ *         image3:
+ *           type: string
+ *         pageId:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  *
  *     TemplateResponse:
  *       type: object
@@ -276,7 +333,34 @@
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/TemplateResponse'
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     templates:
+ *                       type: array
+ *                       items:
+ *                         oneOf:
+ *                           - $ref: '#/components/schemas/Template1'
+ *                           - $ref: '#/components/schemas/Template2'
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         page:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
  *       400:
  *         description: Invalid template type or pagination parameters
  *       500:
