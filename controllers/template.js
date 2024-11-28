@@ -29,7 +29,22 @@ const templateSchemas = {
     image2: Joi.string().allow("", null),
     image3: Joi.string().allow("", null),
   }).unknown(false),
-  // Add other template schemas as needed
+  template2: Joi.object({
+    ...baseTemplateSchema,
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    headingEn: Joi.string().allow("", null),
+    headingAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+  }).unknown(false),
 };
 
 const templateTypeSchema = Joi.object({

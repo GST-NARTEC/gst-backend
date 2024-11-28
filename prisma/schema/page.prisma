@@ -6,6 +6,7 @@ model Page {
   template  String?
   subMenus  SubMenu[]
   template1 Template1[]
+  template2 Template2[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
