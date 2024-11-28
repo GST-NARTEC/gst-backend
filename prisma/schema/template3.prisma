@@ -1,0 +1,31 @@
+model Template3 {
+  id                    String   @id @default(cuid())
+  nameEn                String?
+  nameAr                String?
+  seoDescriptionEn      String?
+  seoDescriptionAr      String?
+  isActive              Boolean  @default(true)
+  headingEn             String?
+  headingAr             String?
+  description1En        String?
+  description1Ar        String?
+  description2En        String?
+  description2Ar        String?
+  description3En        String?
+  description3Ar        String?
+  image1                String?
+  image2                String?
+  image3                String?
+  buttonText1En         String?
+  buttonText1Ar         String?
+  buttonText2En         String?
+  buttonText2Ar         String?
+  buttonNavigation1En   String?
+  buttonNavigation1Ar   String?
+  buttonNavigation2En   String?
+  buttonNavigation2Ar   String?
+  page                  Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId                String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}

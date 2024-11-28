@@ -310,8 +310,13 @@ class TemplateController {
         prisma[templateType].findMany({
           take: Number(limit),
           skip: Number(skip),
-          include: {
-            page: true,
+          select: {
+            id: true,
+            nameEn: true,
+            nameAr: true,
+            isActive: true,
+            createdAt: true,
+            updatedAt: true,
           },
           orderBy: {
             createdAt: "desc",
