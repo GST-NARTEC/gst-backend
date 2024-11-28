@@ -7,12 +7,12 @@ model Template3 {
   isActive              Boolean  @default(true)
   headingEn             String?
   headingAr             String?
-  description1En        String?
-  description1Ar        String?
-  description2En        String?
-  description2Ar        String?
-  description3En        String?
-  description3Ar        String?
+  description1En        String?  @db.Text
+  description1Ar        String?  @db.Text
+  description2En        String?  @db.Text
+  description2Ar        String?  @db.Text
+  description3En        String?  @db.Text
+  description3Ar        String?  @db.Text
   image1                String?
   image2                String?
   image3                String?
