@@ -3,7 +3,7 @@ import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
-const subMenuSchema = Joi.object({
+const subMenuCreateSchema = Joi.object({
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
   headingEn: Joi.string().allow("", null),
@@ -12,10 +12,19 @@ const subMenuSchema = Joi.object({
   pageId: Joi.string().allow(null, ""),
 });
 
+const subMenuUpdateSchema = Joi.object({
+  nameEn: Joi.string().optional(),
+  nameAr: Joi.string().optional(),
+  headingEn: Joi.string().allow("", null).optional(),
+  headingAr: Joi.string().allow("", null).optional(),
+  menuId: Joi.string().optional(),
+  pageId: Joi.string().allow(null, "").optional(),
+}).min(1);
+
 class SubMenuController {
   static async createSubMenu(req, res, next) {
     try {
-      const { error, value } = subMenuSchema.validate(req.body);
+      const { error, value } = subMenuCreateSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
@@ -111,10 +120,41 @@ class SubMenuController {
   static async updateSubMenu(req, res, next) {
     try {
       const { id } = req.params;
-      const { error, value } = subMenuSchema.validate(req.body);
+      const { error, value } = subMenuUpdateSchema.validate(req.body);
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      // Check if submenu exists
+      const existingSubMenu = await prisma.subMenu.findUnique({
+        where: { id },
+      });
+
+      if (!existingSubMenu) {
+        throw new MyError("SubMenu not found", 404);
+      }
+
+      // If menuId is being updated, verify the new menu exists
+      if (value.menuId) {
+        const menu = await prisma.menu.findUnique({
+          where: { id: value.menuId },
+        });
+
+        if (!menu) {
+          throw new MyError("New menu not found", 404);
+        }
+      }
+
+      // If pageId is being updated, verify the new page exists
+      if (value.pageId) {
+        const page = await prisma.page.findUnique({
+          where: { id: value.pageId },
+        });
+
+        if (!page) {
+          throw new MyError("New page not found", 404);
+        }
       }
 
       const subMenu = await prisma.subMenu.update({
