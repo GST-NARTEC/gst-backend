@@ -2,7 +2,6 @@ model Template1 {
   id              String   @id @default(cuid())
   nameEn          String?
   nameAr          String?
-  slug            String?  @unique
   isActive        Boolean?  @default(true)
   seoDescriptionEn String?
   seoDescriptionAr String?
@@ -15,7 +14,7 @@ model Template1 {
   image1          String?
   image2          String?
   image3          String?
-  page            Page?    @relation(fields: [pageId], references: [id])
+  page            Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
   pageId          String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

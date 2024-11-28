@@ -1,4 +1,5 @@
 import Joi from "joi";
+
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -8,7 +9,6 @@ import response from "../utils/response.js";
 const baseTemplateSchema = {
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
-  slug: Joi.string().required(),
   isActive: Joi.boolean().default(true),
   pageId: Joi.string().required(),
 };
@@ -88,7 +88,7 @@ class TemplateController {
 
       // Check if slug already exists in the specified template
       const existingTemplate = await prisma[templateType].findFirst({
-        where: { slug: value.slug },
+        where: { pageId: value.pageId },
       });
 
       if (existingTemplate) {
@@ -124,17 +124,17 @@ class TemplateController {
     }
   }
 
-  static async getTemplateBySlug(req, res, next) {
+  static async getTemplateByPageId(req, res, next) {
     try {
       const { templateType } = req.params;
-      const slug = req.query.slug;
+      const { pageId } = req.query;
 
       if (!prisma[templateType]) {
         throw new MyError("Invalid template type", 400);
       }
 
       const template = await prisma[templateType].findFirst({
-        where: { slug },
+        where: { pageId },
         // include: {
         //   page: true,
         // },

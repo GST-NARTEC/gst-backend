@@ -11,7 +11,6 @@
  *       required:
  *         - nameEn
  *         - nameAr
- *         - slug
  *         - pageId
  *       properties:
  *         nameEn:
@@ -20,9 +19,6 @@
  *         nameAr:
  *           type: string
  *           description: Template name in Arabic
- *         slug:
- *           type: string
- *           description: URL-friendly unique identifier
  *         isActive:
  *           type: boolean
  *           default: true
@@ -105,7 +101,7 @@
  *         description: Page not found
  *
  *   get:
- *     summary: Get template by slug
+ *     summary: Get template by page ID
  *     tags: [Templates]
  *     parameters:
  *       - in: path
@@ -115,7 +111,7 @@
  *           type: string
  *           enum: [template1, template2, template3, template4, template5, template6, template7]
  *       - in: query
- *         name: slug
+ *         name: pageId
  *         required: true
  *         schema:
  *           type: string
