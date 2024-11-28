@@ -3,7 +3,7 @@ model Page {
   nameEn    String?
   nameAr    String?
   slug      String?
-  template  String?
+  template  String?  @default("[]") @db.NVarChar(Max)
   subMenus  SubMenu[]
   template1 Template1[]
   template2 Template2[]

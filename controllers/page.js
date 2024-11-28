@@ -7,14 +7,14 @@ const pageSchema = Joi.object({
   nameEn: Joi.string().required(),
   nameAr: Joi.string().required(),
   slug: Joi.string().required(),
-  template: Joi.string().required(),
+  template: Joi.array().items(Joi.string()).required(),
 });
 
 const pageUpdateSchema = Joi.object({
   nameEn: Joi.string().optional(),
   nameAr: Joi.string().optional(),
   slug: Joi.string().optional(),
-  template: Joi.string().optional(),
+  template: Joi.array().items(Joi.string()).optional(),
 }).min(1);
 
 class PageController {
@@ -25,9 +25,17 @@ class PageController {
         throw new MyError(error.details[0].message, 400);
       }
 
+      if (value.template) {
+        value.template = JSON.stringify(value.template);
+      }
+
       const page = await prisma.page.create({
         data: value,
       });
+
+      if (page.template) {
+        page.template = JSON.parse(page.template);
+      }
 
       res
         .status(201)
@@ -88,13 +96,14 @@ class PageController {
 
       const page = await prisma.page.findUnique({
         where: { id },
-        // include: {
-        //   subMenus: true,
-        // },
       });
 
       if (!page) {
         throw new MyError("Page not found", 404);
+      }
+
+      if (page.template) {
+        page.template = JSON.parse(page.template);
       }
 
       res
@@ -122,10 +131,18 @@ class PageController {
         throw new MyError("Page not found", 404);
       }
 
+      if (value.template) {
+        value.template = JSON.stringify(value.template);
+      }
+
       const page = await prisma.page.update({
         where: { id },
         data: value,
       });
+
+      if (page.template) {
+        page.template = JSON.parse(page.template);
+      }
 
       res
         .status(200)
