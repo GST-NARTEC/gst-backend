@@ -1,6 +1,6 @@
 model Order {
   id            String         @id @default(uuid()) @db.UniqueIdentifier
-  orderNumber   String         @unique
+  orderNumber   String?        
   userId        String         @db.UniqueIdentifier
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems    OrderItem[]
