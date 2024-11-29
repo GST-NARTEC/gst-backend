@@ -19,5 +19,6 @@ router.get("/:templateType", controller.getTemplateByPageId);
 router.get("/:templateType/list", controller.getTemplatesByType);
 router.put("/:templateType/:id", templateUpload, controller.updateTemplate);
 router.delete("/:templateType/:id", controller.deleteTemplate);
+router.get("/:templateType/slug", controller.getTemplateBySlug);
 
 export default router;

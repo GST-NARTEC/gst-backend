@@ -343,6 +343,44 @@ class TemplateController {
       next(error);
     }
   }
+
+  static async getTemplateBySlug(req, res, next) {
+    try {
+      const { templateType } = req.params;
+      const { slug } = req.query;
+
+      if (!prisma[templateType]) {
+        throw new MyError("Invalid template type", 400);
+      }
+
+      const page = await prisma.page.findFirst({
+        where: { slug },
+      });
+
+      if (!page) {
+        throw new MyError("Page not found", 404);
+      }
+
+      const template = await prisma[templateType].findFirst({
+        where: { pageId: page.id },
+        // include: {
+        //   page: true,
+        // },
+      });
+
+      if (!template) {
+        throw new MyError("Template not found", 404);
+      }
+
+      res
+        .status(200)
+        .json(
+          response(200, true, "Template retrieved successfully", { template })
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default TemplateController;

@@ -51,7 +51,7 @@
  * /api/template/v1/template2:
  *   post:
  *     summary: Create a new template2
- *     tags: [Templates]
+ *     tags: [Template2]
  *     requestBody:
  *       required: true
  *       content:
@@ -61,6 +61,25 @@
  *     responses:
  *       201:
  *         description: Template created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 201
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Template created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     template:
+ *                       $ref: '#/components/schemas/Template2Create'
  *       400:
  *         description: Invalid input or template already exists for page
  *       404:
@@ -68,22 +87,77 @@
  *
  *   get:
  *     summary: Get template2 by page ID
- *     tags: [Templates]
+ *     tags: [Template2]
  *     parameters:
  *       - in: query
  *         name: pageId
  *         schema:
  *           type: string
+ *         required: true
  *     responses:
  *       200:
  *         description: Template retrieved successfully
  *       404:
  *         description: Template not found
  *
+ * /api/template/v1/template2/list:
+ *   get:
+ *     summary: Get all template2 entries
+ *     tags: [Template2]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved templates
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Templates retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     templates:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Template2Create'
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         page:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
+ *
  * /api/template/v1/template2/{id}:
  *   put:
  *     summary: Update a template2
- *     tags: [Templates]
+ *     tags: [Template2]
  *     parameters:
  *       - in: path
  *         name: id
@@ -104,7 +178,7 @@
  *
  *   delete:
  *     summary: Delete a template2
- *     tags: [Templates]
+ *     tags: [Template2]
  *     parameters:
  *       - in: path
  *         name: id

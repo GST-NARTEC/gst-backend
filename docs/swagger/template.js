@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   schemas:
- *     BaseTemplate:
+ *     Template1Create:
  *       type: object
  *       required:
  *         - nameEn
@@ -18,120 +18,70 @@
  *           default: true
  *         pageId:
  *           type: string
- *
- *     Template1:
- *       allOf:
- *         - $ref: '#/components/schemas/BaseTemplate'
- *         - type: object
- *           properties:
- *             seoDescriptionEn:
- *               type: string
- *             seoDescriptionAr:
- *               type: string
- *             description1En:
- *               type: string
- *             description1Ar:
- *               type: string
- *             description2En:
- *               type: string
- *             description2Ar:
- *               type: string
- *             description3En:
- *               type: string
- *             description3Ar:
- *               type: string
- *
- *     Template2:
- *       allOf:
- *         - $ref: '#/components/schemas/BaseTemplate'
- *         - type: object
- *           properties:
- *             seoDescriptionEn:
- *               type: string
- *             seoDescriptionAr:
- *               type: string
- *             headingEn:
- *               type: string
- *             headingAr:
- *               type: string
- *             description1En:
- *               type: string
- *             description1Ar:
- *               type: string
- *             description2En:
- *               type: string
- *             description2Ar:
- *               type: string
- *             description3En:
- *               type: string
- *             description3Ar:
- *               type: string
- *
- * /api/templates/{templateType}:
- *   post:
- *     tags:
- *       - Templates
- *     summary: Create a new template
- *     parameters:
- *       - in: path
- *         name: templateType
- *         required: true
- *         schema:
+ *         seoDescriptionEn:
  *           type: string
- *           enum: [template1, template2, template3, template4, template5, template6, template7]
+ *         seoDescriptionAr:
+ *           type: string
+ *         description1En:
+ *           type: string
+ *         description1Ar:
+ *           type: string
+ *         description2En:
+ *           type: string
+ *         description2Ar:
+ *           type: string
+ *         description3En:
+ *           type: string
+ *         description3Ar:
+ *           type: string
+ *         image1:
+ *           type: string
+ *           format: binary
+ *         image2:
+ *           type: string
+ *           format: binary
+ *         image3:
+ *           type: string
+ *           format: binary
+ *
+ * /api/template/v1/template1:
+ *   post:
+ *     summary: Create a new template1
+ *     tags: [Template1]
  *     requestBody:
  *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               nameEn:
- *                 type: string
- *               nameAr:
- *                 type: string
- *               pageId:
- *                 type: string
- *               isActive:
- *                 type: boolean
- *               seoDescriptionEn:
- *                 type: string
- *               seoDescriptionAr:
- *                 type: string
- *               description1En:
- *                 type: string
- *               description1Ar:
- *                 type: string
- *               description2En:
- *                 type: string
- *               description2Ar:
- *                 type: string
- *               description3En:
- *                 type: string
- *               description3Ar:
- *                 type: string
- *               image1:
- *                 type: file
- *               image2:
- *                 type: file
- *               image3:
- *                 type: file
+ *             $ref: '#/components/schemas/Template1Create'
  *     responses:
  *       201:
  *         description: Template created successfully
+ *       400:
+ *         description: Invalid input or template already exists for page
+ *       404:
+ *         description: Page not found
  *
- * /api/templates/{templateType}/list:
  *   get:
- *     tags:
- *       - Templates
- *     summary: Get list of templates by type
+ *     summary: Get template1 by page ID
+ *     tags: [Template1]
  *     parameters:
- *       - in: path
- *         name: templateType
- *         required: true
+ *       - in: query
+ *         name: pageId
  *         schema:
  *           type: string
- *           enum: [template1, template2, template3, template4, template5, template6, template7]
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Template retrieved successfully
+ *       404:
+ *         description: Template not found
+ *
+ * /api/template/v1/template1/list:
+ *   get:
+ *     summary: Get all template1 entries
+ *     tags: [Template1]
+ *     parameters:
  *       - in: query
  *         name: page
  *         schema:
@@ -149,18 +99,11 @@
  *       200:
  *         description: Successfully retrieved templates
  *
- * /api/templates/{templateType}/{id}:
+ * /api/template/v1/template1/{id}:
  *   put:
- *     tags:
- *       - Templates
- *     summary: Update a template
+ *     summary: Update a template1
+ *     tags: [Template1]
  *     parameters:
- *       - in: path
- *         name: templateType
- *         required: true
- *         schema:
- *           type: string
- *           enum: [template1, template2, template3, template4, template5, template6, template7]
  *       - in: path
  *         name: id
  *         required: true
@@ -171,53 +114,17 @@
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               nameEn:
- *                 type: string
- *               nameAr:
- *                 type: string
- *               pageId:
- *                 type: string
- *               isActive:
- *                 type: boolean
- *               seoDescriptionEn:
- *                 type: string
- *               seoDescriptionAr:
- *                 type: string
- *               description1En:
- *                 type: string
- *               description1Ar:
- *                 type: string
- *               description2En:
- *                 type: string
- *               description2Ar:
- *                 type: string
- *               description3En:
- *                 type: string
- *               description3Ar:
- *                 type: string
- *               image1:
- *                 type: file
- *               image2:
- *                 type: file
- *               image3:
- *                 type: file
+ *             $ref: '#/components/schemas/Template1Create'
  *     responses:
  *       200:
  *         description: Template updated successfully
+ *       404:
+ *         description: Template not found
  *
  *   delete:
- *     tags:
- *       - Templates
- *     summary: Delete a template
+ *     summary: Delete a template1
+ *     tags: [Template1]
  *     parameters:
- *       - in: path
- *         name: templateType
- *         required: true
- *         schema:
- *           type: string
- *           enum: [template1, template2, template3, template4, template5, template6, template7]
  *       - in: path
  *         name: id
  *         required: true
@@ -226,4 +133,7 @@
  *     responses:
  *       200:
  *         description: Template deleted successfully
+ *       404:
+ *         description: Template not found
+ *
  */
