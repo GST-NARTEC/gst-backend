@@ -88,9 +88,9 @@ class TemplateController {
 
       const template = await prisma[templateType].findFirst({
         where: { pageId },
-        // include: {
-        //   page: true,
-        // },
+        include: {
+          page: true,
+        },
       });
 
       if (!template) {
@@ -279,23 +279,23 @@ class TemplateController {
         throw new MyError("Invalid template type", 400);
       }
 
-      const page = await prisma.page.findFirst({
-        where: { slug },
-      });
+      //   const page = await prisma.page.findFirst({
+      //     where: { slug },
+      //   });
 
-      if (!page) {
-        throw new MyError("Page not found", 404);
-      }
+      //   if (!page) {
+      //     throw new MyError("Page not found", 404);
+      //   }
 
       const template = await prisma[templateType].findFirst({
-        where: { pageId: page.id },
-        include: {
-          page: true,
-        },
+        where: { page: { slug: slug } },
+        // include: {
+        //   page: true,
+        // },
       });
 
       if (!template) {
-        throw new MyError("Template not found", 404);
+        throw new MyError("Template not found with this slug", 404);
       }
 
       res
