@@ -42,18 +42,64 @@ class MenuController {
 
   static async getMenus(req, res, next) {
     try {
-      const menus = await prisma.menu.findMany({
-        include: {
-          subMenus: true,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
+      const { page, limit, search } = req.query;
+      const where = {};
 
-      res
-        .status(200)
-        .json(response(200, true, "Menus retrieved successfully", { menus }));
+      // Add search condition if search query exists
+      if (search) {
+        where.OR = [
+          { nameEn: { contains: search } },
+          { nameAr: { contains: search } },
+        ];
+      }
+
+      // If pagination parameters are provided
+      if (page && limit) {
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const [menus, total] = await Promise.all([
+          prisma.menu.findMany({
+            where,
+            include: {
+              subMenus: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+            skip,
+            take: parseInt(limit),
+          }),
+          prisma.menu.count({ where }),
+        ]);
+
+        const totalPages = Math.ceil(total / parseInt(limit));
+
+        res.status(200).json(
+          response(200, true, "Menus retrieved successfully", {
+            menus,
+            pagination: {
+              total,
+              page: parseInt(page),
+              totalPages,
+              limit: parseInt(limit),
+            },
+          })
+        );
+      } else {
+        // Regular non-paginated response
+        const menus = await prisma.menu.findMany({
+          where,
+          include: {
+            subMenus: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        });
+
+        res
+          .status(200)
+          .json(response(200, true, "Menus retrieved successfully", { menus }));
+      }
     } catch (error) {
       next(error);
     }

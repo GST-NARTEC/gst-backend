@@ -114,28 +114,46 @@
  *         description: Menu or Page not found
  *
  *   get:
- *     summary: Get all submenus
+ *     summary: Get all submenus with optional pagination and search
  *     tags: [SubMenus]
  *     parameters:
  *       - in: query
  *         name: menuId
  *         schema:
  *           type: string
- *         description: Optional menu ID to filter submenus
+ *         description: Filter by menu ID
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term for nameEn or nameAr (case insensitive)
  *     responses:
  *       200:
- *         description: List of submenus
+ *         description: Successful operation
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 status:
- *                   type: number
+ *                   type: integer
+ *                   example: 200
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: SubMenus retrieved successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -143,6 +161,17 @@
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/SubMenu'
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         page:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
  *
  * /api/submenu/v1/{id}:
  *   get:

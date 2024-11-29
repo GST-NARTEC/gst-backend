@@ -67,26 +67,68 @@ class SubMenuController {
 
   static async getSubMenus(req, res, next) {
     try {
-      const { menuId } = req.query;
+      const { menuId, page, limit, search } = req.query;
+      const where = menuId ? { menuId } : {};
 
-      const whereClause = menuId ? { menuId } : {};
+      // Add search condition if search query exists
+      if (search) {
+        where.OR = [
+          { nameEn: { contains: search } },
+          { nameAr: { contains: search } },
+        ];
+      }
 
-      const subMenus = await prisma.subMenu.findMany({
-        where: whereClause,
-        include: {
-          menu: true,
-          page: true,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
+      // If pagination parameters are provided
+      if (page && limit) {
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const [subMenus, total] = await Promise.all([
+          prisma.subMenu.findMany({
+            where,
+            include: {
+              menu: true,
+              page: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+            skip,
+            take: parseInt(limit),
+          }),
+          prisma.subMenu.count({ where }),
+        ]);
 
-      res
-        .status(200)
-        .json(
-          response(200, true, "SubMenus retrieved successfully", { subMenus })
+        const totalPages = Math.ceil(total / parseInt(limit));
+
+        res.status(200).json(
+          response(200, true, "SubMenus retrieved successfully", {
+            subMenus,
+            pagination: {
+              total,
+              page: parseInt(page),
+              totalPages,
+              limit: parseInt(limit),
+            },
+          })
         );
+      } else {
+        // Regular non-paginated response
+        const subMenus = await prisma.subMenu.findMany({
+          where,
+          include: {
+            menu: true,
+            page: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        });
+
+        res
+          .status(200)
+          .json(
+            response(200, true, "SubMenus retrieved successfully", { subMenus })
+          );
+      }
     } catch (error) {
       next(error);
     }
