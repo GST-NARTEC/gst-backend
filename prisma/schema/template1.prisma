@@ -1,21 +1,21 @@
 model Template1 {
-  id              String   @id @default(cuid())
-  nameEn          String?
-  nameAr          String?
-  isActive        Boolean?  @default(true)
-  seoDescriptionEn String?
-  seoDescriptionAr String?
-  description1En  String?  @db.Text
-  description1Ar  String?  @db.Text
-  description2En  String?  @db.Text
-  description2Ar  String?  @db.Text
-  description3En  String?  @db.Text
-  description3Ar  String?  @db.Text
-  image1          String?
-  image2          String?
-  image3          String?
-  page            Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  pageId          String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                String   @id @default(cuid())
+  nameEn            String?
+  nameAr            String?   @db.NVarChar(max)
+  isActive          Boolean?  @default(true)
+  seoDescriptionEn  String?
+  seoDescriptionAr  String?   @db.NVarChar(max)
+  description1En    String?  @db.Text
+  description1Ar    String?   @db.NVarChar(max)
+  description2En    String?  @db.Text
+  description2Ar    String?   @db.NVarChar(max)
+  description3En    String?  @db.Text
+  description3Ar    String?   @db.NVarChar(max)
+  image1            String?
+  image2            String?
+  image3            String?
+  page              Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageId            String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
