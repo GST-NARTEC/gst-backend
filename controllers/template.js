@@ -411,9 +411,9 @@ class TemplateController {
 
       const template = await prisma[templateType].findFirst({
         where: { pageId: page.id },
-        // include: {
-        //   page: true,
-        // },
+        include: {
+          page: true,
+        },
       });
 
       if (!template) {

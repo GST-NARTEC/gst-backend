@@ -60,7 +60,7 @@
  *
  * /api/v1/template/template4:
  *   post:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Create a new template4
  *     requestBody:
  *       required: true
@@ -113,7 +113,7 @@
  *         description: Template created successfully
  *
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Get template4 by page ID
  *     parameters:
  *       - in: query
@@ -127,7 +127,7 @@
  *
  * /api/v1/template/template4/list:
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Get all template4s with pagination
  *     parameters:
  *       - in: query
@@ -146,7 +146,7 @@
  *
  * /api/v1/template/template4/{id}:
  *   put:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Update template4
  *     parameters:
  *       - in: path
@@ -164,7 +164,7 @@
  *         description: Template updated successfully
  *
  *   delete:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Delete template4
  *     parameters:
  *       - in: path
@@ -178,7 +178,7 @@
  *
  * /api/v1/template/template4/slug:
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates4]
  *     summary: Get template4 by slug
  *     parameters:
  *       - in: query

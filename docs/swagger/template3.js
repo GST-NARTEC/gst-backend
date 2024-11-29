@@ -60,7 +60,7 @@
  *
  * /api/v1/template/template3:
  *   post:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Create a new template3
  *     requestBody:
  *       required: true
@@ -113,7 +113,7 @@
  *         description: Template created successfully
  *
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Get template3 by page ID
  *     parameters:
  *       - in: query
@@ -127,7 +127,7 @@
  *
  * /api/v1/template/template3/list:
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Get all template3s with pagination
  *     parameters:
  *       - in: query
@@ -146,7 +146,7 @@
  *
  * /api/v1/template/template3/{id}:
  *   put:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Update template3
  *     parameters:
  *       - in: path
@@ -164,7 +164,7 @@
  *         description: Template updated successfully
  *
  *   delete:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Delete template3
  *     parameters:
  *       - in: path
@@ -178,7 +178,7 @@
  *
  * /api/v1/template/template3/slug:
  *   get:
- *     tags: [Templates]
+ *     tags: [Templates3]
  *     summary: Get template3 by slug
  *     parameters:
  *       - in: query
