@@ -146,22 +146,83 @@
  *
  * /api/v1/template/template4/{id}:
  *   put:
+ *     summary: Update specific fields of template4
  *     tags: [Templates4]
- *     summary: Update template4
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
+ *         description: Template ID
  *     requestBody:
+ *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Template4'
+ *             type: object
+ *             minProperties: 1
+ *             properties:
+ *               nameEn:
+ *                 type: string
+ *               nameAr:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *               pageId:
+ *                 type: string
+ *               seoDescriptionEn:
+ *                 type: string
+ *               seoDescriptionAr:
+ *                 type: string
+ *               description1En:
+ *                 type: string
+ *               description1Ar:
+ *                 type: string
+ *               description2En:
+ *                 type: string
+ *               description2Ar:
+ *                 type: string
+ *               description3En:
+ *                 type: string
+ *               description3Ar:
+ *                 type: string
+ *               description4En:
+ *                 type: string
+ *               description4Ar:
+ *                 type: string
+ *               image1:
+ *                 type: string
+ *                 format: binary
+ *               image2:
+ *                 type: string
+ *                 format: binary
+ *               image3:
+ *                 type: string
+ *                 format: binary
+ *               buttonText1En:
+ *                 type: string
+ *               buttonText1Ar:
+ *                 type: string
+ *               buttonText2En:
+ *                 type: string
+ *               buttonText2Ar:
+ *                 type: string
+ *               buttonNavigation1En:
+ *                 type: string
+ *               buttonNavigation1Ar:
+ *                 type: string
+ *               buttonNavigation2En:
+ *                 type: string
+ *               buttonNavigation2Ar:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Template updated successfully
+ *       400:
+ *         description: Invalid input or no fields to update
+ *       404:
+ *         description: Template not found
  *
  *   delete:
  *     tags: [Templates4]

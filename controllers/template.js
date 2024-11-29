@@ -118,6 +118,120 @@ const getSchemaForType = (templateType) => {
   return schema;
 };
 
+// Add this new schema for updates
+const templateUpdateSchemas = {
+  template1: Joi.object({
+    nameEn: Joi.string(),
+    nameAr: Joi.string(),
+    isActive: Joi.boolean(),
+    pageId: Joi.string(),
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+  })
+    .min(1)
+    .unknown(false),
+
+  template2: Joi.object({
+    nameEn: Joi.string(),
+    nameAr: Joi.string(),
+    isActive: Joi.boolean(),
+    pageId: Joi.string(),
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    headingEn: Joi.string().allow("", null),
+    headingAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+  })
+    .min(1)
+    .unknown(false),
+
+  template3: Joi.object({
+    nameEn: Joi.string(),
+    nameAr: Joi.string(),
+    isActive: Joi.boolean(),
+    pageId: Joi.string(),
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    headingEn: Joi.string().allow("", null),
+    headingAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+    buttonText1En: Joi.string().allow("", null),
+    buttonText1Ar: Joi.string().allow("", null),
+    buttonText2En: Joi.string().allow("", null),
+    buttonText2Ar: Joi.string().allow("", null),
+    buttonNavigation1En: Joi.string().allow("", null),
+    buttonNavigation1Ar: Joi.string().allow("", null),
+    buttonNavigation2En: Joi.string().allow("", null),
+    buttonNavigation2Ar: Joi.string().allow("", null),
+  })
+    .min(1)
+    .unknown(false),
+
+  template4: Joi.object({
+    nameEn: Joi.string(),
+    nameAr: Joi.string(),
+    isActive: Joi.boolean(),
+    pageId: Joi.string(),
+    seoDescriptionEn: Joi.string().allow("", null),
+    seoDescriptionAr: Joi.string().allow("", null),
+    description1En: Joi.string().allow("", null),
+    description1Ar: Joi.string().allow("", null),
+    description2En: Joi.string().allow("", null),
+    description2Ar: Joi.string().allow("", null),
+    description3En: Joi.string().allow("", null),
+    description3Ar: Joi.string().allow("", null),
+    description4En: Joi.string().allow("", null),
+    description4Ar: Joi.string().allow("", null),
+    image1: Joi.string().allow("", null),
+    image2: Joi.string().allow("", null),
+    image3: Joi.string().allow("", null),
+    buttonText1En: Joi.string().allow("", null),
+    buttonText1Ar: Joi.string().allow("", null),
+    buttonText2En: Joi.string().allow("", null),
+    buttonText2Ar: Joi.string().allow("", null),
+    buttonNavigation1En: Joi.string().allow("", null),
+    buttonNavigation1Ar: Joi.string().allow("", null),
+    buttonNavigation2En: Joi.string().allow("", null),
+    buttonNavigation2Ar: Joi.string().allow("", null),
+  })
+    .min(1)
+    .unknown(false),
+};
+
+// Add this helper function
+const getUpdateSchemaForType = (templateType) => {
+  const schema = templateUpdateSchemas[templateType];
+  if (!schema) {
+    throw new MyError(`Invalid template type: ${templateType}`, 400);
+  }
+  return schema;
+};
+
 class TemplateController {
   static async createTemplate(req, res, next) {
     let imagePaths = [];
@@ -221,6 +335,7 @@ class TemplateController {
     let imagePaths = [];
     try {
       const { templateType, id } = req.params;
+      const updateData = { ...req.body };
 
       // Validate templateType
       const { error: typeError } = templateTypeSchema.validate({
@@ -230,9 +345,9 @@ class TemplateController {
         throw new MyError(typeError.details[0].message, 400);
       }
 
-      // Use the standalone function instead of this.getSchemaForType
-      const schema = getSchemaForType(templateType);
-      const { error, value } = schema.validate(req.body);
+      // Use the update schema instead of the create schema
+      const schema = getUpdateSchemaForType(templateType);
+      const { error, value } = schema.validate(updateData);
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
@@ -251,20 +366,7 @@ class TemplateController {
         throw new MyError("Template not found", 404);
       }
 
-      // Check if new slug conflicts with existing ones
-      if (value.slug && value.slug !== existingTemplate.slug) {
-        const slugExists = await prisma[templateType].findFirst({
-          where: {
-            slug: value.slug,
-            NOT: { id },
-          },
-        });
-
-        if (slugExists) {
-          throw new MyError(`Slug already exists in ${templateType}`, 400);
-        }
-      }
-      // Handle image uploads
+      // Handle image uploads only for the images that are being updated
       if (req.files) {
         for (let i = 1; i <= 3; i++) {
           if (req.files[`image${i}`]) {
