@@ -2,7 +2,7 @@
  * @swagger
  * components:
  *   schemas:
- *     Template3:
+ *     Template4:
  *       type: object
  *       properties:
  *         id:
@@ -17,10 +17,6 @@
  *           type: string
  *         isActive:
  *           type: boolean
- *         headingEn:
- *           type: string
- *         headingAr:
- *           type: string
  *         description1En:
  *           type: string
  *         description1Ar:
@@ -32,6 +28,10 @@
  *         description3En:
  *           type: string
  *         description3Ar:
+ *           type: string
+ *         description4En:
+ *           type: string
+ *         description4Ar:
  *           type: string
  *         image1:
  *           type: string
@@ -58,10 +58,10 @@
  *         pageId:
  *           type: string
  *
- * /api/v1/template/template3:
+ * /api/v1/template/template4:
  *   post:
  *     tags: [Templates]
- *     summary: Create a new template3
+ *     summary: Create a new template4
  *     requestBody:
  *       required: true
  *       content:
@@ -88,9 +88,9 @@
  *               image3:
  *                 type: string
  *                 format: binary
- *               headingEn:
+ *               description4En:
  *                 type: string
- *               headingAr:
+ *               description4Ar:
  *                 type: string
  *               buttonText1En:
  *                 type: string
@@ -114,7 +114,7 @@
  *
  *   get:
  *     tags: [Templates]
- *     summary: Get template3 by page ID
+ *     summary: Get template4 by page ID
  *     parameters:
  *       - in: query
  *         name: pageId
@@ -125,10 +125,10 @@
  *       200:
  *         description: Template retrieved successfully
  *
- * /api/v1/template/template3/list:
+ * /api/v1/template/template4/list:
  *   get:
  *     tags: [Templates]
- *     summary: Get all template3s with pagination
+ *     summary: Get all template4s with pagination
  *     parameters:
  *       - in: query
  *         name: page
@@ -144,10 +144,10 @@
  *       200:
  *         description: Templates retrieved successfully
  *
- * /api/v1/template/template3/{id}:
+ * /api/v1/template/template4/{id}:
  *   put:
  *     tags: [Templates]
- *     summary: Update template3
+ *     summary: Update template4
  *     parameters:
  *       - in: path
  *         name: id
@@ -158,14 +158,14 @@
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Template3'
+ *             $ref: '#/components/schemas/Template4'
  *     responses:
  *       200:
  *         description: Template updated successfully
  *
  *   delete:
  *     tags: [Templates]
- *     summary: Delete template3
+ *     summary: Delete template4
  *     parameters:
  *       - in: path
  *         name: id
@@ -176,10 +176,10 @@
  *       200:
  *         description: Template deleted successfully
  *
- * /api/v1/template/template3/slug:
+ * /api/v1/template/template4/slug:
  *   get:
  *     tags: [Templates]
- *     summary: Get template3 by slug
+ *     summary: Get template4 by slug
  *     parameters:
  *       - in: query
  *         name: slug

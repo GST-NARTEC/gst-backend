@@ -58,10 +58,10 @@
  *           type: string
  *           description: ID of the associated page
  *
- * /api/template/v1/template1:
+ * /api/v1/template/template1:
  *   post:
  *     summary: Create a new template1
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     requestBody:
  *       required: true
  *       content:
@@ -78,7 +78,7 @@
  *
  *   get:
  *     summary: Get template1 by page ID
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     parameters:
  *       - in: query
  *         name: pageId
@@ -92,10 +92,10 @@
  *       404:
  *         description: Template not found
  *
- * /api/template/v1/template1/list:
+ * /api/v1/template/template1/list:
  *   get:
  *     summary: Get all template1 entries
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     parameters:
  *       - in: query
  *         name: page
@@ -113,10 +113,10 @@
  *       200:
  *         description: Templates retrieved successfully
  *
- * /api/template/v1/template1/{id}:
+ * /api/v1/template/template1/{id}:
  *   put:
  *     summary: Update a template1
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     parameters:
  *       - in: path
  *         name: id
@@ -138,7 +138,7 @@
  *
  *   delete:
  *     summary: Delete a template1
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     parameters:
  *       - in: path
  *         name: id
@@ -152,10 +152,10 @@
  *       404:
  *         description: Template not found
  *
- * /api/template/v1/template1/slug:
+ * /api/v1/template/template1/slug:
  *   get:
  *     summary: Get template1 by slug
- *     tags: [Templates]
+ *     tags: [Templates1]
  *     parameters:
  *       - in: query
  *         name: slug

@@ -38,6 +38,6 @@ router.use("/core-solution/v1", coreSolutionRoutes);
 router.use("/pro-service/v1", proServiceRoutes);
 router.use("/v1/whybarcode", whyBarcodeRoutes);
 router.use("/page/v1", pageRoutes);
-router.use("/template/v1", templateRoutes);
+router.use("/v1/template", templateRoutes);
 
 export default router;
