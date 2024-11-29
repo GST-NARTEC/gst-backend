@@ -1,10 +1,10 @@
 model Template1 {
   id                String   @id @default(cuid())
   nameEn            String?
-  nameAr            String?   @db.NVarChar(max)
+  nameAr            String?   @db.NVarChar(255)
   isActive          Boolean?  @default(true)
   seoDescriptionEn  String?
-  seoDescriptionAr  String?   @db.NVarChar(max)
+  seoDescriptionAr  String?   @db.NVarChar(255)
   description1En    String?   @db.Text
   description1Ar    String?   @db.NVarChar(max)
   description2En    String?   @db.Text
