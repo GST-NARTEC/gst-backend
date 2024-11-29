@@ -66,7 +66,11 @@ class MenuController {
           status: 1,
         },
         include: {
-          subMenus: true,
+          subMenus: {
+            include: {
+              page: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "asc",

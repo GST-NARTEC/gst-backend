@@ -148,6 +148,29 @@ class PageController {
       next(error);
     }
   }
+
+  static async getPageBySlug(req, res, next) {
+    try {
+      const { slug } = req.params;
+
+      const page = await prisma.page.findFirst({
+        where: { slug },
+        include: {
+          subMenus: true,
+        },
+      });
+
+      if (!page) {
+        throw new MyError("Page not found", 404);
+      }
+
+      res
+        .status(200)
+        .json(response(200, true, "Page retrieved successfully", { page }));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default PageController;

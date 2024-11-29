@@ -315,6 +315,7 @@ class TemplateController {
             nameEn: true,
             nameAr: true,
             isActive: true,
+            page: true,
             createdAt: true,
             updatedAt: true,
           },

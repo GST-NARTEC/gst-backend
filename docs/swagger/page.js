@@ -139,4 +139,57 @@
  *         required: true
  *         schema:
  *           type: string
+ *
+ * /api/pages/slug/{slug}:
+ *   get:
+ *     summary: Get page by slug
+ *     tags: [Pages]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The page slug
+ *     responses:
+ *       200:
+ *         description: Page retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Page retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       $ref: '#/components/schemas/Page'
+ *       404:
+ *         description: Page not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 404
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Page not found
+ *                 data:
+ *                   type: object
+ *                   example: null
  */

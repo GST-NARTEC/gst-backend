@@ -9,5 +9,6 @@ router.get("/template/:template", PageController.getPagesByTemplate);
 router.get("/:id", PageController.getPage);
 router.put("/:id", PageController.updatePage);
 router.delete("/:id", PageController.deletePage);
+router.get("/slug/:slug", PageController.getPageBySlug);
 
 export default router;
