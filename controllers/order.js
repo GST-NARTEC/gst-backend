@@ -66,7 +66,8 @@ class OrderController {
 
       res.status(200).json(
         response(200, true, "Bank slip uploaded successfully", {
-          order: updatedOrder,
+          //   order: updatedOrder,
+          bankSlip: bankSlipPath,
         })
       );
     } catch (error) {
