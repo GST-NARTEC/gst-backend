@@ -46,16 +46,15 @@ class OrderController {
         data: {
           status: "Pending Account Activation",
           bankSlip: bankSlipPath,
-          bankSlipMimeType: req.file.mimetype,
         },
-        include: {
-          user: true,
-          orderItems: {
-            include: {
-              product: true,
-            },
-          },
-        },
+        // include: {
+        //   user: true,
+        //   orderItems: {
+        //     include: {
+        //       product: true,
+        //     },
+        //   },
+        // },
       });
 
       // Send email notification

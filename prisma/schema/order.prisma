@@ -12,7 +12,6 @@ model Order {
   overallAmount Float
   status        String         @default("Pending Payment")
   bankSlip      String?        
-  bankSlipMimeType      String?        
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
