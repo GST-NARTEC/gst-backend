@@ -1,9 +1,9 @@
 model Template1 {
   id               String   @id @default(cuid())
-  nameEn           String?
+  nameEn           String?  @db.NVarChar(max)
   nameAr           String?  @db.NVarChar(max)
   isActive         Boolean? @default(true)
-  seoDescriptionEn String?
+  seoDescriptionEn String?  @db.NVarChar(max)
   seoDescriptionAr String?  @db.NVarChar(max)
   description1En   String?  @db.NVarChar(max)
   description1Ar   String?  @db.NVarChar(max)

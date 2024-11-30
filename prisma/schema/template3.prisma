@@ -1,29 +1,29 @@
 model Template3 {
   id                    String   @id @default(cuid())
-  nameEn                String?
-  nameAr                String?
-  seoDescriptionEn      String?
-  seoDescriptionAr      String?
+  nameEn                String?  @db.NVarChar(max)
+  nameAr                String?  @db.NVarChar(max)
+  seoDescriptionEn      String?  @db.NVarChar(max)
+  seoDescriptionAr      String?  @db.NVarChar(max)
   isActive              Boolean  @default(true)
-  headingEn             String?
-  headingAr             String?
-  description1En        String?  @db.Text
-  description1Ar        String?  @db.Text
-  description2En        String?  @db.Text
-  description2Ar        String?  @db.Text
-  description3En        String?  @db.Text
-  description3Ar        String?  @db.Text
+  headingEn             String?  @db.NVarChar(max)
+  headingAr             String?  @db.NVarChar(max)
+  description1En        String?  @db.NVarChar(max)
+  description1Ar        String?  @db.NVarChar(max)
+  description2En        String?  @db.NVarChar(max)
+  description2Ar        String?  @db.NVarChar(max)
+  description3En        String?  @db.NVarChar(max)
+  description3Ar        String?  @db.NVarChar(max)
   image1                String?
   image2                String?
   image3                String?
-  buttonText1En         String?
-  buttonText1Ar         String?
-  buttonText2En         String?
-  buttonText2Ar         String?
-  buttonNavigation1En   String?
-  buttonNavigation1Ar   String?
-  buttonNavigation2En   String?
-  buttonNavigation2Ar   String?
+  buttonText1En         String?  @db.NVarChar(max)
+  buttonText1Ar         String?  @db.NVarChar(max)
+  buttonText2En         String?  @db.NVarChar(max)
+  buttonText2Ar         String?  @db.NVarChar(max)
+  buttonNavigation1En   String?  @db.NVarChar(max)
+  buttonNavigation1Ar   String?  @db.NVarChar(max)
+  buttonNavigation2En   String?  @db.NVarChar(max)
+  buttonNavigation2Ar   String?  @db.NVarChar(max)
   page                  Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
   pageId                String?
   createdAt             DateTime @default(now())

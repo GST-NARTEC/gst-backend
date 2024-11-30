@@ -1,18 +1,18 @@
 model Template2 {
   id                    String   @id @default(cuid())
-  nameEn                String?
-  nameAr                String?
-  seoDescriptionEn      String?
-  seoDescriptionAr      String?
+  nameEn                String?  @db.NVarChar(max)
+  nameAr                String?  @db.NVarChar(max)
+  seoDescriptionEn      String?  @db.NVarChar(max)
+  seoDescriptionAr      String?  @db.NVarChar(max)
   isActive              Boolean  @default(true)
-  headingEn             String?
-  headingAr             String?
-  description1En        String?  @db.Text
-  description1Ar        String?  @db.Text
-  description2En        String?  @db.Text
-  description2Ar        String?  @db.Text
-  description3En        String?  @db.Text
-  description3Ar        String?  @db.Text
+  headingEn             String?  @db.NVarChar(max)
+  headingAr             String?  @db.NVarChar(max)
+  description1En        String?  @db.NVarChar(max)
+  description1Ar        String?  @db.NVarChar(max)
+  description2En        String?  @db.NVarChar(max)
+  description2Ar        String?  @db.NVarChar(max)
+  description3En        String?  @db.NVarChar(max)
+  description3Ar        String?  @db.NVarChar(max)
   image1                String?
   image2                String?
   image3                String?
