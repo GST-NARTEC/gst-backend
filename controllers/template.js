@@ -111,7 +111,7 @@ class TemplateController {
     let imagePaths = [];
     try {
       const { templateType, id } = req.params;
-      const updateData = { ...req.body };
+      let updateData = { ...req.body };
 
       // Validate templateType
       const { error: typeError } = templateTypeSchema.validate({
@@ -119,14 +119,6 @@ class TemplateController {
       });
       if (typeError) {
         throw new MyError(typeError.details[0].message, 400);
-      }
-
-      // Use the update schema instead of the create schema
-      const schema = getUpdateSchemaForType(templateType);
-      const { error, value } = schema.validate(updateData);
-
-      if (error) {
-        throw new MyError(error.details[0].message, 400);
       }
 
       if (!prisma[templateType]) {
@@ -142,7 +134,7 @@ class TemplateController {
         throw new MyError("Template not found", 404);
       }
 
-      // Handle image uploads only for the images that are being updated
+      // Handle image uploads
       if (req.files) {
         for (let i = 1; i <= 3; i++) {
           if (req.files[`image${i}`]) {
@@ -150,25 +142,38 @@ class TemplateController {
             if (existingTemplate[`image${i}`]) {
               await deleteFile(existingTemplate[`image${i}`]);
             }
-            value[`image${i}`] = imagePath;
+            updateData[`image${i}`] = imagePath;
             imagePaths.push(imagePath);
           }
         }
       }
 
+      // Only validate with schema if there's content to update
+      if (Object.keys(updateData).length > 0) {
+        const schema = getUpdateSchemaForType(templateType);
+        const { error, value } = schema.validate(updateData);
+        if (error) {
+          throw new MyError(error.details[0].message, 400);
+        }
+        updateData = value;
+      }
+
+      // Don't update if no changes
+      if (Object.keys(updateData).length === 0) {
+        throw new MyError("No updates provided", 400);
+      }
+
       const template = await prisma[templateType].update({
         where: { id },
-        data: value,
+        data: updateData,
         include: {
           page: true,
         },
       });
 
-      res
-        .status(200)
-        .json(
-          response(200, true, "Template updated successfully", { template })
-        );
+      res.status(200).json(
+        response(200, true, "Template updated successfully", { template })
+      );
     } catch (error) {
       // Clean up uploaded images if there was an error
       for (const path of imagePaths) {

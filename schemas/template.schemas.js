@@ -26,6 +26,8 @@ const commonOptionalFields = {
   description2Ar: Joi.string().allow("", null),
   description3En: Joi.string().allow("", null),
   description3Ar: Joi.string().allow("", null),
+  description4En: Joi.string().allow("", null),
+  description4Ar: Joi.string().allow("", null),
   image1: Joi.string().allow("", null),
   image2: Joi.string().allow("", null),
   image3: Joi.string().allow("", null),
@@ -92,27 +94,21 @@ const templateUpdateSchemas = {
   template1: Joi.object({
     ...baseUpdateSchema,
     ...commonOptionalFields,
-  })
-    .min(1)
-    .unknown(false),
+  }).unknown(false),
 
   template2: Joi.object({
     ...baseUpdateSchema,
     ...commonOptionalFields,
     ...headingFields,
     ...buttonFieldsTemplate2,
-  })
-    .min(1)
-    .unknown(false),
+  }).unknown(false),
 
   template3: Joi.object({
     ...baseUpdateSchema,
     ...commonOptionalFields,
     ...headingFields,
     ...buttonFieldsExtended,
-  })
-    .min(1)
-    .unknown(false),
+  }).unknown(false),
 
   template4: Joi.object({
     ...baseUpdateSchema,
@@ -120,9 +116,7 @@ const templateUpdateSchemas = {
     ...buttonFieldsExtended,
     description4En: Joi.string().allow("", null),
     description4Ar: Joi.string().allow("", null),
-  })
-    .min(1)
-    .unknown(false),
+  }).unknown(false),
 };
 
 const templateTypeSchema = Joi.object({
