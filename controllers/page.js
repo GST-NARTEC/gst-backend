@@ -17,6 +17,16 @@ const pageUpdateSchema = Joi.object({
   template: Joi.string().optional(),
 }).min(1);
 
+const searchPagesSchema = Joi.object({
+  search: Joi.string().allow("").optional(),
+  page: Joi.number().min(1).optional(),
+  limit: Joi.number().min(1).max(100).optional(),
+  sortBy: Joi.string()
+    .valid("nameEn", "nameAr", "createdAt")
+    .default("createdAt"),
+  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+});
+
 class PageController {
   static async createPage(req, res, next) {
     try {
@@ -39,12 +49,60 @@ class PageController {
 
   static async getPages(req, res, next) {
     try {
+      const { error, value } = searchPagesSchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { search, page, limit, sortBy, sortOrder } = value;
+
+      // Build where clause for search
+      const whereClause = search
+        ? {
+            OR: [
+              { nameEn: { contains: search } },
+              { nameAr: { contains: search } },
+              { slug: { contains: search } },
+            ],
+          }
+        : {};
+
+      // If pagination is requested
+      if (page && limit) {
+        const skip = (page - 1) * limit;
+
+        const [pages, total] = await Promise.all([
+          prisma.page.findMany({
+            where: whereClause,
+            orderBy: {
+              [sortBy]: sortOrder,
+            },
+            skip,
+            take: limit,
+          }),
+          prisma.page.count({ where: whereClause }),
+        ]);
+
+        const totalPages = Math.ceil(total / limit);
+
+        return res.status(200).json(
+          response(200, true, "Pages retrieved successfully", {
+            pages,
+            pagination: {
+              total,
+              page,
+              totalPages,
+              limit,
+            },
+          })
+        );
+      }
+
+      // If no pagination requested
       const pages = await prisma.page.findMany({
-        // include: {
-        //   subMenus: true,
-        // },
+        where: whereClause,
         orderBy: {
-          createdAt: "desc",
+          [sortBy]: sortOrder,
         },
       });
 
