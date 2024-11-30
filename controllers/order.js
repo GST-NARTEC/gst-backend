@@ -1,4 +1,5 @@
 import Joi from "joi";
+import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -46,22 +47,22 @@ class OrderController {
           status: "Pending Account Activation",
           bankSlip: bankSlipPath,
         },
-        // include: {
-        //   user: true,
-        //   orderItems: {
-        //     include: {
-        //       product: true,
-        //     },
-        //   },
-        // },
+        include: {
+          user: true,
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
       });
 
       // Send email notification
-      //   await EmailService.sendBankSlipUploadedEmail({
-      //     email: order.user.email,
-      //     order: updatedOrder,
-      //     user: order.user,
-      //   });
+      await EmailService.sendBankSlipNotification({
+        email: updatedOrder.user.email,
+        order: updatedOrder,
+        user: updatedOrder.user,
+      });
 
       res.status(200).json(
         response(200, true, "Bank slip uploaded successfully", {

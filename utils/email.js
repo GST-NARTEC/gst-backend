@@ -76,6 +76,36 @@ class EmailService {
       return false;
     }
   }
+
+  async sendBankSlipNotification({ email, order, user }) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/bankSlipNotification.ejs"
+      );
+
+      const data = {
+        user,
+        order,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: `Bank Slip Received - Order ${order.orderNumber}`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending bank slip notification email:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();
