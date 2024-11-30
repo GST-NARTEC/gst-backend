@@ -24,11 +24,13 @@ const checkoutSchema = Joi.object({
 });
 
 const generateOrderNumber = () => {
-  const timestamp = Date.now().toString();
-  const random = Math.floor(Math.random() * 10000)
-    .toString()
-    .padStart(4, "0");
-  return `ORD-${timestamp}-${random}`;
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "ORD";
+  // Generate 7 random characters (ORD + 7 = 10 characters total)
+  for (let i = 0; i < 7; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 };
 
 class CheckoutController {
