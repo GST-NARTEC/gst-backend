@@ -9,6 +9,7 @@ import frontend from "./frontend.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
+import orderRoutes from "./order.js";
 import pageRoutes from "./page.js";
 import productRouter from "./product.js";
 import proServiceRoutes from "./proService.js";
@@ -39,5 +40,6 @@ router.use("/pro-service/v1", proServiceRoutes);
 router.use("/v1/whybarcode", whyBarcodeRoutes);
 router.use("/page/v1", pageRoutes);
 router.use("/v1/template", templateRoutes);
+router.use("/v1/orders", orderRoutes);
 
 export default router;

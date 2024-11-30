@@ -43,6 +43,7 @@ const options = {
   swaggerDefinition: swaggerDefinition,
   apis: [
     path.join(__dirname, "../docs/swagger/user.js"),
+    path.join(__dirname, "../docs/swagger/order.js"),
     path.join(__dirname, "../docs/swagger/license.js"),
     path.join(__dirname, "../docs/swagger/product.js"),
     path.join(__dirname, "../docs/swagger/cart.js"),
