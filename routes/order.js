@@ -5,7 +5,7 @@ import OrderController from "../controllers/order.js";
 
 const router = express.Router();
 const uploadSlip = uploadSingle({
-  destination: "/uploads/slips",
+  destination: "uploads/slips",
   filename: "bankSlip",
 });
 

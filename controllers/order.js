@@ -26,9 +26,6 @@ class OrderController {
 
       const order = await prisma.order.findFirst({
         where: { orderNumber },
-        include: {
-          user: true,
-        },
       });
 
       if (!order) {
@@ -49,6 +46,7 @@ class OrderController {
         data: {
           status: "Pending Account Activation",
           bankSlip: bankSlipPath,
+          bankSlipMimeType: req.file.mimetype,
         },
         include: {
           user: true,
