@@ -33,7 +33,7 @@ class OrderController {
       }
 
       // Add domain to file path
-      bankSlipPath = addDomain(req.file.path);
+      if (req.file) bankSlipPath = addDomain(req.file.path);
 
       // If there's an existing bank slip, delete it
       if (order.bankSlip) {
