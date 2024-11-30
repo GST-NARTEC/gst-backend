@@ -3,17 +3,17 @@ import MyError from "../utils/error.js";
 
 // Base schemas with common fields
 const baseTemplateSchema = {
-  nameEn: Joi.string().required(),
-  nameAr: Joi.string().required(),
+  nameEn: Joi.string().allow(null),
+  nameAr: Joi.string().allow(null),
   isActive: Joi.boolean().default(true),
-  pageId: Joi.string().required(),
+  pageId: Joi.string().allow(null),
 };
 
 const baseUpdateSchema = {
-  nameEn: Joi.string(),
-  nameAr: Joi.string(),
+  nameEn: Joi.string().allow(null),
+  nameAr: Joi.string().allow(null),
   isActive: Joi.boolean(),
-  pageId: Joi.string(),
+  pageId: Joi.string().allow(null),
 };
 
 // Common optional fields
@@ -31,8 +31,16 @@ const commonOptionalFields = {
   image3: Joi.string().allow("", null),
 };
 
-// Button fields
-const buttonFields = {
+// Button fields for template 2
+const buttonFieldsTemplate2 = {
+  buttonTextEn: Joi.string().allow("", null),
+  buttonTextAr: Joi.string().allow("", null),
+  buttonNavigationEn: Joi.string().allow("", null),
+  buttonNavigationAr: Joi.string().allow("", null),
+};
+
+// Button fields for template 3 & 4
+const buttonFieldsExtended = {
   buttonText1En: Joi.string().allow("", null),
   buttonText1Ar: Joi.string().allow("", null),
   buttonText2En: Joi.string().allow("", null),
@@ -60,19 +68,20 @@ const templateSchemas = {
     ...baseTemplateSchema,
     ...commonOptionalFields,
     ...headingFields,
+    ...buttonFieldsTemplate2,
   }).unknown(false),
 
   template3: Joi.object({
     ...baseTemplateSchema,
     ...commonOptionalFields,
     ...headingFields,
-    ...buttonFields,
+    ...buttonFieldsExtended,
   }).unknown(false),
 
   template4: Joi.object({
     ...baseTemplateSchema,
     ...commonOptionalFields,
-    ...buttonFields,
+    ...buttonFieldsExtended,
     description4En: Joi.string().allow("", null),
     description4Ar: Joi.string().allow("", null),
   }).unknown(false),
@@ -91,6 +100,7 @@ const templateUpdateSchemas = {
     ...baseUpdateSchema,
     ...commonOptionalFields,
     ...headingFields,
+    ...buttonFieldsTemplate2,
   })
     .min(1)
     .unknown(false),
@@ -99,7 +109,7 @@ const templateUpdateSchemas = {
     ...baseUpdateSchema,
     ...commonOptionalFields,
     ...headingFields,
-    ...buttonFields,
+    ...buttonFieldsExtended,
   })
     .min(1)
     .unknown(false),
@@ -107,7 +117,7 @@ const templateUpdateSchemas = {
   template4: Joi.object({
     ...baseUpdateSchema,
     ...commonOptionalFields,
-    ...buttonFields,
+    ...buttonFieldsExtended,
     description4En: Joi.string().allow("", null),
     description4Ar: Joi.string().allow("", null),
   })

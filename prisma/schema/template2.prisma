@@ -16,6 +16,10 @@ model Template2 {
   image1                String?
   image2                String?
   image3                String?
+  buttonTextEn          String?  @db.NVarChar(max)
+  buttonTextAr          String?  @db.NVarChar(max)
+  buttonNavigationEn    String?  @db.NVarChar(max)
+  buttonNavigationAr    String?  @db.NVarChar(max)
   page                  Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
   pageId                String?
   createdAt             DateTime @default(now())

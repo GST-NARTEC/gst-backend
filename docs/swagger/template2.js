@@ -51,6 +51,18 @@
  *         description3Ar:
  *           type: string
  *           description: Third description in Arabic
+ *         buttonTextEn:
+ *           type: string
+ *           description: Button text in English
+ *         buttonTextAr:
+ *           type: string
+ *           description: Button text in Arabic
+ *         buttonNavigationEn:
+ *           type: string
+ *           description: Button navigation link in English
+ *         buttonNavigationAr:
+ *           type: string
+ *           description: Button navigation link in Arabic
  *         image1:
  *           type: string
  *           format: binary
@@ -165,6 +177,14 @@
  *               description3En:
  *                 type: string
  *               description3Ar:
+ *                 type: string
+ *               buttonTextEn:
+ *                 type: string
+ *               buttonTextAr:
+ *                 type: string
+ *               buttonNavigationEn:
+ *                 type: string
+ *               buttonNavigationAr:
  *                 type: string
  *               image1:
  *                 type: string
