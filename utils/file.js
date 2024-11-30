@@ -7,23 +7,33 @@ import config from "../config/config.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const addDomain = (imagePath) => {
-  if (!imagePath) return null;
-  return `${config.DOMAIN}/${imagePath}`;
+export const addDomain = (filePath) => {
+  if (!filePath) return null;
+  return `${config.DOMAIN}/${filePath}`;
 };
 
-export const deleteFile = (imageUrl) => {
-  if (!imageUrl) return Promise.resolve();
+export const deleteFile = (fileUrl) => {
+  if (!fileUrl) return Promise.resolve();
 
-  const imagePath = imageUrl.replace(config.DOMAIN, "");
+  const imagePath = fileUrl.replace(config.DOMAIN, "");
   const fullPath = path.join(__dirname, "..", imagePath);
 
   return new Promise((resolve) => {
-    fs.unlink(fullPath, (err) => {
+    fs.access(fullPath, fs.constants.F_OK, (err) => {
       if (err) {
-        console.error("Failed to delete image:", err);
+        // File doesn't exist
+        console.warn(`File not found: ${fullPath}`);
+        resolve();
+        return;
       }
-      resolve();
+
+      // File exists, try to delete it
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error("Failed to delete file:", err);
+        }
+        resolve();
+      });
     });
   });
 };
