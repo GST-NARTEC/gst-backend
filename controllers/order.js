@@ -1,5 +1,4 @@
 import Joi from "joi";
-import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -58,11 +57,11 @@ class OrderController {
       });
 
       // Send email notification
-      await EmailService.sendBankSlipUploadedEmail({
-        email: order.user.email,
-        order: updatedOrder,
-        user: order.user,
-      });
+      //   await EmailService.sendBankSlipUploadedEmail({
+      //     email: order.user.email,
+      //     order: updatedOrder,
+      //     user: order.user,
+      //   });
 
       res.status(200).json(
         response(200, true, "Bank slip uploaded successfully", {
