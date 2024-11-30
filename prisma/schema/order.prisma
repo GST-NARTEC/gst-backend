@@ -10,7 +10,7 @@ model Order {
   taxAmount     Float          @default(0)
   vat           Float          @default(0)
   overallAmount Float
-  status        String         @default("pending")
+  status        String         @default("Pending Payment")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
