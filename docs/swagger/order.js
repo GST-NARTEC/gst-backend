@@ -45,4 +45,25 @@
  *         description: Bank slip deleted successfully
  *       404:
  *         description: Order or bank slip not found
+ *
+ * /api/v1/orders/activate/{orderNumber}:
+ *   patch:
+ *     summary: Activate user account for an order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: orderNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Order number to activate
+ *     responses:
+ *       200:
+ *         description: Account activated successfully
+ *       400:
+ *         description: Invalid order status
+ *       404:
+ *         description: Order not found
  */

@@ -115,6 +115,58 @@ class OrderController {
       next(error);
     }
   }
+
+  static async activateAccount(req, res, next) {
+    try {
+      const { orderNumber } = req.params;
+
+      const order = await prisma.order.findFirst({
+        where: { orderNumber },
+        include: {
+          user: true,
+        },
+      });
+
+      if (!order) {
+        throw new MyError("Order not found", 404);
+      }
+
+      if (order.status !== "Pending Account Activation") {
+        throw new MyError("Order is not in pending activation status", 400);
+      }
+
+      // Update order status
+      const updatedOrder = await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          status: "Activated",
+        },
+        include: {
+          user: true,
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      // Send activation email
+      await EmailService.sendAccountActivationEmail({
+        email: updatedOrder.user.email,
+        order: updatedOrder,
+        user: updatedOrder.user,
+      });
+
+      res.status(200).json(
+        response(200, true, "Account activated successfully", {
+          order: updatedOrder,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default OrderController;

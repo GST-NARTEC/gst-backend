@@ -106,6 +106,37 @@ class EmailService {
       return false;
     }
   }
+
+  async sendAccountActivationEmail({ email, order, user }) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/accountActivationEmail.ejs"
+      );
+
+      const data = {
+        user,
+        order,
+        logo: LOGO_URL,
+        loginUrl: process.env.LOGIN_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: `Account Activated - Order ${order.orderNumber}`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending account activation email:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();
