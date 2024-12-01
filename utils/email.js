@@ -64,7 +64,7 @@ class EmailService {
       const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: "Welcome to GS1 Saudi Arabia - Order Confirmation",
+        subject: "Welcome to GST Saudi Arabia",
         html,
         attachments,
       };
