@@ -107,11 +107,11 @@ class EmailService {
     }
   }
 
-  async sendAccountActivationEmail({ email, order, user }) {
+  async sendOrderActivationEmail({ email, order, user }) {
     try {
       const templatePath = path.join(
         __dirname,
-        "../view/accountActivationEmail.ejs"
+        "../view/orderActivationEmail.ejs"
       );
 
       const data = {

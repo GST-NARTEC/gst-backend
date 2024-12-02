@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .logo {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .logo img {
+        max-width: 200px;
+      }
+      .content {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      .order-details {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 5px;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #1b365d;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+      .button:hover {
+        background-color: #152a4a;
+      }
+      .footer {
+        background-color: #1b365d;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+        font-size: 14px;
+      }
+      .footer img {
+        background-color: white;
+        padding: 8px;
+        margin-bottom: 5px;
+        width: 100px;
+      }
+      h3 {
+        color: #152a4a;
+      }
+      .bilingual {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img
+          src="http://localhost:3000/assets/images/gst-logo.png"
+          alt="GST Logo"
+          width="150"
+        />
+      </div>
+      <div class="content">
+        <div class="bilingual">
+          <div>
+            <h2>Order Activated Successfully</h2>
+            <p>Dear <%= user.companyNameEn %>,</p>
+            <p>
+              Your order has been successfully activated. You can now access all
+              GST services.
+            </p>
+          </div>
+          <div style="text-align: right">
+            <h2>تم تفعيل الطلب بنجاح</h2>
+            <p>عزيزي <%= user.companyNameAr %>،</p>
+            <p>تم تفعيل طلبك بنجاح. يمكنك الآن الوصول إلى جميع خدمات GST.</p>
+          </div>
+        </div>
+
+        <div class="order-details">
+          <div class="bilingual">
+            <div>
+              <p><strong>Order Number:</strong> <%= order.orderNumber %></p>
+              <p><strong>Order Status:</strong> <%= order.status %></p>
+              <p><strong>Order Total:</strong> SAR <%= order.totalAmount %></p>
+            </div>
+            <div style="text-align: right">
+              <p><strong>رقم الطلب:</strong> <%= order.orderNumber %></p>
+              <p><strong>حالة الطلب:</strong> <%= order.status %></p>
+              <p>
+                <strong>إجمالي الطلب:</strong> <%= order.totalAmount %> ريال
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bilingual">
+          <div>
+            <p>Click the button below to access your account:</p>
+            <a href="<%= loginUrl %>" class="button">Access Your Account</a>
+          </div>
+          <div style="text-align: right">
+            <p>انقر على الزر أدناه للوصول إلى حسابك:</p>
+            <a href="<%= loginUrl %>" class="button">الوصول إلى حسابك</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <img
+          src="http://localhost:3000/assets/images/gst-logo.png"
+          alt="GST Logo"
+        />
+        <h2>GST Saudi Barcode Center</h2>
+        <div class="copyright">
+          Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
+          rights reserved.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

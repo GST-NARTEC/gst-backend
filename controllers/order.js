@@ -158,7 +158,7 @@ class OrderController {
       });
 
       // Send activation email
-      await EmailService.sendAccountActivationEmail({
+      await EmailService.sendOrderActivationEmail({
         email: updatedOrder.user.email,
         order: updatedOrder,
         user: updatedOrder.user,
