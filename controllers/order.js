@@ -68,6 +68,7 @@ class OrderController {
         response(200, true, "Bank slip uploaded successfully", {
           //   order: updatedOrder,
           bankSlip: bankSlipPath,
+          status: updatedOrder.status,
         })
       );
     } catch (error) {
@@ -139,9 +140,6 @@ class OrderController {
         default:
           throw new MyError("Order is not in pending activation status", 400);
       }
-      //   if (order.status !== "Pending Account Activation") {
-      //     throw new MyError("Order is not in pending activation status", 400);
-      //   }
 
       // Update order status
       const updatedOrder = await prisma.order.update({
@@ -168,7 +166,7 @@ class OrderController {
 
       res.status(200).json(
         response(200, true, "Account activated successfully", {
-          order: updatedOrder,
+          status: updatedOrder.status,
         })
       );
     } catch (error) {
