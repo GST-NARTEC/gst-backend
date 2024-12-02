@@ -17,6 +17,10 @@
  *           type: boolean
  *         isEmailVerified:
  *           type: boolean
+ *         isActive:
+ *           type: boolean
+ *           default: true
+ *           description: Flag indicating if the user account is active
  *         companyLicenseNo:
  *           type: string
  *         companyNameEn:

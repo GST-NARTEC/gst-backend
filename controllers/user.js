@@ -28,6 +28,7 @@ const userInfoSchema = Joi.object({
   streetAddress: Joi.string().required(),
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
+  isActive: Joi.boolean().default(true),
 });
 
 const loginSchema = Joi.object({
@@ -64,6 +65,7 @@ const userUpdateSchema = Joi.object({
   streetAddress: Joi.string(),
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
+  isActive: Joi.boolean(),
 }).min(1);
 
 // Add this helper function

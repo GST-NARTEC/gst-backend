@@ -54,6 +54,12 @@
         font-size: 16px;
         margin: 0 0 20px 0;
       }
+      .bilingual {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        align-items: center;
+      }
       .otp-code {
         font-size: 36px;
         letter-spacing: 8px;
@@ -75,9 +81,9 @@
         border-left: 4px solid #1b365d;
       }
       .footer {
-        text-align: center;
-        padding: 30px 20px;
         background-color: #1b365d;
+        padding: 20px;
+        text-align: center;
         color: white;
       }
       .footer img {
@@ -89,16 +95,19 @@
         margin-bottom: 15px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
-      .footer h2 {
-        font-weight: 600;
-        font-size: 18px;
-        margin: 10px 0;
-        color: #e2e8f0;
+      .footer-links {
+        margin: 15px 0;
       }
-      .footer p {
-        margin: 15px 0 0 0;
-        font-size: 13px;
+      .footer-links a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 14px;
+      }
+      .copyright {
+        font-size: 12px;
         color: #a0aec0;
+        margin-top: 15px;
       }
       .divider {
         height: 1px;
@@ -129,35 +138,72 @@
             alt="GST Logo"
           />
         </div>
-        <h2>Email Verification</h2>
+        <div class="bilingual">
+          <h2>Email Verification</h2>
+          <h2 style="text-align: right">التحقق من البريد الإلكتروني</h2>
+        </div>
       </div>
       <div class="content">
-        <p>Hello!</p>
-        <p>
-          Thank you for registering with GST Saudi Barcode Center. To complete
-          your registration, please use the following verification code:
-        </p>
-        <div class="otp-code">123456</div>
-        <div class="warning">
-          <strong>Important:</strong> This verification code will expire in 5
-          minutes for security purposes.
+        <div class="bilingual">
+          <p>Hello!</p>
+          <p style="text-align: right">!مرحباً</p>
         </div>
-        <p style="color: #718096; font-size: 14px">
-          If you didn't request this code, please ignore this email or contact
-          support if you have concerns.
-        </p>
+
+        <div class="bilingual">
+          <p>
+            Thank you for registering with GST Saudi Barcode Center. To complete
+            your registration, please use the following verification code:
+          </p>
+          <p style="text-align: right">
+            شكراً لتسجيلك في مركز GST السعودي للباركود. لإكمال تسجيلك، يرجى
+            استخدام رمز التحقق التالي:
+          </p>
+        </div>
+
+        <div class="otp-code">123456</div>
+
+        <div class="warning">
+          <div class="bilingual">
+            <p>
+              <strong>Important:</strong> This verification code will expire in
+              5 minutes for security purposes.
+            </p>
+            <p style="text-align: right">
+              <strong>هام:</strong> سينتهي رمز التحقق هذا خلال 5 دقائق لأغراض
+              أمنية.
+            </p>
+          </div>
+        </div>
+
+        <div class="bilingual">
+          <p style="color: #718096; font-size: 14px">
+            If you didn't request this code, please ignore this email or contact
+            support if you have concerns.
+          </p>
+          <p style="color: #718096; font-size: 14px; text-align: right">
+            إذا لم تطلب هذا الرمز، يرجى تجاهل هذا البريد الإلكتروني أو الاتصال
+            بالدعم إذا كان لديك أي مخاوف.
+          </p>
+        </div>
       </div>
+
       <div class="footer">
         <img
           src="http://localhost:3000/assets/images/gst-logo.png"
           alt="GST Logo"
         />
         <h2>GST Saudi Barcode Center</h2>
+        <div class="footer-links">
+          <a href="https://gs1.org.sa/how-to-get-barcode">Need a GST barcode</a>
+          <a href="https://gs1.org.sa/about-us">GST General Specifications</a>
+          <a href="https://gs1.org.sa/gs1-system-standards">GST Standards</a>
+          <a href="https://gs1.org.sa/privacypolicymobileapp">Privacy Policy</a>
+        </div>
         <div class="divider"></div>
-        <p>
+        <div class="copyright">
           Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
           rights reserved.
-        </p>
+        </div>
       </div>
     </div>
   </body>

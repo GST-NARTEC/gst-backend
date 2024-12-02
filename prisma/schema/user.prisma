@@ -16,6 +16,7 @@ model User {
   streetAddress    String?
   latitude         Float?
   longitude        Float?
+  isActive         Boolean?   @default(true)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   cart             Cart?
