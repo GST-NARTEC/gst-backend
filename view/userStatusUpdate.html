@@ -27,6 +27,9 @@
         padding: 30px 20px;
         text-align: center;
       }
+      .logo {
+        margin-bottom: 20px;
+      }
       .logo img {
         width: 180px;
         height: auto;
@@ -53,6 +56,26 @@
         background-color: #e53e3e;
         color: white;
       }
+      .bilingual {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        align-items: flex-start;
+      }
+      .status-info {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .message-box {
+        text-align: left;
+        flex: 1;
+        padding: 0 15px;
+      }
+      .message-box.rtl {
+        text-align: right;
+      }
       .footer {
         background-color: #1b365d;
         padding: 20px;
@@ -61,20 +84,23 @@
       }
       .footer img {
         width: 100px;
+        height: auto;
         background-color: white;
         padding: 8px;
         margin-bottom: 10px;
-      }
-      .footer-links a {
-        color: white;
-        text-decoration: none;
-        margin: 0 10px;
-        font-size: 14px;
+        border-radius: 8px;
       }
       .copyright {
         font-size: 12px;
         color: #a0aec0;
         margin-top: 15px;
+      }
+      h2 {
+        color: #1b365d;
+        margin: 0;
+      }
+      .rtl {
+        direction: rtl;
       }
     </style>
   </head>
@@ -82,21 +108,20 @@
     <div class="container">
       <div class="header">
         <div class="logo">
-          <img
-            src="http://localhost:3000/assets/images/gst-logo.png"
-            alt="GST Logo"
-          />
+          <img src="<%= logo %>" alt="GST Logo" />
         </div>
       </div>
+
       <div class="content">
         <div class="bilingual">
-          <h2>Account Status Update</h2>
-          <h2 style="text-align: right">تحديث حالة الحساب</h2>
-        </div>
-
-        <div class="bilingual">
-          <p>Dear <%= user.companyNameEn %>,</p>
-          <p style="text-align: right">عزيزي <%= user.companyNameAr %>،</p>
+          <div class="message-box">
+            <h2>Account Status Update</h2>
+            <p>Dear <%= user.companyNameEn %>,</p>
+          </div>
+          <div class="message-box rtl">
+            <h2>تحديث حالة الحساب</h2>
+            <p>عزيزي <%= user.companyNameAr %>،</p>
+          </div>
         </div>
 
         <div
@@ -105,44 +130,40 @@
           <%= isActive ? 'ACTIVATED' : 'SUSPENDED' %>
         </div>
 
-        <div class="bilingual">
-          <p>
-            Your GST account has been <%= isActive ? 'activated' : 'suspended'
-            %>. <%= isActive ? 'You can now access all GST services.' : 'You
-            will not be able to access GST services until your account is
-            reactivated.' %>
-          </p>
-          <p style="text-align: right">
-            تم <%= isActive ? 'تفعيل' : 'تعليق' %> حسابك في GST. <%= isActive ?
-            'يمكنك الآن الوصول إلى جميع خدمات GST.' : 'لن تتمكن من الوصول إلى
-            خدمات GST حتى يتم إعادة تفعيل حسابك.' %>
-          </p>
-        </div>
-
-        <div class="bilingual">
-          <!-- <p>
-            If you have any questions, please contact our support team at
-            support@gs1.org.sa or call us at +9200-31437.
-          </p> -->
-          <p style="text-align: right">
-            إذا كان لديك أي أسئلة، يرجى الاتصال بفريق الدعم على
-            support@gs1.org.sa أو اتصل بنا على +9200-31437.
-          </p>
+        <div class="status-info">
+          <div class="bilingual">
+            <div class="message-box">
+              <p>
+                <%= isActive ? 'Your account has been successfully activated.
+                You can now access your GST account and services.' : 'Your
+                account has been suspended. Please contact our support team for
+                assistance.' %>
+              </p>
+              <p>
+                For any inquiries, please contact us:<br />
+                Email: support@gst.org.sa<br />
+                Phone: +966 504420607
+              </p>
+            </div>
+            <div class="message-box rtl">
+              <p>
+                <%= isActive ? 'تم تفعيل حسابك بنجاح. يمكنك الآن الوصول إلى حساب
+                وخدمات GST.' : 'تم تعليق حسابك. يرجى الاتصال بفريق الدعم
+                للمساعدة.' %>
+              </p>
+              <p>
+                :لأي استفسارات، يرجى الاتصال بنا<br />
+                support@gst.org.sa :البريد الإلكتروني<br />
+                الهاتف: 966504420607+
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="footer">
-        <img
-          src="http://localhost:3000/assets/images/gst-logo.png"
-          alt="GST Logo"
-        />
+        <img src="<%= logo %>" alt="GST Logo" />
         <h2>GST Saudi Barcode Center</h2>
-        <div class="footer-links">
-          <a href="https://gs1.org.sa/how-to-get-barcode">Need a GST barcode</a>
-          <a href="https://gs1.org.sa/about-us">GST General Specifications</a>
-          <a href="https://gs1.org.sa/gs1-system-standards">GST Standards</a>
-          <a href="https://gs1.org.sa/privacypolicymobileapp">Privacy Policy</a>
-        </div>
         <div class="copyright">
           Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
           rights reserved.
