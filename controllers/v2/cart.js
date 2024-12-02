@@ -27,20 +27,28 @@ class CartControllerV2 {
 
       const { items } = value;
 
-      // Create new anonymous cart
-      cart = await prisma.cart.create({
-        data: {
-          status: "ANONYMOUS",
-        },
+      // Check for existing anonymous cart first
+      let cart = await prisma.cart.findFirst({
+        where: { status: "ANONYMOUS" },
         include: { items: true },
       });
+
+      // Create only if no anonymous cart exists
+      if (!cart) {
+        cart = await prisma.cart.create({
+          data: {
+            status: "ANONYMOUS",
+          },
+          include: { items: true },
+        });
+      }
 
       // Verify all products exist and are active
       const productIds = items.map((item) => item.productId);
       const products = await prisma.product.findMany({
         where: {
           id: { in: productIds },
-          isActive: true,
+          status: "active",
         },
       });
 
@@ -79,11 +87,11 @@ class CartControllerV2 {
               product: {
                 select: {
                   id: true,
-                  name: true,
+                  title: true,
                   price: true,
                   description: true,
                   image: true,
-                  isActive: true,
+                  status: true,
                 },
               },
             },
