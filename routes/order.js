@@ -13,6 +13,6 @@ router.post("/bank-slip", uploadSlip, OrderController.uploadBankSlip);
 
 router.delete("/bank-slip/:orderNumber", OrderController.deleteBankSlip);
 
-router.patch("/activate/:orderNumber", OrderController.activateAccount);
+router.patch("/activate/:orderNumber", OrderController.activateOrderStatus);
 
 export default router;

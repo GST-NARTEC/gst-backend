@@ -11,6 +11,7 @@ model Order {
   vat           Float          @default(0)
   overallAmount Float
   status        String         @default("Pending Payment")
+  isActive      Boolean        @default(true)
   bankSlip      String?        
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

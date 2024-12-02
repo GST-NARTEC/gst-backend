@@ -116,7 +116,7 @@ class OrderController {
     }
   }
 
-  static async activateAccount(req, res, next) {
+  static async activateOrderStatus(req, res, next) {
     try {
       const { orderNumber } = req.params;
 
@@ -131,9 +131,17 @@ class OrderController {
         throw new MyError("Order not found", 404);
       }
 
-      if (order.status !== "Pending Account Activation") {
-        throw new MyError("Order is not in pending activation status", 400);
+      switch (order.status) {
+        case "Pending Account Activation":
+          break;
+        case "Activated":
+          throw new MyError("Account is already activated", 400);
+        default:
+          throw new MyError("Order is not in pending activation status", 400);
       }
+      //   if (order.status !== "Pending Account Activation") {
+      //     throw new MyError("Order is not in pending activation status", 400);
+      //   }
 
       // Update order status
       const updatedOrder = await prisma.order.update({
