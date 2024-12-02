@@ -137,6 +137,35 @@ class EmailService {
       return false;
     }
   }
+
+  async sendStatusUpdateEmail({ email, user, isActive }) {
+    try {
+      const templatePath = path.join(__dirname, "../view/userStatusUpdate.ejs");
+
+      const data = {
+        user,
+        isActive,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: `Account ${
+          isActive ? "Activated" : "Suspended"
+        } - GST Saudi Arabia`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending status update email:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();

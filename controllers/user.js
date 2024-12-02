@@ -715,6 +715,67 @@ class UserController {
       next(error);
     }
   }
+
+  static async updateUserStatus(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { action } = req.query;
+
+      if (!["active", "inactive"].includes(action)) {
+        throw new MyError("Invalid action. Use 'active' or 'inactive'", 400);
+      }
+
+      const isActive = action === "active";
+
+      // Check if user exists
+      const user = await prisma.user.findUnique({
+        where: { id },
+        select: {
+          email: true,
+          companyNameEn: true,
+          companyNameAr: true,
+          isActive: true,
+        },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      // Update user status
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: { isActive },
+        select: {
+          id: true,
+          email: true,
+          companyNameEn: true,
+          companyNameAr: true,
+          isActive: true,
+        },
+      });
+
+      //   // Send email notification
+      //   await EmailService.sendStatusUpdateEmail({
+      //     email: user.email,
+      //     user: updatedUser,
+      //     isActive,
+      //   });
+
+      res.status(200).json(
+        response(
+          200,
+          true,
+          `User ${isActive ? "activated" : "suspended"} successfully`,
+          {
+            user: updatedUser,
+          }
+        )
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default UserController;

@@ -14,5 +14,6 @@ router.get("/:id", controller.getUserDetails);
 router.put("/:id", controller.updateUser);
 router.delete("/:id", controller.deleteUser);
 router.post("/refresh-token", verifyRefreshToken, controller.refreshToken);
+router.patch("/:id/status", controller.updateUserStatus);
 
 export default router;
