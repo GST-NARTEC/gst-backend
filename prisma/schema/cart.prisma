@@ -1,8 +1,9 @@
 model Cart {
   id        String     @id @default(uuid()) @db.UniqueIdentifier
-  userId    String     @unique @db.UniqueIdentifier
-  user      User       @relation(fields: [userId], references: [id])
+  userId    String?     @unique @db.UniqueIdentifier
+  user      User?       @relation(fields: [userId], references: [id])
   items     CartItem[]
+  status    String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

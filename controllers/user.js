@@ -16,6 +16,7 @@ const emailSchema = Joi.object({
 
 const userInfoSchema = Joi.object({
   email: Joi.string().email().required(),
+  cartId: Joi.string().uuid().optional(),
   companyLicenseNo: Joi.string().required(),
   companyNameEn: Joi.string().required(),
   companyNameAr: Joi.string().required(),
@@ -771,6 +772,89 @@ class UserController {
             user: updatedUser,
           }
         )
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async createWithCart(req, res, next) {
+    try {
+      const { error, value } = userInfoSchema.validate(req.body);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { cartId, ...userData } = value;
+
+      // Check if cart exists and is not already associated with a user
+      const cart = await prisma.cart.findUnique({
+        where: { id: cartId },
+        include: { user: true },
+      });
+
+      if (!cart) {
+        throw new MyError("Cart not found", 404);
+      }
+
+      if (cart.userId) {
+        throw new MyError("Cart is already associated with a user", 400);
+      }
+
+      // Check for existing user/company
+      const existingCompany = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: userData.email },
+            { companyLicenseNo: userData.companyLicenseNo },
+            { companyNameEn: userData.companyNameEn },
+            { companyNameAr: userData.companyNameAr },
+          ],
+        },
+      });
+
+      if (existingCompany) {
+        if (existingCompany.email === userData.email) {
+          throw new MyError("Email already registered", 400);
+        }
+        if (existingCompany.companyLicenseNo === userData.companyLicenseNo) {
+          throw new MyError("Company license number already registered", 400);
+        }
+        if (existingCompany.companyNameEn === userData.companyNameEn) {
+          throw new MyError("Company name (English) already registered", 400);
+        }
+        if (existingCompany.companyNameAr === userData.companyNameAr) {
+          throw new MyError("Company name (Arabic) already registered", 400);
+        }
+      }
+
+      // Create user and associate with cart
+      const newUser = await prisma.user.create({
+        data: {
+          ...userData,
+          cart: {
+            connect: {
+              id: cartId,
+            },
+          },
+        },
+        include: {
+          cart: {
+            include: {
+              items: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      res.status(201).json(
+        response(201, true, "User registered successfully", {
+          user: newUser,
+        })
       );
     } catch (error) {
       next(error);

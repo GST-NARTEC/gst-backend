@@ -17,11 +17,13 @@ import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import templateRoutes from "./template.js";
 import userRoutes from "./user.js";
+import cartRoutesV2 from "./v2/cart.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
 
 const router = express.Router();
 
+// V1 Routes
 router.use("/license/v1", licenseRoutes);
 router.use("/user/v1", userRoutes);
 router.use("/products/v1", productRouter);
@@ -41,5 +43,8 @@ router.use("/v1/whybarcode", whyBarcodeRoutes);
 router.use("/page/v1", pageRoutes);
 router.use("/v1/template", templateRoutes);
 router.use("/v1/orders", orderRoutes);
+
+// V2 Routes
+router.use("/cart/v2", cartRoutesV2);
 
 export default router;
