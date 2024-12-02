@@ -85,6 +85,9 @@ class SliderController {
         orderBy: {
           createdAt: "asc",
         },
+        include: {
+          page: true,
+        },
       });
 
       res.status(200).json(

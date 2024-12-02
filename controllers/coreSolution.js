@@ -142,6 +142,9 @@ class CoreSolutionController {
         orderBy: {
           createdAt: "asc",
         },
+        include: {
+          page: true,
+        },
       });
 
       res.status(200).json(
