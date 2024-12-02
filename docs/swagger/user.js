@@ -729,7 +729,7 @@
  *   patch:
  *     summary: Update user account status
  *     description: Activate or suspend a user account
- *     tags: [Users]
+ *     tags: [User]
  *     security:
  *       - bearerAuth: []
  *     parameters:
