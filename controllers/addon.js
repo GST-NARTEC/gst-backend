@@ -1,33 +1,11 @@
-import Joi from "joi";
+import {
+  addonSchema,
+  addonUpdateSchema,
+  querySchema,
+} from "../schemas/addons.schema.js";
 import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-
-const addonSchema = Joi.object({
-  name: Joi.string().required(),
-  price: Joi.number().min(0).required(),
-  unit: Joi.string().required(),
-  status: Joi.string().valid("active", "inactive").default("active"),
-  stock: Joi.number().integer().min(0).default(0),
-  productIds: Joi.array().items(Joi.string().uuid()).optional(),
-});
-
-const addonUpdateSchema = Joi.object({
-  name: Joi.string(),
-  price: Joi.number().min(0),
-  unit: Joi.string(),
-  status: Joi.string().valid("active", "inactive"),
-  stock: Joi.number().integer().min(0),
-  productIds: Joi.array().items(Joi.string().uuid()),
-}).min(1);
-
-const querySchema = Joi.object({
-  page: Joi.number().min(1).default(1),
-  limit: Joi.number().min(1).max(100).default(10),
-  search: Joi.string().allow("", null),
-  sortBy: Joi.string().valid("name", "price", "createdAt").default("createdAt"),
-  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
-});
 
 class AddonController {
   static async createAddon(req, res, next) {
@@ -39,6 +17,16 @@ class AddonController {
 
       const addon = await prisma.addon.create({
         data: value,
+        include: {
+          products: {
+            select: {
+              id: true,
+              title: true,
+              price: true,
+              status: true,
+            },
+          },
+        },
       });
 
       res
@@ -59,7 +47,6 @@ class AddonController {
       const { page, limit, search, sortBy, sortOrder } = value;
       const skip = (page - 1) * limit;
 
-      // Build where clause for search
       const where = search
         ? {
             OR: [
@@ -69,16 +56,25 @@ class AddonController {
           }
         : {};
 
-      // Get total count for pagination
-      const total = await prisma.addon.count({ where });
-
-      // Get paginated results
-      const addons = await prisma.addon.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { [sortBy]: sortOrder },
-      });
+      const [addons, total] = await Promise.all([
+        prisma.addon.findMany({
+          where,
+          include: {
+            products: {
+              select: {
+                id: true,
+                title: true,
+                price: true,
+                status: true,
+              },
+            },
+          },
+          skip,
+          take: limit,
+          orderBy: { [sortBy]: sortOrder },
+        }),
+        prisma.addon.count({ where }),
+      ]);
 
       const totalPages = Math.ceil(total / limit);
 
@@ -102,6 +98,17 @@ class AddonController {
     try {
       const addons = await prisma.addon.findMany({
         where: { status: "active" },
+        include: {
+          products: {
+            where: { status: "active" },
+            select: {
+              id: true,
+              title: true,
+              price: true,
+              status: true,
+            },
+          },
+        },
         orderBy: { createdAt: "desc" },
       });
 

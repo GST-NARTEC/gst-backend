@@ -2,12 +2,12 @@
  * @swagger
  * components:
  *   schemas:
- *     Product:
+ *     ProductCreate:
  *       type: object
+ *       required:
+ *         - title
+ *         - price
  *       properties:
- *         id:
- *           type: string
- *           format: uuid
  *         title:
  *           type: string
  *           minLength: 3
@@ -17,33 +17,50 @@
  *         price:
  *           type: number
  *           minimum: 0
- *         qty:
- *           type: integer
- *           minimum: 0
- *           default: 0
- *         status:
- *           type: string
- *           enum: [active, inactive]
- *           default: active
  *         image:
  *           type: string
  *         categoryId:
  *           type: string
  *           format: uuid
- *         category:
- *           $ref: '#/components/schemas/Category'
- *         createdAt:
+ *         qty:
+ *           type: integer
+ *           minimum: 0
+ *         status:
  *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
+ *           enum: [active, inactive]
+ *           default: active
+ *         addonIds:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uuid
+ *           description: Optional array of addon IDs to associate with the product
+ *     Product:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ProductCreate'
+ *         - type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               format: uuid
+ *             createdAt:
+ *               type: string
+ *               format: date-time
+ *             updatedAt:
+ *               type: string
+ *               format: date-time
+ *             category:
+ *               $ref: '#/components/schemas/Category'
+ *             addons:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Addon'
  *
  * /api/products/v1:
  *   post:
  *     tags: [Products]
  *     summary: Create a new product
- *     description: Creates a new product with optional category and image upload support
+ *     description: Creates a new product with optional category, addons, and image upload support
  *     requestBody:
  *       required: true
  *       content:
@@ -77,6 +94,12 @@
  *                 type: string
  *                 enum: [active, inactive]
  *                 default: active
+ *               addonIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
+ *                 description: Optional array of addon IDs to associate with the product
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -100,10 +123,11 @@
  *                     product:
  *                       $ref: '#/components/schemas/Product'
  *
+ * /api/products/v1/active:
  *   get:
  *     tags: [Products]
- *     summary: Get all products
- *     description: Retrieve a list of products with their categories, pagination and search
+ *     summary: Get all active products
+ *     description: Retrieve a list of active products with their categories, addons, pagination and search
  *     parameters:
  *       - in: query
  *         name: page
@@ -124,7 +148,7 @@
  *           type: string
  *     responses:
  *       200:
- *         description: Products retrieved successfully
+ *         description: Active products retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -138,14 +162,35 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Products retrieved successfully
+ *                   example: Active Products retrieved successfully
  *                 data:
  *                   type: object
  *                   properties:
  *                     products:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/Product'
+ *                         allOf:
+ *                           - $ref: '#/components/schemas/Product'
+ *                           - type: object
+ *                             properties:
+ *                               addons:
+ *                                 type: array
+ *                                 items:
+ *                                   type: object
+ *                                   properties:
+ *                                     id:
+ *                                       type: string
+ *                                       format: uuid
+ *                                     name:
+ *                                       type: string
+ *                                     price:
+ *                                       type: number
+ *                                     unit:
+ *                                       type: string
+ *                                     stock:
+ *                                       type: integer
+ *                                     status:
+ *                                       type: string
  *                     pagination:
  *                       type: object
  *                       properties:

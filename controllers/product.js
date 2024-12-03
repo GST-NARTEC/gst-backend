@@ -1,35 +1,12 @@
-import Joi from "joi";
+import {
+  productSchema,
+  productUpdateSchema,
+  querySchema,
+} from "../schemas/product.schema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-
-// Validation schemas
-const productSchema = Joi.object({
-  title: Joi.string().required().min(3).max(100),
-  description: Joi.string().allow("", null),
-  price: Joi.number().min(0).required(),
-  image: Joi.string().allow("", null).optional(),
-  categoryId: Joi.string().uuid().allow(null, "").optional(),
-  qty: Joi.number().integer().min(0).optional(),
-  status: Joi.string().valid("active", "inactive").default("active"),
-});
-
-const querySchema = Joi.object({
-  page: Joi.number().min(1).default(1),
-  limit: Joi.number().min(1).max(100).default(10),
-  search: Joi.string().allow("", null),
-});
-
-const productUpdateSchema = Joi.object({
-  title: Joi.string().min(3).max(100).optional(),
-  description: Joi.string().allow("", null).optional(),
-  price: Joi.number().min(0).optional(),
-  image: Joi.string().allow("", null).optional(),
-  categoryId: Joi.string().uuid().allow(null, "").optional(),
-  qty: Joi.number().integer().min(0).optional(),
-  status: Joi.string().valid("active", "inactive").optional(),
-});
 
 class ProductController {
   static async createProduct(req, res, next) {
@@ -45,11 +22,27 @@ class ProductController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const category = await prisma.category.findUnique({
-        where: { id: value.categoryId },
-      });
-      if (!category) {
-        throw new MyError("Category not found");
+      if (value.categoryId) {
+        const category = await prisma.category.findUnique({
+          where: { id: value.categoryId },
+        });
+        if (!category) {
+          throw new MyError("Category not found");
+        }
+      }
+
+      // Verify addons exist if provided
+      if (value.addonIds && value.addonIds.length > 0) {
+        const addons = await prisma.addon.findMany({
+          where: {
+            id: { in: value.addonIds },
+            status: "active",
+          },
+        });
+
+        if (addons.length !== value.addonIds.length) {
+          throw new MyError("One or more addons are invalid or inactive", 400);
+        }
       }
 
       if (req.file) {
@@ -58,7 +51,18 @@ class ProductController {
       }
 
       const product = await prisma.product.create({
-        data: value,
+        data: {
+          ...value,
+          addons: value.addonIds
+            ? {
+                connect: value.addonIds.map((id) => ({ id })),
+              }
+            : undefined,
+        },
+        include: {
+          category: true,
+          addons: true,
+        },
       });
 
       res.status(201).json(
@@ -167,16 +171,33 @@ class ProductController {
         productData.categoryId = req.body.categoryId || null;
       if (req.body.qty !== undefined) productData.qty = parseInt(req.body.qty);
       if (req.body.status !== undefined) productData.status = req.body.status;
+      if (req.body.addonIds !== undefined)
+        productData.addonIds = req.body.addonIds;
 
       const { error, value } = productUpdateSchema.validate(productData);
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
 
+      // Verify addons exist if provided
+      if (value.addonIds && value.addonIds.length > 0) {
+        const addons = await prisma.addon.findMany({
+          where: {
+            id: { in: value.addonIds },
+            status: "active",
+          },
+        });
+
+        if (addons.length !== value.addonIds.length) {
+          throw new MyError("One or more addons are invalid or inactive", 400);
+        }
+      }
+
       const existingProduct = await prisma.product.findUnique({
         where: { id },
         include: {
           category: true,
+          addons: true,
         },
       });
 
@@ -203,9 +224,17 @@ class ProductController {
 
       const product = await prisma.product.update({
         where: { id },
-        data: value,
+        data: {
+          ...value,
+          addons: value.addonIds
+            ? {
+                set: value.addonIds.map((id) => ({ id })),
+              }
+            : undefined,
+        },
         include: {
           category: true,
+          addons: true,
         },
       });
 
@@ -215,9 +244,8 @@ class ProductController {
         })
       );
     } catch (error) {
-      // Delete uploaded file if there was an error
       if (imagePath) {
-        await deleteFile(req.file.path);
+        await deleteFile(imagePath);
       }
       next(error);
     }
@@ -290,7 +318,19 @@ class ProductController {
           where,
           include: {
             category: true,
-            addons: true,
+            addons: {
+              where: {
+                status: "active",
+              },
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                unit: true,
+                stock: true,
+                status: true,
+              },
+            },
           },
           skip: parseInt(skip),
           take: parseInt(limit),
