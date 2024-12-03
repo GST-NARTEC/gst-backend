@@ -68,6 +68,7 @@ class CheckoutController {
           items: {
             include: {
               product: true,
+              addons: true,
             },
           },
           user: true,
@@ -79,10 +80,13 @@ class CheckoutController {
       }
 
       // Calculate totals including tax
-      const totalAmount = cart.items.reduce(
-        (sum, item) => sum + item.quantity * item.product.price,
-        0
-      );
+      const totalAmount = cart.items.reduce((sum, item) => {
+        const productTotal = item.quantity * item.product.price;
+        const addonsTotal =
+          (item.addons?.reduce((acc, addon) => acc + addon.price, 0) || 0) *
+          item.quantity;
+        return sum + productTotal + addonsTotal;
+      }, 0);
 
       // Add VAT if provided
       //   const vatAmount = totalAmount * (vat / 100);
@@ -104,9 +108,13 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
-              addons: {
-                connect: item.addons.map((addon) => ({ id: addon.id })),
-              },
+              ...(item.addons && item.addons.length > 0
+                ? {
+                    addons: {
+                      connect: item.addons.map((addon) => ({ id: addon.id })),
+                    },
+                  }
+                : {}),
             })),
           },
         },
