@@ -28,11 +28,17 @@
  *           type: integer
  *           minimum: 0
  *           default: 0
+ *         productIds:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uuid
+ *           description: Array of product IDs this addon is available for
  *
  * /api/v1/addons:
  *   post:
  *     tags: [Addons]
- *     summary: Create a new addon
+ *     summary: Create a new addon with optional product associations
  *     requestBody:
  *       required: true
  *       content:
@@ -41,7 +47,22 @@
  *             $ref: '#/components/schemas/Addon'
  *     responses:
  *       201:
- *         $ref: '#/components/responses/Success'
+ *         description: Addon created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 addon:
+ *                   type: object
+ *                   allOf:
+ *                     - $ref: '#/components/schemas/Addon'
+ *                     - type: object
+ *                       properties:
+ *                         products:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/Product'
  *
  *   get:
  *     tags: [Addons]
@@ -153,6 +174,11 @@
  *                 enum: [active, inactive]
  *               stock:
  *                 type: integer
+ *               productIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
  *     responses:
  *       200:
  *         $ref: '#/components/responses/Success'

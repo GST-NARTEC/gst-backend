@@ -9,4 +9,5 @@ model Addon {
   updatedAt   DateTime    @updatedAt
   cartItemAddons CartItemAddon[]
   orderItems  OrderItem[]
+  products    Product[]   
 }

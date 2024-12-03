@@ -290,6 +290,7 @@ class ProductController {
           where,
           include: {
             category: true,
+            addons: true,
           },
           skip: parseInt(skip),
           take: parseInt(limit),

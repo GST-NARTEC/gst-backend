@@ -9,6 +9,7 @@ const addonSchema = Joi.object({
   unit: Joi.string().required(),
   status: Joi.string().valid("active", "inactive").default("active"),
   stock: Joi.number().integer().min(0).default(0),
+  productIds: Joi.array().items(Joi.string().uuid()).optional(),
 });
 
 const addonUpdateSchema = Joi.object({
@@ -17,6 +18,7 @@ const addonUpdateSchema = Joi.object({
   unit: Joi.string(),
   status: Joi.string().valid("active", "inactive"),
   stock: Joi.number().integer().min(0),
+  productIds: Joi.array().items(Joi.string().uuid()),
 }).min(1);
 
 const querySchema = Joi.object({

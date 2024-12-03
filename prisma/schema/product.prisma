@@ -8,6 +8,7 @@ model Product {
   status      String?    @default("active")
   categoryId  String?   @db.UniqueIdentifier
   category    Category? @relation(fields: [categoryId], references: [id])
+  addons      Addon[]   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   cartItems   CartItem[]
