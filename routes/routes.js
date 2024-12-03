@@ -1,5 +1,6 @@
 import express from "express";
 
+import addonRoutes from "./addon.js";
 import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
@@ -17,11 +18,10 @@ import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import templateRoutes from "./template.js";
 import userRoutes from "./user.js";
-import userRoutesV2 from "./v2/user.js";
 import cartRoutesV2 from "./v2/cart.js";
+import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-
 const router = express.Router();
 
 // V1 Routes
@@ -44,6 +44,7 @@ router.use("/v1/whybarcode", whyBarcodeRoutes);
 router.use("/page/v1", pageRoutes);
 router.use("/v1/template", templateRoutes);
 router.use("/v1/orders", orderRoutes);
+router.use("/v1/addons", addonRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);

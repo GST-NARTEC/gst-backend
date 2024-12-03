@@ -62,11 +62,63 @@ class AddonController {
     }
   }
 
+  static async updateAddon(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { error, value } = addonSchema.validate(req.body, {
+        stripUnknown: true,
+      });
+
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      // Only update fields that are provided in the request body
+      const updateData = {};
+      Object.keys(value).forEach((key) => {
+        if (value[key] !== undefined) {
+          updateData[key] = value[key];
+        }
+      });
+
+      const addon = await prisma.addon.update({
+        where: { id },
+        data: updateData,
+      });
+
+      res
+        .status(200)
+        .json(response(200, true, "Addon updated successfully", { addon }));
+    } catch (error) {
+      if (error.code === "P2025") {
+        next(new MyError("Addon not found", 404));
+      } else {
+        next(error);
+      }
+    }
+  }
+
   static async deleteAddon(req, res, next) {
     try {
+      const { id } = req.params;
+
+      const addon = await prisma.addon.delete({
+        where: { id },
+      });
+
+      if (!addon) {
+        throw new MyError("Addon not found", 404);
+      }
+
+      res
+        .status(200)
+        .json(response(200, true, "Addon deleted successfully", { addon }));
     } catch (error) {
-        
-      next(error);
+      if (error.code === "P2025") {
+        next(new MyError("Addon not found", 404));
+      } else {
+        next(error);
+      }
     }
   }
 }
