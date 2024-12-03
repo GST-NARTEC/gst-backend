@@ -33,6 +33,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(PORT, function () {
+app.listen(PORT, "localhost", function () {
   console.log(`Server is running on port ${PORT}`);
 });
