@@ -93,7 +93,7 @@
       <div class="content">
         <div class="bilingual">
           <p>Dear <%= user.companyNameEn %>,</p>
-          <p style="text-align: right">عزيزي <%= user.companyNameAr %></p>
+          <p style="text-align: right">عزيزي <%= user.companyNameAr %>،</p>
         </div>
 
         <div class="bilingual">
@@ -106,15 +106,15 @@
         <div class="document-info">
           <div class="bilingual">
             <p><strong>Order Number:</strong> <%= order.orderNumber %></p>
-            <p style="text-align: right"><%= order.orderNumber %> :رقم الطلب</p>
+            <p style="text-align: right">
+              <strong>رقم الطلب:</strong> <%= order.orderNumber %>
+            </p>
           </div>
           <div class="bilingual">
             <p><strong>Status:</strong> <%= order.status %></p>
-            <p style="text-align: right"><%= order.status %> :الحالة</p>
-          </div>
-          <div class="bilingual">
-            <p><strong>Total:</strong> SAR <%= order.total %></p>
-            <p style="text-align: right">SAR <%= order.total %> :المجموع</p>
+            <p style="text-align: right">
+              <strong>الحالة:</strong> <%= order.status %>
+            </p>
           </div>
         </div>
 
@@ -129,7 +129,7 @@
             supporting your business needs.
           </p>
           <p style="text-align: right">
-            .شكراً لاختيارك GST السعودية. نتطلع إلى دعم احتياجات عملك
+            شكراً لاختيارك GST السعودية. نتطلع إلى دعم احتياجات عملك.
           </p>
         </div>
 
@@ -139,7 +139,7 @@
             +9200-31437
           </p>
           <p style="text-align: right">
-            ،مع أطيب التحيات<br />مركز GST السعودي للباركود<br />الرقم الموحد:
+            مع أطيب التحيات،<br />مركز GST السعودي للباركود<br />الرقم الموحد:
             +9200-31437
           </p>
         </div>

@@ -212,9 +212,31 @@
       <tbody>
         <% items.forEach(item => { %>
         <tr>
-          <td><%= item.description %></td>
+          <td>
+            <%= item.description %> <% if (item.addons && item.addons.length >
+            0) { %>
+            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
+              Add-ons / الإضافات:
+              <ul style="margin: 4px 0 0 20px; padding: 0">
+                <% item.addons.forEach(addon => { %>
+                <li>
+                  <%= addon.name %> (<%= currency.symbol %> <%= addon.price %>)
+                </li>
+                <% }); %>
+              </ul>
+            </div>
+            <% } %>
+          </td>
           <td><%= item.quantity %>x</td>
-          <td><%= currency.symbol %> <%= item.amount %></td>
+          <td>
+            <%= currency.symbol %> <%= item.amount %> <% if (item.addons &&
+            item.addons.length > 0) { %>
+            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
+              + <%= currency.symbol %> <%= item.addons.reduce((sum, addon) =>
+              sum + parseFloat(addon.price), 0).toFixed(2) %>
+            </div>
+            <% } %>
+          </td>
         </tr>
         <% }); %>
       </tbody>

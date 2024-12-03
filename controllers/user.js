@@ -756,7 +756,7 @@ class UserController {
         },
       });
 
-      //   // Send email notification
+      // Send email notification
       await EmailService.sendStatusUpdateEmail({
         email: user.email,
         user: updatedUser,

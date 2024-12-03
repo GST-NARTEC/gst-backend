@@ -57,6 +57,10 @@ class PDFGenerator {
           description: item.product.title,
           quantity: item.quantity,
           amount: item.price.toFixed(2),
+          addons: item.addons.map((addon) => ({
+            name: addon.name,
+            price: addon.price.toFixed(2),
+          })),
         })),
         totals: {
           subtotal: order.totalAmount.toFixed(2),

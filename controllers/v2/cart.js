@@ -10,6 +10,7 @@ const addToCartSchema = Joi.object({
       Joi.object({
         productId: Joi.string().uuid().required(),
         quantity: Joi.number().integer().min(1).required(),
+        addons: Joi.array().items(Joi.string().uuid()).optional(),
       })
     )
     .min(1)
@@ -30,30 +31,56 @@ class CartControllerV2 {
       // Check for existing anonymous cart first
       let cart = await prisma.cart.findFirst({
         where: { status: "ANONYMOUS" },
-        include: { items: true },
+        include: {
+          items: {
+            include: {
+              addons: true,
+            },
+          },
+        },
       });
 
-      // Create only if no anonymous cart exists
+      // Create cart if doesn't exist
       if (!cart) {
         cart = await prisma.cart.create({
           data: {
             status: "ANONYMOUS",
           },
-          include: { items: true },
+          include: {
+            items: {
+              include: {
+                addons: true,
+              },
+            },
+          },
         });
       }
 
-      // Verify all products exist and are active
+      // Verify all products and addons exist and are active
       const productIds = items.map((item) => item.productId);
-      const products = await prisma.product.findMany({
-        where: {
-          id: { in: productIds },
-          status: "active",
-        },
-      });
+      const addonIds = items.flatMap((item) => item.addons || []);
+
+      const [products, addons] = await Promise.all([
+        prisma.product.findMany({
+          where: {
+            id: { in: productIds },
+            status: "active",
+          },
+        }),
+        prisma.addon.findMany({
+          where: {
+            id: { in: addonIds },
+            status: "active",
+          },
+        }),
+      ]);
 
       if (products.length !== productIds.length) {
         throw new MyError("One or more products are invalid or inactive", 400);
+      }
+
+      if (addonIds.length > 0 && addons.length !== addonIds.length) {
+        throw new MyError("One or more addons are invalid or inactive", 400);
       }
 
       // Process each item
@@ -65,7 +92,12 @@ class CartControllerV2 {
         if (existingItem) {
           await prisma.cartItem.update({
             where: { id: existingItem.id },
-            data: { quantity: existingItem.quantity + item.quantity },
+            data: {
+              quantity: existingItem.quantity + item.quantity,
+              addons: {
+                connect: (item.addons || []).map((id) => ({ id })),
+              },
+            },
           });
         } else {
           await prisma.cartItem.create({
@@ -73,37 +105,35 @@ class CartControllerV2 {
               cartId: cart.id,
               productId: item.productId,
               quantity: item.quantity,
+              addons: {
+                connect: (item.addons || []).map((id) => ({ id })),
+              },
             },
           });
         }
       }
 
-      // Get updated cart with items and product details
+      // Get updated cart
       const updatedCart = await prisma.cart.findUnique({
         where: { id: cart.id },
         include: {
           items: {
             include: {
-              product: {
-                select: {
-                  id: true,
-                  title: true,
-                  price: true,
-                  description: true,
-                  image: true,
-                  status: true,
-                },
-              },
+              product: true,
+              addons: true,
             },
           },
         },
       });
 
-      // Calculate cart totals
-      const subtotal = updatedCart.items.reduce(
-        (sum, item) => sum + item.quantity * item.product.price,
-        0
-      );
+      // Calculate totals including addons
+      const subtotal = updatedCart.items.reduce((sum, item) => {
+        const productTotal = item.quantity * item.product.price;
+        const addonsTotal =
+          item.addons.reduce((acc, addon) => acc + addon.price, 0) *
+          item.quantity;
+        return sum + productTotal + addonsTotal;
+      }, 0);
 
       res.status(200).json(
         response(200, true, "Items added to cart successfully", {

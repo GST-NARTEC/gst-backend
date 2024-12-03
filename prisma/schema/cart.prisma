@@ -15,6 +15,7 @@ model CartItem {
   productId String   @db.UniqueIdentifier
   product   Product  @relation(fields: [productId], references: [id])
   quantity  Int      @default(1)
+  addons    Addon[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

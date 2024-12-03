@@ -89,7 +89,7 @@ class CheckoutController {
       const vatAmount = vat;
       const overallAmount = totalAmount + vatAmount;
 
-      // Create order with "Pending Payment" status
+      // Create order with items and their addons
       const order = await prisma.order.create({
         data: {
           orderNumber: generateOrderNumber(),
@@ -104,6 +104,9 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
+              addons: {
+                connect: item.addons.map((addon) => ({ id: addon.id })),
+              },
             })),
           },
         },
@@ -111,6 +114,7 @@ class CheckoutController {
           orderItems: {
             include: {
               product: true,
+              addons: true,
             },
           },
         },
