@@ -45,10 +45,77 @@
  *
  *   get:
  *     tags: [Addons]
- *     summary: Get all addons
+ *     summary: Get all addons with optional pagination and search
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term for name or unit
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [name, price, createdAt]
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
  *     responses:
  *       200:
- *         $ref: '#/components/responses/AddonsList'
+ *         description: Successfully retrieved addons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Addons retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     addons:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Addon'
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                         page:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
  *
  * /api/v1/addons/active:
  *   get:

@@ -11,6 +11,22 @@ const addonSchema = Joi.object({
   stock: Joi.number().integer().min(0).default(0),
 });
 
+const addonUpdateSchema = Joi.object({
+  name: Joi.string(),
+  price: Joi.number().min(0),
+  unit: Joi.string(),
+  status: Joi.string().valid("active", "inactive"),
+  stock: Joi.number().integer().min(0),
+}).min(1);
+
+const querySchema = Joi.object({
+  page: Joi.number().min(1).default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+  search: Joi.string().allow("", null),
+  sortBy: Joi.string().valid("name", "price", "createdAt").default("createdAt"),
+  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+});
+
 class AddonController {
   static async createAddon(req, res, next) {
     try {
@@ -33,13 +49,48 @@ class AddonController {
 
   static async getAddons(req, res, next) {
     try {
+      const { error, value } = querySchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, search, sortBy, sortOrder } = value;
+      const skip = (page - 1) * limit;
+
+      // Build where clause for search
+      const where = search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { unit: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : {};
+
+      // Get total count for pagination
+      const total = await prisma.addon.count({ where });
+
+      // Get paginated results
       const addons = await prisma.addon.findMany({
-        orderBy: { createdAt: "desc" },
+        where,
+        skip,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder },
       });
 
-      res
-        .status(200)
-        .json(response(200, true, "Addons retrieved successfully", { addons }));
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Addons retrieved successfully", {
+          addons,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            limit,
+          },
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -65,7 +116,7 @@ class AddonController {
   static async updateAddon(req, res, next) {
     try {
       const { id } = req.params;
-      const { error, value } = addonSchema.validate(req.body, {
+      const { error, value } = addonUpdateSchema.validate(req.body, {
         stripUnknown: true,
       });
 
@@ -73,17 +124,17 @@ class AddonController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      // Only update fields that are provided in the request body
-      const updateData = {};
-      Object.keys(value).forEach((key) => {
-        if (value[key] !== undefined) {
-          updateData[key] = value[key];
-        }
+      const existingAddon = await prisma.addon.findUnique({
+        where: { id },
       });
+
+      if (!existingAddon) {
+        throw new MyError("Addon not found", 404);
+      }
 
       const addon = await prisma.addon.update({
         where: { id },
-        data: updateData,
+        data: value,
       });
 
       res
