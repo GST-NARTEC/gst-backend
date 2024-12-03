@@ -10,7 +10,14 @@ const addToCartSchema = Joi.object({
       Joi.object({
         productId: Joi.string().uuid().required(),
         quantity: Joi.number().integer().min(1).required(),
-        addons: Joi.array().items(Joi.string().uuid()).optional(),
+        addons: Joi.array()
+          .items(
+            Joi.object({
+              id: Joi.string().uuid().required(),
+              quantity: Joi.number().integer().min(1).required(),
+            })
+          )
+          .optional(),
       })
     )
     .min(1)
@@ -34,7 +41,12 @@ class CartControllerV2 {
         include: {
           items: {
             include: {
-              addons: true,
+              addonItems: {
+                include: {
+                  addon: true,
+                },
+              },
+              product: true,
             },
           },
         },
@@ -49,7 +61,12 @@ class CartControllerV2 {
           include: {
             items: {
               include: {
-                addons: true,
+                addonItems: {
+                  include: {
+                    addon: true,
+                  },
+                },
+                product: true,
               },
             },
           },
@@ -58,7 +75,9 @@ class CartControllerV2 {
 
       // Verify all products and addons exist and are active
       const productIds = items.map((item) => item.productId);
-      const addonIds = items.flatMap((item) => item.addons || []);
+      const addonIds = items.flatMap((item) =>
+        (item.addons || []).map((addon) => addon.id)
+      );
 
       const [products, addons] = await Promise.all([
         prisma.product.findMany({
@@ -90,23 +109,51 @@ class CartControllerV2 {
         );
 
         if (existingItem) {
+          // Update existing cart item
           await prisma.cartItem.update({
             where: { id: existingItem.id },
             data: {
               quantity: existingItem.quantity + item.quantity,
-              addons: {
-                connect: (item.addons || []).map((id) => ({ id })),
-              },
             },
           });
+
+          // Process addons for existing item
+          if (item.addons) {
+            for (const addon of item.addons) {
+              const existingAddon = existingItem.addonItems.find(
+                (ai) => ai.addonId === addon.id
+              );
+
+              if (existingAddon) {
+                await prisma.cartItemAddon.update({
+                  where: { id: existingAddon.id },
+                  data: {
+                    quantity: existingAddon.quantity + addon.quantity,
+                  },
+                });
+              } else {
+                await prisma.cartItemAddon.create({
+                  data: {
+                    cartItemId: existingItem.id,
+                    addonId: addon.id,
+                    quantity: addon.quantity,
+                  },
+                });
+              }
+            }
+          }
         } else {
-          await prisma.cartItem.create({
+          // Create new cart item with addons
+          const cartItem = await prisma.cartItem.create({
             data: {
               cartId: cart.id,
               productId: item.productId,
               quantity: item.quantity,
-              addons: {
-                connect: (item.addons || []).map((id) => ({ id })),
+              addonItems: {
+                create: (item.addons || []).map((addon) => ({
+                  addonId: addon.id,
+                  quantity: addon.quantity,
+                })),
               },
             },
           });
@@ -120,7 +167,11 @@ class CartControllerV2 {
           items: {
             include: {
               product: true,
-              addons: true,
+              addonItems: {
+                include: {
+                  addon: true,
+                },
+              },
             },
           },
         },
@@ -129,9 +180,10 @@ class CartControllerV2 {
       // Calculate totals including addons
       const subtotal = updatedCart.items.reduce((sum, item) => {
         const productTotal = item.quantity * item.product.price;
-        const addonsTotal =
-          item.addons.reduce((acc, addon) => acc + addon.price, 0) *
-          item.quantity;
+        const addonsTotal = item.addonItems.reduce(
+          (acc, addonItem) => acc + addonItem.addon.price * addonItem.quantity,
+          0
+        );
         return sum + productTotal + addonsTotal;
       }, 0);
 

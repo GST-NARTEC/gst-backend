@@ -50,8 +50,17 @@
  *                     addons:
  *                       type: array
  *                       items:
- *                         type: string
- *                         format: uuid
+ *                         type: object
+ *                         required:
+ *                           - id
+ *                           - quantity
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             format: uuid
+ *                           quantity:
+ *                             type: integer
+ *                             minimum: 1
  *     responses:
  *       200:
  *         description: Cart created and items added successfully
