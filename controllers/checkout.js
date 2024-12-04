@@ -145,13 +145,24 @@ class CheckoutController {
         },
       });
 
-      // Clear cart only after successful payment
-      await prisma.cartItem.deleteMany({
-        where: { cartId: cart.id },
-      });
+      // First delete cart item addons, then cart items, then cart
+      await prisma.$transaction(async (prisma) => {
+        // Delete all cart item addons first
+        for (const item of cart.items) {
+          await prisma.cartItemAddon.deleteMany({
+            where: { cartItemId: item.id },
+          });
+        }
 
-      await prisma.cart.delete({
-        where: { id: cart.id },
+        // Then delete cart items
+        await prisma.cartItem.deleteMany({
+          where: { cartId: cart.id },
+        });
+
+        // Finally delete the cart
+        await prisma.cart.delete({
+          where: { id: cart.id },
+        });
       });
 
       // Create invoice
