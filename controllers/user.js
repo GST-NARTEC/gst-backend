@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
-import Joi from "joi";
 import jwt from "jsonwebtoken";
+import {
+  emailSchema,
+  loginSchema,
+  searchSchema,
+  userDetailsSchema,
+  userInfoSchema,
+  userUpdateSchema,
+} from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { deleteFile } from "../utils/file.js";
@@ -8,68 +15,6 @@ import { generateToken } from "../utils/generateToken.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 import TokenManager from "../utils/tokenManager.js";
-
-// Validation schemas
-const emailSchema = Joi.object({
-  email: Joi.string().email().required(),
-});
-
-const userInfoSchema = Joi.object({
-  email: Joi.string().email().required(),
-  cartId: Joi.string().uuid().optional(),
-  companyLicenseNo: Joi.string().required(),
-  companyNameEn: Joi.string().required(),
-  companyNameAr: Joi.string().required(),
-  landline: Joi.string().allow("", null),
-  mobile: Joi.string().required(),
-  country: Joi.string().required(),
-  region: Joi.string().required(),
-  city: Joi.string().required(),
-  zipCode: Joi.string().required(),
-  streetAddress: Joi.string().required(),
-  latitude: Joi.number().optional(),
-  longitude: Joi.number().optional(),
-  isActive: Joi.boolean().default(true),
-});
-
-const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
-});
-
-const searchSchema = Joi.object({
-  search: Joi.string().allow("").optional(),
-  page: Joi.number().min(1).default(1),
-  limit: Joi.number().min(1).max(100).default(10),
-  sortBy: Joi.string()
-    .valid("email", "companyNameEn", "createdAt")
-    .default("createdAt"),
-  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
-});
-
-const userDetailsSchema = Joi.object({
-  fields: Joi.string()
-    .valid("orders", "cart", "invoices", "profile")
-    .optional(),
-});
-
-const userUpdateSchema = Joi.object({
-  companyLicenseNo: Joi.string(),
-  companyNameEn: Joi.string(),
-  companyNameAr: Joi.string(),
-  landline: Joi.string().allow("", null),
-  mobile: Joi.string(),
-  country: Joi.string(),
-  region: Joi.string(),
-  city: Joi.string(),
-  zipCode: Joi.string(),
-  streetAddress: Joi.string(),
-  latitude: Joi.number().optional(),
-  longitude: Joi.number().optional(),
-  isActive: Joi.boolean(),
-}).min(1);
-
-// Add this helper function
 
 class UserController {
   static async sendEmailOTP(req, res, next) {
@@ -513,7 +458,15 @@ class UserController {
       const user = await prisma.user.findUnique({
         where: { id },
         include: {
-          cart: true,
+          cart: {
+            include: {
+              items: {
+                include: {
+                  addonItems: true,
+                },
+              },
+            },
+          },
           orders: {
             include: {
               invoice: true,
@@ -530,8 +483,16 @@ class UserController {
 
       // Start transaction to ensure all related data is deleted
       await prisma.$transaction(async (prisma) => {
-        // Delete cart items first if cart exists
+        // Delete cart items and their addons first if cart exists
         if (user.cart) {
+          // First delete all cart item addons
+          for (const cartItem of user.cart.items) {
+            await prisma.cartItemAddon.deleteMany({
+              where: { cartItemId: cartItem.id },
+            });
+          }
+
+          // Then delete cart items
           await prisma.cartItem.deleteMany({
             where: { cartId: user.cart.id },
           });
@@ -829,34 +790,44 @@ class UserController {
         }
       }
 
-      // Create user and associate with cart
-      const newUser = await prisma.user.create({
-        data: {
-          ...userData,
-          cart: {
-            connect: {
-              id: cartId,
+      // Create user and associate with cart in a transaction
+      const newUser = await prisma.$transaction(async (prisma) => {
+        // Create the user first
+        const user = await prisma.user.create({
+          data: {
+            ...userData,
+            cart: {
+              connect: {
+                id: cartId,
+              },
             },
           },
-        },
-        include: {
-          cart: {
-            include: {
-              items: {
-                include: {
-                  product: true,
+        });
+
+        // Update cart status
+        await prisma.cart.update({
+          where: { id: cartId },
+          data: { status: "ACTIVE" },
+        });
+
+        // Return user with cart details
+        return await prisma.user.findUnique({
+          where: { id: user.id },
+          include: {
+            cart: {
+              include: {
+                items: {
+                  include: {
+                    product: true,
+                  },
                 },
               },
             },
           },
-        },
+        });
       });
 
-      res.status(201).json(
-        response(201, true, "User registered successfully", {
-          user: newUser,
-        })
-      );
+      res.status(201).json(response(201, true, "User registered successfully"));
     } catch (error) {
       next(error);
     }

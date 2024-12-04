@@ -35,9 +35,12 @@ class CartControllerV2 {
 
       const { items } = value;
 
-      // Check for existing anonymous cart first
-      let cart = await prisma.cart.findFirst({
-        where: { status: "ANONYMOUS" },
+      let cart;
+
+      cart = await prisma.cart.create({
+        data: {
+          status: "ANONYMOUS",
+        },
         include: {
           items: {
             include: {
@@ -51,27 +54,6 @@ class CartControllerV2 {
           },
         },
       });
-
-      // Create cart if doesn't exist
-      if (!cart) {
-        cart = await prisma.cart.create({
-          data: {
-            status: "ANONYMOUS",
-          },
-          include: {
-            items: {
-              include: {
-                addonItems: {
-                  include: {
-                    addon: true,
-                  },
-                },
-                product: true,
-              },
-            },
-          },
-        });
-      }
 
       // Verify all products and addons exist and are active
       const productIds = items.map((item) => item.productId);
