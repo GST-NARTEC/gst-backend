@@ -12,10 +12,19 @@ pipeline {
         JWT_ACCESS_SECRET = credentials('gst_jwt_access_secret')
         JWT_REFRESH_SECRET = credentials('gst_jwt_refresh_secret')
         LOGIN_URL = 'https://buybarcodeupc.com/login'
+        FRONTEND_URL = 'http://localhost:5173'
+        DOMAIN = "http://localhost:${PORT}"
+    }
+    
+    triggers {
+        githubPush()  // Automatically trigger on GitHub push events
     }
     
     stages {
         stage('Checkout') {
+            when {
+                branch 'dev'  // Only run on dev branch
+            }
             steps {
                 checkout scm
             }
@@ -30,8 +39,8 @@ pipeline {
                         DATABASE_URL=${env.DATABASE_URL}
                         EMAIL_FROM=${env.EMAIL_FROM}
                         EMAIL_APP_PASSWORD=${env.EMAIL_APP_PASSWORD}
-                        DOMAIN=http://localhost:${env.PORT}
-                        FRONTEND_URL=http://localhost:5173
+                        DOMAIN=${env.DOMAIN}
+                        FRONTEND_URL=${env.FRONTEND_URL}
                         JWT_ACCESS_SECRET=${env.JWT_ACCESS_SECRET}
                         JWT_REFRESH_SECRET=${env.JWT_REFRESH_SECRET}
                         LOGIN_URL=${env.LOGIN_URL}
@@ -43,8 +52,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
-                    bat 'npm install -g pnpm'
-                    bat 'pnpm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -60,9 +68,10 @@ pipeline {
         stage('Stop Existing Process') {
             steps {
                 script {
+                    // Kill any process using the specified port
                     bat """
-                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a
-                        pm2 delete ${env.PM2_PROCESS} || exit 0
+                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
+                        pm2 delete ${env.PM2_PROCESS} 2>NUL || exit 0
                     """
                 }
             }
@@ -94,7 +103,7 @@ pipeline {
         }
         always {
             node {
-                cleanWs notFailBuild: true
+                deleteDir()  // Clean workspace
             }
         }
     }
