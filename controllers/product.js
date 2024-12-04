@@ -15,6 +15,19 @@ class ProductController {
       const productData = {
         ...req.body,
         price: req.body.price ? parseFloat(req.body.price) : null,
+        addonIds: (() => {
+          try {
+            if (!req.body.addonIds) return undefined;
+            if (Array.isArray(req.body.addonIds)) return req.body.addonIds;
+            return JSON.parse(req.body.addonIds);
+          } catch (e) {
+            // If parsing fails, check if it's a string that needs to be split
+            if (typeof req.body.addonIds === "string") {
+              return req.body.addonIds.split(",").map((id) => id.trim());
+            }
+            return undefined;
+          }
+        })(),
       };
 
       const { error, value } = productSchema.validate(productData);
@@ -40,7 +53,9 @@ class ProductController {
           },
         });
 
-        if (addons.length !== value.addonIds.length) {
+        console.log(value.addonIds);
+
+        if (addons.length != value.addonIds.length) {
           throw new MyError("One or more addons are invalid or inactive", 400);
         }
       }
@@ -171,8 +186,9 @@ class ProductController {
         productData.categoryId = req.body.categoryId || null;
       if (req.body.qty !== undefined) productData.qty = parseInt(req.body.qty);
       if (req.body.status !== undefined) productData.status = req.body.status;
-      if (req.body.addonIds !== undefined)
-        productData.addonIds = req.body.addonIds;
+      if (req.body.addonIds !== undefined) {
+        productData.addonIds = JSON.parse(req.body.addonIds);
+      }
 
       const { error, value } = productUpdateSchema.validate(productData);
       if (error) {
