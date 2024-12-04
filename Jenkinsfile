@@ -25,16 +25,16 @@ pipeline {
             steps {
                 script {
                     writeFile file: ".env", text: """
-                        PORT=${PORT}
-                        JWT_SECRET=${JWT_SECRET}
-                        DATABASE_URL=${DATABASE_URL}
-                        EMAIL_FROM=${EMAIL_FROM}
-                        EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
-                        DOMAIN=http://localhost:${PORT}
+                        PORT=${env.PORT}
+                        JWT_SECRET=${env.JWT_SECRET}
+                        DATABASE_URL=${env.DATABASE_URL}
+                        EMAIL_FROM=${env.EMAIL_FROM}
+                        EMAIL_APP_PASSWORD=${env.EMAIL_APP_PASSWORD}
+                        DOMAIN=http://localhost:${env.PORT}
                         FRONTEND_URL=http://localhost:5173
-                        JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
-                        JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-                        LOGIN_URL=${LOGIN_URL}
+                        JWT_ACCESS_SECRET=${env.JWT_ACCESS_SECRET}
+                        JWT_REFRESH_SECRET=${env.JWT_REFRESH_SECRET}
+                        LOGIN_URL=${env.LOGIN_URL}
                     """
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
                     bat 'npm install -g pnpm'
                     bat 'pnpm install'
                 }
@@ -51,7 +51,7 @@ pipeline {
         
         stage('Generate Prisma Client') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
                     bat 'npx prisma generate'
                 }
             }
@@ -61,8 +61,8 @@ pipeline {
             steps {
                 script {
                     bat """
-                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${PORT}') do taskkill /F /PID %%a
-                        pm2 delete ${PM2_PROCESS} || exit 0
+                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a
+                        pm2 delete ${env.PM2_PROCESS} || exit 0
                     """
                 }
             }
@@ -70,9 +70,9 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
                     bat """
-                        pm2 start app.js --name ${PM2_PROCESS}
+                        pm2 start app.js --name ${env.PM2_PROCESS}
                         pm2 save
                     """
                 }
@@ -82,16 +82,20 @@ pipeline {
     
     post {
         failure {
-            script {
-                bat """
-                    pm2 restart ${PM2_PROCESS} || exit 0
-                    pm2 save
-                """
-                echo 'Pipeline failed! PM2 process restarted.'
+            node('any') {
+                script {
+                    bat """
+                        pm2 restart ${env.PM2_PROCESS} || exit 0
+                        pm2 save
+                    """
+                    echo 'Pipeline failed! PM2 process restarted.'
+                }
             }
         }
         always {
-            deleteDir()
+            node('any') {
+                cleanWs()
+            }
         }
     }
 }
