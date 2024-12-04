@@ -827,7 +827,11 @@ class UserController {
         });
       });
 
-      res.status(201).json(response(201, true, "User registered successfully"));
+      res.status(201).json(
+        response(201, true, "User registered successfully", {
+          user: newUser,
+        })
+      );
     } catch (error) {
       next(error);
     }
