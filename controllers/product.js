@@ -187,12 +187,21 @@ class ProductController {
     try {
       const { id } = req.params;
       const productData = {
-        title: req.body.title,
-        description: req.body.description,
+        ...req.body,
         price: req.body.price ? parseFloat(req.body.price) : undefined,
-        categoryId: req.body.categoryId || undefined,
-        status: req.body.status,
-        addonIds: req.body.addonIds,
+        addonIds: (() => {
+          try {
+            if (!req.body.addonIds) return undefined;
+            if (Array.isArray(req.body.addonIds)) return req.body.addonIds;
+            return JSON.parse(req.body.addonIds);
+          } catch (e) {
+            // If parsing fails, check if it's a string that needs to be split
+            if (typeof req.body.addonIds === 'string') {
+              return req.body.addonIds.split(',').map(id => id.trim());
+            }
+            return undefined;
+          }
+        })()
       };
 
       const { error, value } = productUpdateSchema.validate(productData);
@@ -235,24 +244,26 @@ class ProductController {
         }
       }
 
+      const updateData = {
+        ...(value.title !== undefined && { title: value.title }),
+        ...(value.description !== undefined && { description: value.description }),
+        ...(value.price !== undefined && { price: value.price }),
+        ...(value.status !== undefined && { status: value.status }),
+        ...(value.categoryId !== undefined && {
+          category: {
+            connect: { id: value.categoryId },
+          },
+        }),
+        ...(value.addonIds !== undefined && {
+          addons: {
+            set: value.addonIds.map((id) => ({ id })),
+          },
+        }),
+      };
+
       const product = await prisma.product.update({
         where: { id },
-        data: {
-          title: value.title,
-          description: value.description,
-          price: value.price,
-          status: value.status,
-          category: value.categoryId
-            ? {
-                connect: { id: value.categoryId },
-              }
-            : undefined,
-          addons: value.addonIds
-            ? {
-                set: value.addonIds.map((id) => ({ id })),
-              }
-            : undefined,
-        },
+        data: updateData,
         include: {
           category: true,
           addons: true,
