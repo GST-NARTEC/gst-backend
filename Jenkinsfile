@@ -73,7 +73,18 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
-                    bat 'npm install'
+                    bat 'pnpm install'
+                }
+            }
+        }
+
+        stage('Stop Existing Process') {
+            steps {
+                script {
+                    bat """
+                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
+                        pm2 stop ${env.PM2_PROCESS} || exit 0
+                    """
                 }
             }
         }
@@ -86,22 +97,12 @@ pipeline {
             }
         }
         
-        stage('Stop Existing Process') {
-            steps {
-                script {
-                    bat """
-                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
-                        pm2 delete ${env.PM2_PROCESS} 2>NUL || exit 0
-                    """
-                }
-            }
-        }
         
         stage('Deploy') {
             steps {
                 nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
                     bat """
-                        pm2 start app.js --name ${env.PM2_PROCESS} --env ${env.NODE_ENV}
+                        pm2 reload ${env.PM2_PROCESS}
                         pm2 save
                     """
                 }
