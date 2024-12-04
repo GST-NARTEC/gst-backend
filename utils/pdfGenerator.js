@@ -43,8 +43,10 @@ class PDFGenerator {
         logo: LOGO_URL,
         documentType: type.toUpperCase(), // This will be used in the template
         invoice: {
-          date: new Date(invoice.createdAt).toLocaleString(),
-          number: invoice.invoiceNumber,
+          date: invoice?.createdAt
+            ? new Date(invoice.createdAt).toLocaleString()
+            : new Date().toLocaleString(),
+          number: invoice?.invoiceNumber || "N/A",
           type: order.paymentType,
           customer: user.companyNameEn + " / " + user.companyNameAr,
         },
