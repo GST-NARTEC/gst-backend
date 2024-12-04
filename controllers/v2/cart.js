@@ -37,10 +37,13 @@ class CartControllerV2 {
 
       let cart;
 
-      // remove all carts having status ANONYMOUS
+      // remove all carts having status ANONYMOUS and whose created at is more than 1 day ago
       await prisma.cart.deleteMany({
         where: {
           status: "ANONYMOUS",
+          createdAt: {
+            lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          },
         },
       });
 
