@@ -3,8 +3,8 @@ pipeline {
     
     environment {
         NODE_VERSION = '20.10.0'
-        PM2_PROCESS = 'gst'
-        PORT = '3000'
+        PM2_PROCESS_DEV = 'gst'
+        PM2_PROCESS_PROD = 'gst'
         JWT_SECRET = 'com.nartec.gst'
         DATABASE_URL = credentials('gst_database_url')
         EMAIL_FROM = credentials('gst_email_from')
@@ -21,10 +21,30 @@ pipeline {
     }
     
     stages {
-        stage('Checkout') {
-            when {
-                branch 'dev'  // Only run on dev branch
+        stage('Set Environment Variables') {
+            steps {
+                script {
+                    // Set environment variables based on the branch
+                    if (env.BRANCH_NAME == 'dev') {
+                        env.NODE_ENV = 'development'
+                        env.PORT = "${env.PORT}"
+                        env.FRONTEND_URL = 'http://localhost:5173'
+                        env.DOMAIN = "http://localhost:${env.PORT}"
+                        env.PM2_PROCESS = env.PM2_PROCESS_DEV
+                    } else if (env.BRANCH_NAME == 'master') {
+                        env.NODE_ENV = 'production'
+                        env.PORT = "${env.PORT}"  // Adjust if production port is different
+                        env.FRONTEND_URL = 'https://buybarcodeupc.com'  // Adjust for production
+                        env.DOMAIN = 'https://api.buybarcodeupc.com'    // Adjust for production
+                        env.PM2_PROCESS = env.PM2_PROCESS_PROD
+                    } else {
+                        error "Unsupported branch: ${env.BRANCH_NAME}"
+                    }
+                }
             }
+        }
+        
+        stage('Checkout') {
             steps {
                 checkout scm
             }
@@ -44,6 +64,7 @@ pipeline {
                         JWT_ACCESS_SECRET=${env.JWT_ACCESS_SECRET}
                         JWT_REFRESH_SECRET=${env.JWT_REFRESH_SECRET}
                         LOGIN_URL=${env.LOGIN_URL}
+                        NODE_ENV=${env.NODE_ENV}
                     """
                 }
             }
@@ -68,7 +89,6 @@ pipeline {
         stage('Stop Existing Process') {
             steps {
                 script {
-                    // Kill any process using the specified port
                     bat """
                         for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
                         pm2 delete ${env.PM2_PROCESS} 2>NUL || exit 0
@@ -81,7 +101,7 @@ pipeline {
             steps {
                 nodejs(nodeJSInstallationName: "Node ${env.NODE_VERSION}") {
                     bat """
-                        pm2 start app.js --name ${env.PM2_PROCESS}
+                        pm2 start app.js --name ${env.PM2_PROCESS} --env ${env.NODE_ENV}
                         pm2 save
                     """
                 }
