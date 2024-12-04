@@ -17,13 +17,13 @@ pipeline {
     }
     
     triggers {
-        githubPush()  // Automatically trigger on GitHub push events
+        githubPush()
     }
     
     stages {
         stage('Checkout') {
             when {
-                branch 'dev'  // Only run on dev branch
+                branch 'dev'
             }
             steps {
                 checkout scm
@@ -68,7 +68,6 @@ pipeline {
         stage('Stop Existing Process') {
             steps {
                 script {
-                    // Kill any process using the specified port
                     bat """
                         for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
                         pm2 delete ${env.PM2_PROCESS} 2>NUL || exit 0
@@ -91,20 +90,16 @@ pipeline {
     
     post {
         failure {
-            node {
-                script {
-                    bat """
-                        pm2 restart ${env.PM2_PROCESS} || exit 0
-                        pm2 save
-                    """
-                    echo 'Pipeline failed! PM2 process restarted.'
-                }
+            script {
+                bat """
+                    pm2 restart ${env.PM2_PROCESS} || exit 0
+                    pm2 save
+                """
+                echo 'Pipeline failed! PM2 process restarted.'
             }
         }
         always {
-            node {
-                deleteDir()  // Clean workspace
-            }
+            cleanWs()  // Clean workspace
         }
     }
 }
