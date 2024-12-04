@@ -111,12 +111,14 @@ pipeline {
     
     post {
         failure {
-            script {
-                bat """
-                    pm2 restart ${env.PM2_PROCESS} || exit 0
-                    pm2 save
-                """
-                echo 'Pipeline failed! PM2 process restarted.'
+            node {
+                script {
+                    bat """
+                        pm2 restart ${env.PM2_PROCESS} || exit 0
+                        pm2 save
+                    """
+                    echo 'Pipeline failed! PM2 process restarted.'
+                }
             }
         }
         always {
