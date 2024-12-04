@@ -81,10 +81,12 @@ pipeline {
         stage('Stop Existing Process') {
             steps {
                 script {
-                    bat """
-                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
-                        pm2 stop ${env.PM2_PROCESS} || exit 0
-                    """
+                    echo "Stopping existing process ${env.PM2_PROCESS}"
+                    bat 'pm2 stop ${env.PM2_PROCESS}'
+                    // bat """
+                    //     for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${env.PORT}') do taskkill /F /PID %%a 2>NUL || exit 0
+                    //     pm2 stop ${env.PM2_PROCESS} || exit 0
+                    // """
                 }
             }
         }
