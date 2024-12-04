@@ -17,65 +17,74 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'dev', url: 'https://github.com/GST-NARTEC/gst-backend.git'
+                checkout scm
             }
         }
         
         stage('Setup Environment') {
             steps {
-                script {
-                    writeFile file: ".env", text: """
-                        PORT=${PORT}
-                        JWT_SECRET=${JWT_SECRET}
-                        DATABASE_URL=${DATABASE_URL}
-                        EMAIL_FROM=${EMAIL_FROM}
-                        EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
-                        DOMAIN=http://localhost:${PORT}
-                        FRONTEND_URL=http://localhost:5173
-                        JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
-                        JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-                        LOGIN_URL=${LOGIN_URL}
-                    """
+                node {
+                    script {
+                        writeFile file: ".env", text: """
+                            PORT=${PORT}
+                            JWT_SECRET=${JWT_SECRET}
+                            DATABASE_URL=${DATABASE_URL}
+                            EMAIL_FROM=${EMAIL_FROM}
+                            EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
+                            DOMAIN=http://localhost:${PORT}
+                            FRONTEND_URL=http://localhost:5173
+                            JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+                            JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+                            LOGIN_URL=${LOGIN_URL}
+                        """
+                    }
                 }
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                    sh 'pnpm install'
+                node {
+                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                        bat 'npm install -g pnpm'
+                        bat 'pnpm install'
+                    }
                 }
             }
         }
         
         stage('Generate Prisma Client') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                    sh 'npx prisma generate'
+                node {
+                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                        bat 'npx prisma generate'
+                    }
                 }
             }
         }
         
         stage('Stop Existing Process') {
             steps {
-                script {
-                    sh '''
-                        if pm2 list | grep -q "${PM2_PROCESS}"; then
-                            pm2 stop ${PM2_PROCESS}
-                            pm2 delete ${PM2_PROCESS}
-                        fi
-                    '''
+                node {
+                    script {
+                        bat """
+                            for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${PORT}') do taskkill /F /PID %%a
+                            pm2 delete ${PM2_PROCESS} || exit 0
+                        """
+                    }
                 }
             }
         }
         
         stage('Deploy') {
             steps {
-                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                    sh '''
-                        pm2 start app.js --name ${PM2_PROCESS}
-                        pm2 save
-                    '''
+                node {
+                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                        bat """
+                            pm2 start app.js --name ${PM2_PROCESS}
+                            pm2 save
+                        """
+                    }
                 }
             }
         }
@@ -83,18 +92,20 @@ pipeline {
     
     post {
         failure {
-            script {
-                sh '''
-                    if pm2 list | grep -q "${PM2_PROCESS}"; then
-                        pm2 restart ${PM2_PROCESS}
+            node {
+                script {
+                    bat """
+                        pm2 restart ${PM2_PROCESS} || exit 0
                         pm2 save
-                    fi
-                '''
-                echo 'Pipeline failed! PM2 process restarted.'
+                    """
+                    echo 'Pipeline failed! PM2 process restarted.'
+                }
             }
         }
         always {
-            cleanWs()
+            node {
+                deleteDir()
+            }
         }
     }
 }
