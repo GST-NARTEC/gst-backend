@@ -107,7 +107,7 @@ class EmailService {
     }
   }
 
-  async sendOrderActivationEmail({ email, order, user }) {
+  async sendOrderActivationEmail({ email, order, user, attachments }) {
     try {
       const templatePath = path.join(
         __dirname,
@@ -128,6 +128,7 @@ class EmailService {
         to: email,
         subject: `Account Activated - Order ${order.orderNumber}`,
         html,
+        attachments,
       };
 
       await this.transporter.sendMail(mailOptions);

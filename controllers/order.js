@@ -2,6 +2,7 @@ import Joi from "joi";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
+import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -120,11 +121,19 @@ class OrderController {
   static async activateOrderStatus(req, res, next) {
     try {
       const { orderNumber } = req.params;
+      let order;
 
-      const order = await prisma.order.findFirst({
+      order = await prisma.order.findFirst({
         where: { orderNumber },
         include: {
           user: true,
+          invoice: true,
+          orderItems: {
+            include: {
+              product: true,
+              addons: true,
+            },
+          },
         },
       });
 
@@ -134,6 +143,10 @@ class OrderController {
 
       switch (order.status) {
         case "Pending Account Activation":
+          order = await prisma.order.update({
+            where: { id: order.id },
+            data: { status: "Activated" },
+          });
           break;
         case "Activated":
           throw new MyError("Account is already activated", 400);
@@ -141,32 +154,29 @@ class OrderController {
           throw new MyError("Order is not in pending activation status", 400);
       }
 
-      // Update order status
-      const updatedOrder = await prisma.order.update({
-        where: { id: order.id },
-        data: {
-          status: "Activated",
-        },
-        include: {
-          user: true,
-          orderItems: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      });
+      // Generate receipt
+      const receipt = await PDFGenerator.generateReceipt(
+        order,
+        order.user,
+        order.invoice
+      );
 
-      // Send activation email
+      // Send activation email with receipt
       await EmailService.sendOrderActivationEmail({
-        email: updatedOrder.user.email,
-        order: updatedOrder,
-        user: updatedOrder.user,
+        email: order.user.email,
+        order: order,
+        user: order.user,
+        attachments: [
+          {
+            filename: `receipt-${order.invoice.invoiceNumber}.pdf`,
+            path: receipt.absolutePath,
+          },
+        ],
       });
 
       res.status(200).json(
         response(200, true, "Account activated successfully", {
-          status: updatedOrder.status,
+          status: order.status,
         })
       );
     } catch (error) {

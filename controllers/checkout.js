@@ -68,7 +68,11 @@ class CheckoutController {
           items: {
             include: {
               product: true,
-              addons: true,
+              addonItems: {
+                include: {
+                  addon: true,
+                },
+              },
             },
           },
           user: true,
@@ -82,9 +86,10 @@ class CheckoutController {
       // Calculate totals including tax
       const totalAmount = cart.items.reduce((sum, item) => {
         const productTotal = item.quantity * item.product.price;
-        const addonsTotal =
-          (item.addons?.reduce((acc, addon) => acc + addon.price, 0) || 0) *
-          item.quantity;
+        const addonsTotal = item.addonItems.reduce(
+          (acc, addonItem) => acc + addonItem.addon.price * addonItem.quantity,
+          0
+        );
         return sum + productTotal + addonsTotal;
       }, 0);
 

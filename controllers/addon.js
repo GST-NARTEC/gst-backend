@@ -50,8 +50,8 @@ class AddonController {
       const where = search
         ? {
             OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { unit: { contains: search, mode: "insensitive" } },
+              { name: { contains: search } },
+              { unit: { contains: search } },
             ],
           }
         : {};
@@ -59,16 +59,6 @@ class AddonController {
       const [addons, total] = await Promise.all([
         prisma.addon.findMany({
           where,
-          include: {
-            products: {
-              select: {
-                id: true,
-                title: true,
-                price: true,
-                status: true,
-              },
-            },
-          },
           skip,
           take: limit,
           orderBy: { [sortBy]: sortOrder },

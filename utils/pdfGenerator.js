@@ -16,13 +16,12 @@ const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
 class PDFGenerator {
-  static async generateInvoice(order, user, invoice) {
+  static async generateDocument(order, user, invoice, type = "invoice") {
     try {
-      // 1. First create the invoice HTML using EJS
       const templatePath = path.join(__dirname, "../view/invoice.ejs");
       const templateContent = await fs.readFile(templatePath, "utf-8");
 
-      // 2. Prepare data for the template
+      // Get VAT and currency data (existing code)
       const activeVat = await prisma.vat.findFirst({
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
@@ -32,7 +31,6 @@ class PDFGenerator {
         throw new MyError("No active VAT configuration found", 400);
       }
 
-      // Add after getting active VAT
       const currency = await prisma.currency.findFirst({
         orderBy: { createdAt: "desc" },
       });
@@ -43,6 +41,7 @@ class PDFGenerator {
 
       const data = {
         logo: LOGO_URL,
+        documentType: type.toUpperCase(), // This will be used in the template
         invoice: {
           date: new Date(invoice.createdAt).toLocaleString(),
           number: invoice.invoiceNumber,
@@ -57,10 +56,12 @@ class PDFGenerator {
           description: item.product.title,
           quantity: item.quantity,
           amount: item.price.toFixed(2),
-          addons: item.addons.map((addon) => ({
-            name: addon.name,
-            price: addon.price.toFixed(2),
-          })),
+          addons: item.addons
+            ? item.addons.map((addon) => ({
+                name: addon.name,
+                price: addon.price.toFixed(2),
+              }))
+            : [],
         })),
         totals: {
           subtotal: order.totalAmount.toFixed(2),
@@ -81,25 +82,23 @@ class PDFGenerator {
         },
       };
 
-      // 3. Generate QR code
+      // Generate QR code and render template (existing code)
       const qrCodeDataUrl = await QRCode.toDataURL(invoice.invoiceNumber);
       data.qrCode = qrCodeDataUrl;
 
-      // 4. Render EJS template
       const htmlContent = await ejs.render(templateContent, data, {
         async: true,
       });
 
-      // 5. Save HTML to temporary file
-      const tempHtmlPath = path.join(
-        "uploads",
-        "temp",
-        `invoice-${invoice.invoiceNumber}.html`
-      );
-      await fs.ensureDir(path.join("uploads", "temp"));
-      await fs.writeFile(tempHtmlPath, htmlContent);
+      // Generate PDF with appropriate filename
+      const fileName = `${type}-${invoice.invoiceNumber}.pdf`;
+      const pdfPath = path.join("uploads", "pdfs", fileName);
+      const relativePath = path
+        .join("uploads", "pdfs", fileName)
+        .replace(/\\/g, "/");
 
-      // 6. Launch puppeteer and generate PDF
+      await fs.ensureDir(path.join("uploads", "pdfs"));
+
       const browser = await puppeteer.launch({
         headless: "new",
       });
@@ -107,14 +106,6 @@ class PDFGenerator {
       await page.setContent(htmlContent, {
         waitUntil: "networkidle0",
       });
-
-      const pdfFileName = `invoice-${invoice.invoiceNumber}.pdf`;
-      const pdfPath = path.join("uploads", "pdfs", pdfFileName);
-      const relativePath = path
-        .join("uploads", "pdfs", pdfFileName)
-        .replace(/\\/g, "/");
-
-      await fs.ensureDir(path.join("uploads", "pdfs"));
 
       await page.pdf({
         path: pdfPath,
@@ -129,16 +120,24 @@ class PDFGenerator {
       });
 
       await browser.close();
-      await fs.remove(tempHtmlPath);
 
       return {
         absolutePath: pdfPath,
         relativePath: relativePath,
       };
     } catch (error) {
-      console.error("Error generating invoice:", error);
+      console.error(`Error generating ${type}:`, error);
       throw error;
     }
+  }
+
+  // Convenience methods
+  static generateInvoice(order, user, invoice) {
+    return this.generateDocument(order, user, invoice, "invoice");
+  }
+
+  static generateReceipt(order, user, invoice) {
+    return this.generateDocument(order, user, invoice, "receipt");
   }
 }
 
