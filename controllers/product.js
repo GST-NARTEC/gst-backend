@@ -164,6 +164,7 @@ class ProductController {
         where: { id },
         include: {
           category: true,
+          addons: true,
         },
       });
 
