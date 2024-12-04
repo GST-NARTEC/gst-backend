@@ -37,6 +37,13 @@ class CartControllerV2 {
 
       let cart;
 
+      // remove all carts having status ANONYMOUS
+      await prisma.cart.deleteMany({
+        where: {
+          status: "ANONYMOUS",
+        },
+      });
+
       cart = await prisma.cart.create({
         data: {
           status: "ANONYMOUS",
