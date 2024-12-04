@@ -99,6 +99,8 @@ class CartControllerV2 {
         }),
       ]);
 
+      console.log(products, addons);
+
       if (products.length !== productIds.length) {
         throw new MyError("One or more products are invalid or inactive", 400);
       }
