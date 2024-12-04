@@ -67,7 +67,17 @@ class ProductController {
 
       const product = await prisma.product.create({
         data: {
-          ...value,
+          title: value.title,
+          description: value.description,
+          price: value.price,
+          image: value.image,
+          qty: value.qty,
+          status: value.status,
+          category: value.categoryId
+            ? {
+                connect: { id: value.categoryId },
+              }
+            : undefined,
           addons: value.addonIds
             ? {
                 connect: value.addonIds.map((id) => ({ id })),
@@ -174,21 +184,14 @@ class ProductController {
     let imagePath;
     try {
       const { id } = req.params;
-      const productData = {};
-
-      // Only include fields that are actually provided
-      if (req.body.title !== undefined) productData.title = req.body.title;
-      if (req.body.description !== undefined)
-        productData.description = req.body.description;
-      if (req.body.price !== undefined)
-        productData.price = parseFloat(req.body.price);
-      if (req.body.categoryId !== undefined)
-        productData.categoryId = req.body.categoryId || null;
-      if (req.body.qty !== undefined) productData.qty = parseInt(req.body.qty);
-      if (req.body.status !== undefined) productData.status = req.body.status;
-      if (req.body.addonIds !== undefined) {
-        productData.addonIds = JSON.parse(req.body.addonIds);
-      }
+      const productData = {
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price ? parseFloat(req.body.price) : undefined,
+        categoryId: req.body.categoryId || undefined,
+        status: req.body.status,
+        addonIds: req.body.addonIds,
+      };
 
       const { error, value } = productUpdateSchema.validate(productData);
       if (error) {
@@ -230,18 +233,18 @@ class ProductController {
         }
       }
 
-      if (req.file) {
-        imagePath = addDomain(req.file.path);
-        if (existingProduct.image) {
-          await deleteFile(existingProduct.image);
-        }
-        value.image = imagePath;
-      }
-
       const product = await prisma.product.update({
         where: { id },
         data: {
-          ...value,
+          title: value.title,
+          description: value.description,
+          price: value.price,
+          status: value.status,
+          category: value.categoryId
+            ? {
+                connect: { id: value.categoryId },
+              }
+            : undefined,
           addons: value.addonIds
             ? {
                 set: value.addonIds.map((id) => ({ id })),
