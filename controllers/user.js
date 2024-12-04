@@ -306,6 +306,7 @@ class UserController {
             country: true,
             createdAt: true,
             password: false,
+            isActive: true,
           },
           skip,
           take: limit,
