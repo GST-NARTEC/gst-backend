@@ -88,17 +88,17 @@ class AddonController {
     try {
       const addons = await prisma.addon.findMany({
         where: { status: "active" },
-        include: {
-          products: {
-            where: { status: "active" },
-            select: {
-              id: true,
-              title: true,
-              price: true,
-              status: true,
-            },
-          },
-        },
+        // include: {
+        //   products: {
+        //     where: { status: "active" },
+        //     select: {
+        //       id: true,
+        //       title: true,
+        //       price: true,
+        //       status: true,
+        //     },
+        //   },
+        // },
         orderBy: { createdAt: "desc" },
       });
 
