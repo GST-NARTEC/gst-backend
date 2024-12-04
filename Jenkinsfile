@@ -23,68 +23,58 @@ pipeline {
         
         stage('Setup Environment') {
             steps {
-                node {
-                    script {
-                        writeFile file: ".env", text: """
-                            PORT=${PORT}
-                            JWT_SECRET=${JWT_SECRET}
-                            DATABASE_URL=${DATABASE_URL}
-                            EMAIL_FROM=${EMAIL_FROM}
-                            EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
-                            DOMAIN=http://localhost:${PORT}
-                            FRONTEND_URL=http://localhost:5173
-                            JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
-                            JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-                            LOGIN_URL=${LOGIN_URL}
-                        """
-                    }
+                script {
+                    writeFile file: ".env", text: """
+                        PORT=${PORT}
+                        JWT_SECRET=${JWT_SECRET}
+                        DATABASE_URL=${DATABASE_URL}
+                        EMAIL_FROM=${EMAIL_FROM}
+                        EMAIL_APP_PASSWORD=${EMAIL_APP_PASSWORD}
+                        DOMAIN=http://localhost:${PORT}
+                        FRONTEND_URL=http://localhost:5173
+                        JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+                        JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+                        LOGIN_URL=${LOGIN_URL}
+                    """
                 }
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                node {
-                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                        bat 'npm install -g pnpm'
-                        bat 'pnpm install'
-                    }
+                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                    bat 'npm install -g pnpm'
+                    bat 'pnpm install'
                 }
             }
         }
         
         stage('Generate Prisma Client') {
             steps {
-                node {
-                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                        bat 'npx prisma generate'
-                    }
+                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                    bat 'npx prisma generate'
                 }
             }
         }
         
         stage('Stop Existing Process') {
             steps {
-                node {
-                    script {
-                        bat """
-                            for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${PORT}') do taskkill /F /PID %%a
-                            pm2 delete ${PM2_PROCESS} || exit 0
-                        """
-                    }
+                script {
+                    bat """
+                        for /f "tokens=5" %%a in ('netstat -ano ^| findstr ${PORT}') do taskkill /F /PID %%a
+                        pm2 delete ${PM2_PROCESS} || exit 0
+                    """
                 }
             }
         }
         
         stage('Deploy') {
             steps {
-                node {
-                    nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
-                        bat """
-                            pm2 start app.js --name ${PM2_PROCESS}
-                            pm2 save
-                        """
-                    }
+                nodejs(nodeJSInstallationName: "Node ${NODE_VERSION}") {
+                    bat """
+                        pm2 start app.js --name ${PM2_PROCESS}
+                        pm2 save
+                    """
                 }
             }
         }
@@ -92,20 +82,16 @@ pipeline {
     
     post {
         failure {
-            node {
-                script {
-                    bat """
-                        pm2 restart ${PM2_PROCESS} || exit 0
-                        pm2 save
-                    """
-                    echo 'Pipeline failed! PM2 process restarted.'
-                }
+            script {
+                bat """
+                    pm2 restart ${PM2_PROCESS} || exit 0
+                    pm2 save
+                """
+                echo 'Pipeline failed! PM2 process restarted.'
             }
         }
         always {
-            node {
-                deleteDir()
-            }
+            deleteDir()
         }
     }
 }
