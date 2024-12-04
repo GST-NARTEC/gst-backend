@@ -88,73 +88,84 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const {
-        email,
-        companyLicenseNo,
-        companyNameEn,
-        companyNameAr,
-        landline,
-        mobile,
-        country,
-        region,
-        city,
-        zipCode,
-        streetAddress,
-        latitude,
-        longitude,
-      } = value;
+      const { cartItems, ...userData } = value;
 
-      // Check if unique fields are already taken
-      const existingCompany = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email },
-            { companyLicenseNo },
-            { companyNameEn },
-            { companyNameAr },
-          ],
-        },
-      });
+      // Verify products and addons exist
+      const productIds = cartItems.map((item) => item.productId);
+      const addonIds = cartItems.flatMap((item) =>
+        (item.addons || []).map((addon) => addon.id)
+      );
 
-      if (existingCompany) {
-        if (existingCompany.email === email) {
-          throw new MyError("Email already registered", 400);
-        }
-        if (existingCompany.companyLicenseNo === companyLicenseNo) {
-          throw new MyError("Company license number already registered", 400);
-        }
-        if (existingCompany.companyNameEn === companyNameEn) {
-          throw new MyError("Company name (English) already registered", 400);
-        }
-        if (existingCompany.companyNameAr === companyNameAr) {
-          throw new MyError("Company name (Arabic) already registered", 400);
-        }
+      const [products, addons] = await Promise.all([
+        prisma.product.findMany({
+          where: {
+            id: { in: productIds },
+            status: "active",
+          },
+        }),
+        prisma.addon.findMany({
+          where: {
+            id: { in: addonIds },
+            status: "active",
+          },
+        }),
+      ]);
+
+      if (products.length !== productIds.length) {
+        throw new MyError("One or more products are invalid or inactive", 400);
       }
 
-      // Create new user without password
-      const newUser = await prisma.user.create({
-        data: {
-          email,
-          companyLicenseNo,
-          companyNameEn,
-          companyNameAr,
-          landline,
-          mobile,
-          country,
-          region,
-          city,
-          zipCode,
-          streetAddress,
-          latitude: latitude || null,
-          longitude: longitude || null,
-        },
+      if (addonIds.length > 0 && addons.length !== addonIds.length) {
+        throw new MyError("One or more addons are invalid or inactive", 400);
+      }
+
+      // Create user and cart in transaction
+      const result = await prisma.$transaction(async (prisma) => {
+        // Create user with cart in a single operation
+        const user = await prisma.user.create({
+          data: {
+            ...userData,
+            cart: {
+              create: {
+                items: {
+                  create: cartItems.map((item) => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    addonItems: {
+                      create: (item.addons || []).map((addon) => ({
+                        addonId: addon.id,
+                        quantity: addon.quantity,
+                      })),
+                    },
+                  })),
+                },
+              },
+            },
+          },
+          include: {
+            cart: {
+              include: {
+                items: {
+                  include: {
+                    product: true,
+                    addonItems: {
+                      include: {
+                        addon: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return user;
       });
 
-      res.status(201).json(
-        response(201, true, "User created successfully", {
-          user: newUser,
-        })
-      );
+      res
+        .status(201)
+        .json(response(201, true, "User registered successfully", result));
     } catch (error) {
       next(error);
     }
@@ -409,6 +420,7 @@ class UserController {
                 orderItems: {
                   include: {
                     product: true,
+                    addons: true,
                   },
                 },
               },
@@ -747,84 +759,51 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { cartId, ...userData } = value;
+      const { cartItems, ...userData } = value;
 
-      // Check if cart exists and is not already associated with a user
-      const cart = await prisma.cart.findUnique({
-        where: { id: cartId },
-        include: { user: true },
-      });
-
-      if (!cart) {
-        throw new MyError("Cart not found", 404);
-      }
-
-      if (cart.userId) {
-        throw new MyError("Cart is already associated with a user", 400);
-      }
-
-      // Check for existing user/company
-      const existingCompany = await prisma.user.findFirst({
-        where: {
-          OR: [
-            { email: userData.email },
-            { companyLicenseNo: userData.companyLicenseNo },
-            { companyNameEn: userData.companyNameEn },
-            { companyNameAr: userData.companyNameAr },
-          ],
-        },
-      });
-
-      if (existingCompany) {
-        if (existingCompany.email === userData.email) {
-          throw new MyError("Email already registered", 400);
-        }
-        if (existingCompany.companyLicenseNo === userData.companyLicenseNo) {
-          throw new MyError("Company license number already registered", 400);
-        }
-        if (existingCompany.companyNameEn === userData.companyNameEn) {
-          throw new MyError("Company name (English) already registered", 400);
-        }
-        if (existingCompany.companyNameAr === userData.companyNameAr) {
-          throw new MyError("Company name (Arabic) already registered", 400);
-        }
-      }
-
-      // Create user and associate with cart in a transaction
+      // Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
         // Create the user first
         const user = await prisma.user.create({
           data: {
             ...userData,
             cart: {
-              connect: {
-                id: cartId,
+              create: {
+                status: "ACTIVE",
+                items: {
+                  create: cartItems.map((item) => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    addonItems: {
+                      create: (item.addons || []).map((addon) => ({
+                        addonId: addon.id,
+                        quantity: addon.quantity,
+                      })),
+                    },
+                  })),
+                },
               },
             },
           },
-        });
-
-        // Update cart status
-        await prisma.cart.update({
-          where: { id: cartId },
-          data: { status: "ACTIVE" },
-        });
-
-        // Return user with cart details
-        return await prisma.user.findUnique({
-          where: { id: user.id },
           include: {
             cart: {
               include: {
                 items: {
                   include: {
                     product: true,
+                    addonItems: {
+                      include: {
+                        addon: true,
+                      },
+                    },
                   },
                 },
               },
             },
           },
         });
+
+        return user;
       });
 
       res.status(201).json(

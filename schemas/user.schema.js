@@ -6,7 +6,6 @@ export const emailSchema = Joi.object({
 
 export const userInfoSchema = Joi.object({
   email: Joi.string().email().required(),
-  cartId: Joi.string().uuid().optional(),
   companyLicenseNo: Joi.string().required(),
   companyNameEn: Joi.string().required(),
   companyNameAr: Joi.string().required(),
@@ -20,6 +19,18 @@ export const userInfoSchema = Joi.object({
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
   isActive: Joi.boolean().default(true),
+  cartItems: Joi.array().items(
+    Joi.object({
+      productId: Joi.string().uuid().required(),
+      quantity: Joi.number().integer().min(1).required(),
+      addons: Joi.array().items(
+        Joi.object({
+          id: Joi.string().uuid().required(), 
+          quantity: Joi.number().integer().min(1).required()
+        })
+      ).optional()
+    })
+  ).required()
 });
 
 export const loginSchema = Joi.object({

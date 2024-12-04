@@ -8,6 +8,7 @@ const whitelist = [
   "https://gstsa1.org",
   "https://www.gstsa1.org",
   "https://buybarcodeupc.com",
+  "http://localhost:5174",
 ].filter(Boolean);
 
 const corsOptions = {

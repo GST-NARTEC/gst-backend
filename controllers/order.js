@@ -123,6 +123,7 @@ class OrderController {
       const { orderNumber } = req.params;
       let order;
 
+      // First fetch with all necessary includes
       order = await prisma.order.findFirst({
         where: { orderNumber },
         include: {
@@ -143,9 +144,20 @@ class OrderController {
 
       switch (order.status) {
         case "Pending Account Activation":
+          // Update order with includes to get fresh data
           order = await prisma.order.update({
             where: { id: order.id },
             data: { status: "Activated" },
+            include: {
+              user: true,
+              invoice: true,
+              orderItems: {
+                include: {
+                  product: true,
+                  addons: true,
+                },
+              },
+            },
           });
           break;
         case "Activated":
