@@ -35,13 +35,22 @@ class CartControllerV2 {
 
       const { items } = value;
 
-      // First check for any existing anonymous cart
-      let cart = await prisma.cart.findFirst({
+      // Delete old anonymous carts first
+      await prisma.cart.deleteMany({
         where: {
           status: "ANONYMOUS",
           createdAt: {
-            gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // Less than 24 hours old
+            lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
           },
+          userId: null, // Only delete carts without users
+        },
+      });
+
+      // Create a new cart without userId
+      let cart = await prisma.cart.create({
+        data: {
+          status: "ANONYMOUS",
+          userId: null, // Explicitly set userId to null
         },
         include: {
           items: {
@@ -56,27 +65,6 @@ class CartControllerV2 {
           },
         },
       });
-
-      // If no valid anonymous cart exists, create a new one
-      if (!cart) {
-        cart = await prisma.cart.create({
-          data: {
-            status: "ANONYMOUS",
-          },
-          include: {
-            items: {
-              include: {
-                addonItems: {
-                  include: {
-                    addon: true,
-                  },
-                },
-                product: true,
-              },
-            },
-          },
-        });
-      }
 
       // Verify all products and addons exist and are active
       const productIds = items.map((item) => item.productId);
