@@ -35,35 +35,65 @@ class CartControllerV2 {
 
       const { items } = value;
 
-      // Delete old anonymous carts first
-      await prisma.cart.deleteMany({
-        where: {
-          status: "ANONYMOUS",
-          createdAt: {
-            lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-          },
-          userId: null, // Only delete carts without users
-        },
-      });
-
-      // Create a new cart without userId
-      let cart = await prisma.cart.create({
-        data: {
-          status: "ANONYMOUS",
-          userId: null, // Explicitly set userId to null
-        },
-        include: {
-          items: {
-            include: {
-              addonItems: {
-                include: {
-                  addon: true,
-                },
-              },
-              product: true,
+      // First, clean up old anonymous carts in a transaction
+      await prisma.$transaction(async (prisma) => {
+        const oldCarts = await prisma.cart.findMany({
+          where: {
+            status: "ANONYMOUS",
+            createdAt: {
+              lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
             },
           },
-        },
+          include: {
+            items: {
+              include: {
+                addonItems: true,
+              },
+            },
+          },
+        });
+
+        // Delete each cart's data in the correct order
+        for (const cart of oldCarts) {
+          // Delete addons first
+          for (const item of cart.items) {
+            await prisma.cartItemAddon.deleteMany({
+              where: { cartItemId: item.id },
+            });
+          }
+
+          // Delete cart items
+          await prisma.cartItem.deleteMany({
+            where: { cartId: cart.id },
+          });
+
+          // Delete cart
+          await prisma.cart.delete({
+            where: { id: cart.id },
+          });
+        }
+      });
+
+      // Create a new cart in a separate transaction
+      let cart = await prisma.$transaction(async (prisma) => {
+        return await prisma.cart.create({
+          data: {
+            status: "ANONYMOUS",
+            userId: null,
+          },
+          include: {
+            items: {
+              include: {
+                addonItems: {
+                  include: {
+                    addon: true,
+                  },
+                },
+                product: true,
+              },
+            },
+          },
+        });
       });
 
       // Verify all products and addons exist and are active
