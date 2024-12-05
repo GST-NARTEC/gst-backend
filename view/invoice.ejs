@@ -266,7 +266,8 @@
             style="text-align: right; vertical-align: top; white-space: nowrap"
           >
             <div>
-              <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2) %>
+              <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
+              %>
             </div>
             <% if (item.addonItems && item.addonItems.length > 0) { %>
             <div
