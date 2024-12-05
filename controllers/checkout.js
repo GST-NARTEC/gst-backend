@@ -214,6 +214,13 @@ class CheckoutController {
         order,
         password,
         user: cart.user,
+        currency: {
+          symbol: "SAR",
+          name: "Saudi Riyal",
+        },
+        tax: {
+          value: activeVat.value,
+        },
         attachments: [
           {
             filename: "invoice.pdf",
