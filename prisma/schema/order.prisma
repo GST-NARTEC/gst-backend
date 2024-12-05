@@ -24,8 +24,21 @@ model OrderItem {
   product   Product  @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
-  addons    Addon[] 
+  addons    Addon[]
+  addonItems OrderItemAddon[]
   tax       Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model OrderItemAddon {
+  id          String    @id @default(uuid()) @db.UniqueIdentifier
+  orderItemId String    @db.UniqueIdentifier
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
+  addonId     String    @db.UniqueIdentifier
+  addon       Addon     @relation(fields: [addonId], references: [id])
+  quantity    Int       @default(1)
+  price       Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

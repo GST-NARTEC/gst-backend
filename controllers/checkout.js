@@ -121,9 +121,10 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
-              addons: {
-                connect: item.addonItems.map((addonItem) => ({
-                  id: addonItem.addon.id,
+              addonItems: {
+                create: item.addonItems.map((addonItem) => ({
+                  addonId: addonItem.addon.id,
+                  quantity: addonItem.quantity,
                 })),
               },
             })),
@@ -133,7 +134,11 @@ class CheckoutController {
           orderItems: {
             include: {
               product: true,
-              addons: true,
+              addonItems: {
+                include: {
+                  addon: true,
+                },
+              },
             },
           },
         },

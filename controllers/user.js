@@ -458,16 +458,6 @@ class UserController {
                         // },
                       },
                     },
-                    addons: {
-                      select: {
-                        id: true,
-                        name: true,
-                        price: true,
-                        unit: true,
-                        stock: true,
-                        status: true,
-                      },
-                    },
                   },
                 },
               },

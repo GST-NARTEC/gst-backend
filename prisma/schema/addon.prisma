@@ -9,5 +9,6 @@ model Addon {
   updatedAt   DateTime    @updatedAt
   products    Product[]   @relation("ProductToAddon")
   cartItemAddons CartItemAddon[]
-  orderItems  OrderItem[]
+  orderItemAddons OrderItemAddon[]
+  orderItems OrderItem[]
 }
