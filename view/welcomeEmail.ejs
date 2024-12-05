@@ -110,13 +110,31 @@
               <% order.orderItems.forEach(item => { %>
               <p><strong><%= item.product.title %></strong></p>
               <p>Quantity: <%= item.quantity %></p>
-              <p>Price: AED <%= item.price %></p>
-              <% }); %>
+              <p>Price: <%= currency.symbol %> <%= item.price %></p>
+              <% if (item.addons && item.addons.length > 0) { %>
+              <div style="margin-left: 20px; color: #666">
+                <p>Add-ons:</p>
+                <ul style="margin: 0; padding-left: 20px">
+                  <% item.addons.forEach(addon => { %>
+                  <li>
+                    <%= addon.name %> (<%= currency.symbol %> <%= addon.price
+                    %>)
+                  </li>
+                  <% }); %>
+                </ul>
+              </div>
+              <% } %> <% }); %>
 
               <div class="total">
-                <p>Subtotal: AED <%= order.totalAmount %></p>
-                <p>VAT (0%): AED <%= order.vat %></p>
-                <p>Total Amount: AED <%= order.overallAmount %></p>
+                <p>Subtotal: <%= currency.symbol %> <%= order.totalAmount %></p>
+                <p>
+                  VAT (<%= tax.value %>%): <%= currency.symbol %> <%= order.vat
+                  %>
+                </p>
+                <p>
+                  Total Amount: <%= currency.symbol %> <%= order.overallAmount
+                  %>
+                </p>
               </div>
             </div>
 
@@ -149,13 +167,34 @@
               <% order.orderItems.forEach(item => { %>
               <p><strong><%= item.product.title %></strong></p>
               <p>الكمية: <%= item.quantity %></p>
-              <p>السعر: <%= item.price %> درهم</p>
-              <% }); %>
+              <p>السعر: <%= currency.symbol %> <%= item.price %></p>
+              <% if (item.addons && item.addons.length > 0) { %>
+              <div style="margin-right: 20px; color: #666; text-align: right">
+                <p>الإضافات:</p>
+                <ul style="margin: 0; padding-right: 20px">
+                  <% item.addons.forEach(addon => { %>
+                  <li>
+                    <%= addon.name %> (<%= currency.symbol %> <%= addon.price
+                    %>)
+                  </li>
+                  <% }); %>
+                </ul>
+              </div>
+              <% } %> <% }); %>
 
               <div class="total">
-                <p>المجموع الفرعي: <%= order.totalAmount %> درهم</p>
-                <p>ضريبة القيمة المضافة (0%): <%= order.vat %> درهم</p>
-                <p>المبلغ الإجمالي: <%= order.overallAmount %> درهم</p>
+                <p>
+                  المجموع الفرعي: <%= currency.symbol %> <%= order.totalAmount
+                  %>
+                </p>
+                <p>
+                  ضريبة القيمة المضافة (<%= tax.value %>%): <%= currency.symbol
+                  %> <%= order.vat %>
+                </p>
+                <p>
+                  المبلغ الإجمالي: <%= currency.symbol %> <%=
+                  order.overallAmount %>
+                </p>
               </div>
             </div>
 
