@@ -440,22 +440,25 @@ class UserController {
                 orderItems: {
                   include: {
                     product: {
+                      select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        price: true,
+                        qty: true,
+                      },
+                    },
+                    addonItems: {
                       include: {
-                        // category: true,
-                        addons: true,
-                        // addons: {
-                        //   where: {
-                        //     status: "active",
-                        //   },
-                        //   select: {
-                        //     id: true,
-                        //     name: true,
-                        //     price: true,
-                        //     unit: true,
-                        //     stock: true,
-                        //     status: true,
-                        //   },
-                        // },
+                        addon: {
+                          select: {
+                            id: true,
+                            name: true,
+                            price: true,
+                            unit: true,
+                            status: true,
+                          },
+                        },
                       },
                     },
                   },

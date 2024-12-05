@@ -65,9 +65,11 @@ class EmailService {
           ...order,
           orderItems: order.orderItems.map((item) => ({
             ...item,
-            addons: item.addons.map((addon) => ({
-              ...addon,
-              quantity: addon.quantity || 1,
+            addons: item.addonItems.map((addonItem) => ({
+              id: addonItem.addon.id,
+              name: addonItem.addon.name,
+              price: addonItem.price,
+              quantity: addonItem.quantity,
             })),
           })),
         },
