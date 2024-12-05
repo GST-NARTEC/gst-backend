@@ -11,10 +11,6 @@
         padding: 16px;
         background-color: white;
       }
-      .logo {
-        text-align: right;
-        margin-bottom: 8px;
-      }
       .logo img {
         width: 80px;
         height: auto;
@@ -25,7 +21,7 @@
       }
       .header h1 {
         margin: 10px 0;
-        font-size: 24px;
+        font-size: 20px;
       }
       .contact-info {
         text-align: center;
@@ -36,6 +32,11 @@
         margin-bottom: 20px;
         border-bottom: 1px solid #ddd;
         padding-bottom: 10px;
+      }
+      .invoice-details div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
       }
       .items-table {
         width: 100%;
@@ -127,6 +128,18 @@
         margin-bottom: 15px;
         font-weight: bold;
       }
+      .items-table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        padding: 12px 8px;
+      }
+      .items-table td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #dee2e6;
+      }
+      .items-table tbody tr:last-child td {
+        border-bottom: 2px solid #dee2e6;
+      }
     </style>
   </head>
   <body>
@@ -140,12 +153,9 @@
         margin-bottom: 4px;
       "
     >
-      <div style="font-size: 26px; font-weight: bold">Invoice</div>
+      <div style="font-size: 26px; font-weight: bold">INVOICE</div>
       <div class="logo">
-        <img
-          src="http://localhost:3000/assets/images/gst-logo.png"
-          alt="GST Logo"
-        />
+        <img src="https://example.com/gst-logo.png" alt="GST Logo" />
       </div>
     </div>
 
@@ -154,19 +164,19 @@
       <table class="billing-details">
         <tr>
           <td class="bilingual">Company Name / اسم الشركة</td>
-          <td>Test Company Name EN / شركة اختبار</td>
+          <td>Tech Solutions Company / شركة الحلول التقنية</td>
         </tr>
         <tr>
           <td class="bilingual">Mobile Number / رقم الجوال</td>
-          <td>+966 50 123 4567</td>
+          <td>+966 555 123 4567</td>
         </tr>
         <tr>
           <td class="bilingual">Email / البريد الإلكتروني</td>
-          <td>test@company.com</td>
+          <td>info@techsolutions.com</td>
         </tr>
         <tr>
           <td class="bilingual">Address / العنوان</td>
-          <td>123 Test Street, Riyadh, Saudi Arabia</td>
+          <td>King Fahd Road, Riyadh, Saudi Arabia</td>
         </tr>
         <tr>
           <td class="bilingual">Invoice No / رقم الفاتورة</td>
@@ -174,75 +184,81 @@
         </tr>
         <tr>
           <td class="bilingual">Invoice Date / تاريخ الفاتورة</td>
-          <td>2024-03-20 12:00:00</td>
+          <td>March 15, 2024</td>
         </tr>
       </table>
     </div>
 
-    <div class="items-table">
+    <table class="items-table">
       <thead>
         <tr>
-          <th class="bilingual">Description / الوصف</th>
-          <th class="bilingual">Qty / الكمية</th>
-          <th class="bilingual">Amount / المبلغ</th>
+          <th class="bilingual" style="width: 45%">Description / الوصف</th>
+          <th class="bilingual" style="width: 15%; text-align: center">
+            Qty / الكمية
+          </th>
+          <th class="bilingual" style="width: 20%; text-align: right">
+            Unit Price / سعر الوحدة
+          </th>
+          <th class="bilingual" style="width: 20%; text-align: right">
+            Amount / المبلغ
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>
-            Website Development Package
-            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              Add-ons / الإضافات:
-              <ul style="margin: 4px 0 0 20px; padding: 0">
-                <li>Extra Cheeser (SAR 1.50)</li>
-                <li>Gluten-Free Crust (SAR 3.00)</li>
+          <td style="vertical-align: top">
+            <div style="font-weight: bold; margin-bottom: 8px">
+              GS1 EAN-13 Barcode Registration
+            </div>
+            <div style="margin-left: 15px; color: #666">
+              <div style="margin-bottom: 5px">Add-ons / الإضافات:</div>
+              <ul style="list-style-type: disc; margin: 0; padding-left: 20px">
+                <li style="margin-bottom: 3px">
+                  QRCode Training Services
+                  <span style="color: #444">(x1)</span>
+                  - SAR 150.00
+                </li>
+                <li style="margin-bottom: 3px">
+                  Free Services for Barcode Training
+                  <span style="color: #444">(x1)</span>
+                  - SAR 0.00
+                </li>
               </ul>
             </div>
           </td>
-          <td>1x</td>
-          <td>
-            SAR 30.00
-            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              + SAR 4.50
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Mobile App Development
-            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              Add-ons / الإضافات:
-              <ul style="margin: 4px 0 0 20px; padding: 0">
-                <li>Avacado (SAR 3.00)</li>
-                <li>Herb Butter (SAR 2.00)</li>
-              </ul>
-            </div>
-          </td>
-          <td>1x</td>
-          <td>
-            SAR 30.00
-            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              + SAR 5.00
+          <td style="text-align: center; vertical-align: top">1</td>
+          <td style="text-align: right; vertical-align: top">SAR 50.00</td>
+          <td style="text-align: right; vertical-align: top">
+            <div>SAR 50.00</div>
+            <div
+              style="
+                color: #666;
+                margin-top: 8px;
+                font-size: 0.9em;
+                border-top: 1px solid #eee;
+                padding-top: 4px;
+              "
+            >
+              Add-ons Total / مجموع الإضافات:<br />
+              SAR 150.00
             </div>
           </td>
         </tr>
       </tbody>
-    </div>
+    </table>
 
     <div class="totals">
       <div class="bilingual">
         <span>Subtotal / المجموع الفرعي</span>
-        <span>SAR 69.50</span>
+        <span>SAR 200.00</span>
       </div>
-
       <div class="bilingual">
-        <span>VAT (10%) / ضريبة القيمة المضافة</span>
-        <span>SAR 6.95</span>
+        <span>VAT (15%) / ضريبة القيمة المضافة</span>
+        <span>SAR 30.00</span>
       </div>
-
       <div class="bilingual">
         <span>Grand Total / المجموع الكلي</span>
-        <span>SAR 76.45</span>
+        <span>SAR 230.00</span>
       </div>
     </div>
 
@@ -252,7 +268,7 @@
     >
       <div class="bilingual">
         <span>Tax Registration Number / الرقم الضريبي:</span>
-        <span>310000000000003</span>
+        <span>123456789</span>
       </div>
     </div>
 
@@ -288,7 +304,7 @@
       </table>
       <div class="transfer-note bilingual">
         *Upon transfer, Please upload a copy of transfer receipt from your
-        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل من حسابك.
+        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل في حسابك.
       </div>
     </div>
 
@@ -302,7 +318,10 @@
     </div>
 
     <div class="qr-code">
-      <img src="https://via.placeholder.com/120" alt="QR Code" />
+      <img
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        alt="QR Code"
+      />
       <div>INV-2024-001</div>
       <div class="bilingual">Scan to verify / امسح للتحقق</div>
     </div>

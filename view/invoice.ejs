@@ -128,6 +128,18 @@
         margin-bottom: 15px;
         font-weight: bold;
       }
+      .items-table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        padding: 12px 8px;
+      }
+      .items-table td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #dee2e6;
+      }
+      .items-table tbody tr:last-child td {
+        border-bottom: 2px solid #dee2e6;
+      }
     </style>
   </head>
   <body>
@@ -204,40 +216,64 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th class="bilingual">Description / الوصف</th>
-          <th class="bilingual">Qty / الكمية</th>
-          <th class="bilingual">Unit Price / سعر الوحدة</th>
-          <th class="bilingual">Amount / المبلغ</th>
+          <th class="bilingual" style="width: 45%">Description / الوصف</th>
+          <th class="bilingual" style="width: 15%; text-align: center">
+            Qty / الكمية
+          </th>
+          <th class="bilingual" style="width: 20%; text-align: right">
+            Unit Price / سعر الوحدة
+          </th>
+          <th class="bilingual" style="width: 20%; text-align: right">
+            Amount / المبلغ
+          </th>
         </tr>
       </thead>
       <tbody>
         <% order.orderItems.forEach(item => { %>
         <tr>
-          <td>
-            <p><strong><%= item.product.title %></strong></p>
+          <td style="vertical-align: top">
+            <div style="font-weight: bold; margin-bottom: 8px">
+              <%= item.product.title %>
+            </div>
             <% if (item.addonItems && item.addonItems.length > 0) { %>
-            <div style="margin-left: 20px; color: #666">
-              <p>Add-ons / الإضافات:</p>
-              <ul style="margin: 0; padding-left: 20px">
+            <div style="margin-left: 15px; color: #666">
+              <div style="margin-bottom: 5px">Add-ons / الإضافات:</div>
+              <ul style="list-style-type: disc; margin: 0; padding-left: 20px">
                 <% item.addonItems.forEach(addonItem => { %>
-                <li>
-                  <%= addonItem.addon.name %> (x<%= addonItem.quantity %>) - <%=
-                  currency.symbol %> <%= addonItem.price %>
+                <li style="margin-bottom: 3px">
+                  <%= addonItem.addon.name %>
+                  <span style="color: #444">(x<%= addonItem.quantity %>)</span>
+                  - <%= currency.symbol %> <%= addonItem.price %>
                 </li>
                 <% }); %>
               </ul>
             </div>
             <% } %>
           </td>
-          <td><%= item.quantity %></td>
-          <td><%= currency.symbol %> <%= item.price.toFixed(2) %></td>
-          <td>
-            <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
-            %> <% if (item.addonItems && item.addonItems.length > 0) { %>
-            <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              Add-ons Total / مجموع الإضافات: <%= currency.symbol %> <%=
-              item.addonItems.reduce((sum, addonItem) => sum + (addonItem.price
-              * addonItem.quantity), 0 ).toFixed(2) %>
+          <td style="text-align: center; vertical-align: top">
+            <%= item.quantity %>
+          </td>
+          <td style="text-align: right; vertical-align: top">
+            <%= currency.symbol %> <%= item.price.toFixed(2) %>
+          </td>
+          <td style="text-align: right; vertical-align: top">
+            <div>
+              <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
+              %>
+            </div>
+            <% if (item.addonItems && item.addonItems.length > 0) { %>
+            <div
+              style="
+                color: #666;
+                margin-top: 8px;
+                font-size: 0.9em;
+                border-top: 1px solid #eee;
+                padding-top: 4px;
+              "
+            >
+              Add-ons Total / مجموع الإضافات:<br />
+              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem)
+              => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
             </div>
             <% } %>
           </td>
