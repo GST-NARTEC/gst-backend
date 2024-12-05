@@ -55,16 +55,18 @@ class PDFGenerator {
           symbol: currency.symbol,
         },
         items: order.orderItems.map((item) => ({
-          description: item.product.title,
+          product: {
+            title: item.product.title,
+          },
           quantity: item.quantity,
-          amount: item.price.toFixed(2),
-          addons: item.addons
-            ? item.addons.map((addon) => ({
-                name: addon.name,
-                price: addon.price.toFixed(2),
-                quantity: addon.quantity || 1,
-              }))
-            : [],
+          price: item.price,
+          addonItems: item.addonItems.map((addonItem) => ({
+            addon: {
+              name: addonItem.addon.name,
+            },
+            quantity: addonItem.quantity,
+            price: addonItem.price,
+          })),
         })),
         totals: {
           subtotal: order.totalAmount.toFixed(2),

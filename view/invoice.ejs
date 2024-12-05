@@ -195,7 +195,7 @@
           <td>#<%= invoice.number %></td>
         </tr>
         <tr>
-          <td class="bilingual">Invoice Date / تاريخ الفاتورة</td>
+          <td class="bilingual">Invoice Date / تا��يخ الفاتورة</td>
           <td><%= invoice.date %></td>
         </tr>
       </table>
@@ -206,6 +206,7 @@
         <tr>
           <th class="bilingual">Description / الوصف</th>
           <th class="bilingual">Qty / الكمية</th>
+          <th class="bilingual">Unit Price / سعر الوحدة</th>
           <th class="bilingual">Amount / المبلغ</th>
         </tr>
       </thead>
@@ -213,15 +214,14 @@
         <% items.forEach(item => { %>
         <tr>
           <td>
-            <%= item.description %> <% if (item.addonItems &&
+            <%= item.product.title %> <% if (item.addonItems &&
             item.addonItems.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
               Add-ons / الإضافات:
               <ul style="margin: 4px 0 0 20px; padding: 0">
                 <% item.addonItems.forEach(addonItem => { %>
                 <li>
-                  <%= addonItem.addon.name %> (x<%= addonItem.quantity %>) - <%=
-                  currency.symbol %> <%= addonItem.price %>
+                  <%= addonItem.addon.name %> (x<%= addonItem.quantity %>)
                 </li>
                 <% }); %>
               </ul>
@@ -229,13 +229,16 @@
             <% } %>
           </td>
           <td><%= item.quantity %>x</td>
+          <td><%= currency.symbol %> <%= item.price.toFixed(2) %></td>
           <td>
-            <%= currency.symbol %> <%= item.amount %> <% if (item.addonItems &&
-            item.addonItems.length > 0) { %>
+            <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
+            %> <% if (item.addonItems && item.addonItems.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              + <%= currency.symbol %> <%= item.addonItems.reduce((sum,
-              addonItem) => sum + (parseFloat(addonItem.price) *
-              addonItem.quantity), 0).toFixed(2) %>
+              Addons Total:
+              <br />
+              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem)
+              => sum + (parseFloat(addonItem.price) * addonItem.quantity),
+              0).toFixed(2) %>
             </div>
             <% } %>
           </td>
