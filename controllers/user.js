@@ -441,20 +441,21 @@ class UserController {
                   include: {
                     product: {
                       include: {
-                        category: true,
-                        addons: {
-                          where: {
-                            status: "active",
-                          },
-                          select: {
-                            id: true,
-                            name: true,
-                            price: true,
-                            unit: true,
-                            stock: true,
-                            status: true,
-                          },
-                        },
+                        // category: true,
+                        addons: true,
+                        // addons: {
+                        //   where: {
+                        //     status: "active",
+                        //   },
+                        //   select: {
+                        //     id: true,
+                        //     name: true,
+                        //     price: true,
+                        //     unit: true,
+                        //     stock: true,
+                        //     status: true,
+                        //   },
+                        // },
                       },
                     },
                     addons: {
