@@ -279,8 +279,7 @@
               "
             >
               Add-ons Total / مجموع الإضافات:<br />
-              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem)
-              => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
+              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem) => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
             </div>
             <% } %>
           </td>
