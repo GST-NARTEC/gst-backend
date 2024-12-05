@@ -216,7 +216,9 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th class="bilingual" style="width: 45%">Description / الوصف</th>
+          <th class="bilingual" style="width: 45%; text-align: left">
+            Description / الوصف
+          </th>
           <th class="bilingual" style="width: 15%; text-align: center">
             Qty / الكمية
           </th>
@@ -231,7 +233,7 @@
       <tbody>
         <% order.orderItems.forEach(item => { %>
         <tr>
-          <td style="vertical-align: top">
+          <td style="vertical-align: top; padding-right: 15px">
             <div style="font-weight: bold; margin-bottom: 8px">
               <%= item.product.title %>
             </div>
@@ -240,7 +242,7 @@
               <div style="margin-bottom: 5px">Add-ons / الإضافات:</div>
               <ul style="list-style-type: disc; margin: 0; padding-left: 20px">
                 <% item.addonItems.forEach(addonItem => { %>
-                <li style="margin-bottom: 3px">
+                <li style="margin-bottom: 3px; white-space: nowrap">
                   <%= addonItem.addon.name %>
                   <span style="color: #444">(x<%= addonItem.quantity %>)</span>
                   - <%= currency.symbol %> <%= addonItem.price %>
@@ -250,13 +252,19 @@
             </div>
             <% } %>
           </td>
-          <td style="text-align: center; vertical-align: top">
+          <td
+            style="text-align: center; vertical-align: top; white-space: nowrap"
+          >
             <%= item.quantity %>
           </td>
-          <td style="text-align: right; vertical-align: top">
+          <td
+            style="text-align: right; vertical-align: top; white-space: nowrap"
+          >
             <%= currency.symbol %> <%= item.price.toFixed(2) %>
           </td>
-          <td style="text-align: right; vertical-align: top">
+          <td
+            style="text-align: right; vertical-align: top; white-space: nowrap"
+          >
             <div>
               <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
               %>
@@ -348,7 +356,7 @@
       </table>
       <div class="transfer-note bilingual">
         *Upon transfer, Please upload a copy of transfer receipt from your
-        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل في حسابك.
+        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التح��يل في حسابك.
       </div>
     </div>
 
