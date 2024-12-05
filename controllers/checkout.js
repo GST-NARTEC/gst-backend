@@ -125,6 +125,7 @@ class CheckoutController {
                 create: item.addonItems.map((addonItem) => ({
                   addonId: addonItem.addon.id,
                   quantity: addonItem.quantity,
+                  price: addonItem.addon.price,
                 })),
               },
             })),
