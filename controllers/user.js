@@ -522,7 +522,11 @@ class UserController {
           orders: {
             include: {
               invoice: true,
-              orderItems: true,
+              orderItems: {
+                include: {
+                  addonItems: true,
+                },
+              },
             },
           },
           invoices: true,
@@ -552,7 +556,14 @@ class UserController {
 
         // Delete order items and invoices
         for (const order of user.orders) {
-          // Delete order items
+          // First delete order item addons
+          for (const orderItem of order.orderItems) {
+            await prisma.orderItemAddon.deleteMany({
+              where: { orderItemId: orderItem.id },
+            });
+          }
+
+          // Then delete order items
           await prisma.orderItem.deleteMany({
             where: { orderId: order.id },
           });
