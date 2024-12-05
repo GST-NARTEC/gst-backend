@@ -195,7 +195,7 @@
           <td>#<%= invoice.number %></td>
         </tr>
         <tr>
-          <td class="bilingual">Invoice Date / تا��يخ الفاتورة</td>
+          <td class="bilingual">Invoice Date / تايخ الفاتورة</td>
           <td><%= invoice.date %></td>
         </tr>
       </table>
@@ -210,10 +210,10 @@
         </tr>
       </thead>
       <tbody>
-        <% order.orderItems.forEach(item => { %>
+        <% items.forEach(item => { %>
         <tr>
           <td>
-            <%= item.product.title %> <% if (item.addons && item.addons.length >
+            <%= item.description %> <% if (item.addons && item.addons.length >
             0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
               Add-ons / الإضافات:
@@ -229,11 +229,11 @@
           </td>
           <td><%= item.quantity %>x</td>
           <td>
-            <%= currency.symbol %> <%= item.price %> <% if (item.addons &&
+            <%= currency.symbol %> <%= item.amount %> <% if (item.addons &&
             item.addons.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
               + <%= currency.symbol %> <%= item.addons.reduce((sum, addon) =>
-              sum + (addon.price), 0).toFixed(2) %>
+              sum + parseFloat(addon.price), 0).toFixed(2) %>
             </div>
             <% } %>
           </td>
@@ -308,7 +308,7 @@
       </table>
       <div class="transfer-note bilingual">
         *Upon transfer, Please upload a copy of transfer receipt from your
-        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل ��ن حسابك.
+        account. / *عند التحويل، يرجى تحميل نسخة من إيصال التحويل في حسابك.
       </div>
     </div>
 
