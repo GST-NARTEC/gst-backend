@@ -67,7 +67,18 @@ class PDFGenerator {
               },
               quantity: addonItem.quantity,
               price: addonItem.price,
+              total: (addonItem.price * addonItem.quantity).toFixed(2),
             })) || [],
+          itemTotal: (item.price * item.quantity).toFixed(2),
+          addonsTotal: item.addonItems
+            ? item.addonItems
+                .reduce(
+                  (sum, addonItem) =>
+                    sum + addonItem.price * addonItem.quantity,
+                  0
+                )
+                .toFixed(2)
+            : "0.00",
         })),
         totals: {
           subtotal: order.totalAmount.toFixed(2),
