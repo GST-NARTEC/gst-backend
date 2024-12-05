@@ -195,7 +195,7 @@
           <td>#<%= invoice.number %></td>
         </tr>
         <tr>
-          <td class="bilingual">Invoice Date / تا��يخ الفاتورة</td>
+          <td class="bilingual">Invoice Date / تايخ الفاتورة</td>
           <td><%= invoice.date %></td>
         </tr>
       </table>
@@ -234,8 +234,7 @@
             <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2)
             %> <% if (item.addonItems && item.addonItems.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              Addons Total:
-              <br />
+              Addons Total:<br />
               <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem)
               => sum + (parseFloat(addonItem.price) * addonItem.quantity),
               0).toFixed(2) %>
