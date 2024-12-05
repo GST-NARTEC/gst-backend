@@ -62,6 +62,7 @@ class PDFGenerator {
             ? item.addons.map((addon) => ({
                 name: addon.name,
                 price: addon.price.toFixed(2),
+                quantity: addon.quantity || 1,
               }))
             : [],
         })),

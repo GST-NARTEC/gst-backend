@@ -220,7 +220,8 @@
               <ul style="margin: 4px 0 0 20px; padding: 0">
                 <% item.addons.forEach(addon => { %>
                 <li>
-                  <%= addon.name %> (<%= currency.symbol %> <%= addon.price %>)
+                  <%= addon.name %> (x<%= addon.quantity %>) - <%=
+                  currency.symbol %> <%= addon.price %>
                 </li>
                 <% }); %>
               </ul>

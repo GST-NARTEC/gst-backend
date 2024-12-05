@@ -117,8 +117,8 @@
                 <ul style="margin: 0; padding-left: 20px">
                   <% item.addons.forEach(addon => { %>
                   <li>
-                    <%= addon.name %> (<%= currency.symbol %> <%= addon.price
-                    %>)
+                    <%= addon.name %> (x<%= addon.quantity %>) - <%=
+                    currency.symbol %> <%= addon.price %>
                   </li>
                   <% }); %>
                 </ul>
@@ -174,8 +174,8 @@
                 <ul style="margin: 0; padding-right: 20px">
                   <% item.addons.forEach(addon => { %>
                   <li>
-                    <%= addon.name %> (<%= currency.symbol %> <%= addon.price
-                    %>)
+                    <%= addon.name %> (x<%= addon.quantity %>) - <%=
+                    currency.symbol %> <%= addon.price %>
                   </li>
                   <% }); %>
                 </ul>

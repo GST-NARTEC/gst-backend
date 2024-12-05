@@ -61,7 +61,16 @@ class EmailService {
 
       const data = {
         user,
-        order,
+        order: {
+          ...order,
+          orderItems: order.orderItems.map((item) => ({
+            ...item,
+            addons: item.addons.map((addon) => ({
+              ...addon,
+              quantity: addon.quantity || 1,
+            })),
+          })),
+        },
         password,
         loginUrl: process.env.LOGIN_URL,
         logo: LOGO_URL,
