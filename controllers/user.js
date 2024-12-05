@@ -314,6 +314,16 @@ class UserController {
                   product: {
                     include: {
                       category: true,
+                      addons: {
+                        where: {
+                          status: "active",
+                        },
+                      },
+                    },
+                  },
+                  addonItems: {
+                    include: {
+                      addon: true,
                     },
                   },
                 },
@@ -367,6 +377,16 @@ class UserController {
                       product: {
                         include: {
                           category: true,
+                          addons: {
+                            where: {
+                              status: "active",
+                            },
+                          },
+                        },
+                      },
+                      addonItems: {
+                        include: {
+                          addon: true,
                         },
                       },
                     },
@@ -419,8 +439,34 @@ class UserController {
               include: {
                 orderItems: {
                   include: {
-                    product: true,
-                    addons: true,
+                    product: {
+                      include: {
+                        category: true,
+                        addons: {
+                          where: {
+                            status: "active",
+                          },
+                          select: {
+                            id: true,
+                            name: true,
+                            price: true,
+                            unit: true,
+                            stock: true,
+                            status: true,
+                          },
+                        },
+                      },
+                    },
+                    addons: {
+                      select: {
+                        id: true,
+                        name: true,
+                        price: true,
+                        unit: true,
+                        stock: true,
+                        status: true,
+                      },
+                    },
                   },
                 },
               },
