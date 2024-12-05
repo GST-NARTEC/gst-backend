@@ -53,6 +53,14 @@ class CheckoutController {
         throw new MyError("No active VAT configuration found", 400);
       }
 
+      const activeCurrency = await prisma.currency.findFirst({
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (!activeCurrency) {
+        throw new MyError("No active currency configuration found", 400);
+      }
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
       });
@@ -215,8 +223,8 @@ class CheckoutController {
         password,
         user: cart.user,
         currency: {
-          symbol: "SAR",
-          name: "Saudi Riyal",
+          symbol: activeCurrency.symbol,
+          name: activeCurrency.name,
         },
         tax: {
           value: activeVat.value,
