@@ -195,7 +195,7 @@
           <td>#<%= invoice.number %></td>
         </tr>
         <tr>
-          <td class="bilingual">Invoice Date / تايخ الفاتورة</td>
+          <td class="bilingual">Invoice Date / تا��خ الفاتورة</td>
           <td><%= invoice.date %></td>
         </tr>
       </table>
@@ -213,15 +213,15 @@
         <% items.forEach(item => { %>
         <tr>
           <td>
-            <%= item.description %> <% if (item.addons && item.addons.length >
-            0) { %>
+            <%= item.description %> <% if (item.addonItems &&
+            item.addonItems.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
               Add-ons / الإضافات:
               <ul style="margin: 4px 0 0 20px; padding: 0">
-                <% item.addons.forEach(addon => { %>
+                <% item.addonItems.forEach(addonItem => { %>
                 <li>
-                  <%= addon.name %> (x<%= addon.quantity %>) - <%=
-                  currency.symbol %> <%= addon.price %>
+                  <%= addonItem.addon.name %> (x<%= addonItem.quantity %>) - <%=
+                  currency.symbol %> <%= addonItem.price %>
                 </li>
                 <% }); %>
               </ul>
@@ -230,11 +230,12 @@
           </td>
           <td><%= item.quantity %>x</td>
           <td>
-            <%= currency.symbol %> <%= item.amount %> <% if (item.addons &&
-            item.addons.length > 0) { %>
+            <%= currency.symbol %> <%= item.amount %> <% if (item.addonItems &&
+            item.addonItems.length > 0) { %>
             <div style="font-size: 0.9em; color: #666; margin-top: 4px">
-              + <%= currency.symbol %> <%= item.addons.reduce((sum, addon) =>
-              sum + parseFloat(addon.price), 0).toFixed(2) %>
+              + <%= currency.symbol %> <%= item.addonItems.reduce((sum,
+              addonItem) => sum + (parseFloat(addonItem.price) *
+              addonItem.quantity), 0).toFixed(2) %>
             </div>
             <% } %>
           </td>

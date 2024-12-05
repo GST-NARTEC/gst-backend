@@ -111,14 +111,14 @@
               <p><strong><%= item.product.title %></strong></p>
               <p>Quantity: <%= item.quantity %></p>
               <p>Price: <%= currency.symbol %> <%= item.price %></p>
-              <% if (item.addons && item.addons.length > 0) { %>
+              <% if (item.addonItems && item.addonItems.length > 0) { %>
               <div style="margin-left: 20px; color: #666">
                 <p>Add-ons:</p>
                 <ul style="margin: 0; padding-left: 20px">
-                  <% item.addons.forEach(addon => { %>
+                  <% item.addonItems.forEach(addonItem => { %>
                   <li>
-                    <%= addon.name %> (x<%= addon.quantity %>) - <%=
-                    currency.symbol %> <%= addon.price %>
+                    <%= addonItem.addon.name %> (x<%= addonItem.quantity %>) -
+                    <%= currency.symbol %> <%= addonItem.price %>
                   </li>
                   <% }); %>
                 </ul>
@@ -168,14 +168,14 @@
               <p><strong><%= item.product.title %></strong></p>
               <p>الكمية: <%= item.quantity %></p>
               <p>السعر: <%= currency.symbol %> <%= item.price %></p>
-              <% if (item.addons && item.addons.length > 0) { %>
+              <% if (item.addonItems && item.addonItems.length > 0) { %>
               <div style="margin-right: 20px; color: #666; text-align: right">
                 <p>الإضافات:</p>
                 <ul style="margin: 0; padding-right: 20px">
-                  <% item.addons.forEach(addon => { %>
+                  <% item.addonItems.forEach(addonItem => { %>
                   <li>
-                    <%= addon.name %> (x<%= addon.quantity %>) - <%=
-                    currency.symbol %> <%= addon.price %>
+                    <%= addonItem.addon.name %> (x<%= addonItem.quantity %>) -
+                    <%= currency.symbol %> <%= addonItem.price %>
                   </li>
                   <% }); %>
                 </ul>
