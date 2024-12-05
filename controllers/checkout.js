@@ -121,13 +121,11 @@ class CheckoutController {
               productId: item.product.id,
               quantity: item.quantity,
               price: item.product.price,
-              ...(item.addons && item.addons.length > 0
-                ? {
-                    addons: {
-                      connect: item.addons.map((addon) => ({ id: addon.id })),
-                    },
-                  }
-                : {}),
+              addons: {
+                connect: item.addonItems.map((addonItem) => ({
+                  id: addonItem.addon.id,
+                })),
+              },
             })),
           },
         },
