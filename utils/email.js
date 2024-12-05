@@ -47,7 +47,15 @@ class EmailService {
     }
   }
 
-  async sendWelcomeEmail({ email, order, password, user, attachments }) {
+  async sendWelcomeEmail({
+    email,
+    order,
+    password,
+    user,
+    attachments,
+    currency,
+    tax,
+  }) {
     try {
       const templatePath = path.join(__dirname, "../view/welcomeEmail.ejs");
 
@@ -57,6 +65,8 @@ class EmailService {
         password,
         loginUrl: process.env.LOGIN_URL,
         logo: LOGO_URL,
+        currency,
+        tax,
       };
 
       const html = await ejs.renderFile(templatePath, data);
@@ -107,7 +117,13 @@ class EmailService {
     }
   }
 
-  async sendOrderActivationEmail({ email, order, user, attachments }) {
+  async sendOrderActivationEmail({
+    email,
+    order,
+    user,
+    attachments,
+    currency,
+  }) {
     try {
       const templatePath = path.join(
         __dirname,
@@ -119,6 +135,7 @@ class EmailService {
         order,
         logo: LOGO_URL,
         loginUrl: process.env.LOGIN_URL,
+        currency,
       };
 
       const html = await ejs.renderFile(templatePath, data);
