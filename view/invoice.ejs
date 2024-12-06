@@ -288,25 +288,34 @@
       </tbody>
     </table>
 
-    <div class="totals">
-      <div class="bilingual">
+    <div class="totals" style="font-size: 16px; font-weight: 500">
+      <div class="bilingual" style="margin-bottom: 8px">
         <span>Subtotal / المجموع الفرعي</span>
         <span><%= currency.symbol %> <%= totals.subtotal %></span>
       </div>
 
       <% if (tax.type === 'PERCENTAGE') { %>
-      <div class="bilingual">
+      <div class="bilingual" style="margin-bottom: 8px">
         <span>VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span>
         <span><%= currency.symbol %> <%= tax.computed %></span>
       </div>
       <% } else { %>
-      <div class="bilingual">
+      <div class="bilingual" style="margin-bottom: 8px">
         <span>VAT (Fixed) / ضريبة القيمة المضافة</span>
         <span><%= currency.symbol %> <%= tax.computed %></span>
       </div>
       <% } %>
 
-      <div class="bilingual">
+      <div
+        class="bilingual"
+        style="
+          font-size: 18px;
+          font-weight: bold;
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 2px solid #003366;
+        "
+      >
         <span>Grand Total / المجموع الكلي</span>
         <span><%= currency.symbol %> <%= totals.grandTotal %></span>
       </div>
