@@ -230,7 +230,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+            <tbody>
         <% order.orderItems.forEach(item => { %>
         <tr>
           <td style="vertical-align: top; padding-right: 15px">
@@ -288,32 +288,68 @@
       </tbody>
     </table>
 
-    <div class="totals" style="font-size: 16px; font-weight: 500">
-      <div class="bilingual" style="margin-bottom: 8px">
-        <span>Subtotal / المجموع الفرعي</span>
-        <span><%= currency.symbol %> <%= totals.subtotal %></span>
+    <div class="totals" style="font-size: 18px; font-weight: 600; color: #333">
+      <div
+        class="bilingual"
+        style="
+          margin-bottom: 12px;
+          display: flex;
+          justify-content: space-between;
+        "
+      >
+        <span style="font-size: 20px; font-weight: bold"
+          >Subtotal / المجموع الفرعي</span
+        >
+        <span style="font-size: 20px; font-weight: bold"
+          ><%= currency.symbol %> <%= totals.subtotal %></span
+        >
       </div>
 
       <% if (tax.type === 'PERCENTAGE') { %>
-      <div class="bilingual" style="margin-bottom: 8px">
-        <span>VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span>
-        <span><%= currency.symbol %> <%= tax.computed %></span>
+      <div
+        class="bilingual"
+        style="
+          margin-bottom: 12px;
+          display: flex;
+          justify-content: space-between;
+        "
+      >
+        <span style="font-size: 20px; font-weight: bold"
+          >VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span
+        >
+        <span style="font-size: 20px; font-weight: bold"
+          ><%= currency.symbol %> <%= tax.computed %></span
+        >
       </div>
       <% } else { %>
-      <div class="bilingual" style="margin-bottom: 8px">
-        <span>VAT (Fixed) / ضريبة القيمة المضافة</span>
-        <span><%= currency.symbol %> <%= tax.computed %></span>
+      <div
+        class="bilingual"
+        style="
+          margin-bottom: 12px;
+          display: flex;
+          justify-content: space-between;
+        "
+      >
+        <span style="font-size: 20px; font-weight: bold"
+          >VAT (Fixed) / ضريبة القيمة المضافة</span
+        >
+        <span style="font-size: 20px; font-weight: bold"
+          ><%= currency.symbol %> <%= tax.computed %></span
+        >
       </div>
       <% } %>
 
       <div
         class="bilingual"
         style="
-          font-size: 18px;
+          font-size: 22px;
           font-weight: bold;
-          margin-top: 12px;
-          padding-top: 12px;
-          border-top: 2px solid #003366;
+          color: #003366;
+          margin-top: 16px;
+          padding-top: 16px;
+          border-top: 3px solid #003366;
+          display: flex;
+          justify-content: space-between;
         "
       >
         <span>Grand Total / المجموع الكلي</span>
@@ -323,11 +359,21 @@
 
     <div
       class="invoice-details"
-      style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px"
+      style="
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+        font-size: 16px;
+      "
     >
-      <div class="bilingual">
-        <span>Tax Registration Number / الرقم الضريبي:</span>
-        <span><%= tax.id %></span>
+      <div
+        class="bilingual"
+        style="display: flex; justify-content: space-between"
+      >
+        <span style="font-weight: bold"
+          >Tax Registration Number / الرقم الضريبي:</span
+        >
+        <span style="font-weight: bold"><%= tax.id %></span>
       </div>
     </div>
 
