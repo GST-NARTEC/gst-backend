@@ -132,7 +132,11 @@ class OrderController {
           orderItems: {
             include: {
               product: true,
-              addons: true,
+              addonItems: {
+                include: {
+                  addon: true,
+                },
+              },
             },
           },
         },
@@ -154,7 +158,11 @@ class OrderController {
               orderItems: {
                 include: {
                   product: true,
-                  addons: true,
+                  addonItems: {
+                    include: {
+                      addon: true,
+                    },
+                  },
                 },
               },
             },
