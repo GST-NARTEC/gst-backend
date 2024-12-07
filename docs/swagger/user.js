@@ -481,7 +481,7 @@
  *         required: false
  *         schema:
  *           type: string
- *           enum: [orders, cart, invoices, profile]
+ *           enum: [orders, cart, invoices, profile, docs]
  *         description: Specific field to retrieve. If not provided, returns all user data
  *     responses:
  *       200:
