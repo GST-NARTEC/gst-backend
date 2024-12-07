@@ -196,12 +196,12 @@ class ProductController {
             return JSON.parse(req.body.addonIds);
           } catch (e) {
             // If parsing fails, check if it's a string that needs to be split
-            if (typeof req.body.addonIds === 'string') {
-              return req.body.addonIds.split(',').map(id => id.trim());
+            if (typeof req.body.addonIds === "string") {
+              return req.body.addonIds.split(",").map((id) => id.trim());
             }
             return undefined;
           }
-        })()
+        })(),
       };
 
       const { error, value } = productUpdateSchema.validate(productData);
@@ -235,6 +235,14 @@ class ProductController {
         throw new MyError("Product not found", 404);
       }
 
+      // check incoming file, and delete old file
+      if (req.file) {
+        imagePath = req.file.path;
+        if (existingProduct.image) {
+          deleteFile(existingProduct.image);
+        }
+      }
+
       if (value.categoryId) {
         const categoryExists = await prisma.category.findUnique({
           where: { id: value.categoryId },
@@ -246,7 +254,10 @@ class ProductController {
 
       const updateData = {
         ...(value.title !== undefined && { title: value.title }),
-        ...(value.description !== undefined && { description: value.description }),
+        ...(value.description !== undefined && {
+          description: value.description,
+        }),
+
         ...(value.price !== undefined && { price: value.price }),
         ...(value.status !== undefined && { status: value.status }),
         ...(value.categoryId !== undefined && {
@@ -259,6 +270,7 @@ class ProductController {
             set: value.addonIds.map((id) => ({ id })),
           },
         }),
+        ...(imagePath && { image: imagePath }),
       };
 
       const product = await prisma.product.update({
