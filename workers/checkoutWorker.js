@@ -1,23 +1,12 @@
 import bcrypt from "bcrypt";
-
 import { Worker } from "bullmq";
-import IORedis from "ioredis";
 
+import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
-
-const connection = new IORedis({
-  host: process.env.REDIS_HOST || "localhost",
-  port: parseInt(process.env.REDIS_PORT) || 6379,
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-  retryStrategy: (times) => {
-    return Math.min(times * 50, 2000);
-  },
-});
 
 const processCheckout = async (job) => {
   const { cart, user, paymentType, vat, activeVat, activeCurrency } = job.data;
@@ -148,7 +137,7 @@ const processCheckout = async (job) => {
   return result;
 };
 
-// Create worker
+// Create worker using shared connection
 const worker = new Worker("checkout", processCheckout, { connection });
 
 worker.on("completed", (job) => {

@@ -1,4 +1,5 @@
 import { Worker } from "bullmq";
+
 import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
