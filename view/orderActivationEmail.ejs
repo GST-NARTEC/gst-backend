@@ -95,13 +95,17 @@
             <div>
               <p><strong>Order Number:</strong> <%= order.orderNumber %></p>
               <p><strong>Order Status:</strong> <%= order.status %></p>
-              <p><strong>Order Total:</strong> SAR <%= order.totalAmount %></p>
+              <p>
+                <strong>Order Total:</strong> <%= currency.symbol %> <%=
+                order.totalAmount %>
+              </p>
             </div>
             <div style="text-align: right">
               <p><strong>رقم الطلب:</strong> <%= order.orderNumber %></p>
               <p><strong>حالة الطلب:</strong> <%= order.status %></p>
               <p>
-                <strong>إجمالي الطلب:</strong> <%= order.totalAmount %> ريال
+                <strong>إجمالي الطلب:</strong> <%= order.totalAmount %> <%=
+                currency.name %>
               </p>
             </div>
           </div>

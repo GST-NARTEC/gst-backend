@@ -124,11 +124,17 @@ const processOrderActivation = async (job) => {
     },
   });
 
+  // Get currency data
+  const currency = await prisma.currency.findFirst({
+    orderBy: { createdAt: "desc" },
+  });
+
   // Send activation email with documents
   await EmailService.sendOrderActivationEmail({
     email: result.updatedOrder.user.email,
     order: result.updatedOrder,
     user: result.updatedOrder.user,
+    currency,
     attachments: [
       {
         filename: `receipt-${result.updatedOrder.invoice.invoiceNumber}.pdf`,
