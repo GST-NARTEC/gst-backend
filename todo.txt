@@ -10,7 +10,7 @@ Number 2:
 the steps are below:
 1. Upon Invoice Activation ( this is uploading the invoice, and have the option to Activate the member)
 2. Upon activation, email will be sent to member with the following docs:
- a. Receipt (same as invoice, change only the title "RECEIPT"
+ a. Receipt (same as invoice, change only the title "RECEIPT")
  b. Barcode Certificate ( same as GS1 GCP Certificate ) , @ver design a new one for UPC/EAN Certificate based
  c. UPC/EAN Barcode Terms and Agreement @ver look for the document of this one
 3. All the documents of the member must stored in under the "Profile" on tab called "Member Documents"
