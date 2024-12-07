@@ -50,6 +50,9 @@ importers:
       multermate-es:
         specifier: ^1.0.1
         version: 1.0.1
+      nanoid:
+        specifier: ^5.0.9
+        version: 5.0.9
       nodemailer:
         specifier: ^6.9.16
         version: 6.9.16
@@ -927,6 +930,11 @@ packages:
 
   multermate-es@1.0.1:
     resolution: {integrity: sha512-3dumqbxxjDOsEUcgXD0D1hlhMsjZMSCMyP/YHuyp4/nAyzZrKEK/bam2GPGhRYC+RxV9/5opCwuqKn/mbk4HsQ==}
+
+  nanoid@5.0.9:
+    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
 
   negotiator@0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
@@ -2348,6 +2356,8 @@ snapshots:
     dependencies:
       multer: 1.4.5-lts.1
       uuid: 10.0.0
+
+  nanoid@5.0.9: {}
 
   negotiator@0.6.3: {}
 

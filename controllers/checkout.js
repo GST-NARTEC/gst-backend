@@ -3,6 +3,7 @@ import prisma from "../utils/prismaClient.js";
 
 import { checkoutQueue } from "../config/queue.js";
 import MyError from "../utils/error.js";
+import { generateOrderId } from "../utils/generateUniqueId.js";
 import response from "../utils/response.js";
 
 const checkoutSchema = Joi.object({
@@ -18,16 +19,6 @@ const checkoutSchema = Joi.object({
     .required(),
   vat: Joi.number().min(0).default(0),
 });
-
-const generateOrderNumber = () => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "ORD";
-  // Generate 7 random characters (ORD + 7 = 10 characters total)
-  for (let i = 0; i < 7; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-};
 
 class CheckoutController {
   static async processCheckout(req, res, next) {
@@ -87,7 +78,7 @@ class CheckoutController {
           vat,
           activeVat,
           activeCurrency,
-          orderNumber: generateOrderNumber(),
+          orderNumber: generateOrderId(),
         },
         {
           attempts: 3,

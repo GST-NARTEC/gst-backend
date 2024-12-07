@@ -12,6 +12,7 @@ import {
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { generateToken } from "../utils/generateToken.js";
+import { generateUserId } from "../utils/generateUniqueId.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 import TokenManager from "../utils/tokenManager.js";
@@ -89,42 +90,14 @@ class UserController {
       }
 
       const { cartItems, ...userData } = value;
-
-      // Verify products and addons exist
-      const productIds = cartItems.map((item) => item.productId);
-      const addonIds = cartItems.flatMap((item) =>
-        (item.addons || []).map((addon) => addon.id)
-      );
-
-      const [products, addons] = await Promise.all([
-        prisma.product.findMany({
-          where: {
-            id: { in: productIds },
-            status: "active",
-          },
-        }),
-        prisma.addon.findMany({
-          where: {
-            id: { in: addonIds },
-            status: "active",
-          },
-        }),
-      ]);
-
-      if (products.length !== productIds.length) {
-        throw new MyError("One or more products are invalid or inactive", 400);
-      }
-
-      if (addonIds.length > 0 && addons.length !== addonIds.length) {
-        throw new MyError("One or more addons are invalid or inactive", 400);
-      }
+      const userId = generateUserId();
 
       // Create user and cart in transaction
       const result = await prisma.$transaction(async (prisma) => {
-        // Create user with cart in a single operation
         const user = await prisma.user.create({
           data: {
             ...userData,
+            userId,
             cart: {
               create: {
                 items: {
@@ -163,9 +136,11 @@ class UserController {
         return user;
       });
 
-      res
-        .status(201)
-        .json(response(201, true, "User registered successfully", result));
+      res.status(201).json(
+        response(201, true, "User registered successfully", {
+          user: result,
+        })
+      );
     } catch (error) {
       next(error);
     }
