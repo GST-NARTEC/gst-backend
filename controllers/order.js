@@ -124,7 +124,7 @@ class OrderController {
 
       // Add job to queue
       await orderActivationQueue.add(
-        "activate-order",
+        "order-activation",
         { orderNumber },
         {
           attempts: 3,
