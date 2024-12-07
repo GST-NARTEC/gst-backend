@@ -1,8 +1,8 @@
 import Joi from "joi";
+import { orderActivationQueue } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
-import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -121,84 +121,23 @@ class OrderController {
   static async activateOrderStatus(req, res, next) {
     try {
       const { orderNumber } = req.params;
-      let order;
 
-      // First fetch with all necessary includes
-      order = await prisma.order.findFirst({
-        where: { orderNumber },
-        include: {
-          user: true,
-          invoice: true,
-          orderItems: {
-            include: {
-              product: true,
-              addonItems: {
-                include: {
-                  addon: true,
-                },
-              },
-            },
+      // Add job to queue
+      await orderActivationQueue.add(
+        "activate-order",
+        { orderNumber },
+        {
+          attempts: 3,
+          backoff: {
+            type: "exponential",
+            delay: 5000,
           },
-        },
-      });
-
-      if (!order) {
-        throw new MyError("Order not found", 404);
-      }
-
-      switch (order.status) {
-        case "Pending Account Activation":
-          // Update order with includes to get fresh data
-          order = await prisma.order.update({
-            where: { id: order.id },
-            data: { status: "Activated" },
-            include: {
-              user: true,
-              invoice: true,
-              orderItems: {
-                include: {
-                  product: true,
-                  addonItems: {
-                    include: {
-                      addon: true,
-                    },
-                  },
-                },
-              },
-            },
-          });
-          break;
-        case "Activated":
-          throw new MyError("Account is already activated", 400);
-        default:
-          throw new MyError("Order is not in pending activation status", 400);
-      }
-
-      // Generate receipt
-      const receipt = await PDFGenerator.generateReceipt(
-        order,
-        order.user,
-        order.invoice
+        }
       );
 
-      // Send activation email with receipt
-      await EmailService.sendOrderActivationEmail({
-        email: order.user.email,
-        order: order,
-        user: order.user,
-        attachments: [
-          {
-            filename: `receipt-${order.invoice.invoiceNumber}.pdf`,
-            path: receipt.absolutePath,
-          },
-        ],
-      });
-
-      res.status(200).json(
-        response(200, true, "Account activated successfully", {
-          status: order.status,
-        })
-      );
+      res
+        .status(200)
+        .json(response(200, true, "Order activation is being processed"));
     } catch (error) {
       next(error);
     }
