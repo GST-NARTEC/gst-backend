@@ -109,7 +109,7 @@ const processOrderActivation = async (job) => {
     licensee: "GST",
     gtins: result.gtins,
     issueDate: new Date().toLocaleDateString(),
-    memberId: result.updatedOrder.user.id,
+    memberId: result.updatedOrder.user.userId,
     email: result.updatedOrder.user.email,
     phone: result.updatedOrder.user.phone,
     logo: process.env.LOGO_URL,
