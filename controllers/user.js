@@ -506,7 +506,7 @@ class UserController {
     try {
       const { id } = req.params;
 
-      // First check if user exists
+      // First check if user exists with all necessary includes
       const user = await prisma.user.findUnique({
         where: { id },
         include: {
@@ -527,6 +527,7 @@ class UserController {
                   addonItems: true,
                 },
               },
+              assignedGtins: true,
             },
           },
           invoices: true,
@@ -541,36 +542,38 @@ class UserController {
       await prisma.$transaction(async (prisma) => {
         // Delete cart items and their addons first if cart exists
         if (user.cart) {
-          // First delete all cart item addons
-          for (const cartItem of user.cart.items) {
-            await prisma.cartItemAddon.deleteMany({
-              where: { cartItemId: cartItem.id },
-            });
-          }
+          await prisma.cartItemAddon.deleteMany({
+            where: {
+              cartItemId: { in: user.cart.items.map((item) => item.id) },
+            },
+          });
 
-          // Then delete cart items
           await prisma.cartItem.deleteMany({
             where: { cartId: user.cart.id },
           });
         }
 
-        // Delete order items and invoices
+        // Delete order items, assigned GTINs, and invoices
         for (const order of user.orders) {
-          // First delete order item addons
-          for (const orderItem of order.orderItems) {
-            await prisma.orderItemAddon.deleteMany({
-              where: { orderItemId: orderItem.id },
-            });
-          }
+          // Delete assigned GTINs first
+          await prisma.assignedGtin.deleteMany({
+            where: { orderId: order.id },
+          });
 
-          // Then delete order items
+          // Delete order item addons
+          await prisma.orderItemAddon.deleteMany({
+            where: {
+              orderItemId: { in: order.orderItems.map((item) => item.id) },
+            },
+          });
+
+          // Delete order items
           await prisma.orderItem.deleteMany({
             where: { orderId: order.id },
           });
 
-          // Delete invoice if exists
+          // Delete invoice and its physical file if exists
           if (order.invoice) {
-            // Delete the physical PDF file if it exists
             if (order.invoice.pdf) {
               try {
                 await deleteFile(order.invoice.pdf);
@@ -582,6 +585,23 @@ class UserController {
             await prisma.invoice.delete({
               where: { id: order.invoice.id },
             });
+          }
+
+          // Delete physical files for receipt and license certificate if they exist
+          if (order.receipt) {
+            try {
+              await deleteFile(order.receipt);
+            } catch (err) {
+              console.log(` receipt: ${err.message}`);
+            }
+          }
+
+          if (order.licenseCertificate) {
+            try {
+              await deleteFile(order.licenseCertificate);
+            } catch (err) {
+              console.log(` license certificate: ${err.message}`);
+            }
           }
 
           // Delete the order
