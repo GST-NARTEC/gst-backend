@@ -40,47 +40,110 @@ const processOrderActivation = async (job) => {
     throw new Error("Order is not in pending activation status");
   }
 
-  // Update order with includes to get fresh data
-  order = await prisma.order.update({
-    where: { id: order.id },
-    data: { status: "Activated" },
-    include: {
-      user: true,
-      invoice: true,
-      orderItems: {
-        include: {
-          product: true,
-          addonItems: {
-            include: {
-              addon: true,
+  // Calculate total quantity needed
+  const totalQuantity = order.orderItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  // Get available GTINs
+  const availableGtins = await prisma.gTIN.findMany({
+    where: { status: "Available" },
+    take: totalQuantity,
+  });
+
+  if (availableGtins.length < totalQuantity) {
+    throw new Error("Not enough GTINs available");
+  }
+
+  // Process everything in a transaction
+  const result = await prisma.$transaction(async (prisma) => {
+    // Update order status
+    const updatedOrder = await prisma.order.update({
+      where: { id: order.id },
+      data: { status: "Activated" },
+      include: {
+        user: true,
+        invoice: true,
+        orderItems: {
+          include: {
+            product: true,
+            addonItems: {
+              include: { addon: true },
             },
           },
         },
       },
+    });
+
+    // Update GTINs status and create assignments
+    const gtinAssignments = await Promise.all(
+      availableGtins.map((gtin) =>
+        prisma.assignedGtin.create({
+          data: {
+            orderId: order.id,
+            gtinId: gtin.id,
+          },
+        })
+      )
+    );
+
+    await prisma.gTIN.updateMany({
+      where: { id: { in: availableGtins.map((g) => g.id) } },
+      data: { status: "Solved" },
+    });
+
+    return { updatedOrder, gtinAssignments, gtins: availableGtins };
+  });
+
+  // Generate documents
+  const receipt = await PDFGenerator.generateReceipt(
+    result.updatedOrder,
+    result.updatedOrder.user,
+    result.updatedOrder.invoice
+  );
+
+  const certificate = await PDFGenerator.generateLicenseCertificate({
+    licensedTo: result.updatedOrder.user.companyNameEn,
+    licensee: "GST",
+    gtins: result.gtins,
+    issueDate: new Date().toLocaleDateString(),
+    memberId: result.updatedOrder.user.id,
+    email: result.updatedOrder.user.email,
+    phone: result.updatedOrder.user.phone,
+    logo: process.env.LOGO_URL,
+  });
+
+  // Update order with document paths
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      receipt: receipt.relativePath,
+      licenseCertificate: certificate.relativePath,
     },
   });
 
-  // Generate receipt
-  const receipt = await PDFGenerator.generateReceipt(
-    order,
-    order.user,
-    order.invoice
-  );
-
-  // Send activation email with receipt
+  // Send activation email with documents
   await EmailService.sendOrderActivationEmail({
-    email: order.user.email,
-    order: order,
-    user: order.user,
+    email: result.updatedOrder.user.email,
+    order: result.updatedOrder,
+    user: result.updatedOrder.user,
     attachments: [
       {
-        filename: `receipt-${order.invoice.invoiceNumber}.pdf`,
+        filename: `receipt-${result.updatedOrder.invoice.invoiceNumber}.pdf`,
         path: receipt.absolutePath,
+      },
+      {
+        filename: `license-certificate-${result.updatedOrder.orderNumber}.pdf`,
+        path: certificate.absolutePath,
       },
     ],
   });
 
-  return { status: order.status };
+  return {
+    status: result.updatedOrder.status,
+    assignedGtins: result.gtins.map((g) => g.gtin),
+  };
 };
 
 // Create worker

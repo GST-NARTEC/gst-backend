@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UPC/EAN Barcode Certificate</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .certificate {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ccc;
+      }
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.07;
+        width: 80%;
+        height: auto;
+        z-index: 0;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #005999;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0 30px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .highlight {
+        color: #00a86b;
+      }
+
+      .info-row {
+        margin-bottom: 15px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .data-table td {
+        border: 1px solid #005999;
+        padding: 10px;
+        height: 30px;
+      }
+
+      .dates {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+
+      .member-info {
+        margin: 20px 0;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .qr-code {
+        width: 100px;
+        height: 100px;
+      }
+
+      .address {
+        font-size: 12px;
+        margin-top: 10px;
+        max-width: 400px;
+      }
+
+      .stamp {
+        width: 120px;
+        height: 120px;
+        border: 4px solid #005999;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #005999;
+        font-size: 14px;
+      }
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 15px;
+        background-color: #00a86b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="certificate">
+      <img
+        src="https://gstsa1.org/assets/Logo-tOwwGU03.png"
+        alt="Watermark"
+        class="watermark"
+      />
+
+      <div class="header">
+        <img
+          src="https://gstsa1.org/assets/Logo-tOwwGU03.png"
+          alt="GST Logo"
+          class="logo"
+        />
+        <div style="color: #005999; font-size: 14px">GST</div>
+        <h1 class="title">UPC/EAN Barcode Certificate</h1>
+      </div>
+
+      <div class="content">
+        <div class="info-row">
+          <span>Licensed To: </span>
+          <span class="highlight"><%= licensedTo || 'Nartec Solutions' %></span>
+        </div>
+
+        <div class="info-row">
+          <span>Licensee: </span>
+          <span class="highlight"><%= licensee || 'GST' %></span>
+        </div>
+
+        <table class="data-table">
+          <tr>
+            <th>No.</th>
+            <th>GTIN</th>
+            <th>Issue Date</th>
+            <th>Status</th>
+          </tr>
+          <% gtins.forEach((gtin, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= gtin.gtin %></td>
+            <td><%= new Date().toLocaleDateString() %></td>
+            <td>Active</td>
+          </tr>
+          <% }); %>
+        </table>
+
+        <div class="dates">
+          <div>
+            <span>Date of Issue: </span>
+            <span style="color: #005999"><%= issueDate || '03/12/2024' %></span>
+          </div>
+          <div>
+            <span>Valid Until: </span>
+            <span style="color: #005999">NO Expiry</span>
+          </div>
+        </div>
+
+        <div class="member-info">
+          <div>Member Information</div>
+          <div>• Member ID: <%= memberId || '123456' %></div>
+          <div>• Contact Details: <%= email || 'sample@email.com' %></div>
+          <div style="margin-left: 15px">
+            <%= phone || '+966 52 762 1325' %>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <span>Member ID: </span>
+          <span class="highlight"><%= memberId || '123456' %></span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://gstsa1.org"
+            alt="QR Code"
+            class="qr-code"
+          />
+          <div class="address">
+            (GST) Global Standard for Technology Solution King Abdullah Road,
+            Riyadh Kingdom of Saudi Arabia
+          </div>
+        </div>
+        <div class="stamp">
+          <div>
+            <div>YOUR</div>
+            <div style="font-size: 24px; font-weight: bold">stamp</div>
+            <div>HERE</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-bar"></div>
+    </div>
+  </body>
+</html>
