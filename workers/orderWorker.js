@@ -2,6 +2,7 @@ import { Worker } from "bullmq";
 
 import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
+import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 
@@ -114,12 +115,12 @@ const processOrderActivation = async (job) => {
     logo: process.env.LOGO_URL,
   });
 
-  // Update order with document paths
+  // Update order with document paths (with domain)
   await prisma.order.update({
     where: { id: order.id },
     data: {
-      receipt: receipt.relativePath,
-      licenseCertificate: certificate.relativePath,
+      receipt: addDomain(receipt.relativePath),
+      licenseCertificate: addDomain(certificate.relativePath),
     },
   });
 
