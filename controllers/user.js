@@ -395,6 +395,33 @@ class UserController {
               updatedAt: true,
             };
             break;
+          case "docs":
+            queryObject.select = {
+              id: true,
+              orders: {
+                select: {
+                  id: true,
+                  orderNumber: true,
+                  receipt: true,
+                  licenseCertificate: true,
+                  bankSlip: true,
+                  invoice: {
+                    select: {
+                      id: true,
+                      invoiceNumber: true,
+                      pdf: true,
+                      createdAt: true,
+                      status: true,
+                      totalAmount: true,
+                      overallAmount: true,
+                    },
+                  },
+                  createdAt: true,
+                  status: true,
+                },
+              },
+            };
+            break;
         }
       }
 
@@ -456,6 +483,67 @@ class UserController {
         // Add invoices to response if they exist
         if (invoiceData) {
           transformedData.invoices = invoiceData;
+        }
+
+        // If this is a docs request, restructure the response
+        if (data.orders && transformedData.orders) {
+          transformedData.documents = {
+            receipts: [],
+            certificates: [],
+            bankSlips: [],
+            invoices: [],
+          };
+
+          transformedData.orders.forEach((order) => {
+            // Add receipt if exists
+            if (order.receipt) {
+              transformedData.documents.receipts.push({
+                type: "receipt",
+                orderNumber: order.orderNumber,
+                path: order.receipt,
+                createdAt: order.createdAt,
+                status: order.status,
+              });
+            }
+
+            // Add license certificate if exists
+            if (order.licenseCertificate) {
+              transformedData.documents.certificates.push({
+                type: "license",
+                orderNumber: order.orderNumber,
+                path: order.licenseCertificate,
+                createdAt: order.createdAt,
+                status: order.status,
+              });
+            }
+
+            // Add bank slip if exists
+            if (order.bankSlip) {
+              transformedData.documents.bankSlips.push({
+                type: "bankSlip",
+                orderNumber: order.orderNumber,
+                path: order.bankSlip,
+                createdAt: order.createdAt,
+                status: order.status,
+              });
+            }
+
+            // Add invoice if exists
+            if (order.invoice?.pdf) {
+              transformedData.documents.invoices.push({
+                type: "invoice",
+                invoiceNumber: order.invoice.invoiceNumber,
+                orderNumber: order.orderNumber,
+                path: order.invoice.pdf,
+                createdAt: order.invoice.createdAt,
+                status: order.invoice.status,
+                amount: order.invoice.overallAmount,
+              });
+            }
+          });
+
+          // Remove the orders array since we've restructured it
+          delete transformedData.orders;
         }
 
         return transformedData;

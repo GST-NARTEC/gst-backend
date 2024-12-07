@@ -19,18 +19,22 @@ export const userInfoSchema = Joi.object({
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
   isActive: Joi.boolean().default(true),
-  cartItems: Joi.array().items(
-    Joi.object({
-      productId: Joi.string().uuid().required(),
-      quantity: Joi.number().integer().min(1).required(),
-      addons: Joi.array().items(
-        Joi.object({
-          id: Joi.string().uuid().required(), 
-          quantity: Joi.number().integer().min(1).required()
-        })
-      ).optional()
-    })
-  ).required()
+  cartItems: Joi.array()
+    .items(
+      Joi.object({
+        productId: Joi.string().uuid().required(),
+        quantity: Joi.number().integer().min(1).required(),
+        addons: Joi.array()
+          .items(
+            Joi.object({
+              id: Joi.string().uuid().required(),
+              quantity: Joi.number().integer().min(1).required(),
+            })
+          )
+          .optional(),
+      })
+    )
+    .required(),
 });
 
 export const loginSchema = Joi.object({
@@ -50,7 +54,7 @@ export const searchSchema = Joi.object({
 
 export const userDetailsSchema = Joi.object({
   fields: Joi.string()
-    .valid("orders", "cart", "invoices", "profile")
+    .valid("orders", "cart", "invoices", "profile", "docs")
     .optional(),
 });
 
