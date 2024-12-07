@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { userDeletionQueue } from "../config/queue.js";
 import {
   emailSchema,
   loginSchema,
@@ -10,7 +11,6 @@ import {
 } from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
 import { generateToken } from "../utils/generateToken.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -506,132 +506,22 @@ class UserController {
     try {
       const { id } = req.params;
 
-      // First check if user exists with all necessary includes
+      // Check if user exists
       const user = await prisma.user.findUnique({
         where: { id },
-        include: {
-          cart: {
-            include: {
-              items: {
-                include: {
-                  addonItems: true,
-                },
-              },
-            },
-          },
-          orders: {
-            include: {
-              invoice: true,
-              orderItems: {
-                include: {
-                  addonItems: true,
-                },
-              },
-              assignedGtins: true,
-            },
-          },
-          invoices: true,
-        },
       });
 
       if (!user) {
         throw new MyError("User not found", 404);
       }
 
-      // Start transaction to ensure all related data is deleted
-      await prisma.$transaction(async (prisma) => {
-        // Delete cart items and their addons first if cart exists
-        if (user.cart) {
-          await prisma.cartItemAddon.deleteMany({
-            where: {
-              cartItemId: { in: user.cart.items.map((item) => item.id) },
-            },
-          });
-
-          await prisma.cartItem.deleteMany({
-            where: { cartId: user.cart.id },
-          });
-        }
-
-        // Delete order items, assigned GTINs, and invoices
-        for (const order of user.orders) {
-          // Delete assigned GTINs first
-          await prisma.assignedGtin.deleteMany({
-            where: { orderId: order.id },
-          });
-
-          // Delete order item addons
-          await prisma.orderItemAddon.deleteMany({
-            where: {
-              orderItemId: { in: order.orderItems.map((item) => item.id) },
-            },
-          });
-
-          // Delete order items
-          await prisma.orderItem.deleteMany({
-            where: { orderId: order.id },
-          });
-
-          // Delete invoice and its physical file if exists
-          if (order.invoice) {
-            if (order.invoice.pdf) {
-              try {
-                await deleteFile(order.invoice.pdf);
-              } catch (err) {
-                console.warn(`Failed to delete invoice PDF: ${err.message}`);
-              }
-            }
-
-            await prisma.invoice.delete({
-              where: { id: order.invoice.id },
-            });
-          }
-
-          // Delete physical files for receipt and license certificate if they exist
-          if (order.receipt) {
-            try {
-              await deleteFile(order.receipt);
-            } catch (err) {
-              console.log(` receipt: ${err.message}`);
-            }
-          }
-
-          if (order.licenseCertificate) {
-            try {
-              await deleteFile(order.licenseCertificate);
-            } catch (err) {
-              console.log(` license certificate: ${err.message}`);
-            }
-          }
-
-          // Delete the order
-          await prisma.order.delete({
-            where: { id: order.id },
-          });
-        }
-
-        // Delete cart if exists
-        if (user.cart) {
-          await prisma.cart.delete({
-            where: { id: user.cart.id },
-          });
-        }
-
-        // Finally delete the user
-        await prisma.user.delete({
-          where: { id },
-        });
-      });
+      // Add deletion job to queue
+      await userDeletionQueue.add("delete-user", { userId: id });
 
       res
         .status(200)
         .json(
-          response(
-            200,
-            true,
-            "User and all related data deleted successfully",
-            null
-          )
+          response(200, true, "User deletion process has been initiated", null)
         );
     } catch (error) {
       next(error);

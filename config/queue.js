@@ -18,3 +18,14 @@ export const pdfQueue = new Queue("pdf", { connection });
 export const orderActivationQueue = new Queue("order-activation", {
   connection,
 });
+
+export const userDeletionQueue = new Queue("user-deletion", {
+  connection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: "exponential",
+      delay: 5000,
+    },
+  },
+});
