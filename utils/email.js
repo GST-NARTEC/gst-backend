@@ -109,6 +109,7 @@ class EmailService {
         user,
         order,
         logo: LOGO_URL,
+        loginUrl: process.env.LOGIN_URL,
       };
 
       const html = await ejs.renderFile(templatePath, data);
