@@ -115,6 +115,8 @@ const processOrderActivation = async (job) => {
     logo: process.env.LOGO_URL,
   });
 
+  const termsAndConditions = "/assets/docs/terms-and-conditions.pdf";
+
   // Update order with document paths (with domain)
   await prisma.order.update({
     where: { id: order.id },
@@ -143,6 +145,10 @@ const processOrderActivation = async (job) => {
       {
         filename: `license-certificate-${result.updatedOrder.orderNumber}.pdf`,
         path: certificate.absolutePath,
+      },
+      {
+        filename: `terms-and-conditions.pdf`,
+        path: termsAndConditions,
       },
     ],
   });
