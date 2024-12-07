@@ -158,6 +158,68 @@ class PDFGenerator {
   static generateReceipt(order, user, invoice) {
     return this.generateDocument(order, user, invoice, "receipt");
   }
+
+  static async generateLicenseCertificate(data) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/licenseCertificate.ejs"
+      );
+      const templateContent = await fs.readFile(templatePath, "utf-8");
+
+      // Render the template
+      const html = ejs.render(templateContent, {
+        licensedTo: data.licensedTo,
+        licensee: data.licensee,
+        gtins: data.gtins,
+        issueDate: data.issueDate,
+        memberId: data.memberId,
+        email: data.email,
+        phone: data.phone,
+        logo: data.logo || process.env.LOGO_URL,
+      });
+
+      // Generate PDF
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox"],
+      });
+      const page = await browser.newPage();
+      await page.setContent(html);
+
+      // Create directory if it doesn't exist
+      const dir = path.join(__dirname, "../uploads/certificates");
+      await fs.mkdir(dir, { recursive: true });
+
+      // Generate unique filename
+      const filename = `certificate-${Date.now()}.pdf`;
+      const absolutePath = path.join(dir, filename);
+      const relativePath = `uploads/certificates/${filename}`;
+
+      // Generate PDF
+      await page.pdf({
+        path: absolutePath,
+        format: "A4",
+        printBackground: true,
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+      });
+
+      await browser.close();
+
+      return {
+        absolutePath,
+        relativePath,
+      };
+    } catch (error) {
+      console.error("Error generating license certificate:", error);
+      throw error;
+    }
+  }
 }
 
 export default PDFGenerator;
