@@ -270,7 +270,7 @@ class ProductController {
             set: value.addonIds.map((id) => ({ id })),
           },
         }),
-        ...(imagePath && { image: imagePath }),
+        ...(imagePath && { image: addDomain(imagePath) }),
       };
 
       const product = await prisma.product.update({
