@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
-import { connection } from "../config/redis.js";
-import { addDomain } from "../utils/helpers.js";
+import { connection } from "../config/queue.js";
+import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 
