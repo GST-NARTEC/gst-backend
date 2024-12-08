@@ -222,10 +222,64 @@ class PDFGenerator {
   }
 
   static async generateBarcodeCertificate(data) {
-    const template = "barcodeCertificate";
-    const filename = `barcode-certificate-${data.barcodeId}.pdf`;
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/barcodeCertificate.ejs"
+      );
+      const templateContent = await fs.readFile(templatePath, "utf-8");
 
-    return this.generateFromTemplate(template, data, filename);
+      // Render the template
+      const html = await ejs.render(templateContent, {
+        licensedTo: data.licensedTo,
+        barcodeId: data.barcodeId,
+        issueDate: data.issueDate,
+        memberId: data.memberId,
+        email: data.email,
+        phone: data.phone,
+        logo: data.logo || process.env.LOGO_URL,
+      });
+
+      // Generate PDF
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox"],
+      });
+      const page = await browser.newPage();
+      await page.setContent(html);
+
+      // Create directory if it doesn't exist
+      const dir = path.join(__dirname, "../uploads/barcodes");
+      await fs.mkdir(dir, { recursive: true });
+
+      // Generate unique filename
+      const filename = `barcode-certificate-${data.barcodeId}.pdf`;
+      const absolutePath = path.join(dir, filename);
+      const relativePath = `uploads/barcodes/${filename}`;
+
+      // Generate PDF
+      await page.pdf({
+        path: absolutePath,
+        format: "A4",
+        printBackground: true,
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+      });
+
+      await browser.close();
+
+      return {
+        absolutePath,
+        relativePath,
+      };
+    } catch (error) {
+      console.error("Error generating barcode certificate:", error);
+      throw error;
+    }
   }
 }
 
