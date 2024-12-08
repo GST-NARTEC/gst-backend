@@ -2,12 +2,11 @@ import { Worker } from "bullmq";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { connection } from "../config/queue.js";
+import { barcodeCertificateQueue, connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
-import { barcodeCertificateQueue } from "../config/queue.js";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -107,9 +106,9 @@ const processOrderActivation = async (job) => {
       availableGtins.map((gtin) =>
         barcodeCertificateQueue.add(
           "barcode-certificate",
-          { 
-            gtinId: gtin.id, 
-            orderId: order.id 
+          {
+            gtinId: gtin.id,
+            orderId: order.id,
           },
           {
             jobId: `barcode-cert-${gtin.id}`,

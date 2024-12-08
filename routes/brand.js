@@ -6,9 +6,8 @@ import BrandController from "../controllers/brand.js";
 const router = express.Router();
 
 const documentConfig = uploadSingle({
-  destination: "uploads/documents",
+  destination: "uploads/docs",
   filename: "document",
-  fileTypes: ["pdfs", "docs"],
 });
 
 router.post("/", documentConfig, BrandController.createBrand);

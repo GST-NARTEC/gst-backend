@@ -1,5 +1,5 @@
 import MyError from "../utils/error.js";
-import { deleteFile } from "../utils/file.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -14,7 +14,7 @@ class BrandController {
         data: {
           nameEn,
           nameAr,
-          document,
+          document: addDomain(document),
         },
       });
 
