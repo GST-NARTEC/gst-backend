@@ -6,7 +6,7 @@ const config = {
   JWT_ACCESS_EXPIRY: "15m",
   JWT_REFRESH_EXPIRY: "7d",
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
-  DOMAIN: process.env.DOMAIN || "http://localhost:3030",
+  DOMAIN: process.env.DOMAIN || "https://api.gstsa1.org",
 };
 
 export default config;

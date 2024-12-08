@@ -230,7 +230,7 @@ class PDFGenerator {
       const templateContent = await fs.readFile(templatePath, "utf-8");
 
       // Render the template
-      const html = await ejs.render(templateContent, {
+      const html = ejs.render(templateContent, {
         licensedTo: data.licensedTo,
         barcodeId: data.barcodeId,
         issueDate: data.issueDate,

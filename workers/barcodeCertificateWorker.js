@@ -40,7 +40,6 @@ const generateBarcodeCertificate = async (job) => {
     memberId: user.userId,
     email: user.email,
     phone: user.phone,
-    logo: process.env.LOGO_URL,
   });
 
   // Update GTIN with certificate path

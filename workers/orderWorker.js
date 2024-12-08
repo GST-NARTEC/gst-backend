@@ -135,7 +135,6 @@ const processOrderActivation = async (job) => {
     memberId: result.updatedOrder.user.userId,
     email: result.updatedOrder.user.email,
     phone: result.updatedOrder.user.phone,
-    logo: process.env.LOGO_URL,
   });
 
   const termsPath = path.join(
