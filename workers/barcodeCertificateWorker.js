@@ -24,7 +24,7 @@ const processBarcodeCertificate = async (job) => {
             user: true,
           },
         },
-        GTIN: true,
+        gtin: true,
       },
     });
 
@@ -34,7 +34,7 @@ const processBarcodeCertificate = async (job) => {
 
     // Generate certificate
     const certificatePath = await PDFGenerator.generateBarcodeCertificate({
-      gtin: assignedGtin.gtin,
+      gtin: assignedGtin.gtin.gtin,
       user: assignedGtin.order.user,
       date: assignedGtin.createdAt,
     });
