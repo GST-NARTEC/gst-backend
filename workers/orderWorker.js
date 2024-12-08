@@ -103,15 +103,14 @@ const processOrderActivation = async (job) => {
 
     // Add barcode certificate generation jobs
     await Promise.all(
-      availableGtins.map((gtin) =>
+      gtinAssignments.map((assignment) =>
         barcodeCertificateQueue.add(
           "barcode-certificate",
           {
-            gtinId: gtin.id,
-            orderId: order.id,
+            assignedGtinId: assignment.id,
           },
           {
-            jobId: `barcode-cert-${gtin.id}`,
+            jobId: `barcode-cert-${assignment.id}`,
           }
         )
       )
