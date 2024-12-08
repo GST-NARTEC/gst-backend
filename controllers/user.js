@@ -905,6 +905,9 @@ class UserController {
         assignedAt: ag.createdAt,
         orderNumber: ag.order.orderNumber,
         orderDate: ag.order.createdAt,
+        barcodeCertificate: ag.barcodeCertificate
+          ? addDomain(ag.barcodeCertificate)
+          : null,
       }));
 
       res.status(200).json(
