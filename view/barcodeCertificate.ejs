@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GST Barcode Certificate</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .certificate {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ccc;
+      }
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.07;
+        width: 80%;
+        height: auto;
+        z-index: 0;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #005999;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0 30px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .info-row {
+        margin: 15px 0;
+        font-size: 16px;
+      }
+
+      .highlight {
+        color: #005999;
+        font-weight: 500;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .data-table th,
+      .data-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+
+      .data-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+      }
+
+      .member-info {
+        margin: 30px 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+
+      .member-info > div:first-child {
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .footer {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+
+      .qr-code {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 10px;
+      }
+
+      .address {
+        max-width: 300px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .stamp {
+        text-align: center;
+        color: #005999;
+        border: 2px solid #005999;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: rotate(-15deg);
+      }
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: #00a86b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="certificate">
+      <img
+        src="<%= logo || 'http://localhost:3000/assets/images/gst-logo.png' %>"
+        alt="Watermark"
+        class="watermark"
+      />
+
+      <div class="header">
+        <img
+          src="<%= logo || 'http://localhost:3000/assets/images/gst-logo.png' %>"
+          alt="GST Logo"
+          class="logo"
+        />
+        <h1 class="title">Certificate of Authenticity</h1>
+      </div>
+
+      <div class="content">
+        <div class="info-row">
+          <span>Licensed To: </span>
+          <span class="highlight"><%= licensedTo %></span>
+        </div>
+
+        <div class="info-row">
+          <span>UPC/EAN Barcode Identification: </span>
+          <span class="highlight"><%= barcodeId %></span>
+        </div>
+
+        <div class="info-row">
+          <span>Date of Issue: </span>
+          <span class="highlight"><%= issueDate %></span>
+        </div>
+
+        <p>
+          This UPC/EAN barcode assignment listed above is guaranteed to be
+          unique. It may only be used for the identification of a single product
+          by the company listed above.
+        </p>
+
+        <div class="member-info">
+          <div>Member Information</div>
+          <div>• Member ID: <%= memberId %></div>
+          <div>• Contact Details: <%= email %></div>
+          <div style="margin-left: 15px"><%= phone %></div>
+        </div>
+
+        <div class="info-row">
+          <span>Member ID: </span>
+          <span class="highlight"><%= memberId %></span>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://gstsa1.org"
+            alt="QR Code"
+            class="qr-code"
+          />
+          <div class="address">
+            (GST) Global Standard for Technology Solution King Abdullah Road,
+            Riyadh Kingdom of Saudi Arabia
+          </div>
+        </div>
+        <div class="stamp">
+          <div>
+            <div>GST</div>
+            <div style="font-size: 24px; font-weight: bold">VERIFIED</div>
+            <div><%= new Date().getFullYear() %></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-bar"></div>
+    </div>
+  </body>
+</html>

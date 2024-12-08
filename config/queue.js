@@ -29,3 +29,14 @@ export const userDeletionQueue = new Queue("user-deletion", {
     },
   },
 });
+
+export const barcodeCertificateQueue = new Queue("barcode-certificate", {
+  connection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: "exponential",
+      delay: 1000,
+    },
+  },
+});

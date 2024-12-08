@@ -1,3 +1,4 @@
+import "./barcodeCertificateWorker.js";
 import "./checkoutWorker.js";
 import "./orderWorker.js";
 import "./userWorker.js";

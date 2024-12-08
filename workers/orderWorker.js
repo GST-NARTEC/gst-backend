@@ -7,6 +7,7 @@ import EmailService from "../utils/email.js";
 import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
+import { barcodeCertificateQueue } from "../config/queue.js";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -95,10 +96,27 @@ const processOrderActivation = async (job) => {
       )
     );
 
+    // Update GTIN status
     await prisma.gTIN.updateMany({
       where: { id: { in: availableGtins.map((g) => g.id) } },
       data: { status: "Solved" },
     });
+
+    // Add barcode certificate generation jobs
+    await Promise.all(
+      availableGtins.map((gtin) =>
+        barcodeCertificateQueue.add(
+          "barcode-certificate",
+          { 
+            gtinId: gtin.id, 
+            orderId: order.id 
+          },
+          {
+            jobId: `barcode-cert-${gtin.id}`,
+          }
+        )
+      )
+    );
 
     return { updatedOrder, gtinAssignments, gtins: availableGtins };
   });

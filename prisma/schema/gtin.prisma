@@ -1,8 +1,9 @@
 model GTIN {
-  id              String   @id @default(uuid()) @db.UniqueIdentifier
-  gtin            String?  @unique
-  status          String?  @default("Available")
-  assignedGtins   AssignedGtin[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String   @id @default(uuid()) @db.UniqueIdentifier
+  gtin                  String?  @unique
+  status                String?  @default("Available")
+  barcodeCertificate    String?
+  assignedGtins         AssignedGtin[]
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
