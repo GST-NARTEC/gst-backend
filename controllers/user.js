@@ -6,6 +6,7 @@ import {
   loginSchema,
   searchSchema,
   userDetailsSchema,
+  userGtinsQuerySchema,
   userInfoSchema,
   userUpdateSchema,
 } from "../schemas/user.schema.js";
@@ -833,6 +834,81 @@ class UserController {
       res.status(201).json(
         response(201, true, "User registered successfully", {
           user: newUser,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUserGtins(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { error, value } = userGtinsQuerySchema.validate(req.query);
+
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, status, sortBy, sortOrder } = value;
+      const skip = (page - 1) * limit;
+
+      // Get user's GTINs through their orders
+      const [gtins, total] = await Promise.all([
+        prisma.assignedGtin.findMany({
+          where: {
+            order: {
+              userId: id,
+              status: "Activated",
+            },
+            gtin: status ? { status } : undefined,
+          },
+          include: {
+            gtin: true,
+            order: {
+              select: {
+                orderNumber: true,
+                createdAt: true,
+              },
+            },
+          },
+          orderBy: {
+            [sortBy === "gtin" ? "gtin" : "createdAt"]: sortOrder,
+          },
+          skip,
+          take: limit,
+        }),
+        prisma.assignedGtin.count({
+          where: {
+            order: {
+              userId: id,
+              status: "Activated",
+            },
+            gtin: status ? { status } : undefined,
+          },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      const transformedGtins = gtins.map((ag) => ({
+        id: ag.gtin.id,
+        gtin: ag.gtin.gtin,
+        status: ag.gtin.status,
+        assignedAt: ag.createdAt,
+        orderNumber: ag.order.orderNumber,
+        orderDate: ag.order.createdAt,
+      }));
+
+      res.status(200).json(
+        response(200, true, "User GTINs retrieved successfully", {
+          gtins: transformedGtins,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            hasMore: page < totalPages,
+          },
         })
       );
     } catch (error) {

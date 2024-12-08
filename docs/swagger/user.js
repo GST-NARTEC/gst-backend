@@ -776,4 +776,115 @@
  *         description: Forbidden - Admin access required
  *       404:
  *         description: User not found
+ *
+ * /api/user/v1/{id}/gtins:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get user's GTINs
+ *     description: Retrieve GTINs assigned to a specific user through their completed orders
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: User's unique identifier
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [Available, Assigned, Used]
+ *         description: Filter GTINs by status
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, gtin]
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user's GTINs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: User GTINs retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     gtins:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             format: uuid
+ *                           gtin:
+ *                             type: string
+ *                           status:
+ *                             type: string
+ *                             enum: [Available, Assigned, Used]
+ *                           assignedAt:
+ *                             type: string
+ *                             format: date-time
+ *                           orderNumber:
+ *                             type: string
+ *                           orderDate:
+ *                             type: string
+ *                             format: date-time
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         total:
+ *                           type: integer
+ *                           description: Total number of GTINs
+ *                         page:
+ *                           type: integer
+ *                           description: Current page number
+ *                         totalPages:
+ *                           type: integer
+ *                           description: Total number of pages
+ *                         hasMore:
+ *                           type: boolean
+ *                           description: Whether there are more pages
+ *       400:
+ *         description: Bad request (invalid query parameters)
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */

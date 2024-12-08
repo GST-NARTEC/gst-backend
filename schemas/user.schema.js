@@ -73,3 +73,11 @@ export const userUpdateSchema = Joi.object({
   longitude: Joi.number().optional(),
   isActive: Joi.boolean(),
 }).min(1);
+
+export const userGtinsQuerySchema = Joi.object({
+  page: Joi.number().min(1).default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+  status: Joi.string().valid('Available', 'Assigned', 'Used').optional(),
+  sortBy: Joi.string().valid('createdAt', 'gtin').default('createdAt'),
+  sortOrder: Joi.string().valid('asc', 'desc').default('desc')
+});
