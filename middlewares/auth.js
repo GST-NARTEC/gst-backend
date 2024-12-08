@@ -6,12 +6,12 @@ export const verifyAccessToken = async (req, res, next) => {
   try {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
-      throw new MyError("No authorization header", 401);
+      throw new MyError("Please provide a valid access token", 401);
     }
 
     const token = authHeader.split(" ")[1];
     if (!token) {
-      throw new MyError("No token provided", 401);
+      throw new MyError("User not authenticated", 401);
     }
 
     try {
