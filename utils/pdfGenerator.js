@@ -176,7 +176,7 @@ class PDFGenerator {
         memberId: data.memberId,
         email: data.email,
         phone: data.phone,
-        logo: data.logo || process.env.LOGO_URL,
+        logo: LOGO_URL,
       });
 
       // Generate PDF
@@ -237,7 +237,7 @@ class PDFGenerator {
         memberId: data.memberId,
         email: data.email,
         phone: data.phone,
-        logo: data.logo || process.env.LOGO_URL,
+        logo: LOGO_URL,
       });
 
       // Generate PDF
