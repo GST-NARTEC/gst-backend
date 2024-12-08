@@ -5,12 +5,16 @@ import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 
 const processBarcodeCertificate = async (job) => {
-  const { assignedGtinId } = job.data;
+  const { id } = job.data;
+
+  if (!id) {
+    throw new Error("AssignedGtin ID is required");
+  }
 
   try {
     // Get the assigned GTIN with its relationships
     const assignedGtin = await prisma.assignedGtin.findUnique({
-      where: { id: assignedGtinId },
+      where: { id },
       include: {
         order: {
           include: {
@@ -22,7 +26,7 @@ const processBarcodeCertificate = async (job) => {
     });
 
     if (!assignedGtin) {
-      throw new Error("Assigned GTIN not found");
+      throw new Error(`Assigned GTIN with ID ${id} not found`);
     }
 
     // Generate certificate
@@ -34,7 +38,7 @@ const processBarcodeCertificate = async (job) => {
 
     // Update the AssignedGtin with the certificate path
     await prisma.assignedGtin.update({
-      where: { id: assignedGtinId },
+      where: { id },
       data: {
         barcodeCertificate: certificatePath,
       },
