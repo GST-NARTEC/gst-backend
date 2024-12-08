@@ -1,10 +1,16 @@
 import { Worker } from "bullmq";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const processOrderActivation = async (job) => {
   const { orderNumber } = job.data;
@@ -115,7 +121,13 @@ const processOrderActivation = async (job) => {
     logo: process.env.LOGO_URL,
   });
 
-  const termsAndConditions = "/assets/docs/terms-and-conditions.pdf";
+  const termsPath = path.join(
+    __dirname,
+    "..",
+    "assets",
+    "docs",
+    "terms-and-conditions.pdf"
+  );
 
   // Update order with document paths (with domain)
   await prisma.order.update({
@@ -147,8 +159,8 @@ const processOrderActivation = async (job) => {
         path: certificate.absolutePath,
       },
       {
-        filename: `terms-and-conditions.pdf`,
-        path: termsAndConditions,
+        filename: "terms-and-conditions.pdf",
+        path: termsPath,
       },
     ],
   });
