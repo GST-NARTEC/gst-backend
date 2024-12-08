@@ -846,6 +846,13 @@ class UserController {
       const { id } = req.params;
       const { error, value } = userGtinsQuerySchema.validate(req.query);
 
+      if (id !== req.user.id) {
+        throw new MyError(
+          "You are not authorized to view this user's GTINs",
+          403
+        );
+      }
+
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
