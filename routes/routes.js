@@ -1,6 +1,7 @@
 import express from "express";
 
 import addonRoutes from "./addon.js";
+import brandRoutes from "./brand.js";
 import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
@@ -45,6 +46,7 @@ router.use("/page/v1", pageRoutes);
 router.use("/v1/template", templateRoutes);
 router.use("/v1/orders", orderRoutes);
 router.use("/v1/addons", addonRoutes);
+router.use("/v1/brands", brandRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);

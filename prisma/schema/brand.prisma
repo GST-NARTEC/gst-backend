@@ -1,0 +1,11 @@
+model Brand {
+  id        String   @id @default(uuid())
+  nameEn    String?
+  nameAr    String?
+  document  String?
+  isActive  Boolean? @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("brands")
+}
