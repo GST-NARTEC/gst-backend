@@ -4,57 +4,50 @@ import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 
-const generateBarcodeCertificate = async (job) => {
-  const { gtinId, orderId } = job.data;
+const processBarcodeCertificate = async (job) => {
+  const { assignedGtinId } = job.data;
 
-  // Fetch GTIN with related data
-  const gtin = await prisma.gTIN.findUnique({
-    where: { id: gtinId },
-    include: {
-      assignedGtins: {
-        include: {
-          order: {
-            include: {
-              user: true,
-            },
+  try {
+    // Get the assigned GTIN with its relationships
+    const assignedGtin = await prisma.assignedGtin.findUnique({
+      where: { id: assignedGtinId },
+      include: {
+        order: {
+          include: {
+            user: true,
           },
         },
+        GTIN: true,
       },
-    },
-  });
+    });
 
-  if (!gtin || !gtin.assignedGtins[0]) {
-    throw new Error("GTIN or assignment not found");
+    if (!assignedGtin) {
+      throw new Error("Assigned GTIN not found");
+    }
+
+    // Generate certificate
+    const certificatePath = await PDFGenerator.generateBarcodeCertificate({
+      gtin: assignedGtin.gtin,
+      user: assignedGtin.order.user,
+      date: assignedGtin.createdAt,
+    });
+
+    // Update the AssignedGtin with the certificate path
+    await prisma.assignedGtin.update({
+      where: { id: assignedGtinId },
+      data: {
+        barcodeCertificate: certificatePath,
+      },
+    });
+
+    return addDomain(certificatePath);
+  } catch (error) {
+    console.error("Error processing barcode certificate:", error);
+    throw error;
   }
-
-  const {
-    order,
-    order: { user },
-  } = gtin.assignedGtins[0];
-
-  // Generate certificate using the barcodeCertificate template
-  const certificate = await PDFGenerator.generateBarcodeCertificate({
-    licensedTo: user.companyNameEn,
-    barcodeId: gtin.gtin,
-    issueDate: new Date().toLocaleDateString(),
-    memberId: user.userId,
-    email: user.email,
-    phone: user.phone,
-  });
-
-  // Update GTIN with certificate path
-  await prisma.gTIN.update({
-    where: { id: gtinId },
-    data: {
-      barcodeCertificate: addDomain(certificate.relativePath),
-    },
-  });
-
-  return certificate.relativePath;
 };
 
-// Create worker
-const worker = new Worker("barcode-certificate", generateBarcodeCertificate, {
+const worker = new Worker("barcode-certificate", processBarcodeCertificate, {
   connection,
 });
 

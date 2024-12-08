@@ -12,8 +12,8 @@ model Order {
   overallAmount       Float
   status              String    @default("Pending Payment")
   bankSlip            String?
-  receipt             String?   // Store receipt path
-  licenseCertificate  String?   // Store license certificate path
+  receipt             String?   
+  licenseCertificate  String?   
   assignedGtins       AssignedGtin[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
@@ -52,6 +52,7 @@ model AssignedGtin {
   order     Order    @relation(fields: [orderId], references: [id])
   gtinId    String   @db.UniqueIdentifier
   gtin      GTIN     @relation(fields: [gtinId], references: [id])
+  barcodeCertificate String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
