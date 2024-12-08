@@ -28,7 +28,7 @@ export const verifyAccessToken = async (req, res, next) => {
       next();
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        throw new MyError("Access token expired", 401);
+        throw new MyError("Access token expired", 419);
       }
       throw new MyError("Invalid token", 401);
     }
@@ -58,7 +58,7 @@ export const verifyRefreshToken = async (req, res, next) => {
       next();
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        throw new MyError("Refresh token expired", 401);
+        throw new MyError("Refresh token expired", 419);
       }
       throw new MyError("Invalid refresh token", 401);
     }
