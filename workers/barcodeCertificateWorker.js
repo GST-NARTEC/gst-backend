@@ -33,21 +33,21 @@ const processBarcodeCertificate = async (job) => {
     }
 
     // Generate certificate
-    const certificatePath = await PDFGenerator.generateBarcodeCertificate({
+    const certificateResult = await PDFGenerator.generateBarcodeCertificate({
       gtin: assignedGtin.gtin.gtin,
       user: assignedGtin.order.user,
       date: assignedGtin.createdAt,
     });
 
-    // Update the AssignedGtin with the certificate path
+    // Update the AssignedGtin with the certificate path (using relativePath)
     await prisma.assignedGtin.update({
       where: { id: assignedGtinId },
       data: {
-        barcodeCertificate: certificatePath,
+        barcodeCertificate: certificateResult.relativePath,
       },
     });
 
-    return addDomain(certificatePath);
+    return addDomain(certificateResult.relativePath);
   } catch (error) {
     console.error("Error processing barcode certificate:", error);
     throw error;
