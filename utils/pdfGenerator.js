@@ -220,6 +220,13 @@ class PDFGenerator {
       throw error;
     }
   }
+
+  static async generateBarcodeCertificate(data) {
+    const template = "barcodeCertificate";
+    const filename = `barcode-certificate-${data.barcodeId}.pdf`;
+
+    return this.generateFromTemplate(template, data, filename);
+  }
 }
 
 export default PDFGenerator;

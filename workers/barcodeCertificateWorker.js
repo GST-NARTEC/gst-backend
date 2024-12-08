@@ -32,8 +32,8 @@ const generateBarcodeCertificate = async (job) => {
     order: { user },
   } = gtin.assignedGtins[0];
 
-  // Generate certificate
-  const certificate = await PDFGenerator.generatePDF("barcodeCertificate", {
+  // Generate certificate using the barcodeCertificate template
+  const certificate = await PDFGenerator.generateBarcodeCertificate({
     licensedTo: user.companyNameEn,
     barcodeId: gtin.gtin,
     issueDate: new Date().toLocaleDateString(),
