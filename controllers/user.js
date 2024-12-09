@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { checkoutQueue, userDeletionQueue } from "../config/queue.js";
+import { userDeletionQueue } from "../config/queue.js";
 import {
   createWithCartAndCheckoutSchema,
   emailSchema,
@@ -943,7 +943,6 @@ class UserController {
 
       // Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
-        // Create the user first
         const user = await prisma.user.create({
           data: {
             ...userData,
@@ -990,31 +989,13 @@ class UserController {
         return user;
       });
 
-      // Get active VAT and currency
-      const [activeVat, activeCurrency] = await Promise.all([
-        prisma.vat.findFirst({
-          where: { isActive: true },
-          orderBy: { createdAt: "desc" },
-        }),
-        prisma.currency.findFirst({
-          orderBy: { createdAt: "desc" },
-        }),
-      ]);
-
-      if (!activeVat)
-        throw new MyError("No active VAT configuration found", 400);
-      if (!activeCurrency)
-        throw new MyError("No currency configuration found", 400);
-
-      // Add checkout job to queue
-      await checkoutQueue.add(
-        "process-checkout",
+      // Add job to the new queue
+      await createWithCartAndCheckoutQueue.add(
+        "process-create-with-cart-and-checkout",
         {
           user: newUser,
           paymentType,
           vat,
-          activeVat,
-          activeCurrency,
           orderNumber: generateOrderId(),
         },
         {

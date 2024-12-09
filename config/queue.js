@@ -40,3 +40,10 @@ export const barcodeCertificateQueue = new Queue("barcode-certificate", {
     },
   },
 });
+
+export const createWithCartAndCheckoutQueue = new Queue(
+  "create-with-cart-and-checkout",
+  {
+    connection: connection,
+  }
+);

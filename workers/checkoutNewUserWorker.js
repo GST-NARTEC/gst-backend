@@ -3,11 +3,25 @@ import { redisConfig } from "../config/redis.js";
 import EmailService from "../utils/email.js";
 import prisma from "../utils/prismaClient.js";
 
-const processCheckoutNewUser = async (job) => {
-  const { user, paymentType, vat, activeVat, activeCurrency, orderNumber } =
-    job.data;
+const processCreateWithCartAndCheckout = async (job) => {
+  const { user, paymentType, vat, orderNumber } = job.data;
 
   try {
+    // Get active VAT and currency
+    const [activeVat, activeCurrency] = await Promise.all([
+      prisma.vat.findFirst({
+        where: { isActive: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.currency.findFirst({
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
+    if (!activeVat) throw new MyError("No active VAT configuration found", 400);
+    if (!activeCurrency)
+      throw new MyError("No currency configuration found", 400);
+
     // Create order and process checkout
     const order = await prisma.order.create({
       data: {
@@ -63,10 +77,14 @@ const processCheckoutNewUser = async (job) => {
   }
 };
 
-export const initCheckoutNewUserWorker = () => {
-  const worker = new Worker("checkout-new-user", processCheckoutNewUser, {
-    connection: redisConfig,
-  });
+export const initCreateWithCartAndCheckoutWorker = () => {
+  const worker = new Worker(
+    "create-with-cart-and-checkout",
+    processCreateWithCartAndCheckout,
+    {
+      connection: redisConfig,
+    }
+  );
 
   worker.on("completed", (job) => {
     console.log(`Job ${job.id} completed successfully`);
