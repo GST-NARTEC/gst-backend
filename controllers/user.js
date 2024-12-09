@@ -785,6 +785,7 @@ class UserController {
       }
 
       const { cartItems, ...userData } = value;
+      const userId = generateUserId();
 
       // Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
@@ -792,6 +793,7 @@ class UserController {
         const user = await prisma.user.create({
           data: {
             ...userData,
+            userId,
             cart: {
               create: {
                 status: "ACTIVE",
