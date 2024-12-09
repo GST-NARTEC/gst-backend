@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { userDeletionQueue } from "../config/queue.js";
+import {
+  createWithCartAndCheckoutQueue,
+  userDeletionQueue,
+} from "../config/queue.js";
 import {
   createWithCartAndCheckoutSchema,
   emailSchema,
