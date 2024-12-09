@@ -85,7 +85,7 @@ export const userGtinsQuerySchema = Joi.object({
 export const createWithCartAndCheckoutSchema = Joi.object({
   // User Info
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
+  //   password: Joi.string().min(6).required(),
   companyNameEn: Joi.string().required(),
   companyNameAr: Joi.string().required(),
   mobile: Joi.string().required(),
