@@ -9,7 +9,7 @@
 
       body {
         font-family: "Inter", sans-serif;
-        background-color: #f0f8ff;
+        background-color: white;
         margin: 0;
         padding: 20px;
         box-sizing: border-box;
@@ -72,83 +72,12 @@
         font-weight: 500;
       }
 
-      .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-      }
-
-      .data-table th,
-      .data-table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-      }
-
-      .data-table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-      }
-
-      .member-info {
-        margin: 30px 0;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-      }
-
-      .member-info > div:first-child {
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-
-      .footer {
-        margin-top: 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-      }
-
-      .qr-code {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 10px;
-      }
-
-      .address {
-        max-width: 300px;
-        font-size: 14px;
-        color: #666;
-      }
-
-      .stamp {
-        text-align: center;
-        color: #005999;
-        border: 2px solid #005999;
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transform: rotate(-15deg);
-      }
-
-      .bottom-bar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 10px;
-        background-color: #00a86b;
-      }
-
       .barcode-info {
         margin: 30px 0;
         padding: 20px;
-        background-color: #f8f9fa;
         border-radius: 5px;
         border-left: 4px solid #005999;
+        background-color: transparent;
       }
 
       .barcode-info > div:first-child {
@@ -161,6 +90,49 @@
       .barcode-info > div:not(:first-child) {
         margin: 8px 0;
         font-size: 16px;
+      }
+
+      .footer {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        position: relative;
+        z-index: 1;
+      }
+
+      .qr-code {
+        width: 100px;
+        height: 100px;
+      }
+
+      .address {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+        max-width: 300px;
+      }
+
+      .stamp {
+        text-align: center;
+        padding: 20px;
+        border: 2px solid #005999;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #005999;
+      }
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: #005999;
       }
     </style>
   </head>
@@ -210,12 +182,6 @@
           is globally unique and can be used for product identification in
           accordance with GS1 standards.
         </p>
-
-        <div class="member-info">
-          <div>Contact Information</div>
-          <div>• Email: <%= email %></div>
-          <div>• Phone: <%= phone %></div>
-        </div>
       </div>
 
       <div class="footer">
