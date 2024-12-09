@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { redisConfig } from "../config/redis.js";
+import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 import prisma from "../utils/prismaClient.js";
 
@@ -77,22 +77,20 @@ const processCreateWithCartAndCheckout = async (job) => {
   }
 };
 
-export const initCreateWithCartAndCheckoutWorker = () => {
-  const worker = new Worker(
-    "create-with-cart-and-checkout",
-    processCreateWithCartAndCheckout,
-    {
-      connection: redisConfig,
-    }
-  );
+const worker = new Worker(
+  "create-with-cart-and-checkout",
+  processCreateWithCartAndCheckout,
+  {
+    connection,
+  }
+);
 
-  worker.on("completed", (job) => {
-    console.log(`Job ${job.id} completed successfully`);
-  });
+worker.on("completed", (job) => {
+  console.log(`Job ${job.id} completed successfully`);
+});
 
-  worker.on("failed", (job, err) => {
-    console.error(`Job ${job.id} failed:`, err);
-  });
+worker.on("failed", (job, err) => {
+  console.error(`Job ${job.id} failed:`, err);
+});
 
-  return worker;
-};
+export default worker;
