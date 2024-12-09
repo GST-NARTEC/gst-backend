@@ -944,6 +944,17 @@ class UserController {
       const { cartItems, paymentType, vat, ...userData } = value;
       const userId = generateUserId();
 
+      // Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          email: userData.email,
+        },
+      });
+
+      if (existingUser) {
+        throw new MyError("User with this email already exists", 400);
+      }
+
       // Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
         const user = await prisma.user.create({
@@ -992,7 +1003,7 @@ class UserController {
         return user;
       });
 
-      // Add job to the new queue
+      // Add job to the queue
       await createWithCartAndCheckoutQueue.add(
         "process-create-with-cart-and-checkout",
         {
@@ -1016,7 +1027,12 @@ class UserController {
         })
       );
     } catch (error) {
-      next(error);
+      // Check if it's a unique constraint error
+      if (error.code === "P2002") {
+        next(new MyError("User with this email already exists", 400));
+      } else {
+        next(error);
+      }
     }
   }
 }
