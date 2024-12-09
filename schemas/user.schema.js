@@ -77,7 +77,40 @@ export const userUpdateSchema = Joi.object({
 export const userGtinsQuerySchema = Joi.object({
   page: Joi.number().min(1).default(1),
   limit: Joi.number().min(1).max(100).default(10),
-  status: Joi.string().valid('Available', 'Assigned', 'Used').optional(),
-  sortBy: Joi.string().valid('createdAt', 'gtin').default('createdAt'),
-  sortOrder: Joi.string().valid('asc', 'desc').default('desc')
+  status: Joi.string().valid("Available", "Assigned", "Used").optional(),
+  sortBy: Joi.string().valid("createdAt", "gtin").default("createdAt"),
+  sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+});
+
+export const createWithCartAndCheckoutSchema = Joi.object({
+  // User Info
+  email: Joi.string().email().required(),
+  password: Joi.string().min(6).required(),
+  companyNameEn: Joi.string().required(),
+  companyNameAr: Joi.string().required(),
+  phone: Joi.string().required(),
+  countryId: Joi.string().uuid().required(),
+  regionId: Joi.string().uuid().required(),
+  cityId: Joi.string().uuid().required(),
+
+  // Cart Items
+  cartItems: Joi.array()
+    .items(
+      Joi.object({
+        productId: Joi.string().uuid().required(),
+        quantity: Joi.number().integer().min(1).required(),
+        addons: Joi.array().items(
+          Joi.object({
+            id: Joi.string().uuid().required(),
+            quantity: Joi.number().integer().min(1).required(),
+          })
+        ),
+      })
+    )
+    .min(1)
+    .required(),
+
+  // Checkout Info
+  paymentType: Joi.string().required(),
+  vat: Joi.number().min(0).default(0),
 });

@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { userDeletionQueue } from "../config/queue.js";
+import { checkoutQueue, userDeletionQueue } from "../config/queue.js";
 import {
+  createWithCartAndCheckoutSchema,
   emailSchema,
   loginSchema,
   searchSchema,
@@ -13,7 +14,7 @@ import {
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { generateToken } from "../utils/generateToken.js";
-import { generateUserId } from "../utils/generateUniqueId.js";
+import { generateOrderId, generateUserId } from "../utils/generateUniqueId.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 import TokenManager from "../utils/tokenManager.js";
@@ -921,6 +922,92 @@ class UserController {
             totalPages,
             hasMore: page < totalPages,
           },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async createWithCartAndCheckout(req, res, next) {
+    try {
+      const { error, value } = createWithCartAndCheckoutSchema.validate(
+        req.body
+      );
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { cartItems, paymentType, ...userData } = value;
+      const userId = generateUserId();
+
+      // Create user and cart in transaction
+      const newUser = await prisma.$transaction(async (prisma) => {
+        // Create the user first
+        const user = await prisma.user.create({
+          data: {
+            ...userData,
+            userId,
+            cart: {
+              create: {
+                status: "ACTIVE",
+                items: {
+                  create: cartItems.map((item) => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    addonItems: {
+                      create: (item.addons || []).map((addon) => ({
+                        addonId: addon.id,
+                        quantity: addon.quantity,
+                      })),
+                    },
+                  })),
+                },
+              },
+            },
+          },
+          include: {
+            cart: {
+              include: {
+                items: {
+                  include: {
+                    product: true,
+                    addonItems: {
+                      include: {
+                        addon: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return user;
+      });
+
+      // Add checkout job to queue
+      await checkoutQueue.add(
+        "process-checkout-new-user",
+        {
+          user: newUser,
+          cart: newUser.cart,
+          paymentType,
+          orderNumber: generateOrderId(),
+        },
+        {
+          attempts: 3,
+          backoff: {
+            type: "exponential",
+            delay: 5000,
+          },
+        }
+      );
+
+      res.status(201).json(
+        response(201, true, "User registered and checkout initiated", {
+          user: newUser,
         })
       );
     } catch (error) {

@@ -887,4 +887,83 @@
  *         description: User not found
  *       500:
  *         description: Internal server error
+ *
+ * /api/user/v2/create-with-checkout:
+ *   post:
+ *     tags: [User]
+ *     summary: Create user with cart and process checkout
+ *     description: Creates a new user with cart items and initiates the checkout process
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - companyNameEn
+ *               - companyNameAr
+ *               - phone
+ *               - countryId
+ *               - regionId
+ *               - cityId
+ *               - cartItems
+ *               - paymentType
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *               companyNameEn:
+ *                 type: string
+ *               companyNameAr:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               countryId:
+ *                 type: string
+ *                 format: uuid
+ *               regionId:
+ *                 type: string
+ *                 format: uuid
+ *               cityId:
+ *                 type: string
+ *                 format: uuid
+ *               cartItems:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                       format: uuid
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 1
+ *                     addons:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                             format: uuid
+ *                           quantity:
+ *                             type: integer
+ *                             minimum: 1
+ *               paymentType:
+ *                 type: string
+ *               vat:
+ *                 type: number
+ *                 minimum: 0
+ *     responses:
+ *       201:
+ *         description: User created and checkout initiated successfully
+ *       400:
+ *         description: Invalid input data
+ *       500:
+ *         description: Server error
  */
