@@ -88,10 +88,10 @@ export const createWithCartAndCheckoutSchema = Joi.object({
   password: Joi.string().min(6).required(),
   companyNameEn: Joi.string().required(),
   companyNameAr: Joi.string().required(),
-  phone: Joi.string().required(),
-  countryId: Joi.string().required(),
-  regionId: Joi.string().required(),
-  cityId: Joi.string().required(),
+  mobile: Joi.string().required(),
+  country: Joi.string().required(),
+  region: Joi.string().required(),
+  city: Joi.string().required(),
   companyLicenseNo: Joi.string().allow(null),
   landline: Joi.string().allow(null),
   zipCode: Joi.string().allow(null),
@@ -105,12 +105,14 @@ export const createWithCartAndCheckoutSchema = Joi.object({
       Joi.object({
         productId: Joi.string().uuid().required(),
         quantity: Joi.number().integer().min(1).required(),
-        addons: Joi.array().items(
-          Joi.object({
-            id: Joi.string().uuid().required(),
-            quantity: Joi.number().integer().min(1).required(),
-          })
-        ),
+        addons: Joi.array()
+          .items(
+            Joi.object({
+              id: Joi.string().uuid().required(),
+              quantity: Joi.number().integer().min(1).required(),
+            })
+          )
+          .optional(),
       })
     )
     .min(1)

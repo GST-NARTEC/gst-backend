@@ -938,16 +938,7 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const {
-        cartItems,
-        paymentType,
-        phone, // we'll map this to mobile
-        countryId, // we'll map these to country, region, city strings
-        regionId,
-        cityId,
-        ...userData
-      } = value;
-
+      const { cartItems, paymentType, vat, ...userData } = value;
       const userId = generateUserId();
 
       // Create user and cart in transaction
@@ -957,10 +948,6 @@ class UserController {
           data: {
             ...userData,
             userId,
-            mobile: phone, // map phone to mobile field
-            country: countryId, // map IDs to string fields
-            region: regionId,
-            city: cityId,
             isCreated: true,
             isEmailVerified: false,
             isActive: true,
@@ -1003,13 +990,31 @@ class UserController {
         return user;
       });
 
+      // Get active VAT and currency
+      const [activeVat, activeCurrency] = await Promise.all([
+        prisma.vat.findFirst({
+          where: { isActive: true },
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.currency.findFirst({
+          orderBy: { createdAt: "desc" },
+        }),
+      ]);
+
+      if (!activeVat)
+        throw new MyError("No active VAT configuration found", 400);
+      if (!activeCurrency)
+        throw new MyError("No currency configuration found", 400);
+
       // Add checkout job to queue
       await checkoutQueue.add(
-        "process-checkout-new-user",
+        "process-checkout",
         {
           user: newUser,
-          cart: newUser.cart,
           paymentType,
+          vat,
+          activeVat,
+          activeCurrency,
           orderNumber: generateOrderId(),
         },
         {
