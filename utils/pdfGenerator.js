@@ -229,11 +229,21 @@ class PDFGenerator {
       );
       const templateContent = await fs.readFile(templatePath, "utf-8");
 
-      // Render the template
+      // Format the date if it's not already formatted
+      const formattedDate =
+        data.issueDate instanceof Date
+          ? data.issueDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          : data.issueDate;
+
+      // Render the template with all required data
       const html = ejs.render(templateContent, {
         licensedTo: data.licensedTo,
-        barcodeId: data.barcodeId,
-        issueDate: data.issueDate,
+        gtin: data.gtin, // Added GTIN
+        issueDate: formattedDate,
         memberId: data.memberId,
         email: data.email,
         phone: data.phone,
@@ -252,8 +262,8 @@ class PDFGenerator {
       const dir = path.join(__dirname, "../uploads/barcodes");
       await fs.mkdir(dir, { recursive: true });
 
-      // Generate unique filename
-      const filename = `barcode-certificate-${data.barcodeId}.pdf`;
+      // Generate unique filename using GTIN
+      const filename = `barcode-certificate-${data.gtin}.pdf`;
       const absolutePath = path.join(dir, filename);
       const relativePath = `uploads/barcodes/${filename}`;
 

@@ -142,6 +142,26 @@
         height: 10px;
         background-color: #00a86b;
       }
+
+      .barcode-info {
+        margin: 30px 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #005999;
+      }
+
+      .barcode-info > div:first-child {
+        font-weight: 600;
+        color: #005999;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .barcode-info > div:not(:first-child) {
+        margin: 8px 0;
+        font-size: 16px;
+      }
     </style>
   </head>
   <body>
@@ -158,18 +178,18 @@
           alt="GST Logo"
           class="logo"
         />
-        <h1 class="title">Certificate of Authenticity</h1>
+        <h1 class="title">Barcode Certificate</h1>
       </div>
 
       <div class="content">
         <div class="info-row">
-          <span>Licensed To: </span>
+          <span>Company Name: </span>
           <span class="highlight"><%= licensedTo %></span>
         </div>
 
         <div class="info-row">
-          <span>UPC/EAN Barcode Identification: </span>
-          <span class="highlight"><%= barcodeId %></span>
+          <span>Member ID: </span>
+          <span class="highlight"><%= memberId %></span>
         </div>
 
         <div class="info-row">
@@ -177,22 +197,24 @@
           <span class="highlight"><%= issueDate %></span>
         </div>
 
+        <div class="barcode-info">
+          <div>Barcode Information</div>
+          <div>• GTIN Number: <%= gtin %></div>
+          <div>• Type: UPC/EAN</div>
+          <div>• Status: Active</div>
+        </div>
+
         <p>
-          This UPC/EAN barcode assignment listed above is guaranteed to be
-          unique. It may only be used for the identification of a single product
-          by the company listed above.
+          This certifies that the above GTIN (Global Trade Item Number) has been
+          officially registered and assigned to <%= licensedTo %>. This barcode
+          is globally unique and can be used for product identification in
+          accordance with GS1 standards.
         </p>
 
         <div class="member-info">
-          <div>Member Information</div>
-          <div>• Member ID: <%= memberId %></div>
-          <div>• Contact Details: <%= email %></div>
-          <div style="margin-left: 15px"><%= phone %></div>
-        </div>
-
-        <div class="info-row">
-          <span>Member ID: </span>
-          <span class="highlight"><%= memberId %></span>
+          <div>Contact Information</div>
+          <div>• Email: <%= email %></div>
+          <div>• Phone: <%= phone %></div>
         </div>
       </div>
 
