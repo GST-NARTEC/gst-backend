@@ -89,9 +89,15 @@ export const createWithCartAndCheckoutSchema = Joi.object({
   companyNameEn: Joi.string().required(),
   companyNameAr: Joi.string().required(),
   phone: Joi.string().required(),
-  countryId: Joi.string().uuid().required(),
-  regionId: Joi.string().uuid().required(),
-  cityId: Joi.string().uuid().required(),
+  countryId: Joi.string().required(),
+  regionId: Joi.string().required(),
+  cityId: Joi.string().required(),
+  companyLicenseNo: Joi.string().allow(null),
+  landline: Joi.string().allow(null),
+  zipCode: Joi.string().allow(null),
+  streetAddress: Joi.string().allow(null),
+  latitude: Joi.number().allow(null),
+  longitude: Joi.number().allow(null),
 
   // Cart Items
   cartItems: Joi.array()

@@ -938,7 +938,16 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { cartItems, paymentType, ...userData } = value;
+      const {
+        cartItems,
+        paymentType,
+        phone, // we'll map this to mobile
+        countryId, // we'll map these to country, region, city strings
+        regionId,
+        cityId,
+        ...userData
+      } = value;
+
       const userId = generateUserId();
 
       // Create user and cart in transaction
@@ -948,6 +957,13 @@ class UserController {
           data: {
             ...userData,
             userId,
+            mobile: phone, // map phone to mobile field
+            country: countryId, // map IDs to string fields
+            region: regionId,
+            city: cityId,
+            isCreated: true,
+            isEmailVerified: false,
+            isActive: true,
             cart: {
               create: {
                 status: "ACTIVE",
