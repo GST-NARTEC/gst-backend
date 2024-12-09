@@ -8,6 +8,7 @@ class BrandController {
     let document;
     try {
       const { nameEn, nameAr } = req.body;
+      const userId = req.user.id; // Get authenticated user's ID
       document = req.file?.path;
 
       const brand = await prisma.brand.create({
@@ -15,6 +16,7 @@ class BrandController {
           nameEn,
           nameAr,
           document: addDomain(document),
+          userId,
         },
       });
 
@@ -31,19 +33,68 @@ class BrandController {
     }
   }
 
-  static async getBrands(req, res, next) {
+  static async getMyBrands(req, res, next) {
     try {
       const { page = 1, limit = 10, search } = req.query;
+      const userId = req.user.id
       const skip = (page - 1) * limit;
 
-      const where = search
-        ? {
-            OR: [
-              { nameEn: { contains: search } },
-              { nameAr: { contains: search } },
-            ],
-          }
-        : {};
+      const where = {
+        userId,
+        ...(search
+          ? {
+              OR: [
+                { nameEn: { contains: search } },
+                { nameAr: { contains: search } },
+              ],
+            }
+          : {}),
+      };
+
+      const [brands, total] = await Promise.all([
+        prisma.brand.findMany({
+          where,
+          skip,
+          take: Number(limit),
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.brand.count({ where }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      return res.status(200).json(
+        response(200, true, "Brands retrieved successfully", {
+          brands,
+          pagination: {
+            total,
+            page: Number(page),
+            totalPages,
+            hasMore: page < totalPages,
+          },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  static async getUserBrands(req, res, next) {
+    try {
+      const { page = 1, limit = 10, search } = req.query;
+      const userId = req.params.id;
+      const skip = (page - 1) * limit;
+
+      const where = {
+        userId,
+        ...(search
+          ? {
+              OR: [
+                { nameEn: { contains: search } },
+                { nameAr: { contains: search } },
+              ],
+            }
+          : {}),
+      };
 
       const [brands, total] = await Promise.all([
         prisma.brand.findMany({
@@ -75,8 +126,12 @@ class BrandController {
 
   static async getActiveBrands(req, res, next) {
     try {
+      const userId = req.user.id;
       const brands = await prisma.brand.findMany({
-        where: { isActive: true },
+        where: {
+          userId,
+          isActive: true,
+        },
         orderBy: { nameEn: "asc" },
       });
 
@@ -93,9 +148,13 @@ class BrandController {
   static async getBrand(req, res, next) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
       const brand = await prisma.brand.findUnique({
-        where: { id },
+        where: {
+          id,
+          userId,
+        },
       });
 
       if (!brand) {
@@ -116,21 +175,23 @@ class BrandController {
     let document;
     try {
       const { id } = req.params;
+      const userId = req.user.id;
       const { nameEn, nameAr, isActive } = req.body;
       document = req.file?.path;
 
       const brand = await prisma.brand.findUnique({
-        where: { id },
+        where: {
+          id,
+          userId,
+        },
       });
 
       if (!brand) {
         throw new MyError("Brand not found", 404);
       }
 
-      if (document) {
-        if (brand.document) {
-          await deleteFile(brand.document);
-        }
+      if (document && brand.document) {
+        await deleteFile(brand.document);
       }
 
       const updatedBrand = await prisma.brand.update({
@@ -138,7 +199,7 @@ class BrandController {
         data: {
           nameEn,
           nameAr,
-          document: document || brand.document,
+          document: document ? addDomain(document) : brand.document,
           isActive: isActive === undefined ? brand.isActive : isActive,
         },
       });
@@ -159,9 +220,13 @@ class BrandController {
   static async deleteBrand(req, res, next) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
       const brand = await prisma.brand.findUnique({
-        where: { id },
+        where: {
+          id,
+          userId,
+        },
       });
 
       if (!brand) {
