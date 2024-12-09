@@ -904,64 +904,120 @@
  *               - password
  *               - companyNameEn
  *               - companyNameAr
- *               - phone
- *               - countryId
- *               - regionId
- *               - cityId
+ *               - mobile
+ *               - country
+ *               - region
+ *               - city
  *               - cartItems
  *               - paymentType
  *             properties:
  *               email:
  *                 type: string
  *                 format: email
+ *                 example: "sairatecsolutions@gmail.com"
  *               password:
  *                 type: string
  *                 minLength: 6
+ *                 example: "sairatec"
  *               companyNameEn:
  *                 type: string
+ *                 example: "Sairatec"
  *               companyNameAr:
  *                 type: string
- *               phone:
+ *                 example: "Sairatec"
+ *               landline:
  *                 type: string
- *               countryId:
+ *                 example: "+923005447070"
+ *               mobile:
  *                 type: string
- *                 format: uuid
- *               regionId:
+ *                 example: "+923005447070"
+ *               country:
  *                 type: string
- *                 format: uuid
- *               cityId:
+ *                 example: "1"
+ *               region:
  *                 type: string
- *                 format: uuid
+ *                 example: "1"
+ *               city:
+ *                 type: string
+ *                 example: "1"
  *               cartItems:
  *                 type: array
  *                 items:
  *                   type: object
+ *                   required:
+ *                     - productId
+ *                     - quantity
  *                   properties:
  *                     productId:
  *                       type: string
  *                       format: uuid
+ *                       example: "0377bb56-d822-4418-995d-024c079d92d4"
  *                     quantity:
  *                       type: integer
  *                       minimum: 1
+ *                       example: 1
  *                     addons:
  *                       type: array
  *                       items:
  *                         type: object
+ *                         required:
+ *                           - id
+ *                           - quantity
  *                         properties:
  *                           id:
  *                             type: string
  *                             format: uuid
+ *                             example: "115dc244-79e3-434d-8d67-9a3e2b725f68"
  *                           quantity:
  *                             type: integer
  *                             minimum: 1
+ *                             example: 1
  *               paymentType:
  *                 type: string
+ *                 example: "Bank Transfer"
  *               vat:
  *                 type: number
  *                 minimum: 0
+ *                 example: 400
  *     responses:
  *       201:
  *         description: User created and checkout initiated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 201
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "User registered and checkout initiated"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           format: uuid
+ *                         email:
+ *                           type: string
+ *                         companyNameEn:
+ *                           type: string
+ *                         companyNameAr:
+ *                           type: string
+ *                         cart:
+ *                           type: object
+ *                           properties:
+ *                             items:
+ *                               type: array
+ *                               items:
+ *                                 type: object
  *       400:
  *         description: Invalid input data
  *       500:
