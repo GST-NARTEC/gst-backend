@@ -1027,12 +1027,7 @@ class UserController {
         })
       );
     } catch (error) {
-      // Check if it's a unique constraint error
-      if (error.code === "P2002") {
-        next(new MyError("User with this email already exists", 400));
-      } else {
-        next(error);
-      }
+      next(error);
     }
   }
 }
