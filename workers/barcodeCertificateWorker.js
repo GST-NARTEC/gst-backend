@@ -1,4 +1,5 @@
 import { Worker } from "bullmq";
+
 import { connection } from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
@@ -43,7 +44,7 @@ const processBarcodeCertificate = async (job) => {
     await prisma.assignedGtin.update({
       where: { id: assignedGtinId },
       data: {
-        barcodeCertificate: certificateResult.relativePath,
+        barcodeCertificate: addDomain(certificateResult.relativePath),
       },
     });
 

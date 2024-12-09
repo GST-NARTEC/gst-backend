@@ -906,7 +906,7 @@ class UserController {
         orderNumber: ag.order.orderNumber,
         orderDate: ag.order.createdAt,
         barcodeCertificate: ag.barcodeCertificate
-          ? addDomain(ag.barcodeCertificate)
+          ? ag.barcodeCertificate
           : null,
       }));
 
