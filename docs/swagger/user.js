@@ -779,7 +779,7 @@
  *
  * /api/user/v1/{id}/gtins:
  *   get:
- *     tags: [Users]
+ *     tags: [User]
  *     summary: Get user's GTINs
  *     description: Retrieve GTINs assigned to a specific user through their completed orders
  *     parameters:
