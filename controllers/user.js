@@ -84,70 +84,6 @@ class UserController {
     }
   }
 
-  static async createUser(req, res, next) {
-    try {
-      const { error, value } = userInfoSchema.validate(req.body);
-      if (error) {
-        throw new MyError(error.details[0].message, 400);
-      }
-
-      const { cartItems, ...userData } = value;
-      const userId = generateUserId();
-
-      // Create user and cart in transaction
-      const result = await prisma.$transaction(async (prisma) => {
-        const user = await prisma.user.create({
-          data: {
-            ...userData,
-            userId,
-            cart: {
-              create: {
-                items: {
-                  create: cartItems.map((item) => ({
-                    productId: item.productId,
-                    quantity: item.quantity,
-                    addonItems: {
-                      create: (item.addons || []).map((addon) => ({
-                        addonId: addon.id,
-                        quantity: addon.quantity,
-                      })),
-                    },
-                  })),
-                },
-              },
-            },
-          },
-          include: {
-            cart: {
-              include: {
-                items: {
-                  include: {
-                    product: true,
-                    addonItems: {
-                      include: {
-                        addon: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        return user;
-      });
-
-      res.status(201).json(
-        response(201, true, "User registered successfully", {
-          user: result,
-        })
-      );
-    } catch (error) {
-      next(error);
-    }
-  }
-
   static async login(req, res, next) {
     try {
       const { error, value } = loginSchema.validate(req.body);
@@ -778,72 +714,6 @@ class UserController {
     }
   }
 
-  static async createWithCart(req, res, next) {
-    try {
-      const { error, value } = userInfoSchema.validate(req.body);
-      if (error) {
-        throw new MyError(error.details[0].message, 400);
-      }
-
-      const { cartItems, ...userData } = value;
-      const userId = generateUserId();
-
-      // Create user and cart in transaction
-      const newUser = await prisma.$transaction(async (prisma) => {
-        // Create the user first
-        const user = await prisma.user.create({
-          data: {
-            ...userData,
-            userId,
-            cart: {
-              create: {
-                status: "ACTIVE",
-                items: {
-                  create: cartItems.map((item) => ({
-                    productId: item.productId,
-                    quantity: item.quantity,
-                    addonItems: {
-                      create: (item.addons || []).map((addon) => ({
-                        addonId: addon.id,
-                        quantity: addon.quantity,
-                      })),
-                    },
-                  })),
-                },
-              },
-            },
-          },
-          include: {
-            cart: {
-              include: {
-                items: {
-                  include: {
-                    product: true,
-                    addonItems: {
-                      include: {
-                        addon: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
-
-        return user;
-      });
-
-      res.status(201).json(
-        response(201, true, "User registered successfully", {
-          user: newUser,
-        })
-      );
-    } catch (error) {
-      next(error);
-    }
-  }
-
   static async getUserGtins(req, res, next) {
     try {
       const { id } = req.params;
@@ -937,12 +807,15 @@ class UserController {
         companyNameEn: req.body.companyNameEn,
         companyNameAr: req.body.companyNameAr,
         mobile: req.body.mobile,
+        landline: req.body.landline,
         country: req.body.country,
         region: req.body.region,
         city: req.body.city,
         companyLicenseNo: req.body.companyLicenseNo,
         streetAddress: req.body.streetAddress,
         zipCode: req.body.zipCode,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
         cartItems: req.body.cartItems,
       });
 
