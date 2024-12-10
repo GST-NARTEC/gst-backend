@@ -82,43 +82,15 @@ export const userGtinsQuerySchema = Joi.object({
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 
-export const createWithCartAndCheckoutSchema = Joi.object({
-  // User Info
-  email: Joi.string().email().required(),
-  //   password: Joi.string().min(6).required(),
-  companyNameEn: Joi.string().required(),
-  companyNameAr: Joi.string().required(),
-  mobile: Joi.string().required(),
-  country: Joi.string().required(),
-  region: Joi.string().required(),
-  city: Joi.string().required(),
-  companyLicenseNo: Joi.string().allow(null),
-  landline: Joi.string().allow(null),
-  zipCode: Joi.string().allow(null),
-  streetAddress: Joi.string().allow(null),
-  latitude: Joi.number().allow(null),
-  longitude: Joi.number().allow(null),
-
-  // Cart Items
-  cartItems: Joi.array()
-    .items(
-      Joi.object({
-        productId: Joi.string().uuid().required(),
-        quantity: Joi.number().integer().min(1).required(),
-        addons: Joi.array()
-          .items(
-            Joi.object({
-              id: Joi.string().uuid().required(),
-              quantity: Joi.number().integer().min(1).required(),
-            })
-          )
-          .optional(),
-      })
-    )
-    .min(1)
+export const userWithCartCheckout = Joi.object({
+  paymentType: Joi.string()
+    // .valid(
+    //   "Bank Transfer",
+    //   "Visa / Master Card",
+    //   "Credit/Debit card",
+    //   "STC Pay",
+    //   "Tabby"
+    // )
     .required(),
-
-  // Checkout Info
-  paymentType: Joi.string().required(),
   vat: Joi.number().min(0).default(0),
 });

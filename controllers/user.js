@@ -1,11 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { checkoutQueue, userDeletionQueue } from "../config/queue.js";
 import {
-  createWithCartAndCheckoutQueue,
-  userDeletionQueue,
-} from "../config/queue.js";
-import {
-  createWithCartAndCheckoutSchema,
   emailSchema,
   loginSchema,
   searchSchema,
@@ -13,6 +9,7 @@ import {
   userGtinsQuerySchema,
   userInfoSchema,
   userUpdateSchema,
+  userWithCartCheckout,
 } from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
@@ -934,36 +931,32 @@ class UserController {
 
   static async createWithCartAndCheckout(req, res, next) {
     try {
-      const { error, value } = createWithCartAndCheckoutSchema.validate(
+      // 1. Validate and extract user/cart data
+      const { error: userError, value: userValue } = userInfoSchema.validate(
         req.body
       );
-      if (error) {
-        throw new MyError(error.details[0].message, 400);
+      if (userError) {
+        throw new MyError(userError.details[0].message, 400);
       }
 
-      const { cartItems, paymentType, vat, ...userData } = value;
+      // 2. Validate checkout data separately
+      const { error: checkoutError, value: checkoutValue } =
+        userWithCartCheckout.validate(req.body);
+      if (checkoutError) {
+        throw new MyError(checkoutError.details[0].message, 400);
+      }
+
+      // 3. Separate user/cart data from checkout data
+      const { cartItems, ...userData } = req.body;
+      const { paymentType, vat } = req.body;
       const userId = generateUserId();
 
-      // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
-        where: {
-          email: userData.email,
-        },
-      });
-
-      if (existingUser) {
-        throw new MyError("User with this email already exists", 400);
-      }
-
-      // Create user and cart in transaction
+      // 4. Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
         const user = await prisma.user.create({
           data: {
             ...userData,
             userId,
-            isCreated: true,
-            isEmailVerified: false,
-            isActive: true,
             cart: {
               create: {
                 status: "ACTIVE",
@@ -1003,13 +996,51 @@ class UserController {
         return user;
       });
 
-      // Add job to the queue
-      await createWithCartAndCheckoutQueue.add(
-        "process-create-with-cart-and-checkout",
+      // 5. Process checkout
+      const [activeVat, activeCurrency, cart] = await Promise.all([
+        prisma.vat.findFirst({
+          where: { isActive: true },
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.currency.findFirst({
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.cart.findFirst({
+          where: { userId: newUser.id },
+          include: {
+            items: {
+              include: {
+                product: true,
+                addonItems: {
+                  include: {
+                    addon: true,
+                  },
+                },
+              },
+            },
+            user: true,
+          },
+        }),
+      ]);
+
+      // 6. Validations
+      if (!activeVat)
+        throw new MyError("No active VAT configuration found", 400);
+      if (!activeCurrency)
+        throw new MyError("No active currency configuration found", 400);
+      if (!cart || cart.items.length === 0)
+        throw new MyError("Cart is empty", 400);
+
+      // 7. Add checkout job to queue
+      await checkoutQueue.add(
+        "process-checkout",
         {
+          cart,
           user: newUser,
-          paymentType,
-          vat,
+          paymentType: checkoutValue.paymentType,
+          vat: checkoutValue.vat,
+          activeVat,
+          activeCurrency,
           orderNumber: generateOrderId(),
         },
         {
@@ -1022,7 +1053,7 @@ class UserController {
       );
 
       res.status(201).json(
-        response(201, true, "User registered and checkout initiated", {
+        response(201, true, "User creation and checkout initiated", {
           user: newUser,
         })
       );
