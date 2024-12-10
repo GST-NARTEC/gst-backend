@@ -10,6 +10,7 @@ model Slider {
     imageAr             String?
     page                Page?    @relation(fields: [pageId], references: [id])
     pageId              String?
+    externalUrl         String?
     status              Int?    @default(1)
     createdAt           DateTime @default(now())
     updatedAt           DateTime @updatedAt

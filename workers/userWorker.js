@@ -31,6 +31,11 @@ const processUserDeletion = async (job) => {
         },
       },
       invoices: true,
+      userProducts: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
 
@@ -83,6 +88,36 @@ const processUserDeletion = async (job) => {
 
       await prisma.order.delete({ where: { id: order.id } });
     }
+
+    // Process user products
+    for (const product of user.userProducts) {
+      // Delete product images from storage
+      for (const image of product.images) {
+        await deleteFile(image.url);
+      }
+
+      // Release GTIN if exists
+      if (product.gtin) {
+        await prisma.gtin.update({
+          where: { gtin: product.gtin },
+          data: { usageStatus: "Unused" },
+        });
+      }
+    }
+
+    // Delete all product images
+    await prisma.productImage.deleteMany({
+      where: {
+        product: {
+          userId: userId
+        }
+      }
+    });
+
+    // Delete all user products
+    await prisma.userProduct.deleteMany({
+      where: { userId }
+    });
 
     // Delete cart
     if (user.cart) {

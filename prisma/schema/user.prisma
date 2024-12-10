@@ -25,4 +25,5 @@ model User {
   invoices         Invoice[]
   refreshTokens    RefreshToken[]
   brands           Brand[]
+  products         UserProduct[]
 }

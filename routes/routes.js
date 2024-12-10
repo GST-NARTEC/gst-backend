@@ -23,6 +23,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
+import userProductsRoutes from "./userProductsRoutes.js";
 const router = express.Router();
 
 // V1 Routes
@@ -47,6 +48,7 @@ router.use("/v1/template", templateRoutes);
 router.use("/v1/orders", orderRoutes);
 router.use("/v1/addons", addonRoutes);
 router.use("/v1/brands", brandRoutes);
+router.use("/v1/user-products", userProductsRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);

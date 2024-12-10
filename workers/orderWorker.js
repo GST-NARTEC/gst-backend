@@ -98,7 +98,7 @@ const processOrderActivation = async (job) => {
     // Update GTIN status
     await prisma.gTIN.updateMany({
       where: { id: { in: availableGtins.map((g) => g.id) } },
-      data: { status: "Solved" },
+      data: { status: "Sold" },
     });
 
     // Add barcode certificate generation jobs

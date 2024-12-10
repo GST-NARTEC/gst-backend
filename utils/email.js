@@ -155,7 +155,7 @@ class EmailService {
       const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: `Account Activated - Order ${order.orderNumber}`,
+        subject: `Order Activated - Order ${order.orderNumber}`,
         html,
         attachments,
       };
