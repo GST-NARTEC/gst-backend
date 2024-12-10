@@ -82,15 +82,15 @@ export const userGtinsQuerySchema = Joi.object({
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 
+// Keep userWithCartCheckout separate
 export const userWithCartCheckout = Joi.object({
-  paymentType: Joi.string()
-    // .valid(
-    //   "Bank Transfer",
-    //   "Visa / Master Card",
-    //   "Credit/Debit card",
-    //   "STC Pay",
-    //   "Tabby"
-    // )
-    .required(),
+  paymentType: Joi.string().required(),
+  // .valid(
+  //   "Bank Transfer",
+  //   "Visa / Master Card",
+  //   "Credit/Debit card",
+  //   "STC Pay",
+  //   "Tabby"
+  // )
   vat: Joi.number().min(0).default(0),
 });

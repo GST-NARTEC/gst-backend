@@ -931,27 +931,49 @@ class UserController {
 
   static async createWithCartAndCheckout(req, res, next) {
     try {
-      // 1. Validate and extract user/cart data
-      const { error: userError, value: userValue } = userInfoSchema.validate(
-        req.body
-      );
+      // 1. First validate user data
+      const { error: userError, value: userInfo } = userInfoSchema.validate({
+        email: req.body.email,
+        companyNameEn: req.body.companyNameEn,
+        companyNameAr: req.body.companyNameAr,
+        mobile: req.body.mobile,
+        country: req.body.country,
+        region: req.body.region,
+        city: req.body.city,
+        companyLicenseNo: req.body.companyLicenseNo,
+        streetAddress: req.body.streetAddress,
+        zipCode: req.body.zipCode,
+        cartItems: req.body.cartItems,
+      });
+
       if (userError) {
         throw new MyError(userError.details[0].message, 400);
       }
 
-      // 2. Validate checkout data separately
-      const { error: checkoutError, value: checkoutValue } =
-        userWithCartCheckout.validate(req.body);
+      // 2. Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: userInfo.email },
+      });
+
+      if (existingUser) {
+        throw new MyError("User with this email already exists", 400);
+      }
+
+      // 2. Then validate checkout data
+      const { error: checkoutError, value: checkoutInfo } =
+        userWithCartCheckout.validate({
+          paymentType: req.body.paymentType,
+          vat: req.body.vat,
+        });
+
       if (checkoutError) {
         throw new MyError(checkoutError.details[0].message, 400);
       }
 
-      // 3. Separate user/cart data from checkout data
-      const { cartItems, ...userData } = req.body;
-      const { paymentType, vat } = req.body;
+      const { cartItems, ...userData } = userInfo;
       const userId = generateUserId();
 
-      // 4. Create user and cart in transaction
+      // 3. Create user and cart in transaction
       const newUser = await prisma.$transaction(async (prisma) => {
         const user = await prisma.user.create({
           data: {
@@ -996,49 +1018,25 @@ class UserController {
         return user;
       });
 
-      // 5. Process checkout
-      const [activeVat, activeCurrency, cart] = await Promise.all([
-        prisma.vat.findFirst({
-          where: { isActive: true },
-          orderBy: { createdAt: "desc" },
-        }),
-        prisma.currency.findFirst({
-          orderBy: { createdAt: "desc" },
-        }),
-        prisma.cart.findFirst({
-          where: { userId: newUser.id },
-          include: {
-            items: {
-              include: {
-                product: true,
-                addonItems: {
-                  include: {
-                    addon: true,
-                  },
-                },
-              },
-            },
-            user: true,
-          },
-        }),
+      // 4. Process checkout
+      const [activeVat, activeCurrency] = await Promise.all([
+        prisma.vat.findFirst({ where: { isActive: true } }),
+        prisma.currency.findFirst({ orderBy: { createdAt: "desc" } }),
       ]);
 
-      // 6. Validations
       if (!activeVat)
         throw new MyError("No active VAT configuration found", 400);
       if (!activeCurrency)
         throw new MyError("No active currency configuration found", 400);
-      if (!cart || cart.items.length === 0)
-        throw new MyError("Cart is empty", 400);
 
-      // 7. Add checkout job to queue
+      // 5. Add checkout job to queue
       await checkoutQueue.add(
         "process-checkout",
         {
-          cart,
+          cart: newUser.cart,
           user: newUser,
-          paymentType: checkoutValue.paymentType,
-          vat: checkoutValue.vat,
+          paymentType: checkoutInfo.paymentType,
+          vat: checkoutInfo.vat,
           activeVat,
           activeCurrency,
           orderNumber: generateOrderId(),
