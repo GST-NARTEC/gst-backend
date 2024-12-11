@@ -116,26 +116,32 @@ cp .env.example .env
 4. Update the `.env` file with your configurations:
 
 ```env
-# Server
+# Server Configuration
 PORT=3000
-DOMAIN="http://localhost:3000"
+JWT_SECRET=your-jwt-secret
 FRONTEND_URL="http://localhost:5173"
+DOMAIN="http://localhost:3000"
 
-# Database
-DATABASE_URL="sqlserver://host;database=GST;user=username;password=password;trustServerCertificate=true"
+# Database Configuration
+DATABASE_URL="sqlserver://host;database=dbname;user=username;password=password;trustServerCertificate=true"
 
-# Redis
-REDIS_HOST="localhost"
-REDIS_PORT=6379
+# Email Configuration
+EMAIL_FROM="your-email@example.com"
+EMAIL_PASSWORD="your-email-password"
+EMAIL_APP_PASSWORD="your-app-specific-password"
 
-# JWT
-JWT_SECRET="your-secret"
+# JWT Configuration
 JWT_ACCESS_SECRET="your-access-secret"
 JWT_REFRESH_SECRET="your-refresh-secret"
+JWT_ACCESS_EXPIRY="1d"      # 1 day
+JWT_REFRESH_EXPIRY="7d"     # 7 days
 
-# Email
-EMAIL_FROM="your-email@domain.com"
-EMAIL_APP_PASSWORD="your-app-password"
+# Frontend URLs
+LOGIN_URL="your-login-url"
+
+# Redis Configuration
+REDIS_HOST="localhost"
+REDIS_PORT=6379
 ```
 
 5. Start the development server:
