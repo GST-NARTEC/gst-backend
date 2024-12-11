@@ -140,8 +140,9 @@ JWT_REFRESH_EXPIRY="7d"     # 7 days
 LOGIN_URL="your-login-url"
 
 # Redis Configuration
-REDIS_HOST="localhost"
+REDIS_HOST="your-redis-host"
 REDIS_PORT=6379
+REDIS_PASSWORD="your-redis-password"
 ```
 
 5. Start the development server:
