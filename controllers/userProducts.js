@@ -1,8 +1,8 @@
-import prisma from "../utils/prismaClient.js";
+import { userProductSchema } from "../schemas/userProducts.schema.js";
 import MyError from "../utils/error.js";
-import response from "../utils/response.js";
-import { userProductSchema } from "../schemas/userProductSchema.js";
 import { addDomain, deleteFile } from "../utils/file.js";
+import prisma from "../utils/prismaClient.js";
+import response from "../utils/response.js";
 
 class UserProductsController {
   static async createProduct(req, res, next) {
@@ -117,7 +117,8 @@ class UserProductsController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const updateData = value;
+      // Remove gtin from the update data
+      const { gtin: _, ...updateData } = value;
 
       // Check if product exists and belongs to user
       const existingProduct = await prisma.userProduct.findFirst({
@@ -144,13 +145,13 @@ class UserProductsController {
         }
       }
 
-      // Update product with new images while keeping existing ones
+      // Update product (removed GTIN-related operations)
       const updatedProduct = await prisma.userProduct.update({
         where: { id },
         data: {
           ...updateData,
           images: {
-            // Create new image records without deleting existing ones
+            deleteMany: {},
             create: imageUrls.map((url) => ({ url })),
           },
         },
@@ -245,7 +246,7 @@ class UserProductsController {
               status: "Used",
             },
             data: {
-              usageStatus: "Unused",
+              status: "Sold",
             },
           });
         }
