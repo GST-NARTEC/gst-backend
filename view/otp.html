@@ -1,152 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Verification</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.6;
+        font-family: "Inter", sans-serif;
         margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #333;
+        padding: 20px;
+        box-sizing: border-box;
       }
-      .container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 0;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-      .header {
-        background: linear-gradient(135deg, #1b365d 0%, #2c5282 100%);
-        padding: 30px 20px;
-        text-align: center;
-      }
-      .logo {
-        margin-bottom: 20px;
-      }
-      .logo img {
-        width: 180px;
-        height: auto;
+
+      .certificate {
+        max-width: 800px;
+        margin: 0 auto;
         background-color: white;
-        padding: 12px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ccc;
       }
-      .header h2 {
-        color: #ffffff;
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.07;
+        width: 80%;
+        height: auto;
+        z-index: 0;
       }
-      .content {
-        padding: 40px 30px;
+
+      .header {
         text-align: center;
-        background-color: #ffffff;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
       }
-      .content p {
-        color: #4a5568;
+
+      .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #005999;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0 30px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
         font-size: 16px;
-        margin: 0 0 20px 0;
+        line-height: 1.6;
       }
-      .bilingual {
-        display: flex;
-        justify-content: space-between;
-        margin: 10px 0;
-        align-items: center;
+
+      .otp-box {
+        margin: 30px 0;
+        padding: 20px;
+        border-radius: 5px;
+        border-left: 4px solid #005999;
+        text-align: center;
       }
+
       .otp-code {
         font-size: 36px;
         letter-spacing: 8px;
-        color: #1b365d;
+        color: #005999;
         font-weight: bold;
-        padding: 20px;
-        background: #f8fafc;
-        border-radius: 8px;
-        margin: 30px 0;
-        border: 2px dashed #e2e8f0;
+        margin: 20px 0;
       }
+
       .warning {
-        color: #718096;
-        background-color: #f7fafc;
-        padding: 15px;
-        border-radius: 8px;
-        margin: 20px 0;
-        font-size: 14px;
-        border-left: 4px solid #1b365d;
-      }
-      .footer {
-        background-color: #1b365d;
+        margin: 30px 0;
         padding: 20px;
-        text-align: center;
-        color: white;
+        border-radius: 5px;
+        border-left: 4px solid #00a86b;
+        background-color: transparent;
+        text-align: left;
       }
-      .footer img {
-        width: 120px;
-        height: auto;
-        background-color: white;
-        padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .footer {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        position: relative;
+        z-index: 1;
       }
-      .footer-links {
-        margin: 15px 0;
+
+      .qr-code {
+        width: 100px;
+        height: 100px;
       }
-      .footer-links a {
-        color: white;
-        text-decoration: none;
-        margin: 0 10px;
+
+      .address {
         font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+        max-width: 300px;
       }
-      .copyright {
-        font-size: 12px;
-        color: #a0aec0;
-        margin-top: 15px;
+
+      .stamp {
+        text-align: center;
+        padding: 20px;
+        border: 2px solid #005999;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #005999;
       }
-      .divider {
-        height: 1px;
-        background: rgba(255, 255, 255, 0.1);
-        margin: 20px 0;
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: #005999;
       }
-      @media only screen and (max-width: 600px) {
-        .container {
-          margin: 0;
-          border-radius: 0;
-        }
-        .content {
-          padding: 30px 20px;
-        }
-        .otp-code {
-          font-size: 32px;
-          letter-spacing: 6px;
-        }
+
+      .bilingual {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+        align-items: center;
       }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="certificate">
+      <img
+        src="http://localhost:3000/assets/images/gst-logo.png"
+        alt="Watermark"
+        class="watermark"
+      />
+
       <div class="header">
-        <div class="logo">
-          <img
-            src="http://localhost:3000/assets/images/gst-logo.png"
-            alt="GST Logo"
-          />
-        </div>
-        <div class="bilingual">
-          <h2>Email Verification</h2>
-          <h2 style="text-align: right">التحقق من البريد الإلكتروني</h2>
-        </div>
+        <img
+          src="http://localhost:3000/assets/images/gst-logo.png"
+          alt="GST Logo"
+          class="logo"
+        />
+        <div style="color: #005999; font-size: 14px">GST</div>
+        <h1 class="title">Email Verification / التحقق من البريد الإلكتروني</h1>
       </div>
+
       <div class="content">
         <div class="bilingual">
           <p>Hello!</p>
-          <p style="text-align: right">!مرحباً</p>
+          <p>!مرحباً</p>
         </div>
 
         <div class="bilingual">
@@ -160,7 +175,19 @@
           </p>
         </div>
 
-        <div class="otp-code">123456</div>
+        <div class="otp-box">
+          <div
+            style="
+              font-weight: 600;
+              color: #005999;
+              margin-bottom: 10px;
+              font-size: 18px;
+            "
+          >
+            Verification Code / رمز التحقق
+          </div>
+          <div class="otp-code">123456</div>
+        </div>
 
         <div class="warning">
           <div class="bilingual">
@@ -175,12 +202,12 @@
           </div>
         </div>
 
-        <div class="bilingual">
-          <p style="color: #718096; font-size: 14px">
+        <div class="bilingual" style="color: #666; font-size: 14px">
+          <p>
             If you didn't request this code, please ignore this email or contact
             support if you have concerns.
           </p>
-          <p style="color: #718096; font-size: 14px; text-align: right">
+          <p style="text-align: right">
             إذا لم تطلب هذا الرمز، يرجى تجاهل هذا البريد الإلكتروني أو الاتصال
             بالدعم إذا كان لديك أي مخاوف.
           </p>
@@ -188,23 +215,27 @@
       </div>
 
       <div class="footer">
-        <img
-          src="http://localhost:3000/assets/images/gst-logo.png"
-          alt="GST Logo"
-        />
-        <h2>GST Saudi Barcode Center</h2>
-        <div class="footer-links">
-          <a href="https://gs1.org.sa/how-to-get-barcode">Need a GST barcode</a>
-          <a href="https://gs1.org.sa/about-us">GST General Specifications</a>
-          <a href="https://gs1.org.sa/gs1-system-standards">GST Standards</a>
-          <a href="https://gs1.org.sa/privacypolicymobileapp">Privacy Policy</a>
+        <div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=GST-OTP-VERIFY"
+            alt="QR Code"
+            class="qr-code"
+          />
+          <div class="address">
+            (GST) Global Standard for Technology Solution King Abdullah Road,
+            Riyadh Kingdom of Saudi Arabia
+          </div>
         </div>
-        <div class="divider"></div>
-        <div class="copyright">
-          Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
-          rights reserved.
+        <div class="stamp">
+          <div>
+            <div>GST</div>
+            <div style="font-size: 24px; font-weight: bold">VERIFY</div>
+            <div>2024</div>
+          </div>
         </div>
       </div>
+
+      <div class="bottom-bar"></div>
     </div>
   </body>
 </html>

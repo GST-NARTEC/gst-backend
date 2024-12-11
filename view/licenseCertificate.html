@@ -9,7 +9,6 @@
 
       body {
         font-family: "Inter", sans-serif;
-        background-color: #f0f8ff;
         margin: 0;
         padding: 20px;
         box-sizing: border-box;
@@ -78,11 +77,11 @@
         margin: 20px 0;
       }
 
-      .data-table th,
-      .data-table td {
+      .data-table td,
+      .data-table th {
         border: 1px solid #005999;
-        padding: 10px;
-        text-align: left;
+        padding: 5px;
+        height: 15px;
       }
 
       .dates {
@@ -118,7 +117,7 @@
       .stamp {
         width: 120px;
         height: 120px;
-        border: 2px dashed #005999;
+        border: 4px solid #005999;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -159,7 +158,7 @@
       <div class="content">
         <div class="info-row">
           <span>Licensed To: </span>
-          <span class="highlight">Nartec Solutions LLC</span>
+          <span class="highlight">ABC Trading Company</span>
         </div>
 
         <div class="info-row">
@@ -177,19 +176,19 @@
           <tr>
             <td>1</td>
             <td>6281000123456</td>
-            <td>03/12/2024</td>
+            <td>03/15/2024</td>
             <td>Active</td>
           </tr>
           <tr>
             <td>2</td>
             <td>6281000123457</td>
-            <td>03/12/2024</td>
+            <td>03/15/2024</td>
             <td>Active</td>
           </tr>
           <tr>
             <td>3</td>
             <td>6281000123458</td>
-            <td>03/12/2024</td>
+            <td>03/15/2024</td>
             <td>Active</td>
           </tr>
         </table>
@@ -197,7 +196,7 @@
         <div class="dates">
           <div>
             <span>Date of Issue: </span>
-            <span style="color: #005999">03/12/2024</span>
+            <span style="color: #005999">03/15/2024</span>
           </div>
           <div>
             <span>Valid Until: </span>
@@ -207,21 +206,21 @@
 
         <div class="member-info">
           <div>Member Information</div>
-          <div>• Member ID: GST123456</div>
-          <div>• Contact Details: info@nartecsolutions.com</div>
-          <div style="margin-left: 15px">+966 52 762 1325</div>
+          <div>• Member ID: GST-2024-001</div>
+          <div>• Contact Details: info@abctrading.com</div>
+          <div style="margin-left: 15px">+966 50 123 4567</div>
         </div>
 
         <div class="info-row">
           <span>Member ID: </span>
-          <span class="highlight">GST123456</span>
+          <span class="highlight">GST-2024-001</span>
         </div>
       </div>
 
       <div class="footer">
         <div>
           <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://gstsa1.org"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=GST-2024-001"
             alt="QR Code"
             class="qr-code"
           />
