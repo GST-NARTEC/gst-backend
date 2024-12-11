@@ -775,7 +775,6 @@ class UserController {
         id: ag.gtin.id,
         gtin: ag.gtin.gtin,
         status: ag.gtin.status,
-        usageStatus: ag.gtin.usageStatus,
         assignedAt: ag.createdAt,
         orderNumber: ag.order.orderNumber,
         orderDate: ag.order.createdAt,

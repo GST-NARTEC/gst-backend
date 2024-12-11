@@ -100,7 +100,7 @@ const processUserDeletion = async (job) => {
       if (product.gtin) {
         await prisma.gtin.update({
           where: { gtin: product.gtin },
-          data: { usageStatus: "Unused" },
+          data: { status: "Sold" },
         });
       }
     }
@@ -109,14 +109,14 @@ const processUserDeletion = async (job) => {
     await prisma.productImage.deleteMany({
       where: {
         product: {
-          userId: userId
-        }
-      }
+          userId: userId,
+        },
+      },
     });
 
     // Delete all user products
     await prisma.userProduct.deleteMany({
-      where: { userId }
+      where: { userId },
     });
 
     // Delete cart

@@ -1,8 +1,8 @@
-import prisma from "../utils/prismaClient.js";
+import { userProductSchema } from "../schemas/userProducts.schema.js";
 import MyError from "../utils/error.js";
-import response from "../utils/response.js";
-import { userProductSchema } from "../schemas/userProductSchema.js";
 import { addDomain, deleteFile } from "../utils/file.js";
+import prisma from "../utils/prismaClient.js";
+import response from "../utils/response.js";
 
 class UserProductsController {
   static async createProduct(req, res, next) {
@@ -45,7 +45,7 @@ class UserProductsController {
           throw new MyError("Invalid GTIN provided", 400);
         }
 
-        if (gtinRecord.usageStatus === "Used") {
+        if (gtinRecord.status === "Used") {
           throw new MyError("This GTIN is already in use", 400);
         }
       }
@@ -57,7 +57,7 @@ class UserProductsController {
           await prisma.gTIN.update({
             where: { gtin },
             data: {
-              usageStatus: "Used",
+              status: "Used",
             },
           });
         }
@@ -194,7 +194,7 @@ class UserProductsController {
           await prisma.gTIN.update({
             where: { gtin: product.gtin },
             data: {
-              usageStatus: "Unused",
+              status: "Sold",
             },
           });
         }

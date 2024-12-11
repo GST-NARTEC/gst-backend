@@ -19,11 +19,11 @@ import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import templateRoutes from "./template.js";
 import userRoutes from "./user.js";
+import userProductsRoutes from "./userProducts.js";
 import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-import userProductsRoutes from "./userProductsRoutes.js";
 const router = express.Router();
 
 // V1 Routes
