@@ -1,4 +1,4 @@
-import { userProductSchema } from "../schemas/userProducts.schema.js";
+import { userProductSchema } from "../schemas/userProductSchema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -151,7 +151,6 @@ class UserProductsController {
         data: {
           ...updateData,
           images: {
-            deleteMany: {},
             create: imageUrls.map((url) => ({ url })),
           },
         },
@@ -336,6 +335,47 @@ class UserProductsController {
             hasMore: page < totalPages,
           },
         })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteProductImage(req, res, next) {
+    try {
+      const { productId, imageId } = req.params;
+
+      // Check if product exists and belongs to user
+      const product = await prisma.userProduct.findFirst({
+        where: {
+          id: productId,
+          userId: req.user.id,
+        },
+        include: {
+          images: true,
+        },
+      });
+
+      if (!product) {
+        throw new MyError("Product not found or unauthorized", 404);
+      }
+
+      // Find the specific image
+      const image = product.images.find(img => img.id === imageId);
+      if (!image) {
+        throw new MyError("Image not found", 404);
+      }
+
+      // Delete physical file and database record
+      await Promise.all([
+        deleteFile(image.url),
+        prisma.productImage.delete({
+          where: { id: imageId },
+        }),
+      ]);
+
+      res.status(200).json(
+        response(200, true, "Image deleted successfully", null)
       );
     } catch (error) {
       next(error);
