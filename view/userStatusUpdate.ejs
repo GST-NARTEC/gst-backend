@@ -5,42 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Account Status Update</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.6;
+        font-family: "Inter", sans-serif;
         margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-        color: #333;
+        padding: 20px;
+        box-sizing: border-box;
       }
-      .container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 0;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-      .header {
-        background: linear-gradient(135deg, #1b365d 0%, #2c5282 100%);
-        padding: 30px 20px;
-        text-align: center;
-      }
-      .logo {
-        margin-bottom: 20px;
-      }
-      .logo img {
-        width: 180px;
-        height: auto;
+
+      .certificate {
+        max-width: 800px;
+        margin: 0 auto;
         background-color: white;
-        padding: 12px;
-        border-radius: 8px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ccc;
       }
-      .content {
-        padding: 40px 30px;
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.07;
+        width: 80%;
+        height: auto;
+        z-index: 0;
+      }
+
+      .header {
         text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
       }
+
+      .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #005999;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0 30px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
       .status-badge {
         display: inline-block;
         padding: 8px 16px;
@@ -48,78 +71,82 @@
         font-weight: bold;
         margin: 20px 0;
       }
+
       .status-active {
         background-color: #48bb78;
         color: white;
       }
+
       .status-suspended {
         background-color: #e53e3e;
         color: white;
       }
+
+      .status-info {
+        margin: 30px 0;
+        padding: 20px;
+        border-radius: 5px;
+        border-left: 4px solid #005999;
+        background-color: transparent;
+        text-align: left;
+      }
+
       .bilingual {
         display: flex;
         justify-content: space-between;
-        margin: 20px 0;
-        align-items: flex-start;
+        margin: 15px 0;
+        align-items: center;
       }
-      .status-info {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        padding: 20px;
-        margin: 20px 0;
+
+      .footer {
+        margin-top: 40px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
       }
-      .message-box {
-        text-align: left;
-        flex: 1;
-        padding: 0 15px;
+
+      .address {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+        max-width: 300px;
+        margin: 0 auto;
       }
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: #005999;
+      }
+
       .message-box.rtl {
         text-align: right;
       }
-      .footer {
-        background-color: #1b365d;
-        padding: 20px;
-        text-align: center;
-        color: white;
-      }
-      .footer img {
-        width: 100px;
-        height: auto;
-        background-color: white;
-        padding: 8px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-      }
-      .copyright {
-        font-size: 12px;
-        color: #a0aec0;
-        margin-top: 15px;
-      }
-      h2 {
-        color: #1b365d;
-        margin: 0;
-      }
+
       .rtl {
         direction: rtl;
       }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="certificate">
+      <img src="<%= logo %>" alt="Watermark" class="watermark" />
+
       <div class="header">
-        <div class="logo">
-          <img src="<%= logo %>" alt="GST Logo" />
-        </div>
+        <img src="<%= logo %>" alt="GST Logo" class="logo" />
+        <div style="color: #005999; font-size: 14px">GST</div>
+        <h1 class="title">Account Status Update / تحديث حالة الحساب</h1>
       </div>
 
       <div class="content">
         <div class="bilingual">
           <div class="message-box">
-            <h2>Account Status Update</h2>
             <p>Dear <%= user.companyNameEn %>,</p>
           </div>
           <div class="message-box rtl">
-            <h2>تحديث حالة الحساب</h2>
             <p>عزيزي <%= user.companyNameAr %>،</p>
           </div>
         </div>
@@ -141,8 +168,8 @@
               </p>
               <p>
                 For any inquiries, please contact us:<br />
-                Email: support@gst.org.sa<br />
-                Phone: +966 504420607
+                Email: <%= process.env.SUPPORT_EMAIL %><br />
+                Phone: <%= process.env.SUPPORT_PHONE %>
               </p>
             </div>
             <div class="message-box rtl">
@@ -153,8 +180,8 @@
               </p>
               <p>
                 :لأي استفسارات، يرجى الاتصال بنا<br />
-                support@gst.org.sa :البريد الإلكتروني<br />
-                الهاتف: 966504420607+
+                <%= process.env.SUPPORT_EMAIL %> :البريد الإلكتروني<br />
+                الهاتف: <%= process.env.SUPPORT_PHONE %>
               </p>
             </div>
           </div>
@@ -162,13 +189,13 @@
       </div>
 
       <div class="footer">
-        <img src="<%= logo %>" alt="GST Logo" />
-        <h2>GST Saudi Barcode Center</h2>
-        <div class="copyright">
-          Copyright © GST Saudi Arabia - <%= new Date().getFullYear() %> All
-          rights reserved.
+        <div class="address">
+          (GST) Global Standard for Technology Solution<br />
+          King Abdullah Road, Riyadh Kingdom of Saudi Arabia
         </div>
       </div>
+
+      <div class="bottom-bar"></div>
     </div>
   </body>
 </html>

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+
 import { checkoutQueue, userDeletionQueue } from "../config/queue.js";
 import {
   emailSchema,
@@ -15,9 +15,9 @@ import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import { generateToken } from "../utils/generateToken.js";
 import { generateOrderId, generateUserId } from "../utils/generateUniqueId.js";
+import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import TokenManager from "../utils/tokenManager.js";
 
 class UserController {
   static async sendEmailOTP(req, res, next) {
@@ -68,7 +68,7 @@ class UserController {
       }
 
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = JWT.verifyToken(token);
         if (decoded.otp !== otp) {
           throw new MyError("Invalid OTP", 400);
         }
@@ -115,8 +115,8 @@ class UserController {
       }
 
       const tokenPayload = { userId: user.id, email: user.email };
-      const accessToken = TokenManager.generateAccessToken(tokenPayload);
-      const refreshToken = TokenManager.generateRefreshToken(tokenPayload);
+      const accessToken = JWT.generateAccessToken(tokenPayload);
+      const refreshToken = JWT.generateRefreshToken(tokenPayload);
 
       // Store refresh token in database
       await prisma.refreshToken.create({
@@ -626,8 +626,8 @@ class UserController {
       const user = req.user;
       const tokenPayload = { userId: user.id, email: user.email };
 
-      const accessToken = TokenManager.generateAccessToken(tokenPayload);
-      const refreshToken = TokenManager.generateRefreshToken(tokenPayload);
+      const accessToken = JWT.generateAccessToken(tokenPayload);
+      const refreshToken = JWT.generateRefreshToken(tokenPayload);
 
       // Update refresh token in database
       await prisma.refreshToken.deleteMany({

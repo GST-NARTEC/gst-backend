@@ -13,15 +13,43 @@ class UserProductsController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const productData = value;
+      const { gtin: _, ...productData } = value;
 
-      // Check if user exists and is authorized
-      const user = await prisma.user.findUnique({
-        where: { id: req.user.id },
-      });
+      let user, order;
+
+      [user, order] = await Promise.all([
+        prisma.user.findUnique({
+          where: { id: req.user.id },
+        }),
+        prisma.order.findFirst({
+          where: {
+            userId: req.user.id,
+          },
+          include: {
+            assignedGtins: {
+              include: {
+                gtin: true,
+              },
+            },
+            user: true,
+          },
+        }),
+      ]);
 
       if (!user) {
+        throw new MyError("You are not authorized to create a product", 401);
+      }
+
+      if (!order) {
         throw new MyError("User not found", 404);
+      }
+
+      //   if (order.assignedGtins.length >= 10) {
+      //     throw new MyError("You have reached the maximum limit for GTINs", 400);
+      //   }
+
+      if (order.assignedGtins.length < 1) {
+        throw new MyError("User has no GTINs assigned", 400);
       }
 
       // Handle image uploads
@@ -34,49 +62,41 @@ class UserProductsController {
         }
       }
 
-      // Fetch an unused GTIN for the user
-      const unusedGtin = await prisma.gTIN.findFirst({
-        where: {
-          userId: req.user.id,
-          usageStatus: "Unused",
+      // pick random gtin from order.assignedGtins having status "Sold" and assign it to productData
+      const randomGtin = order.assignedGtins.find(
+        (gtin) => gtin.gtin.status === "Sold"
+      );
+
+      if (!randomGtin) {
+        throw new MyError("No GTIN found for product creation", 400);
+      }
+
+      // assign randomGtin to productData and update its status to "Used" in the database
+      await prisma.gTIN.update({
+        where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
+        data: {
+          status: "Used",
         },
       });
 
-      if (!unusedGtin) {
-        throw new MyError("No unused GTIN available for this user", 400);
-      }
-
-      // Create product and update GTIN status in a transaction
-      const newProduct = await prisma.$transaction(async (prisma) => {
-        // Update GTIN status
-        await prisma.gTIN.update({
-          where: { id: unusedGtin.id },
-          data: {
-            usageStatus: "Used",
+      // Then create product
+      const product = await prisma.userProduct.create({
+        data: {
+          ...productData,
+          gtin: randomGtin.gtin.gtin,
+          userId: req.user.id,
+          images: {
+            create: imageUrls.map((url) => ({ url })),
           },
-        });
-
-        // Create product
-        const product = await prisma.userProduct.create({
-          data: {
-            ...productData,
-            gtin: unusedGtin.gtin,
-            userId: req.user.id,
-            images: {
-              create: imageUrls.map((url) => ({ url })),
-            },
-          },
-          include: {
-            images: true,
-          },
-        });
-
-        return product;
+        },
+        include: {
+          images: true,
+        },
       });
 
       res.status(201).json(
         response(201, true, "Product created successfully", {
-          product: newProduct,
+          product,
         })
       );
     } catch (error) {
@@ -157,6 +177,7 @@ class UserProductsController {
     try {
       const { id } = req.params;
 
+      // Find product with user verification and include necessary relations
       const product = await prisma.userProduct.findFirst({
         where: {
           id,
@@ -171,21 +192,58 @@ class UserProductsController {
         throw new MyError("Product not found or unauthorized", 404);
       }
 
+      // Find the order and assigned GTIN
+      const order = await prisma.order.findFirst({
+        where: {
+          userId: req.user.id,
+        },
+        include: {
+          assignedGtins: {
+            include: {
+              gtin: true,
+            },
+          },
+        },
+      });
+
+      if (!order) {
+        throw new MyError("Order not found", 404);
+      }
+
+      // Find the assigned GTIN record that matches the product's GTIN
+      const assignedGtin = order.assignedGtins.find(
+        (ag) => ag.gtin.gtin === product.gtin
+      );
+
+      if (!assignedGtin) {
+        throw new MyError("GTIN assignment not found", 404);
+      }
+
       await prisma.$transaction(async (prisma) => {
-        // Delete images from storage
-        for (const image of product.images) {
-          await deleteFile(image.url);
+        // Delete physical image files from storage
+        if (product.images && product.images.length > 0) {
+          const deletePromises = product.images.map(async (image) => {
+            try {
+              await deleteFile(image.url);
+            } catch (error) {
+              console.error(`Failed to delete image file: ${image.url}`, error);
+            }
+          });
+          await Promise.all(deletePromises);
         }
 
-        // First delete all related ProductImage records
+        // Delete all related ProductImage records from database
         await prisma.productImage.deleteMany({
           where: { productId: id },
         });
 
-        // Release GTIN if exists
+        // Release GTIN if exists - update status to "Sold"
         if (product.gtin) {
           await prisma.gTIN.update({
-            where: { gtin: product.gtin },
+            where: {
+              gtin: product.gtin,
+              status: "Used",
+            },
             data: {
               usageStatus: "Unused",
             },
