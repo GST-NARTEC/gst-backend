@@ -100,7 +100,6 @@ const processUserDeletion = async (job) => {
       if (product.gtin) {
         await prisma.gtin.update({
           where: { gtin: product.gtin },
-          data: { usageStatus: "Unused" },
         });
       }
     }
