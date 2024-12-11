@@ -5,7 +5,6 @@ export const userProductSchema = Joi.object({
   description: Joi.string().allow(null, ""),
   status: Joi.string().valid("ACTIVE", "INACTIVE").default("ACTIVE"),
   sku: Joi.string().required(),
-  gtin: Joi.string().allow(null, ""),
   gpc: Joi.string().allow(null, ""),
   hsCode: Joi.string().allow(null, ""),
   packingUnit: Joi.string().allow(null, ""),

@@ -13,7 +13,7 @@ class UserProductsController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { gtin, ...productData } = value;
+      const productData = value;
 
       // Check if user exists and is authorized
       const user = await prisma.user.findUnique({
@@ -34,39 +34,33 @@ class UserProductsController {
         }
       }
 
-      // If GTIN is provided, verify and update its status
-      let gtinRecord = null;
-      if (gtin) {
-        gtinRecord = await prisma.gTIN.findUnique({
-          where: { gtin },
-        });
+      // Fetch an unused GTIN for the user
+      const unusedGtin = await prisma.gTIN.findFirst({
+        where: {
+          userId: req.user.id,
+          usageStatus: "Unused",
+        },
+      });
 
-        if (!gtinRecord) {
-          throw new MyError("Invalid GTIN provided", 400);
-        }
-
-        if (gtinRecord.usageStatus === "Used") {
-          throw new MyError("This GTIN is already in use", 400);
-        }
+      if (!unusedGtin) {
+        throw new MyError("No unused GTIN available for this user", 400);
       }
 
       // Create product and update GTIN status in a transaction
       const newProduct = await prisma.$transaction(async (prisma) => {
-        // First update GTIN status
-        if (gtinRecord) {
-          await prisma.gTIN.update({
-            where: { gtin },
-            data: {
-              usageStatus: "Used",
-            },
-          });
-        }
+        // Update GTIN status
+        await prisma.gTIN.update({
+          where: { id: unusedGtin.id },
+          data: {
+            usageStatus: "Used",
+          },
+        });
 
-        // Then create product
+        // Create product
         const product = await prisma.userProduct.create({
           data: {
             ...productData,
-            gtin,
+            gtin: unusedGtin.gtin,
             userId: req.user.id,
             images: {
               create: imageUrls.map((url) => ({ url })),
@@ -103,8 +97,7 @@ class UserProductsController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      // Remove gtin from the update data
-      const { gtin: _, ...updateData } = value;
+      const updateData = value;
 
       // Check if product exists and belongs to user
       const existingProduct = await prisma.userProduct.findFirst({
@@ -131,13 +124,13 @@ class UserProductsController {
         }
       }
 
-      // Update product (removed GTIN-related operations)
+      // Update product with new images while keeping existing ones
       const updatedProduct = await prisma.userProduct.update({
         where: { id },
         data: {
           ...updateData,
           images: {
-            deleteMany: {},
+            // Create new image records without deleting existing ones
             create: imageUrls.map((url) => ({ url })),
           },
         },
