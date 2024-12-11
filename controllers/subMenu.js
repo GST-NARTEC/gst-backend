@@ -10,6 +10,19 @@ const subMenuCreateSchema = Joi.object({
   headingAr: Joi.string().allow("", null),
   menuId: Joi.string().required(),
   pageId: Joi.string().allow(null, ""),
+  externalUrl: Joi.string().uri().allow(null, ""),
+}).custom((value, helpers) => {
+  if (value.pageId && value.externalUrl) {
+    return helpers.error("any.invalid", {
+      message: "Cannot provide both pageId and externalUrl",
+    });
+  }
+  if (!value.pageId && !value.externalUrl) {
+    return helpers.error("any.invalid", {
+      message: "Must provide either pageId or externalUrl",
+    });
+  }
+  return value;
 });
 
 const subMenuUpdateSchema = Joi.object({
@@ -19,7 +32,17 @@ const subMenuUpdateSchema = Joi.object({
   headingAr: Joi.string().allow("", null).optional(),
   menuId: Joi.string().optional(),
   pageId: Joi.string().allow(null, "").optional(),
-}).min(1);
+  externalUrl: Joi.string().uri().allow(null, "").optional(),
+})
+  .custom((value, helpers) => {
+    if (value.pageId && value.externalUrl) {
+      return helpers.error("any.invalid", {
+        message: "Cannot provide both pageId and externalUrl",
+      });
+    }
+    return value;
+  })
+  .min(1);
 
 class SubMenuController {
   static async createSubMenu(req, res, next) {
@@ -47,6 +70,8 @@ class SubMenuController {
         if (!page) {
           throw new MyError("Page not found", 404);
         }
+        // Clear externalUrl if pageId is provided
+        value.externalUrl = null;
       }
 
       const subMenu = await prisma.subMenu.create({
