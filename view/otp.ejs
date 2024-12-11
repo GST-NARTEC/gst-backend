@@ -1,233 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Verification</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-      body {
-        font-family: "Inter", sans-serif;
+      * {
         margin: 0;
-        padding: 20px;
+        padding: 0;
         box-sizing: border-box;
       }
 
-      .certificate {
-        max-width: 800px;
-        margin: 0 auto;
-        background-color: white;
-        padding: 40px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        position: relative;
+      body {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.6;
+        background-color: #f4f7fa;
+        color: #333;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 16px;
         overflow: hidden;
-        border: 1px solid #ccc;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
-      .watermark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0.07;
-        width: 80%;
-        height: auto;
-        z-index: 0;
-      }
-
-      .header {
+      .email-header {
+        background: linear-gradient(135deg, #005999 0%, #003666 100%);
+        padding: 30px;
         text-align: center;
-        margin-bottom: 40px;
-        position: relative;
-        z-index: 1;
       }
 
       .logo {
-        width: 80px;
+        width: 120px;
         height: auto;
-        margin-bottom: 5px;
+        margin-bottom: 20px;
       }
 
-      .title {
-        color: #005999;
+      .header-title {
+        color: #ffffff;
         font-size: 24px;
-        font-weight: bold;
-        margin: 10px 0 30px;
+        font-weight: 600;
+        margin-bottom: 10px;
       }
 
-      .content {
-        position: relative;
-        z-index: 1;
+      .email-content {
+        padding: 40px 30px;
+      }
+
+      .greeting {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .message {
+        margin-bottom: 30px;
+        color: #666;
+      }
+
+      .otp-container {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 30px;
         text-align: center;
-        font-size: 16px;
-        line-height: 1.6;
-      }
-
-      .otp-box {
         margin: 30px 0;
-        padding: 20px;
-        border-radius: 5px;
-        border-left: 4px solid #005999;
-        text-align: center;
+      }
+
+      .otp-label {
+        font-size: 16px;
+        color: #64748b;
+        margin-bottom: 15px;
+        font-weight: 500;
       }
 
       .otp-code {
         font-size: 36px;
         letter-spacing: 8px;
         color: #005999;
-        font-weight: bold;
-        margin: 20px 0;
+        font-weight: 700;
+        background: #ffffff;
+        padding: 15px 25px;
+        border-radius: 8px;
+        border: 2px dashed #005999;
+        display: inline-block;
+        margin: 10px 0;
       }
 
-      .warning {
-        margin: 30px 0;
-        padding: 20px;
-        border-radius: 5px;
-        border-left: 4px solid #00a86b;
-        background-color: transparent;
-        text-align: left;
-      }
-
-      .footer {
-        margin-top: 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        position: relative;
-        z-index: 1;
-      }
-
-      .qr-code {
-        width: 100px;
-        height: 100px;
-      }
-
-      .address {
+      .expiry-text {
+        color: #dc2626;
         font-size: 14px;
-        color: #666;
-        margin-top: 10px;
-        max-width: 300px;
+        margin-top: 15px;
+        font-weight: 500;
       }
 
-      .stamp {
+      .notice {
+        background: #fef2f2;
+        border-left: 4px solid #dc2626;
+        padding: 15px;
+        margin: 30px 0;
+        border-radius: 4px;
+      }
+
+      .email-footer {
+        background: #f8fafc;
+        padding: 30px;
         text-align: center;
-        padding: 20px;
-        border: 2px solid #005999;
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #005999;
+        border-top: 1px solid #e2e8f0;
       }
 
-      .bottom-bar {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 10px;
-        background-color: #005999;
+      .footer-text {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .social-links {
+        margin-bottom: 20px;
+      }
+
+      .social-link {
+        display: inline-block;
+        margin: 0 10px;
+        color: #005999;
+        text-decoration: none;
+      }
+
+      .footer-address {
+        font-size: 12px;
+        color: #94a3b8;
       }
 
       .bilingual {
         display: flex;
         justify-content: space-between;
-        margin: 15px 0;
-        align-items: center;
+        align-items: flex-start;
+        gap: 20px;
+      }
+
+      .arabic {
+        text-align: right;
       }
     </style>
   </head>
   <body>
-    <div class="certificate">
-      <img src="<%= logo %>" alt="Watermark" class="watermark" />
-
-      <div class="header">
+    <div class="email-container">
+      <div class="email-header">
         <img src="<%= logo %>" alt="GST Logo" class="logo" />
-        <div style="color: #005999; font-size: 14px">GST</div>
-        <h1 class="title">Email Verification / التحقق من البريد الإلكتروني</h1>
+        <div class="header-title">
+          Email Verification / التحقق من البريد الإلكتروني
+        </div>
       </div>
 
-      <div class="content">
-        <div class="bilingual">
-          <p>Hello!</p>
-          <p>!مرحباً</p>
+      <div class="email-content">
+        <div class="greeting">
+          <span>Hello!</span>
+          <span class="arabic">!مرحباً</span>
         </div>
 
-        <div class="bilingual">
-          <p>
+        <div class="bilingual message">
+          <span>
             Thank you for registering with GST Saudi Barcode Center. To complete
-            your registration, please use the following verification code:
-          </p>
-          <p style="text-align: right">
+            your registration, please use the verification code below:
+          </span>
+          <span class="arabic">
             شكراً لتسجيلك في مركز GST السعودي للباركود. لإكمال تسجيلك، يرجى
-            استخدام رمز التحقق التالي:
-          </p>
+            استخدام رمز التحقق أدناه:
+          </span>
         </div>
 
-        <div class="otp-box">
-          <div
-            style="
-              font-weight: 600;
-              color: #005999;
-              margin-bottom: 10px;
-              font-size: 18px;
-            "
-          >
-            Verification Code / رمز التحقق
-          </div>
+        <div class="otp-container">
+          <div class="otp-label">Verification Code / رمز التحقق</div>
           <div class="otp-code"><%= otp %></div>
-        </div>
-
-        <div class="warning">
-          <div class="bilingual">
-            <p>
-              <strong>Important:</strong> This verification code will expire in
-              5 minutes for security purposes.
-            </p>
-            <p style="text-align: right">
-              <strong>هام:</strong> سينتهي رمز التحقق هذا خلال 5 دقائق لأغراض
-              أمنية.
-            </p>
+          <div class="expiry-text">
+            Expires in 5 minutes / ينتهي خلال 5 دقائق
           </div>
         </div>
 
-        <div class="bilingual" style="color: #666; font-size: 14px">
-          <p>
-            If you didn't request this code, please ignore this email or contact
-            support if you have concerns.
-          </p>
-          <p style="text-align: right">
-            إذا لم تطلب هذا الرمز، يرجى تجاهل هذا البريد الإلكتروني أو الاتصال
-            بالدعم إذا كان لديك أي مخاوف.
-          </p>
+        <div class="notice bilingual">
+          <span>
+            <strong>Note:</strong> If you didn't request this code, please
+            ignore this email or contact support.
+          </span>
+          <span class="arabic">
+            <strong>ملاحظة:</strong> إذا لم تطلب هذا الرمز، يرجى تجاهل هذا
+            البريد الإلكتروني أو الاتصال بالدعم.
+          </span>
         </div>
       </div>
 
-      <div class="footer">
-        <div>
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=<%= otp %>"
-            alt="QR Code"
-            class="qr-code"
-          />
-          <div class="address">
-            (GST) Global Standard for Technology Solution King Abdullah Road,
-            Riyadh Kingdom of Saudi Arabia
-          </div>
+      <div class="email-footer">
+        <div class="footer-text">GST Saudi Barcode Center</div>
+        <div class="social-links">
+          <a href="#" class="social-link">Website</a>
+          <a href="#" class="social-link">Support</a>
+          <a href="#" class="social-link">Contact</a>
         </div>
-        <div class="stamp">
-          <div>
-            <div>GST</div>
-            <div style="font-size: 24px; font-weight: bold">VERIFY</div>
-            <div>2024</div>
-          </div>
+        <div class="footer-address">
+          Global Standard for Technology Solution<br />
+          King Abdullah Road, Riyadh<br />
+          Kingdom of Saudi Arabia
         </div>
       </div>
-
-      <div class="bottom-bar"></div>
     </div>
   </body>
 </html>
