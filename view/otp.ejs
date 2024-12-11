@@ -146,19 +146,25 @@
 
       <div class="header">
         <img src="<%= logo %>" alt="GST Logo" class="logo" />
-        <div style="color: #005999; font-size: 14px"><%= company %></div>
-        <h1 class="title"><%= title %></h1>
+        <div style="color: #005999; font-size: 14px">GST</div>
+        <h1 class="title">Email Verification / التحقق من البريد الإلكتروني</h1>
       </div>
 
       <div class="content">
         <div class="bilingual">
-          <p><%= greeting.en %></p>
-          <p><%= greeting.ar %></p>
+          <p>Hello!</p>
+          <p>!مرحباً</p>
         </div>
 
         <div class="bilingual">
-          <p><%= message.en %></p>
-          <p style="text-align: right"><%= message.ar %></p>
+          <p>
+            Thank you for registering with GST Saudi Barcode Center. To complete
+            your registration, please use the following verification code:
+          </p>
+          <p style="text-align: right">
+            شكراً لتسجيلك في مركز GST السعودي للباركود. لإكمال تسجيلك، يرجى
+            استخدام رمز التحقق التالي:
+          </p>
         </div>
 
         <div class="otp-box">
@@ -170,36 +176,53 @@
               font-size: 18px;
             "
           >
-            <%= otpLabel.en %> / <%= otpLabel.ar %>
+            Verification Code / رمز التحقق
           </div>
           <div class="otp-code"><%= otp %></div>
         </div>
 
         <div class="warning">
           <div class="bilingual">
-            <p><%= warning.en %></p>
-            <p style="text-align: right"><%= warning.ar %></p>
+            <p>
+              <strong>Important:</strong> This verification code will expire in
+              5 minutes for security purposes.
+            </p>
+            <p style="text-align: right">
+              <strong>هام:</strong> سينتهي رمز التحقق هذا خلال 5 دقائق لأغراض
+              أمنية.
+            </p>
           </div>
         </div>
 
         <div class="bilingual" style="color: #666; font-size: 14px">
-          <p><%= disclaimer.en %></p>
-          <p style="text-align: right"><%= disclaimer.ar %></p>
+          <p>
+            If you didn't request this code, please ignore this email or contact
+            support if you have concerns.
+          </p>
+          <p style="text-align: right">
+            إذا لم تطلب هذا الرمز، يرجى تجاهل هذا البريد الإلكتروني أو الاتصال
+            بالدعم إذا كان لديك أي مخاوف.
+          </p>
         </div>
       </div>
 
       <div class="footer">
         <div>
-          <img src="<%= qrCode %>" alt="QR Code" class="qr-code" />
-          <div class="address"><%= address %></div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=GST-OTP-VERIFY"
+            alt="QR Code"
+            class="qr-code"
+          />
+          <div class="address">
+            (GST) Global Standard for Technology Solution King Abdullah Road,
+            Riyadh Kingdom of Saudi Arabia
+          </div>
         </div>
         <div class="stamp">
           <div>
-            <div><%= stamp.text %></div>
-            <div style="font-size: 24px; font-weight: bold">
-              <%= stamp.status %>
-            </div>
-            <div><%= stamp.year %></div>
+            <div>GST</div>
+            <div style="font-size: 24px; font-weight: bold">VERIFY</div>
+            <div>2024</div>
           </div>
         </div>
       </div>

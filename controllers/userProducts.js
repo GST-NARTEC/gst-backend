@@ -8,8 +8,6 @@ class UserProductsController {
   static async createProduct(req, res, next) {
     let imagePaths = [];
     try {
-      console.log("Files:", req.files);
-      console.log("Body:", req.body);
       const { error, value } = userProductSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);

@@ -1,6 +1,6 @@
 import MyError from "../utils/error.js";
+import JWT from "../utils/jwt.js";
 import prisma from "../utils/prismaClient.js";
-import TokenManager from "../utils/tokenManager.js";
 
 export const verifyAccessToken = async (req, res, next) => {
   try {
@@ -15,7 +15,7 @@ export const verifyAccessToken = async (req, res, next) => {
     }
 
     try {
-      const decoded = TokenManager.verifyAccessToken(token);
+      const decoded = JWT.verifyAccessToken(token);
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
       });
@@ -45,7 +45,7 @@ export const verifyRefreshToken = async (req, res, next) => {
     }
 
     try {
-      const decoded = TokenManager.verifyRefreshToken(refreshToken);
+      const decoded = JWT.verifyRefreshToken(refreshToken);
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
       });
