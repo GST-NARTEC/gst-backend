@@ -7,7 +7,7 @@ import { verifyAccessToken } from "../middlewares/auth.js";
 const router = express.Router();
 
 const productUpload = uploadMultiple({
-  destination: "uploads/userProducts",
+  destination: "uploads/images",
   fields: [{ name: "images", maxCount: 5, fileTypes: ["images"] }],
   fileSizeLimit: 5 * 1024 * 1024,
 });
