@@ -26,6 +26,7 @@ import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
 import unitCodeRoutes from "./unitCode.js";
+
 const router = express.Router();
 
 // V1 Routes
