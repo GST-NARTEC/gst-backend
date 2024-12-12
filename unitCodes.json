@@ -1,0 +1,2658 @@
+[
+  {
+    "id": "220",
+    "unit_code": "M62",
+    "unit_name": "KilometrePerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T05:06:21.826Z",
+    "updated_at": "2024-07-02T08:50:15.460Z"
+  },
+  {
+    "id": "219",
+    "unit_code": "M60",
+    "unit_name": "MetrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T05:06:03.896Z",
+    "updated_at": "2024-07-02T08:50:04.571Z"
+  },
+  {
+    "id": "341",
+    "unit_code": "YRD",
+    "unit_name": "Yard",
+    "status": 1,
+    "created_at": "2022-09-11T05:41:05.226Z",
+    "updated_at": "2022-09-11T05:41:05.226Z"
+  },
+  {
+    "id": "340",
+    "unit_code": "YDK",
+    "unit_name": "SquareYard",
+    "status": 1,
+    "created_at": "2022-09-11T05:40:49.826Z",
+    "updated_at": "2022-09-11T05:40:49.826Z"
+  },
+  {
+    "id": "339",
+    "unit_code": "XST",
+    "unit_name": "Sheet",
+    "status": 1,
+    "created_at": "2022-09-11T05:40:36.363Z",
+    "updated_at": "2022-09-11T05:40:36.363Z"
+  },
+  {
+    "id": "338",
+    "unit_code": "XRO",
+    "unit_name": "Roll",
+    "status": 1,
+    "created_at": "2022-09-11T05:40:20.020Z",
+    "updated_at": "2022-09-11T05:40:20.020Z"
+  },
+  {
+    "id": "337",
+    "unit_code": "XRE",
+    "unit_name": "RetinolEquivalent(RE)",
+    "status": 1,
+    "created_at": "2022-09-11T05:40:05.093Z",
+    "updated_at": "2022-09-11T05:40:05.093Z"
+  },
+  {
+    "id": "336",
+    "unit_code": "X_UIN",
+    "unit_name": "TenThousandthsofanInch",
+    "status": 1,
+    "created_at": "2022-09-11T05:39:50.273Z",
+    "updated_at": "2022-09-11T05:39:50.273Z"
+  },
+  {
+    "id": "335",
+    "unit_code": "X_SPS",
+    "unit_name": "Samplepersecond",
+    "status": 1,
+    "created_at": "2022-09-11T05:39:37.096Z",
+    "updated_at": "2022-09-11T05:39:37.096Z"
+  },
+  {
+    "id": "334",
+    "unit_code": "X_SIN",
+    "unit_name": "ThirtySecondsofanInch",
+    "status": 1,
+    "created_at": "2022-09-11T05:39:22.716Z",
+    "updated_at": "2022-09-11T05:39:22.716Z"
+  },
+  {
+    "id": "333",
+    "unit_code": "X_SER",
+    "unit_name": null,
+    "status": 1,
+    "created_at": "2022-09-11T05:39:09.460Z",
+    "updated_at": "2022-09-11T05:39:09.460Z"
+  },
+  {
+    "id": "332",
+    "unit_code": "X_RAE",
+    "unit_name": "RetinolActivityEquivalents",
+    "status": 1,
+    "created_at": "2022-09-11T05:38:56.586Z",
+    "updated_at": "2022-09-11T05:38:56.586Z"
+  },
+  {
+    "id": "331",
+    "unit_code": "X_PPI",
+    "unit_name": "Pixelperinch",
+    "status": 1,
+    "created_at": "2022-09-11T05:38:42.890Z",
+    "updated_at": "2022-09-11T05:38:42.890Z"
+  },
+  {
+    "id": "330",
+    "unit_code": "X_PPC",
+    "unit_name": "Pixelpercentimetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:38:29.746Z",
+    "updated_at": "2022-09-11T05:38:29.746Z"
+  },
+  {
+    "id": "329",
+    "unit_code": "X_NGM",
+    "unit_name": "Nanogram",
+    "status": 1,
+    "created_at": "2022-09-11T05:38:15.600Z",
+    "updated_at": "2022-09-11T05:38:15.600Z"
+  },
+  {
+    "id": "328",
+    "unit_code": "X_MTC",
+    "unit_name": "Mothertincture(Drymaterial)",
+    "status": 1,
+    "created_at": "2022-09-11T05:38:02.900Z",
+    "updated_at": "2022-09-11T05:38:02.900Z"
+  },
+  {
+    "id": "327",
+    "unit_code": "X_MPG",
+    "unit_name": "MilesPerGallon",
+    "status": 1,
+    "created_at": "2022-09-11T05:37:41.383Z",
+    "updated_at": "2022-09-11T05:37:41.383Z"
+  },
+  {
+    "id": "326",
+    "unit_code": "X_MLM",
+    "unit_name": "Millesimai(LM)",
+    "status": 1,
+    "created_at": "2022-09-11T05:37:27.496Z",
+    "updated_at": "2022-09-11T05:37:27.496Z"
+  },
+  {
+    "id": "325",
+    "unit_code": "X_KVN",
+    "unit_name": "Korsakovian(K)",
+    "status": 1,
+    "created_at": "2022-09-11T05:37:13.393Z",
+    "updated_at": "2022-09-11T05:37:13.393Z"
+  },
+  {
+    "id": "324",
+    "unit_code": "X_IUK",
+    "unit_name": "InternationalUnitsperKilogram(IU/kg)",
+    "status": 1,
+    "created_at": "2022-09-11T05:36:58.583Z",
+    "updated_at": "2022-09-11T05:36:58.583Z"
+  },
+  {
+    "id": "323",
+    "unit_code": "X_HIN",
+    "unit_name": "HundredthsofanInch",
+    "status": 1,
+    "created_at": "2022-09-11T05:36:44.886Z",
+    "updated_at": "2022-09-11T05:36:44.886Z"
+  },
+  {
+    "id": "322",
+    "unit_code": "X_DWT",
+    "unit_name": "PennyWeight",
+    "status": 1,
+    "created_at": "2022-09-11T05:36:29.836Z",
+    "updated_at": "2022-09-11T05:36:29.836Z"
+  },
+  {
+    "id": "321",
+    "unit_code": "X_DBA",
+    "unit_name": "Decibar",
+    "status": 1,
+    "created_at": "2022-09-11T05:36:15.426Z",
+    "updated_at": "2022-09-11T05:36:15.426Z"
+  },
+  {
+    "id": "320",
+    "unit_code": "X_CHD",
+    "unit_name": "CentisimalHahnemannianDilution(CH)",
+    "status": 1,
+    "created_at": "2022-09-11T05:35:58.853Z",
+    "updated_at": "2022-09-11T05:35:58.853Z"
+  },
+  {
+    "id": "319",
+    "unit_code": "X_CFP",
+    "unit_name": "ColonyFormingUnitsperPound(CFU/lb)",
+    "status": 1,
+    "created_at": "2022-09-11T05:35:41.290Z",
+    "updated_at": "2022-09-11T05:35:41.290Z"
+  },
+  {
+    "id": "318",
+    "unit_code": "X_CFG",
+    "unit_name": "ColonyFormingUnitspergram(CFU/g)",
+    "status": 1,
+    "created_at": "2022-09-11T05:35:26.200Z",
+    "updated_at": "2022-09-11T05:35:26.200Z"
+  },
+  {
+    "id": "317",
+    "unit_code": "X_CCA",
+    "unit_name": "ColdCrampAmp",
+    "status": 1,
+    "created_at": "2022-09-11T05:35:10.163Z",
+    "updated_at": "2022-09-11T05:35:10.163Z"
+  },
+  {
+    "id": "316",
+    "unit_code": "WTT",
+    "unit_name": "Watt",
+    "status": 1,
+    "created_at": "2022-09-11T05:34:56.583Z",
+    "updated_at": "2022-09-11T05:34:56.583Z"
+  },
+  {
+    "id": "315",
+    "unit_code": "WHR",
+    "unit_name": "Watthour",
+    "status": 1,
+    "created_at": "2022-09-11T05:34:26.456Z",
+    "updated_at": "2022-09-11T05:34:26.456Z"
+  },
+  {
+    "id": "314",
+    "unit_code": "WEE",
+    "unit_name": "Week",
+    "status": 1,
+    "created_at": "2022-09-11T05:34:13.266Z",
+    "updated_at": "2022-09-11T05:34:13.266Z"
+  },
+  {
+    "id": "313",
+    "unit_code": "VLT",
+    "unit_name": "Volt",
+    "status": 1,
+    "created_at": "2022-09-11T05:33:58.980Z",
+    "updated_at": "2022-09-11T05:33:58.980Z"
+  },
+  {
+    "id": "312",
+    "unit_code": "V2",
+    "unit_name": "Pouch",
+    "status": 1,
+    "created_at": "2022-09-11T05:33:43.243Z",
+    "updated_at": "2022-09-11T05:33:43.243Z"
+  },
+  {
+    "id": "311",
+    "unit_code": "UZ",
+    "unit_name": "FiftyCount",
+    "status": 1,
+    "created_at": "2022-09-11T05:33:29.346Z",
+    "updated_at": "2022-09-11T05:33:29.346Z"
+  },
+  {
+    "id": "310",
+    "unit_code": "UY",
+    "unit_name": "FiftySquareFeet",
+    "status": 1,
+    "created_at": "2022-09-11T05:33:16.513Z",
+    "updated_at": "2022-09-11T05:33:16.513Z"
+  },
+  {
+    "id": "309",
+    "unit_code": "UN",
+    "unit_name": "Unit",
+    "status": 1,
+    "created_at": "2022-09-11T05:33:02.283Z",
+    "updated_at": "2022-09-11T05:33:02.283Z"
+  },
+  {
+    "id": "308",
+    "unit_code": "UA",
+    "unit_name": "Torr",
+    "status": 1,
+    "created_at": "2022-09-11T05:32:48.686Z",
+    "updated_at": "2022-09-11T05:32:48.686Z"
+  },
+  {
+    "id": "307",
+    "unit_code": "U2",
+    "unit_name": "Tablet",
+    "status": 1,
+    "created_at": "2022-09-11T05:32:27.360Z",
+    "updated_at": "2022-09-11T05:32:27.360Z"
+  },
+  {
+    "id": "306",
+    "unit_code": "TY",
+    "unit_name": "Tray",
+    "status": 1,
+    "created_at": "2022-09-11T05:32:13.926Z",
+    "updated_at": "2022-09-11T05:32:13.926Z"
+  },
+  {
+    "id": "305",
+    "unit_code": "TPI",
+    "unit_name": "TeethPerInch",
+    "status": 1,
+    "created_at": "2022-09-11T05:31:58.546Z",
+    "updated_at": "2022-09-11T05:31:58.546Z"
+  },
+  {
+    "id": "304",
+    "unit_code": "TNE",
+    "unit_name": "Tonne",
+    "status": 1,
+    "created_at": "2022-09-11T05:31:43.280Z",
+    "updated_at": "2022-09-11T05:31:43.280Z"
+  },
+  {
+    "id": "303",
+    "unit_code": "TM",
+    "unit_name": "ThousandFeet",
+    "status": 1,
+    "created_at": "2022-09-11T05:31:26.903Z",
+    "updated_at": "2022-09-11T05:31:26.903Z"
+  },
+  {
+    "id": "302",
+    "unit_code": "TK",
+    "unit_name": "Tank",
+    "status": 1,
+    "created_at": "2022-09-11T05:31:12.446Z",
+    "updated_at": "2022-09-11T05:31:12.446Z"
+  },
+  {
+    "id": "301",
+    "unit_code": "TE",
+    "unit_name": "Tote",
+    "status": 1,
+    "created_at": "2022-09-11T05:30:50.593Z",
+    "updated_at": "2022-09-11T05:30:50.593Z"
+  },
+  {
+    "id": "300",
+    "unit_code": "TC",
+    "unit_name": "Truckload",
+    "status": 1,
+    "created_at": "2022-09-11T05:30:37.313Z",
+    "updated_at": "2022-09-11T05:30:37.313Z"
+  },
+  {
+    "id": "299",
+    "unit_code": "T3",
+    "unit_name": "Thousandpiece",
+    "status": 1,
+    "created_at": "2022-09-11T05:30:22.913Z",
+    "updated_at": "2022-09-11T05:30:22.913Z"
+  },
+  {
+    "id": "298",
+    "unit_code": "SX",
+    "unit_name": "Shipment",
+    "status": 1,
+    "created_at": "2022-09-11T05:30:08.916Z",
+    "updated_at": "2022-09-11T05:30:08.916Z"
+  },
+  {
+    "id": "297",
+    "unit_code": "STN",
+    "unit_name": "Ton(US)orshortton(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T05:29:56.286Z",
+    "updated_at": "2022-09-11T05:29:56.286Z"
+  },
+  {
+    "id": "296",
+    "unit_code": "SQE",
+    "unit_name": "SQ-E",
+    "status": 1,
+    "created_at": "2022-09-11T05:29:42.786Z",
+    "updated_at": "2022-09-11T05:29:42.786Z"
+  },
+  {
+    "id": "295",
+    "unit_code": "SMI",
+    "unit_name": "Mile(statutemile)",
+    "status": 1,
+    "created_at": "2022-09-11T05:29:19.143Z",
+    "updated_at": "2022-09-11T05:29:19.143Z"
+  },
+  {
+    "id": "294",
+    "unit_code": "SH",
+    "unit_name": "Sheet",
+    "status": 1,
+    "created_at": "2022-09-11T05:29:02.903Z",
+    "updated_at": "2022-09-11T05:29:02.903Z"
+  },
+  {
+    "id": "293",
+    "unit_code": "SET",
+    "unit_name": "Set",
+    "status": 1,
+    "created_at": "2022-09-11T05:28:47.483Z",
+    "updated_at": "2022-09-11T05:28:47.483Z"
+  },
+  {
+    "id": "292",
+    "unit_code": "SEC",
+    "unit_name": "Second(unitoftime)",
+    "status": 1,
+    "created_at": "2022-09-11T05:28:29.813Z",
+    "updated_at": "2022-09-11T05:28:29.813Z"
+  },
+  {
+    "id": "291",
+    "unit_code": "S4",
+    "unit_name": "SquareMetre/Second",
+    "status": 1,
+    "created_at": "2022-09-11T05:28:15.960Z",
+    "updated_at": "2022-09-11T05:28:15.960Z"
+  },
+  {
+    "id": "290",
+    "unit_code": "RPM",
+    "unit_name": "RevolutionsPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T05:28:01.086Z",
+    "updated_at": "2022-09-11T05:28:01.086Z"
+  },
+  {
+    "id": "289",
+    "unit_code": "RL",
+    "unit_name": "Roll",
+    "status": 1,
+    "created_at": "2022-09-11T05:27:39.030Z",
+    "updated_at": "2022-09-11T05:27:39.030Z"
+  },
+  {
+    "id": "288",
+    "unit_code": "R9",
+    "unit_name": "Thousandcubicmetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:27:24.813Z",
+    "updated_at": "2022-09-11T05:27:24.813Z"
+  },
+  {
+    "id": "287",
+    "unit_code": "QTL",
+    "unit_name": "Liquidquart(US)",
+    "status": 1,
+    "created_at": "2022-09-11T05:27:09.416Z",
+    "updated_at": "2022-09-11T05:27:09.416Z"
+  },
+  {
+    "id": "286",
+    "unit_code": "QTD",
+    "unit_name": "Quart(USdry)",
+    "status": 1,
+    "created_at": "2022-09-11T05:26:55.370Z",
+    "updated_at": "2022-09-11T05:26:55.370Z"
+  },
+  {
+    "id": "285",
+    "unit_code": "QB",
+    "unit_name": "Page-hardcopy",
+    "status": 1,
+    "created_at": "2022-09-11T05:26:39.590Z",
+    "updated_at": "2022-09-11T05:26:39.590Z"
+  },
+  {
+    "id": "284",
+    "unit_code": "Q34",
+    "unit_name": "Nanolitre",
+    "status": 1,
+    "created_at": "2022-09-11T05:26:24.780Z",
+    "updated_at": "2022-09-11T05:26:24.780Z"
+  },
+  {
+    "id": "283",
+    "unit_code": "Q33",
+    "unit_name": "Picolitre",
+    "status": 1,
+    "created_at": "2022-09-11T05:26:09.340Z",
+    "updated_at": "2022-09-11T05:26:09.340Z"
+  },
+  {
+    "id": "282",
+    "unit_code": "Q32",
+    "unit_name": "Femtolitre",
+    "status": 1,
+    "created_at": "2022-09-11T05:25:55.110Z",
+    "updated_at": "2022-09-11T05:25:55.110Z"
+  },
+  {
+    "id": "281",
+    "unit_code": "Q30",
+    "unit_name": "pH(potentialofHydrogen)",
+    "status": 1,
+    "created_at": "2022-09-11T05:25:40.746Z",
+    "updated_at": "2022-09-11T05:25:40.746Z"
+  },
+  {
+    "id": "280",
+    "unit_code": "PTN",
+    "unit_name": "Portion",
+    "status": 1,
+    "created_at": "2022-09-11T05:25:23.866Z",
+    "updated_at": "2022-09-11T05:25:23.866Z"
+  },
+  {
+    "id": "279",
+    "unit_code": "PTL",
+    "unit_name": "Liquidpint(US)",
+    "status": 1,
+    "created_at": "2022-09-11T05:25:10.076Z",
+    "updated_at": "2022-09-11T05:25:10.076Z"
+  },
+  {
+    "id": "278",
+    "unit_code": "PTI",
+    "unit_name": "Pint(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T05:24:55.470Z",
+    "updated_at": "2022-09-11T05:24:55.470Z"
+  },
+  {
+    "id": "277",
+    "unit_code": "PTD",
+    "unit_name": "DryPint(US)",
+    "status": 1,
+    "created_at": "2022-09-11T05:24:42.273Z",
+    "updated_at": "2022-09-11T05:24:42.273Z"
+  },
+  {
+    "id": "276",
+    "unit_code": "PS",
+    "unit_name": "Pound-forcepersquareinch",
+    "status": 1,
+    "created_at": "2022-09-11T05:24:29.503Z",
+    "updated_at": "2022-09-11T05:24:29.503Z"
+  },
+  {
+    "id": "275",
+    "unit_code": "PRS",
+    "unit_name": "PotentialRenalSoluteLoad",
+    "status": 1,
+    "created_at": "2022-09-11T05:24:14.810Z",
+    "updated_at": "2022-09-11T05:24:14.810Z"
+  },
+  {
+    "id": "274",
+    "unit_code": "PR",
+    "unit_name": "Pair",
+    "status": 1,
+    "created_at": "2022-09-11T05:23:59.343Z",
+    "updated_at": "2022-09-11T05:23:59.343Z"
+  },
+  {
+    "id": "273",
+    "unit_code": "PNT",
+    "unit_name": "Point",
+    "status": 1,
+    "created_at": "2022-09-11T05:23:42.940Z",
+    "updated_at": "2022-09-11T05:23:42.940Z"
+  },
+  {
+    "id": "272",
+    "unit_code": "PN",
+    "unit_name": "PoundsNet",
+    "status": 1,
+    "created_at": "2022-09-11T05:23:29.403Z",
+    "updated_at": "2022-09-11T05:23:29.403Z"
+  },
+  {
+    "id": "271",
+    "unit_code": "PL",
+    "unit_name": "Pallet/UnitLoad",
+    "status": 1,
+    "created_at": "2022-09-11T05:23:13.036Z",
+    "updated_at": "2022-09-11T05:23:13.036Z"
+  },
+  {
+    "id": "270",
+    "unit_code": "PK",
+    "unit_name": "Package",
+    "status": 1,
+    "created_at": "2022-09-11T05:22:57.360Z",
+    "updated_at": "2022-09-11T05:22:57.360Z"
+  },
+  {
+    "id": "269",
+    "unit_code": "PH",
+    "unit_name": "Pack",
+    "status": 1,
+    "created_at": "2022-09-11T05:22:43.620Z",
+    "updated_at": "2022-09-11T05:22:43.620Z"
+  },
+  {
+    "id": "268",
+    "unit_code": "PFU",
+    "unit_name": "PlaqueFormingunit(s)",
+    "status": 1,
+    "created_at": "2022-09-11T05:22:29.070Z",
+    "updated_at": "2022-09-11T05:22:29.070Z"
+  },
+  {
+    "id": "267",
+    "unit_code": "PE",
+    "unit_name": "PoundsEquivalent",
+    "status": 1,
+    "created_at": "2022-09-11T05:22:15.393Z",
+    "updated_at": "2022-09-11T05:22:15.393Z"
+  },
+  {
+    "id": "266",
+    "unit_code": "PD",
+    "unit_name": "Pad",
+    "status": 1,
+    "created_at": "2022-09-11T05:22:00.083Z",
+    "updated_at": "2022-09-11T05:22:00.083Z"
+  },
+  {
+    "id": "265",
+    "unit_code": "PAL",
+    "unit_name": "Pascal",
+    "status": 1,
+    "created_at": "2022-09-11T05:21:45.086Z",
+    "updated_at": "2022-09-11T05:21:45.086Z"
+  },
+  {
+    "id": "264",
+    "unit_code": "PA",
+    "unit_name": "Pail",
+    "status": 1,
+    "created_at": "2022-09-11T05:21:30.840Z",
+    "updated_at": "2022-09-11T05:21:30.840Z"
+  },
+  {
+    "id": "263",
+    "unit_code": "P1",
+    "unit_name": "Percent",
+    "status": 1,
+    "created_at": "2022-09-11T05:21:16.466Z",
+    "updated_at": "2022-09-11T05:21:16.466Z"
+  },
+  {
+    "id": "262",
+    "unit_code": "OZI",
+    "unit_name": "Fluidounce(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T05:20:58.873Z",
+    "updated_at": "2022-09-11T05:20:58.873Z"
+  },
+  {
+    "id": "261",
+    "unit_code": "OZA",
+    "unit_name": "Fluidounce(US)",
+    "status": 1,
+    "created_at": "2022-09-11T05:20:44.853Z",
+    "updated_at": "2022-09-11T05:20:44.853Z"
+  },
+  {
+    "id": "260",
+    "unit_code": "OPM",
+    "unit_name": "OscillationsPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T05:20:30.150Z",
+    "updated_at": "2022-09-11T05:20:30.150Z"
+  },
+  {
+    "id": "259",
+    "unit_code": "ONZ",
+    "unit_name": "Ounce",
+    "status": 1,
+    "created_at": "2022-09-11T05:20:15.563Z",
+    "updated_at": "2022-09-11T05:20:15.563Z"
+  },
+  {
+    "id": "258",
+    "unit_code": "ON",
+    "unit_name": "Ouncespersquareyard",
+    "status": 1,
+    "created_at": "2022-09-11T05:20:01.650Z",
+    "updated_at": "2022-09-11T05:20:01.650Z"
+  },
+  {
+    "id": "257",
+    "unit_code": "OHM",
+    "unit_name": "Ohm",
+    "status": 1,
+    "created_at": "2022-09-11T05:19:40.996Z",
+    "updated_at": "2022-09-11T05:19:40.996Z"
+  },
+  {
+    "id": "256",
+    "unit_code": "NU",
+    "unit_name": "NewtonMetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:19:23.856Z",
+    "updated_at": "2022-09-11T05:19:23.856Z"
+  },
+  {
+    "id": "255",
+    "unit_code": "NT",
+    "unit_name": "Trailer",
+    "status": 1,
+    "created_at": "2022-09-11T05:19:09.970Z",
+    "updated_at": "2022-09-11T05:19:09.970Z"
+  },
+  {
+    "id": "254",
+    "unit_code": "NPR",
+    "unit_name": "Numberofpairs",
+    "status": 1,
+    "created_at": "2022-09-11T05:18:54.770Z",
+    "updated_at": "2022-09-11T05:18:54.770Z"
+  },
+  {
+    "id": "253",
+    "unit_code": "NIU",
+    "unit_name": "NumberofInternationalUnits",
+    "status": 1,
+    "created_at": "2022-09-11T05:18:40.743Z",
+    "updated_at": "2022-09-11T05:18:40.743Z"
+  },
+  {
+    "id": "252",
+    "unit_code": "NEW",
+    "unit_name": "Newton",
+    "status": 1,
+    "created_at": "2022-09-11T05:18:22.306Z",
+    "updated_at": "2022-09-11T05:18:22.306Z"
+  },
+  {
+    "id": "251",
+    "unit_code": "NCL",
+    "unit_name": "Numberofcells",
+    "status": 1,
+    "created_at": "2022-09-11T05:18:04.360Z",
+    "updated_at": "2022-09-11T05:18:04.360Z"
+  },
+  {
+    "id": "250",
+    "unit_code": "NA",
+    "unit_name": "MilligramperKilogram(mg/kg)",
+    "status": 1,
+    "created_at": "2022-09-11T05:17:46.976Z",
+    "updated_at": "2022-09-11T05:17:46.976Z"
+  },
+  {
+    "id": "249",
+    "unit_code": "MX",
+    "unit_name": "ModPallet(Mixed)",
+    "status": 1,
+    "created_at": "2022-09-11T05:17:32.220Z",
+    "updated_at": "2022-09-11T05:17:32.220Z"
+  },
+  {
+    "id": "248",
+    "unit_code": "MWH",
+    "unit_name": "Megawatthour(1000kW.h)",
+    "status": 1,
+    "created_at": "2022-09-11T05:17:10.786Z",
+    "updated_at": "2022-09-11T05:17:10.786Z"
+  },
+  {
+    "id": "247",
+    "unit_code": "MTS",
+    "unit_name": "MetrePerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T05:16:46.143Z",
+    "updated_at": "2022-09-11T05:16:46.143Z"
+  },
+  {
+    "id": "246",
+    "unit_code": "MTR",
+    "unit_name": "Metre",
+    "status": 1,
+    "created_at": "2022-09-11T05:16:30.286Z",
+    "updated_at": "2022-09-11T05:16:30.286Z"
+  },
+  {
+    "id": "245",
+    "unit_code": "MTQ",
+    "unit_name": "Cubicmetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:16:15.130Z",
+    "updated_at": "2022-09-11T05:16:15.130Z"
+  },
+  {
+    "id": "244",
+    "unit_code": "MTK",
+    "unit_name": "Squaremetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:15:59.466Z",
+    "updated_at": "2022-09-11T05:15:59.466Z"
+  },
+  {
+    "id": "243",
+    "unit_code": "MQH",
+    "unit_name": "CubicMetrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T05:15:42.533Z",
+    "updated_at": "2022-09-11T05:15:42.533Z"
+  },
+  {
+    "id": "242",
+    "unit_code": "MPN",
+    "unit_name": "MostProbableNumber",
+    "status": 1,
+    "created_at": "2022-09-11T05:15:27.413Z",
+    "updated_at": "2022-09-11T05:15:27.413Z"
+  },
+  {
+    "id": "241",
+    "unit_code": "MP",
+    "unit_name": "MetricTon",
+    "status": 1,
+    "created_at": "2022-09-11T05:15:13.170Z",
+    "updated_at": "2022-09-11T05:15:13.170Z"
+  },
+  {
+    "id": "240",
+    "unit_code": "MON",
+    "unit_name": "Month",
+    "status": 1,
+    "created_at": "2022-09-11T05:14:58.186Z",
+    "updated_at": "2022-09-11T05:14:58.186Z"
+  },
+  {
+    "id": "239",
+    "unit_code": "MMT",
+    "unit_name": "Millimetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:14:41.766Z",
+    "updated_at": "2022-09-11T05:14:41.766Z"
+  },
+  {
+    "id": "238",
+    "unit_code": "MMQ",
+    "unit_name": "Cubicmillimetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:14:23.420Z",
+    "updated_at": "2022-09-11T05:14:23.420Z"
+  },
+  {
+    "id": "237",
+    "unit_code": "MMK",
+    "unit_name": "Squaremillimetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:14:07.696Z",
+    "updated_at": "2022-09-11T05:14:07.696Z"
+  },
+  {
+    "id": "236",
+    "unit_code": "MLT",
+    "unit_name": "Millilitre",
+    "status": 1,
+    "created_at": "2022-09-11T05:13:44.933Z",
+    "updated_at": "2022-09-11T05:13:44.933Z"
+  },
+  {
+    "id": "235",
+    "unit_code": "MIU",
+    "unit_name": "MillionInternationalUnit(NIE)",
+    "status": 1,
+    "created_at": "2022-09-11T05:13:28.596Z",
+    "updated_at": "2022-09-11T05:13:28.596Z"
+  },
+  {
+    "id": "234",
+    "unit_code": "MIN",
+    "unit_name": "Minute(unitoftime)",
+    "status": 1,
+    "created_at": "2022-09-11T05:13:11.570Z",
+    "updated_at": "2022-09-11T05:13:11.570Z"
+  },
+  {
+    "id": "233",
+    "unit_code": "MIK",
+    "unit_name": "Squaremile",
+    "status": 1,
+    "created_at": "2022-09-11T05:12:54.873Z",
+    "updated_at": "2022-09-11T05:12:54.873Z"
+  },
+  {
+    "id": "232",
+    "unit_code": "MHZ",
+    "unit_name": "Megahertz",
+    "status": 1,
+    "created_at": "2022-09-11T05:12:37.753Z",
+    "updated_at": "2022-09-11T05:12:37.753Z"
+  },
+  {
+    "id": "231",
+    "unit_code": "MGM",
+    "unit_name": "Milligram",
+    "status": 1,
+    "created_at": "2022-09-11T05:12:21.133Z",
+    "updated_at": "2022-09-11T05:12:21.133Z"
+  },
+  {
+    "id": "230",
+    "unit_code": "mg/mL",
+    "unit_name": null,
+    "status": 1,
+    "created_at": "2022-09-11T05:12:06.090Z",
+    "updated_at": "2022-09-11T05:12:06.090Z"
+  },
+  {
+    "id": "229",
+    "unit_code": "MEQ",
+    "unit_name": "Milliequivalents",
+    "status": 1,
+    "created_at": "2022-09-11T05:11:52.496Z",
+    "updated_at": "2022-09-11T05:11:52.496Z"
+  },
+  {
+    "id": "228",
+    "unit_code": "ME",
+    "unit_name": "Milligram",
+    "status": 1,
+    "created_at": "2022-09-11T05:11:35.973Z",
+    "updated_at": "2022-09-11T05:11:35.973Z"
+  },
+  {
+    "id": "227",
+    "unit_code": "MC",
+    "unit_name": "Microgram",
+    "status": 1,
+    "created_at": "2022-09-11T05:11:19.716Z",
+    "updated_at": "2022-09-11T05:11:19.716Z"
+  },
+  {
+    "id": "226",
+    "unit_code": "MBR",
+    "unit_name": "Millibar",
+    "status": 1,
+    "created_at": "2022-09-11T05:11:01.786Z",
+    "updated_at": "2022-09-11T05:11:01.786Z"
+  },
+  {
+    "id": "225",
+    "unit_code": "MAW",
+    "unit_name": "Megawatt",
+    "status": 1,
+    "created_at": "2022-09-11T05:10:44.523Z",
+    "updated_at": "2022-09-11T05:10:44.523Z"
+  },
+  {
+    "id": "224",
+    "unit_code": "M66",
+    "unit_name": "YardPerHour",
+    "status": 1,
+    "created_at": "2022-09-11T05:10:31.383Z",
+    "updated_at": "2022-09-11T05:10:31.383Z"
+  },
+  {
+    "id": "223",
+    "unit_code": "M65",
+    "unit_name": "YardPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T05:07:14.120Z",
+    "updated_at": "2022-09-11T05:07:14.120Z"
+  },
+  {
+    "id": "222",
+    "unit_code": "M64",
+    "unit_name": "YardPerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T05:06:57.346Z",
+    "updated_at": "2022-09-11T05:06:57.346Z"
+  },
+  {
+    "id": "221",
+    "unit_code": "M63",
+    "unit_name": "InchPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T05:06:39.800Z",
+    "updated_at": "2022-09-11T05:06:39.800Z"
+  },
+  {
+    "id": "218",
+    "unit_code": "M58",
+    "unit_name": "MilePerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T05:05:47.753Z",
+    "updated_at": "2022-09-11T05:05:47.753Z"
+  },
+  {
+    "id": "217",
+    "unit_code": "M57",
+    "unit_name": "MilePerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T05:05:30.893Z",
+    "updated_at": "2022-09-11T05:05:30.893Z"
+  },
+  {
+    "id": "216",
+    "unit_code": "LUX",
+    "unit_name": "Lux",
+    "status": 1,
+    "created_at": "2022-09-11T05:05:12.856Z",
+    "updated_at": "2022-09-11T05:05:12.856Z"
+  },
+  {
+    "id": "215",
+    "unit_code": "LUM",
+    "unit_name": "Lumen",
+    "status": 1,
+    "created_at": "2022-09-11T05:04:28.246Z",
+    "updated_at": "2022-09-11T05:04:28.246Z"
+  },
+  {
+    "id": "214",
+    "unit_code": "LTR",
+    "unit_name": "Litre",
+    "status": 1,
+    "created_at": "2022-09-11T05:04:07.293Z",
+    "updated_at": "2022-09-11T05:04:07.293Z"
+  },
+  {
+    "id": "213",
+    "unit_code": "LTN",
+    "unit_name": "Ton(UK)orlongton(US)",
+    "status": 1,
+    "created_at": "2022-09-11T05:03:48.356Z",
+    "updated_at": "2022-09-11T05:03:48.356Z"
+  },
+  {
+    "id": "212",
+    "unit_code": "LR",
+    "unit_name": "Layer",
+    "status": 1,
+    "created_at": "2022-09-11T05:03:33.550Z",
+    "updated_at": "2022-09-11T05:03:33.550Z"
+  },
+  {
+    "id": "211",
+    "unit_code": "LPA",
+    "unit_name": "Litreofpurealcohol",
+    "status": 1,
+    "created_at": "2022-09-11T05:03:04.496Z",
+    "updated_at": "2022-09-11T05:03:04.496Z"
+  },
+  {
+    "id": "210",
+    "unit_code": "LM",
+    "unit_name": "Linearmetre",
+    "status": 1,
+    "created_at": "2022-09-11T05:02:44.660Z",
+    "updated_at": "2022-09-11T05:02:44.660Z"
+  },
+  {
+    "id": "209",
+    "unit_code": "LF",
+    "unit_name": "Linearfoot",
+    "status": 1,
+    "created_at": "2022-09-11T05:02:14.103Z",
+    "updated_at": "2022-09-11T05:02:14.103Z"
+  },
+  {
+    "id": "208",
+    "unit_code": "LD",
+    "unit_name": "Litre/Day",
+    "status": 1,
+    "created_at": "2022-09-11T04:59:17.426Z",
+    "updated_at": "2022-09-11T04:59:17.426Z"
+  },
+  {
+    "id": "207",
+    "unit_code": "LBR",
+    "unit_name": "Pound",
+    "status": 1,
+    "created_at": "2022-09-11T04:59:00.276Z",
+    "updated_at": "2022-09-11T04:59:00.276Z"
+  },
+  {
+    "id": "206",
+    "unit_code": "KWT",
+    "unit_name": "Kilowatt",
+    "status": 1,
+    "created_at": "2022-09-11T04:58:38.403Z",
+    "updated_at": "2022-09-11T04:58:38.403Z"
+  },
+  {
+    "id": "205",
+    "unit_code": "KWH",
+    "unit_name": "Kilowatthour",
+    "status": 1,
+    "created_at": "2022-09-11T04:58:20.190Z",
+    "updated_at": "2022-09-11T04:58:20.190Z"
+  },
+  {
+    "id": "204",
+    "unit_code": "KUR",
+    "unit_name": "KilogramofUranium",
+    "status": 1,
+    "created_at": "2022-09-11T04:57:52.033Z",
+    "updated_at": "2022-09-11T04:57:52.033Z"
+  },
+  {
+    "id": "203",
+    "unit_code": "KT",
+    "unit_name": "Kit",
+    "status": 1,
+    "created_at": "2022-09-11T04:57:32.596Z",
+    "updated_at": "2022-09-11T04:57:32.596Z"
+  },
+  {
+    "id": "202",
+    "unit_code": "KSH",
+    "unit_name": "Kilogramofsodiumhydroxide(causticsoda)",
+    "status": 1,
+    "created_at": "2022-09-11T04:57:10.016Z",
+    "updated_at": "2022-09-11T04:57:10.016Z"
+  },
+  {
+    "id": "201",
+    "unit_code": "KSD",
+    "unit_name": "Kilogramofsubstance90%dry",
+    "status": 1,
+    "created_at": "2022-09-11T04:56:50.276Z",
+    "updated_at": "2022-09-11T04:56:50.276Z"
+  },
+  {
+    "id": "200",
+    "unit_code": "KPP",
+    "unit_name": "KGphosphoruspentoxide(phosphoricanhydride)",
+    "status": 1,
+    "created_at": "2022-09-11T04:56:10.406Z",
+    "updated_at": "2022-09-11T04:56:10.406Z"
+  },
+  {
+    "id": "197",
+    "unit_code": "KPO",
+    "unit_name": "Kilogramofpotassiumoxide",
+    "status": 1,
+    "created_at": "2022-09-11T04:54:38.853Z",
+    "updated_at": "2022-09-11T04:54:38.853Z"
+  },
+  {
+    "id": "196",
+    "unit_code": "KPH",
+    "unit_name": "Kilogramofpotassiumhydroxide(causticpotash)",
+    "status": 1,
+    "created_at": "2022-09-11T04:54:13.870Z",
+    "updated_at": "2022-09-11T04:54:13.870Z"
+  },
+  {
+    "id": "195",
+    "unit_code": "KPA",
+    "unit_name": "Kilopascal",
+    "status": 1,
+    "created_at": "2022-09-11T04:53:46.996Z",
+    "updated_at": "2022-09-11T04:53:46.996Z"
+  },
+  {
+    "id": "194",
+    "unit_code": "KO",
+    "unit_name": "milliequivalencecausticpotashpergramofproduc",
+    "status": 1,
+    "created_at": "2022-09-11T04:52:40.556Z",
+    "updated_at": "2022-09-11T04:53:23.450Z"
+  },
+  {
+    "id": "189",
+    "unit_code": "KNT",
+    "unit_name": "Knot",
+    "status": 1,
+    "created_at": "2022-09-11T04:50:44.200Z",
+    "updated_at": "2022-09-11T04:50:44.200Z"
+  },
+  {
+    "id": "188",
+    "unit_code": "KNM",
+    "unit_name": "KilonewtonPerSquareMetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:50:19.983Z",
+    "updated_at": "2022-09-11T04:50:19.983Z"
+  },
+  {
+    "id": "187",
+    "unit_code": "KNI",
+    "unit_name": "Kilogramofnitrogen",
+    "status": 1,
+    "created_at": "2022-09-11T04:50:00.220Z",
+    "updated_at": "2022-09-11T04:50:00.220Z"
+  },
+  {
+    "id": "186",
+    "unit_code": "KMT",
+    "unit_name": "Kilometre",
+    "status": 1,
+    "created_at": "2022-09-11T04:49:42.156Z",
+    "updated_at": "2022-09-11T04:49:42.156Z"
+  },
+  {
+    "id": "185",
+    "unit_code": "KMH",
+    "unit_name": "KilometrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:49:24.636Z",
+    "updated_at": "2022-09-11T04:49:24.636Z"
+  },
+  {
+    "id": "184",
+    "unit_code": "KMA",
+    "unit_name": "Kilogramofmethylamine",
+    "status": 1,
+    "created_at": "2022-09-11T04:49:07.376Z",
+    "updated_at": "2022-09-11T04:49:07.376Z"
+  },
+  {
+    "id": "183",
+    "unit_code": "KJO",
+    "unit_name": "Kilojoule",
+    "status": 1,
+    "created_at": "2022-09-11T04:48:51.170Z",
+    "updated_at": "2022-09-11T04:48:51.170Z"
+  },
+  {
+    "id": "182",
+    "unit_code": "KIU",
+    "unit_name": "Kallikreininactivatorunit.",
+    "status": 1,
+    "created_at": "2022-09-11T04:48:34.920Z",
+    "updated_at": "2022-09-11T04:48:34.920Z"
+  },
+  {
+    "id": "181",
+    "unit_code": "KHZ",
+    "unit_name": "Kilohertz",
+    "status": 1,
+    "created_at": "2022-09-11T04:48:17.006Z",
+    "updated_at": "2022-09-11T04:48:17.006Z"
+  },
+  {
+    "id": "180",
+    "unit_code": "KHY",
+    "unit_name": "Kilogramofhydrogenperoxide",
+    "status": 1,
+    "created_at": "2022-09-11T04:47:55.696Z",
+    "updated_at": "2022-09-11T04:47:55.696Z"
+  },
+  {
+    "id": "179",
+    "unit_code": "KGM",
+    "unit_name": "Kilogram",
+    "status": 1,
+    "created_at": "2022-09-11T04:47:37.756Z",
+    "updated_at": "2022-09-11T04:47:37.756Z"
+  },
+  {
+    "id": "178",
+    "unit_code": "KEL",
+    "unit_name": "Kelvin",
+    "status": 1,
+    "created_at": "2022-09-11T04:47:18.770Z",
+    "updated_at": "2022-09-11T04:47:18.770Z"
+  },
+  {
+    "id": "177",
+    "unit_code": "KE",
+    "unit_name": "Keg",
+    "status": 1,
+    "created_at": "2022-09-11T04:46:37.713Z",
+    "updated_at": "2022-09-11T04:46:37.713Z"
+  },
+  {
+    "id": "176",
+    "unit_code": "KDW",
+    "unit_name": "Kilogramdrainednetweight",
+    "status": 1,
+    "created_at": "2022-09-11T04:46:19.813Z",
+    "updated_at": "2022-09-11T04:46:19.813Z"
+  },
+  {
+    "id": "175",
+    "unit_code": "K6",
+    "unit_name": "Kilolitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:46:03.186Z",
+    "updated_at": "2022-09-11T04:46:03.186Z"
+  },
+  {
+    "id": "174",
+    "unit_code": "K43",
+    "unit_name": "Horsepower",
+    "status": 1,
+    "created_at": "2022-09-11T04:45:42.430Z",
+    "updated_at": "2022-09-11T04:45:42.430Z"
+  },
+  {
+    "id": "173",
+    "unit_code": "K30",
+    "unit_name": "Gallon(USliquid)PerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T04:45:14.876Z",
+    "updated_at": "2022-09-11T04:45:14.876Z"
+  },
+  {
+    "id": "172",
+    "unit_code": "K14",
+    "unit_name": "FootPerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:44:53.433Z",
+    "updated_at": "2022-09-11T04:44:53.433Z"
+  },
+  {
+    "id": "171",
+    "unit_code": "JR",
+    "unit_name": "Jar",
+    "status": 1,
+    "created_at": "2022-09-11T04:44:32.866Z",
+    "updated_at": "2022-09-11T04:44:32.866Z"
+  },
+  {
+    "id": "170",
+    "unit_code": "JOU",
+    "unit_name": "Joule",
+    "status": 1,
+    "created_at": "2022-09-11T04:44:14.760Z",
+    "updated_at": "2022-09-11T04:44:14.760Z"
+  },
+  {
+    "id": "169",
+    "unit_code": "IU",
+    "unit_name": "InchPerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T04:43:56.996Z",
+    "updated_at": "2022-09-11T04:43:56.996Z"
+  },
+  {
+    "id": "168",
+    "unit_code": "INQ",
+    "unit_name": "Cubicinch",
+    "status": 1,
+    "created_at": "2022-09-11T04:43:37.200Z",
+    "updated_at": "2022-09-11T04:43:37.200Z"
+  },
+  {
+    "id": "167",
+    "unit_code": "INK",
+    "unit_name": "Squareinch",
+    "status": 1,
+    "created_at": "2022-09-11T04:43:20.076Z",
+    "updated_at": "2022-09-11T04:43:20.076Z"
+  },
+  {
+    "id": "166",
+    "unit_code": "INH",
+    "unit_name": "Inches",
+    "status": 1,
+    "created_at": "2022-09-11T04:43:01.183Z",
+    "updated_at": "2022-09-11T04:43:01.183Z"
+  },
+  {
+    "id": "165",
+    "unit_code": "HUR",
+    "unit_name": "Hour",
+    "status": 1,
+    "created_at": "2022-09-11T04:42:43.053Z",
+    "updated_at": "2022-09-11T04:42:43.053Z"
+  },
+  {
+    "id": "164",
+    "unit_code": "HTZ",
+    "unit_name": "Hertz",
+    "status": 1,
+    "created_at": "2022-09-11T04:42:24.420Z",
+    "updated_at": "2022-09-11T04:42:24.420Z"
+  },
+  {
+    "id": "163",
+    "unit_code": "HM",
+    "unit_name": "MilePerHour(statutemile)",
+    "status": 1,
+    "created_at": "2022-09-11T04:42:07.973Z",
+    "updated_at": "2022-09-11T04:42:07.973Z"
+  },
+  {
+    "id": "162",
+    "unit_code": "HLT",
+    "unit_name": "Hectolitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:41:49.880Z",
+    "updated_at": "2022-09-11T04:41:49.880Z"
+  },
+  {
+    "id": "161",
+    "unit_code": "HL",
+    "unit_name": "HundredFeet",
+    "status": 1,
+    "created_at": "2022-09-11T04:41:29.673Z",
+    "updated_at": "2022-09-11T04:41:29.673Z"
+  },
+  {
+    "id": "160",
+    "unit_code": "HGM",
+    "unit_name": "Hectogram",
+    "status": 1,
+    "created_at": "2022-09-11T04:41:12.520Z",
+    "updated_at": "2022-09-11T04:41:12.520Z"
+  },
+  {
+    "id": "159",
+    "unit_code": "HEP",
+    "unit_name": "HistamineEquivalentPrick",
+    "status": 1,
+    "created_at": "2022-09-11T04:40:53.966Z",
+    "updated_at": "2022-09-11T04:40:53.966Z"
+  },
+  {
+    "id": "158",
+    "unit_code": "HD",
+    "unit_name": "Halfdozen",
+    "status": 1,
+    "created_at": "2022-09-11T04:40:35.966Z",
+    "updated_at": "2022-09-11T04:40:35.966Z"
+  },
+  {
+    "id": "157",
+    "unit_code": "HC",
+    "unit_name": "Hundredcount",
+    "status": 1,
+    "created_at": "2022-09-11T04:40:16.953Z",
+    "updated_at": "2022-09-11T04:40:16.953Z"
+  },
+  {
+    "id": "156",
+    "unit_code": "H87",
+    "unit_name": "Piece",
+    "status": 1,
+    "created_at": "2022-09-11T04:40:00.036Z",
+    "updated_at": "2022-09-11T04:40:00.036Z"
+  },
+  {
+    "id": "155",
+    "unit_code": "H83",
+    "unit_name": null,
+    "status": 1,
+    "created_at": "2022-09-11T04:39:42.886Z",
+    "updated_at": "2022-09-11T04:39:42.886Z"
+  },
+  {
+    "id": "154",
+    "unit_code": "H81",
+    "unit_name": "MillimetrePerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T04:39:28.910Z",
+    "updated_at": "2022-09-11T04:39:28.910Z"
+  },
+  {
+    "id": "153",
+    "unit_code": "H79",
+    "unit_name": "Frenchgauge",
+    "status": 1,
+    "created_at": "2022-09-11T04:39:11.170Z",
+    "updated_at": "2022-09-11T04:39:11.170Z"
+  },
+  {
+    "id": "152",
+    "unit_code": "H67",
+    "unit_name": "MillimetrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:38:53.530Z",
+    "updated_at": "2022-09-11T04:38:53.530Z"
+  },
+  {
+    "id": "151",
+    "unit_code": "H49",
+    "unit_name": "CentimetrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:38:33.836Z",
+    "updated_at": "2022-09-11T04:38:33.836Z"
+  },
+  {
+    "id": "150",
+    "unit_code": "GWH",
+    "unit_name": "Gigawatthour",
+    "status": 1,
+    "created_at": "2022-09-11T04:38:14.966Z",
+    "updated_at": "2022-09-11T04:38:14.966Z"
+  },
+  {
+    "id": "149",
+    "unit_code": "GRO",
+    "unit_name": "Gross",
+    "status": 1,
+    "created_at": "2022-09-11T04:37:52.753Z",
+    "updated_at": "2022-09-11T04:37:52.753Z"
+  },
+  {
+    "id": "148",
+    "unit_code": "GRN",
+    "unit_name": "Grain",
+    "status": 1,
+    "created_at": "2022-09-11T04:37:36.430Z",
+    "updated_at": "2022-09-11T04:37:36.430Z"
+  },
+  {
+    "id": "147",
+    "unit_code": "GRM",
+    "unit_name": "Gram",
+    "status": 1,
+    "created_at": "2022-09-11T04:37:19.656Z",
+    "updated_at": "2022-09-11T04:37:19.656Z"
+  },
+  {
+    "id": "146",
+    "unit_code": "GM",
+    "unit_name": "Grampersquaremetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:37:01.086Z",
+    "updated_at": "2022-09-11T04:37:01.086Z"
+  },
+  {
+    "id": "145",
+    "unit_code": "GLL",
+    "unit_name": "Gallon(US)",
+    "status": 1,
+    "created_at": "2022-09-11T04:36:43.610Z",
+    "updated_at": "2022-09-11T04:36:43.610Z"
+  },
+  {
+    "id": "144",
+    "unit_code": "GLI",
+    "unit_name": "Gallon(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T04:36:25.906Z",
+    "updated_at": "2022-09-11T04:36:25.906Z"
+  },
+  {
+    "id": "143",
+    "unit_code": "GL",
+    "unit_name": "GramPerLitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:36:08.463Z",
+    "updated_at": "2022-09-11T04:36:08.463Z"
+  },
+  {
+    "id": "142",
+    "unit_code": "GFI",
+    "unit_name": "GramofFissileIsotope",
+    "status": 1,
+    "created_at": "2022-09-11T04:35:48.076Z",
+    "updated_at": "2022-09-11T04:35:48.076Z"
+  },
+  {
+    "id": "141",
+    "unit_code": "GBQ",
+    "unit_name": "Gigabecquerel",
+    "status": 1,
+    "created_at": "2022-09-11T04:35:24.166Z",
+    "updated_at": "2022-09-11T04:35:24.166Z"
+  },
+  {
+    "id": "140",
+    "unit_code": "G26",
+    "unit_name": "Stere",
+    "status": 1,
+    "created_at": "2022-09-11T04:34:56.473Z",
+    "updated_at": "2022-09-11T04:34:56.473Z"
+  },
+  {
+    "id": "139",
+    "unit_code": "G25",
+    "unit_name": "Teaspoon",
+    "status": 1,
+    "created_at": "2022-09-11T04:34:34.020Z",
+    "updated_at": "2022-09-11T04:34:34.020Z"
+  },
+  {
+    "id": "138",
+    "unit_code": "G24",
+    "unit_name": "Tablespoon",
+    "status": 1,
+    "created_at": "2022-09-11T04:34:13.683Z",
+    "updated_at": "2022-09-11T04:34:13.683Z"
+  },
+  {
+    "id": "137",
+    "unit_code": "G23",
+    "unit_name": "Peck",
+    "status": 1,
+    "created_at": "2022-09-11T04:33:54.253Z",
+    "updated_at": "2022-09-11T04:33:54.253Z"
+  },
+  {
+    "id": "136",
+    "unit_code": "G21",
+    "unit_name": "Cup(US)",
+    "status": 1,
+    "created_at": "2022-09-11T04:33:33.680Z",
+    "updated_at": "2022-09-11T04:33:33.680Z"
+  },
+  {
+    "id": "135",
+    "unit_code": "G2",
+    "unit_name": "USGallonPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T04:33:15.266Z",
+    "updated_at": "2022-09-11T04:33:15.266Z"
+  },
+  {
+    "id": "134",
+    "unit_code": "g/L",
+    "unit_name": null,
+    "status": 1,
+    "created_at": "2022-09-11T04:32:54.576Z",
+    "updated_at": "2022-09-11T04:32:54.576Z"
+  },
+  {
+    "id": "133",
+    "unit_code": "FTQ",
+    "unit_name": "Cubicfoot",
+    "status": 1,
+    "created_at": "2022-09-11T04:32:40.373Z",
+    "updated_at": "2022-09-11T04:32:40.373Z"
+  },
+  {
+    "id": "132",
+    "unit_code": "FTK",
+    "unit_name": "Squarefoot",
+    "status": 1,
+    "created_at": "2022-09-11T04:32:19.783Z",
+    "updated_at": "2022-09-11T04:32:19.783Z"
+  },
+  {
+    "id": "131",
+    "unit_code": "FS",
+    "unit_name": "FootPerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T04:32:01.603Z",
+    "updated_at": "2022-09-11T04:32:01.603Z"
+  },
+  {
+    "id": "130",
+    "unit_code": "FR",
+    "unit_name": "FootPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T04:31:44.080Z",
+    "updated_at": "2022-09-11T04:31:44.080Z"
+  },
+  {
+    "id": "129",
+    "unit_code": "FP",
+    "unit_name": "Poundpersquarefoot",
+    "status": 1,
+    "created_at": "2022-09-11T04:31:27.556Z",
+    "updated_at": "2022-09-11T04:31:27.556Z"
+  },
+  {
+    "id": "128",
+    "unit_code": "FOT",
+    "unit_name": "Foot",
+    "status": 1,
+    "created_at": "2022-09-11T04:31:08.480Z",
+    "updated_at": "2022-09-11T04:31:08.480Z"
+  },
+  {
+    "id": "127",
+    "unit_code": "FJ",
+    "unit_name": "SizingFactor",
+    "status": 1,
+    "created_at": "2022-09-11T04:30:23.990Z",
+    "updated_at": "2022-09-11T04:30:23.990Z"
+  },
+  {
+    "id": "126",
+    "unit_code": "FH",
+    "unit_name": "Micromole",
+    "status": 1,
+    "created_at": "2022-09-11T04:30:07.220Z",
+    "updated_at": "2022-09-11T04:30:07.220Z"
+  },
+  {
+    "id": "125",
+    "unit_code": "FAH",
+    "unit_name": "DegreeFahrenheit",
+    "status": 1,
+    "created_at": "2022-09-11T04:29:47.500Z",
+    "updated_at": "2022-09-11T04:29:47.500Z"
+  },
+  {
+    "id": "124",
+    "unit_code": "F27",
+    "unit_name": "GramPerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:29:28.766Z",
+    "updated_at": "2022-09-11T04:29:28.766Z"
+  },
+  {
+    "id": "123",
+    "unit_code": "EV",
+    "unit_name": "Envelope",
+    "status": 1,
+    "created_at": "2022-09-11T04:29:09.700Z",
+    "updated_at": "2022-09-11T04:29:09.700Z"
+  },
+  {
+    "id": "122",
+    "unit_code": "ELU",
+    "unit_name": "ELISAUnits",
+    "status": 1,
+    "created_at": "2022-09-11T04:28:49.993Z",
+    "updated_at": "2022-09-11T04:28:49.993Z"
+  },
+  {
+    "id": "121",
+    "unit_code": "EA",
+    "unit_name": "Each",
+    "status": 1,
+    "created_at": "2022-09-11T04:28:23.233Z",
+    "updated_at": "2022-09-11T04:28:23.233Z"
+  },
+  {
+    "id": "120",
+    "unit_code": "E55",
+    "unit_name": "Use",
+    "status": 1,
+    "created_at": "2022-09-11T04:27:35.876Z",
+    "updated_at": "2022-09-11T04:27:35.876Z"
+  },
+  {
+    "id": "119",
+    "unit_code": "E4",
+    "unit_name": "Grosskilogram",
+    "status": 1,
+    "created_at": "2022-09-11T04:26:49.876Z",
+    "updated_at": "2022-09-11T04:26:49.876Z"
+  },
+  {
+    "id": "118",
+    "unit_code": "E39",
+    "unit_name": "Dotsperinch",
+    "status": 1,
+    "created_at": "2022-09-11T04:26:30.076Z",
+    "updated_at": "2022-09-11T04:26:30.076Z"
+  },
+  {
+    "id": "117",
+    "unit_code": "E37",
+    "unit_name": "Pixel",
+    "status": 1,
+    "created_at": "2022-09-11T04:25:16.773Z",
+    "updated_at": "2022-09-11T04:25:16.773Z"
+  },
+  {
+    "id": "116",
+    "unit_code": "E36",
+    "unit_name": null,
+    "status": 1,
+    "created_at": "2022-09-11T04:24:54.516Z",
+    "updated_at": "2022-09-11T04:24:54.516Z"
+  },
+  {
+    "id": "115",
+    "unit_code": "E35",
+    "unit_name": "Terabyte",
+    "status": 1,
+    "created_at": "2022-09-11T04:24:19.633Z",
+    "updated_at": "2022-09-11T04:24:19.633Z"
+  },
+  {
+    "id": "114",
+    "unit_code": "E34",
+    "unit_name": "Gigabyte",
+    "status": 1,
+    "created_at": "2022-09-11T04:23:58.820Z",
+    "updated_at": "2022-09-11T04:23:58.820Z"
+  },
+  {
+    "id": "113",
+    "unit_code": "E32",
+    "unit_name": "LitrePerHour",
+    "status": 1,
+    "created_at": "2022-09-11T04:23:38.906Z",
+    "updated_at": "2022-09-11T04:23:38.906Z"
+  },
+  {
+    "id": "112",
+    "unit_code": "E27",
+    "unit_name": "Dose",
+    "status": 1,
+    "created_at": "2022-09-11T04:22:23.553Z",
+    "updated_at": "2022-09-11T04:22:23.553Z"
+  },
+  {
+    "id": "111",
+    "unit_code": "E14",
+    "unit_name": "Kilocalorie(internationaltable)",
+    "status": 1,
+    "created_at": "2022-09-11T04:21:57.226Z",
+    "updated_at": "2022-09-11T04:21:57.226Z"
+  },
+  {
+    "id": "110",
+    "unit_code": "E09",
+    "unit_name": "Milliamperehour",
+    "status": 1,
+    "created_at": "2022-09-11T04:21:39.176Z",
+    "updated_at": "2022-09-11T04:21:39.176Z"
+  },
+  {
+    "id": "109",
+    "unit_code": "DZN",
+    "unit_name": "Dozen",
+    "status": 1,
+    "created_at": "2022-09-11T04:21:21.686Z",
+    "updated_at": "2022-09-11T04:21:21.686Z"
+  },
+  {
+    "id": "108",
+    "unit_code": "DS",
+    "unit_name": "Display",
+    "status": 1,
+    "created_at": "2022-09-11T04:21:04.866Z",
+    "updated_at": "2022-09-11T04:21:04.866Z"
+  },
+  {
+    "id": "107",
+    "unit_code": "DRI",
+    "unit_name": "Dram(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T04:20:47.696Z",
+    "updated_at": "2022-09-11T04:20:47.696Z"
+  },
+  {
+    "id": "106",
+    "unit_code": "DRA",
+    "unit_name": "Dram(US)",
+    "status": 1,
+    "created_at": "2022-09-11T04:20:17.920Z",
+    "updated_at": "2022-09-11T04:20:17.920Z"
+  },
+  {
+    "id": "105",
+    "unit_code": "DR",
+    "unit_name": "Drum",
+    "status": 1,
+    "created_at": "2022-09-11T04:19:59.583Z",
+    "updated_at": "2022-09-11T04:19:59.583Z"
+  },
+  {
+    "id": "104",
+    "unit_code": "DO",
+    "unit_name": "Dollars,U.S.",
+    "status": 1,
+    "created_at": "2022-09-11T04:19:41.563Z",
+    "updated_at": "2022-09-11T04:19:41.563Z"
+  },
+  {
+    "id": "103",
+    "unit_code": "DMT",
+    "unit_name": "Decimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:19:22.166Z",
+    "updated_at": "2022-09-11T04:19:22.166Z"
+  },
+  {
+    "id": "102",
+    "unit_code": "DMQ",
+    "unit_name": "Cubicdecimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:18:58.926Z",
+    "updated_at": "2022-09-11T04:18:58.926Z"
+  },
+  {
+    "id": "101",
+    "unit_code": "DMK",
+    "unit_name": "Squaredecimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:18:39.126Z",
+    "updated_at": "2022-09-11T04:18:39.126Z"
+  },
+  {
+    "id": "100",
+    "unit_code": "DLT",
+    "unit_name": "Decilitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:18:18.866Z",
+    "updated_at": "2022-09-11T04:18:18.866Z"
+  },
+  {
+    "id": "99",
+    "unit_code": "DG",
+    "unit_name": "Decigram",
+    "status": 1,
+    "created_at": "2022-09-11T04:17:58.533Z",
+    "updated_at": "2022-09-11T04:17:58.533Z"
+  },
+  {
+    "id": "98",
+    "unit_code": "DD",
+    "unit_name": "Degree(UnitofAngel)",
+    "status": 1,
+    "created_at": "2022-09-11T04:17:40.833Z",
+    "updated_at": "2022-09-11T04:17:40.833Z"
+  },
+  {
+    "id": "97",
+    "unit_code": "DAY",
+    "unit_name": "Days",
+    "status": 1,
+    "created_at": "2022-09-11T04:17:23.886Z",
+    "updated_at": "2022-09-11T04:17:23.886Z"
+  },
+  {
+    "id": "96",
+    "unit_code": "D70",
+    "unit_name": "Calorie-InternationalTable(IT)",
+    "status": 1,
+    "created_at": "2022-09-11T04:17:07.303Z",
+    "updated_at": "2022-09-11T04:17:07.303Z"
+  },
+  {
+    "id": "95",
+    "unit_code": "D63",
+    "unit_name": "Book",
+    "status": 1,
+    "created_at": "2022-09-11T04:16:49.126Z",
+    "updated_at": "2022-09-11T04:16:49.126Z"
+  },
+  {
+    "id": "94",
+    "unit_code": "D55",
+    "unit_name": "HeatTransferCoefficient",
+    "status": 1,
+    "created_at": "2022-09-11T04:16:25.003Z",
+    "updated_at": "2022-09-11T04:16:25.003Z"
+  },
+  {
+    "id": "93",
+    "unit_code": "D5",
+    "unit_name": "Kilogrampersquarecentimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:16:07.413Z",
+    "updated_at": "2022-09-11T04:16:07.413Z"
+  },
+  {
+    "id": "92",
+    "unit_code": "D43",
+    "unit_name": "AtomicMassUnits(AMU)",
+    "status": 1,
+    "created_at": "2022-09-11T04:15:49.090Z",
+    "updated_at": "2022-09-11T04:15:49.090Z"
+  },
+  {
+    "id": "91",
+    "unit_code": "D40",
+    "unit_name": "ThousandLitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:15:30.363Z",
+    "updated_at": "2022-09-11T04:15:30.363Z"
+  },
+  {
+    "id": "90",
+    "unit_code": "D32",
+    "unit_name": "Terawatthour",
+    "status": 1,
+    "created_at": "2022-09-11T04:15:12.156Z",
+    "updated_at": "2022-09-11T04:15:12.156Z"
+  },
+  {
+    "id": "89",
+    "unit_code": "D30",
+    "unit_name": "Terajoule",
+    "status": 1,
+    "created_at": "2022-09-11T04:14:52.806Z",
+    "updated_at": "2022-09-11T04:14:52.806Z"
+  },
+  {
+    "id": "88",
+    "unit_code": "D29",
+    "unit_name": "Terahertz",
+    "status": 1,
+    "created_at": "2022-09-11T04:14:34.676Z",
+    "updated_at": "2022-09-11T04:14:34.676Z"
+  },
+  {
+    "id": "87",
+    "unit_code": "D19",
+    "unit_name": "Squaremetrekelvinperwatt",
+    "status": 1,
+    "created_at": "2022-09-11T04:14:17.213Z",
+    "updated_at": "2022-09-11T04:14:17.213Z"
+  },
+  {
+    "id": "86",
+    "unit_code": "D03",
+    "unit_name": "Kilowatt/hour",
+    "status": 1,
+    "created_at": "2022-09-11T04:13:57.556Z",
+    "updated_at": "2022-09-11T04:13:57.556Z"
+  },
+  {
+    "id": "85",
+    "unit_code": "CWI",
+    "unit_name": "Hundredweight(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T04:13:38.606Z",
+    "updated_at": "2022-09-11T04:13:38.606Z"
+  },
+  {
+    "id": "84",
+    "unit_code": "CWA",
+    "unit_name": "Hundredpound(cwt)/hundredweight(US)",
+    "status": 1,
+    "created_at": "2022-09-11T04:13:17.670Z",
+    "updated_at": "2022-09-11T04:13:17.670Z"
+  },
+  {
+    "id": "83",
+    "unit_code": "CV",
+    "unit_name": "Cover",
+    "status": 1,
+    "created_at": "2022-09-11T04:12:57.010Z",
+    "updated_at": "2022-09-11T04:12:57.010Z"
+  },
+  {
+    "id": "82",
+    "unit_code": "CTM",
+    "unit_name": "MetricCarat",
+    "status": 1,
+    "created_at": "2022-09-11T04:11:45.460Z",
+    "updated_at": "2022-09-11T04:11:45.460Z"
+  },
+  {
+    "id": "81",
+    "unit_code": "CT",
+    "unit_name": "Carton",
+    "status": 1,
+    "created_at": "2022-09-11T04:11:17.836Z",
+    "updated_at": "2022-09-11T04:11:17.836Z"
+  },
+  {
+    "id": "80",
+    "unit_code": "CQ",
+    "unit_name": "Cartridge",
+    "status": 1,
+    "created_at": "2022-09-11T04:10:43.093Z",
+    "updated_at": "2022-09-11T04:10:43.093Z"
+  },
+  {
+    "id": "79",
+    "unit_code": "CO",
+    "unit_name": "Cubicmetre(Net)",
+    "status": 1,
+    "created_at": "2022-09-11T04:10:14.513Z",
+    "updated_at": "2022-09-11T04:10:14.513Z"
+  },
+  {
+    "id": "78",
+    "unit_code": "CN",
+    "unit_name": "Can",
+    "status": 1,
+    "created_at": "2022-09-11T04:09:55.176Z",
+    "updated_at": "2022-09-11T04:09:55.176Z"
+  },
+  {
+    "id": "77",
+    "unit_code": "CMT",
+    "unit_name": "Centimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:09:37.180Z",
+    "updated_at": "2022-09-11T04:09:37.180Z"
+  },
+  {
+    "id": "76",
+    "unit_code": "CMQ",
+    "unit_name": "Cubiccentimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:09:16.953Z",
+    "updated_at": "2022-09-11T04:09:16.953Z"
+  },
+  {
+    "id": "75",
+    "unit_code": "CMK",
+    "unit_name": "Squarecentimetre",
+    "status": 1,
+    "created_at": "2022-09-11T04:08:58.590Z",
+    "updated_at": "2022-09-11T04:08:58.590Z"
+  },
+  {
+    "id": "74",
+    "unit_code": "CLT",
+    "unit_name": "Centilitre",
+    "status": 1,
+    "created_at": "2022-09-11T04:08:39.206Z",
+    "updated_at": "2022-09-11T04:08:39.206Z"
+  },
+  {
+    "id": "73",
+    "unit_code": "CGM",
+    "unit_name": "Centigram",
+    "status": 1,
+    "created_at": "2022-09-11T04:08:20.300Z",
+    "updated_at": "2022-09-11T04:08:20.300Z"
+  },
+  {
+    "id": "72",
+    "unit_code": "CG",
+    "unit_name": "Card",
+    "status": 1,
+    "created_at": "2022-09-11T04:07:59.996Z",
+    "updated_at": "2022-09-11T04:07:59.996Z"
+  },
+  {
+    "id": "71",
+    "unit_code": "CFU",
+    "unit_name": "ColonyFormingUnits",
+    "status": 1,
+    "created_at": "2022-09-11T04:07:37.033Z",
+    "updated_at": "2022-09-11T04:07:37.033Z"
+  },
+  {
+    "id": "70",
+    "unit_code": "CEL",
+    "unit_name": "DegreeCelsius",
+    "status": 1,
+    "created_at": "2022-09-11T04:07:17.703Z",
+    "updated_at": "2022-09-11T04:07:17.703Z"
+  },
+  {
+    "id": "69",
+    "unit_code": "CA",
+    "unit_name": "Case",
+    "status": 1,
+    "created_at": "2022-09-11T04:07:00.086Z",
+    "updated_at": "2022-09-11T04:07:00.086Z"
+  },
+  {
+    "id": "68",
+    "unit_code": "C75",
+    "unit_name": "Picowatt",
+    "status": 1,
+    "created_at": "2022-09-11T04:06:40.880Z",
+    "updated_at": "2022-09-11T04:06:40.880Z"
+  },
+  {
+    "id": "67",
+    "unit_code": "C52",
+    "unit_name": "Picometre",
+    "status": 1,
+    "created_at": "2022-09-11T04:04:29.566Z",
+    "updated_at": "2022-09-11T04:04:29.566Z"
+  },
+  {
+    "id": "66",
+    "unit_code": "C45",
+    "unit_name": "Nanometre",
+    "status": 1,
+    "created_at": "2022-09-11T04:04:09.436Z",
+    "updated_at": "2022-09-11T04:04:09.436Z"
+  },
+  {
+    "id": "65",
+    "unit_code": "C34",
+    "unit_name": "Mole",
+    "status": 1,
+    "created_at": "2022-09-11T04:03:48.983Z",
+    "updated_at": "2022-09-11T04:03:48.983Z"
+  },
+  {
+    "id": "64",
+    "unit_code": "C26",
+    "unit_name": "Millisecond",
+    "status": 1,
+    "created_at": "2022-09-11T04:03:26.690Z",
+    "updated_at": "2022-09-11T04:03:26.690Z"
+  },
+  {
+    "id": "63",
+    "unit_code": "C18",
+    "unit_name": "Millimole",
+    "status": 1,
+    "created_at": "2022-09-11T03:58:58.200Z",
+    "updated_at": "2022-09-11T03:58:58.200Z"
+  },
+  {
+    "id": "62",
+    "unit_code": "C16",
+    "unit_name": "MillimetrePerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T03:58:34.076Z",
+    "updated_at": "2022-09-11T03:58:34.076Z"
+  },
+  {
+    "id": "61",
+    "unit_code": "BX",
+    "unit_name": "Box",
+    "status": 1,
+    "created_at": "2022-09-11T03:58:12.373Z",
+    "updated_at": "2022-09-11T03:58:12.373Z"
+  },
+  {
+    "id": "60",
+    "unit_code": "BUI",
+    "unit_name": "Bushel(UK)",
+    "status": 1,
+    "created_at": "2022-09-11T03:57:50.643Z",
+    "updated_at": "2022-09-11T03:57:50.643Z"
+  },
+  {
+    "id": "59",
+    "unit_code": "BUA",
+    "unit_name": "Bushel(US)",
+    "status": 1,
+    "created_at": "2022-09-11T03:57:32.196Z",
+    "updated_at": "2022-09-11T03:57:32.196Z"
+  },
+  {
+    "id": "58",
+    "unit_code": "BTU",
+    "unit_name": "Britishthermalunit",
+    "status": 1,
+    "created_at": "2022-09-11T03:55:57.690Z",
+    "updated_at": "2022-09-11T03:55:57.690Z"
+  },
+  {
+    "id": "57",
+    "unit_code": "BQL",
+    "unit_name": "Becquerel",
+    "status": 1,
+    "created_at": "2022-09-11T03:55:37.920Z",
+    "updated_at": "2022-09-11T03:55:37.920Z"
+  },
+  {
+    "id": "56",
+    "unit_code": "BPM",
+    "unit_name": "BeatsPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T03:55:18.736Z",
+    "updated_at": "2022-09-11T03:55:18.736Z"
+  },
+  {
+    "id": "55",
+    "unit_code": "BP",
+    "unit_name": "Hundredboardfoot",
+    "status": 1,
+    "created_at": "2022-09-11T03:54:59.026Z",
+    "updated_at": "2022-09-11T03:54:59.026Z"
+  },
+  {
+    "id": "54",
+    "unit_code": "BO",
+    "unit_name": "Bottle",
+    "status": 1,
+    "created_at": "2022-09-11T03:54:39.316Z",
+    "updated_at": "2022-09-11T03:54:39.316Z"
+  },
+  {
+    "id": "53",
+    "unit_code": "BN",
+    "unit_name": "Bulk",
+    "status": 1,
+    "created_at": "2022-09-11T03:54:18.620Z",
+    "updated_at": "2022-09-11T03:54:18.620Z"
+  },
+  {
+    "id": "52",
+    "unit_code": "BLL",
+    "unit_name": "BarrelUS",
+    "status": 1,
+    "created_at": "2022-09-11T03:53:59.206Z",
+    "updated_at": "2022-09-11T03:53:59.206Z"
+  },
+  {
+    "id": "51",
+    "unit_code": "BG",
+    "unit_name": "Bag",
+    "status": 1,
+    "created_at": "2022-09-11T03:53:37.966Z",
+    "updated_at": "2022-09-11T03:53:37.966Z"
+  },
+  {
+    "id": "50",
+    "unit_code": "BFT",
+    "unit_name": "BoardFoot",
+    "status": 1,
+    "created_at": "2022-09-11T03:53:18.556Z",
+    "updated_at": "2022-09-11T03:53:18.556Z"
+  },
+  {
+    "id": "49",
+    "unit_code": "BE",
+    "unit_name": "Bundle",
+    "status": 1,
+    "created_at": "2022-09-11T03:52:59.636Z",
+    "updated_at": "2022-09-11T03:52:59.636Z"
+  },
+  {
+    "id": "48",
+    "unit_code": "BB",
+    "unit_name": "Basebox",
+    "status": 1,
+    "created_at": "2022-09-11T03:52:39.736Z",
+    "updated_at": "2022-09-11T03:52:39.736Z"
+  },
+  {
+    "id": "47",
+    "unit_code": "BAR",
+    "unit_name": "Bar(unitofpressure)",
+    "status": 1,
+    "created_at": "2022-09-11T03:52:21.886Z",
+    "updated_at": "2022-09-11T03:52:21.886Z"
+  },
+  {
+    "id": "46",
+    "unit_code": "BA",
+    "unit_name": "Bale",
+    "status": 1,
+    "created_at": "2022-09-11T03:51:56.083Z",
+    "updated_at": "2022-09-11T03:51:56.083Z"
+  },
+  {
+    "id": "45",
+    "unit_code": "B8",
+    "unit_name": "Board",
+    "status": 1,
+    "created_at": "2022-09-11T03:51:29.890Z",
+    "updated_at": "2022-09-11T03:51:29.890Z"
+  },
+  {
+    "id": "44",
+    "unit_code": "B64",
+    "unit_name": "LuxSeconds",
+    "status": 1,
+    "created_at": "2022-09-11T03:51:10.843Z",
+    "updated_at": "2022-09-11T03:51:10.843Z"
+  },
+  {
+    "id": "43",
+    "unit_code": "B62",
+    "unit_name": "LumenSeconds",
+    "status": 1,
+    "created_at": "2022-09-11T03:50:47.616Z",
+    "updated_at": "2022-09-11T03:50:47.616Z"
+  },
+  {
+    "id": "42",
+    "unit_code": "B61",
+    "unit_name": "LumensPerWatt",
+    "status": 1,
+    "created_at": "2022-09-11T03:50:27.796Z",
+    "updated_at": "2022-09-11T03:50:27.796Z"
+  },
+  {
+    "id": "41",
+    "unit_code": "B60",
+    "unit_name": "LumensperSquareMeter",
+    "status": 1,
+    "created_at": "2022-09-11T03:50:06.026Z",
+    "updated_at": "2022-09-11T03:50:06.026Z"
+  },
+  {
+    "id": "40",
+    "unit_code": "B47",
+    "unit_name": "Kilonewton",
+    "status": 1,
+    "created_at": "2022-09-11T03:49:47.266Z",
+    "updated_at": "2022-09-11T03:49:47.266Z"
+  },
+  {
+    "id": "39",
+    "unit_code": "B37",
+    "unit_name": "KilogramForce",
+    "status": 1,
+    "created_at": "2022-09-11T03:49:28.243Z",
+    "updated_at": "2022-09-11T03:49:28.243Z"
+  },
+  {
+    "id": "38",
+    "unit_code": "B10",
+    "unit_name": "Bitpersecond",
+    "status": 1,
+    "created_at": "2022-09-11T03:49:09.646Z",
+    "updated_at": "2022-09-11T03:49:09.646Z"
+  },
+  {
+    "id": "37",
+    "unit_code": "AXU",
+    "unit_name": "AntiXAUnit",
+    "status": 1,
+    "created_at": "2022-09-11T03:48:50.610Z",
+    "updated_at": "2022-09-11T03:48:50.610Z"
+  },
+  {
+    "id": "36",
+    "unit_code": "AWG",
+    "unit_name": "Gauge",
+    "status": 1,
+    "created_at": "2022-09-11T03:48:31.410Z",
+    "updated_at": "2022-09-11T03:48:31.410Z"
+  },
+  {
+    "id": "35",
+    "unit_code": "ATT",
+    "unit_name": "TechnicalAtmosphere",
+    "status": 1,
+    "created_at": "2022-09-11T03:48:12.933Z",
+    "updated_at": "2022-09-11T03:48:12.933Z"
+  },
+  {
+    "id": "34",
+    "unit_code": "ATM",
+    "unit_name": "StandardAtmosphere",
+    "status": 1,
+    "created_at": "2022-09-11T03:47:53.003Z",
+    "updated_at": "2022-09-11T03:47:53.003Z"
+  },
+  {
+    "id": "33",
+    "unit_code": "AS",
+    "unit_name": "Assortment",
+    "status": 1,
+    "created_at": "2022-09-11T03:47:33.366Z",
+    "updated_at": "2022-09-11T03:47:33.366Z"
+  },
+  {
+    "id": "32",
+    "unit_code": "APZ",
+    "unit_name": "Troyounceorapothecaryounce",
+    "status": 1,
+    "created_at": "2022-09-11T03:47:11.066Z",
+    "updated_at": "2022-09-11T03:47:11.066Z"
+  },
+  {
+    "id": "31",
+    "unit_code": "ANN",
+    "unit_name": "Year",
+    "status": 1,
+    "created_at": "2022-09-11T03:46:39.403Z",
+    "updated_at": "2022-09-11T03:46:39.403Z"
+  },
+  {
+    "id": "30",
+    "unit_code": "AMP",
+    "unit_name": "Ampere",
+    "status": 1,
+    "created_at": "2022-09-11T03:46:10.500Z",
+    "updated_at": "2022-09-11T03:46:10.500Z"
+  },
+  {
+    "id": "29",
+    "unit_code": "AMH",
+    "unit_name": "AmpereHour",
+    "status": 1,
+    "created_at": "2022-09-11T03:45:48.510Z",
+    "updated_at": "2022-09-11T03:45:48.510Z"
+  },
+  {
+    "id": "28",
+    "unit_code": "AD",
+    "unit_name": "Byte",
+    "status": 1,
+    "created_at": "2022-09-11T03:45:28.153Z",
+    "updated_at": "2022-09-11T03:45:28.153Z"
+  },
+  {
+    "id": "27",
+    "unit_code": "A86",
+    "unit_name": "Gigahertz",
+    "status": 1,
+    "created_at": "2022-09-11T03:45:05.520Z",
+    "updated_at": "2022-09-11T03:45:05.520Z"
+  },
+  {
+    "id": "26",
+    "unit_code": "A71",
+    "unit_name": "Femtometre",
+    "status": 1,
+    "created_at": "2022-09-11T03:44:42.026Z",
+    "updated_at": "2022-09-11T03:44:42.026Z"
+  },
+  {
+    "id": "25",
+    "unit_code": "A43",
+    "unit_name": "DeadweightTonnage",
+    "status": 1,
+    "created_at": "2022-09-11T03:44:19.286Z",
+    "updated_at": "2022-09-11T03:44:19.286Z"
+  },
+  {
+    "id": "24",
+    "unit_code": "A24",
+    "unit_name": "CandelaperSquareMetre",
+    "status": 1,
+    "created_at": "2022-09-11T03:43:40.623Z",
+    "updated_at": "2022-09-11T03:43:40.623Z"
+  },
+  {
+    "id": "23",
+    "unit_code": "A11",
+    "unit_name": "Angstrom",
+    "status": 1,
+    "created_at": "2022-09-11T03:43:20.690Z",
+    "updated_at": "2022-09-11T03:43:20.690Z"
+  },
+  {
+    "id": "22",
+    "unit_code": "80",
+    "unit_name": "Poundpersquareinch-Absolute",
+    "status": 1,
+    "created_at": "2022-09-11T03:42:30.360Z",
+    "updated_at": "2022-09-11T03:42:30.360Z"
+  },
+  {
+    "id": "21",
+    "unit_code": "64",
+    "unit_name": "Poundpersquareinch-Gauge",
+    "status": 1,
+    "created_at": "2022-09-11T03:42:09.643Z",
+    "updated_at": "2022-09-11T03:42:09.643Z"
+  },
+  {
+    "id": "20",
+    "unit_code": "5B",
+    "unit_name": "Batch",
+    "status": 1,
+    "created_at": "2022-09-11T03:41:47.843Z",
+    "updated_at": "2022-09-11T03:41:47.843Z"
+  },
+  {
+    "id": "19",
+    "unit_code": "59",
+    "unit_name": "Partpermillion",
+    "status": 1,
+    "created_at": "2022-09-11T03:41:26.730Z",
+    "updated_at": "2022-09-11T03:41:26.730Z"
+  },
+  {
+    "id": "18",
+    "unit_code": "58",
+    "unit_name": "Netkilogram",
+    "status": 1,
+    "created_at": "2022-09-11T03:41:00.316Z",
+    "updated_at": "2022-09-11T03:41:00.316Z"
+  },
+  {
+    "id": "17",
+    "unit_code": "4N",
+    "unit_name": "Megabecquerel",
+    "status": 1,
+    "created_at": "2022-09-11T03:40:39.206Z",
+    "updated_at": "2022-09-11T03:40:39.206Z"
+  },
+  {
+    "id": "16",
+    "unit_code": "4L",
+    "unit_name": "Megabyte",
+    "status": 1,
+    "created_at": "2022-09-11T03:40:13.956Z",
+    "updated_at": "2022-09-11T03:40:13.956Z"
+  },
+  {
+    "id": "15",
+    "unit_code": "4H",
+    "unit_name": "Micrometre",
+    "status": 1,
+    "created_at": "2022-09-11T03:39:52.046Z",
+    "updated_at": "2022-09-11T03:39:52.046Z"
+  },
+  {
+    "id": "14",
+    "unit_code": "4G",
+    "unit_name": "Microlitre",
+    "status": 1,
+    "created_at": "2022-09-11T03:39:20.310Z",
+    "updated_at": "2022-09-11T03:39:20.310Z"
+  },
+  {
+    "id": "13",
+    "unit_code": "2X",
+    "unit_name": "MetrePerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T03:38:55.026Z",
+    "updated_at": "2022-09-11T03:38:55.026Z"
+  },
+  {
+    "id": "12",
+    "unit_code": "2Q",
+    "unit_name": "KiloBecquerel",
+    "status": 1,
+    "created_at": "2022-09-11T03:38:33.260Z",
+    "updated_at": "2022-09-11T03:38:33.260Z"
+  },
+  {
+    "id": "11",
+    "unit_code": "2P",
+    "unit_name": "Kilobyte",
+    "status": 1,
+    "created_at": "2022-09-11T03:38:10.420Z",
+    "updated_at": "2022-09-11T03:38:10.420Z"
+  },
+  {
+    "id": "10",
+    "unit_code": "2N",
+    "unit_name": "Decibel",
+    "status": 1,
+    "created_at": "2022-09-11T03:37:51.223Z",
+    "updated_at": "2022-09-11T03:37:51.223Z"
+  },
+  {
+    "id": "9",
+    "unit_code": "2M",
+    "unit_name": "CentimetrePerSecond",
+    "status": 1,
+    "created_at": "2022-09-11T03:37:31.306Z",
+    "updated_at": "2022-09-11T03:37:31.306Z"
+  },
+  {
+    "id": "8",
+    "unit_code": "2L",
+    "unit_name": "CubicFootPerMinute",
+    "status": 1,
+    "created_at": "2022-09-11T03:37:06.796Z",
+    "updated_at": "2022-09-11T03:37:06.796Z"
+  },
+  {
+    "id": "7",
+    "unit_code": "28",
+    "unit_name": "Kilogrampersquaremetre",
+    "status": 1,
+    "created_at": "2022-09-11T03:36:34.730Z",
+    "updated_at": "2022-09-11T03:36:34.730Z"
+  },
+  {
+    "id": "6",
+    "unit_code": "23",
+    "unit_name": "GramsPerCubicCentimetre",
+    "status": 1,
+    "created_at": "2022-09-11T03:36:12.116Z",
+    "updated_at": "2022-09-11T03:36:12.116Z"
+  },
+  {
+    "id": "5",
+    "unit_code": "1N",
+    "unit_name": "Count",
+    "status": 1,
+    "created_at": "2022-09-11T03:35:42.800Z",
+    "updated_at": "2022-09-11T03:35:42.800Z"
+  },
+  {
+    "id": "4",
+    "unit_code": "15",
+    "unit_name": "Stick",
+    "status": 1,
+    "created_at": "2022-09-11T03:35:09.956Z",
+    "updated_at": "2022-09-11T03:35:09.956Z"
+  }
+]
