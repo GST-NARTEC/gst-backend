@@ -1,0 +1,8 @@
+model UnitCode {
+  id        String   @id
+  code      String?
+  name      String?
+  status    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
