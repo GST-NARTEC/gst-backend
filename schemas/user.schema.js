@@ -39,7 +39,18 @@ export const userInfoSchema = Joi.object({
 
 export const loginSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
+  password: Joi.string(),
+  companyLicenseNo: Joi.string(),
+}).custom((obj, helpers) => {
+  // Check if at least one of password or companyLicenseNo is provided
+  if (!obj.password && !obj.companyLicenseNo) {
+    return helpers.error('any.required', { message: 'Either password or company license number is required' });
+  }
+  // Check if both are not provided simultaneously
+  if (obj.password && obj.companyLicenseNo) {
+    return helpers.error('object.xor', { message: 'Provide either password or company license number, not both' });
+  }
+  return obj;
 });
 
 export const searchSchema = Joi.object({

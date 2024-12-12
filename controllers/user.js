@@ -91,41 +91,77 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { email, password } = value;
+      const { email, password, companyLicenseNo } = value;
 
       const user = await prisma.user.findUnique({
         where: { email },
       });
 
       if (!user) {
-        throw new MyError("Invalid email or password", 401);
+        throw new MyError("Invalid credentials", 401);
       }
 
-      // Check if user has completed checkout process
-      if (!user.password) {
-        throw new MyError(
-          "Please complete checkout process to activate your account",
-          403
-        );
+      let isAuthenticated = false;
+
+      if (password) {
+        if (!user.password) {
+          throw new MyError(
+            "Please complete checkout process to activate your account",
+            403
+          );
+        }
+        isAuthenticated = await bcrypt.compare(password, user.password);
+      } else {
+        if (!user.companyLicenseNo) {
+          throw new MyError("Company license number not found", 401);
+        }
+        isAuthenticated = user.companyLicenseNo === companyLicenseNo;
       }
 
-      const isValidPassword = await bcrypt.compare(password, user.password);
-      if (!isValidPassword) {
-        throw new MyError("Invalid email or password", 401);
+      if (!isAuthenticated) {
+        throw new MyError("Invalid credentials", 401);
+      }
+
+      if (!user.isActive) {
+        throw new MyError("Account is suspended. Please contact support.", 403);
       }
 
       const tokenPayload = { userId: user.id, email: user.email };
       const accessToken = JWT.generateAccessToken(tokenPayload);
       const refreshToken = JWT.generateRefreshToken(tokenPayload);
 
-      // Store refresh token in database
-      await prisma.refreshToken.create({
-        data: {
-          token: refreshToken,
-          userId: user.id,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        },
-      });
+      // Wrap token operations in a transaction
+      try {
+        await prisma.$transaction(
+          async (tx) => {
+            // Delete existing tokens
+            await tx.refreshToken.deleteMany({
+              where: { userId: user.id },
+            });
+
+            // Create new refresh token
+            await tx.refreshToken.create({
+              data: {
+                token: refreshToken,
+                userId: user.id,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+              },
+            });
+          },
+          {
+            timeout: 10000, // 10 second timeout
+            isolationLevel: "Serializable", // Highest isolation level
+          }
+        );
+      } catch (tokenError) {
+        console.error("Token operation failed:", tokenError);
+        // If token operations fail, we should still be able to log in
+        // but we'll create a new token pair
+        const newAccessToken = JWT.generateAccessToken(tokenPayload);
+        const newRefreshToken = JWT.generateRefreshToken(tokenPayload);
+        accessToken = newAccessToken;
+        refreshToken = newRefreshToken;
+      }
 
       const { password: _, ...userWithoutPassword } = user;
 
