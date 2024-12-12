@@ -25,6 +25,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
+import unitCodeRoutes from "./unitCode.js";
 const router = express.Router();
 
 // V1 Routes
@@ -51,6 +52,7 @@ router.use("/v1/addons", addonRoutes);
 router.use("/v1/brands", brandRoutes);
 router.use("/v1/user-products", userProductRoutes);
 router.use("/v1/user-docs", userDocRoutes);
+router.use("/unit-codes", unitCodeRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
