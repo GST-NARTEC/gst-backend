@@ -15,6 +15,7 @@ const coreSolutionSchema = Joi.object({
   captionAr: Joi.string().allow("", null),
   isActive: Joi.boolean().default(true),
   pageId: Joi.string().allow("", null),
+  externalUrl: Joi.string().uri().allow("", null)
 });
 
 class CoreSolutionController {
@@ -24,6 +25,15 @@ class CoreSolutionController {
       const { error, value } = coreSolutionSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (value.pageId) {
+        const page = await prisma.page.findUnique({
+          where: { id: value.pageId },
+        });
+        if (!page) {
+          throw new MyError("Referenced page not found", 404);
+        }
       }
 
       if (req.file) {
@@ -75,6 +85,9 @@ class CoreSolutionController {
 
       const coreSolution = await prisma.coreSolution.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!coreSolution) {
@@ -101,8 +114,17 @@ class CoreSolutionController {
         throw new MyError(error.details[0].message, 400);
       }
 
+      if (value.pageId) {
+        value.externalUrl = null;
+      } else if (value.externalUrl) {
+        value.pageId = null;
+      }
+
       const existingCoreSolution = await prisma.coreSolution.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingCoreSolution) {
@@ -163,6 +185,9 @@ class CoreSolutionController {
 
       const existingCoreSolution = await prisma.coreSolution.findUnique({
         where: { id },
+        include: {
+          page: true,
+        },
       });
 
       if (!existingCoreSolution) {

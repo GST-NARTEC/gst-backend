@@ -12,8 +12,9 @@ const whyBarcodeSchema = Joi.object({
   image: Joi.string().allow("", null),
   captionEn: Joi.string().allow("", null),
   captionAr: Joi.string().allow("", null),
-  isActive: Joi.boolean().default(true),
+  isActive: Joi.boolean(),
   pageId: Joi.string().allow("", null),
+  externalUrl: Joi.string().uri().allow("", null)
 });
 
 class WhyBarcodeController {
@@ -23,6 +24,15 @@ class WhyBarcodeController {
       const { error, value } = whyBarcodeSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (value.pageId) {
+        const page = await prisma.page.findUnique({
+          where: { id: value.pageId },
+        });
+        if (!page) {
+          throw new MyError("Referenced page not found", 404);
+        }
       }
 
       if (req.file) {
@@ -133,6 +143,12 @@ class WhyBarcodeController {
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (value.pageId) {
+        value.externalUrl = null;
+      } else if (value.externalUrl) {
+        value.pageId = null;
       }
 
       const existingWhyBarcode = await prisma.whyBarcode.findUnique({

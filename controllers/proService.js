@@ -14,6 +14,7 @@ const proServiceSchema = Joi.object({
   captionEn: Joi.string().allow("", null),
   captionAr: Joi.string().allow("", null),
   pageId: Joi.string().allow("", null),
+  externalUrl: Joi.string().uri().allow("", null),
 });
 
 class ProServiceController {
@@ -23,6 +24,15 @@ class ProServiceController {
       const { error, value } = proServiceSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (value.pageId) {
+        const page = await prisma.page.findUnique({
+          where: { id: value.pageId },
+        });
+        if (!page) {
+          throw new MyError("Referenced page not found", 404);
+        }
       }
 
       if (req.file) {
@@ -125,6 +135,12 @@ class ProServiceController {
 
       if (error) {
         throw new MyError(error.details[0].message, 400);
+      }
+
+      if (value.pageId) {
+        value.externalUrl = null;
+      } else if (value.externalUrl) {
+        value.pageId = null;
       }
 
       const existingProService = await prisma.proService.findUnique({
