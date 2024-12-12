@@ -52,7 +52,7 @@ router.use("/v1/addons", addonRoutes);
 router.use("/v1/brands", brandRoutes);
 router.use("/v1/user-products", userProductRoutes);
 router.use("/v1/user-docs", userDocRoutes);
-router.use("v1/unit-codes", unitCodeRoutes);
+router.use("/v1/unit-codes", unitCodeRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
