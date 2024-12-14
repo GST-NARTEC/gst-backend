@@ -92,20 +92,22 @@ const processUserDeletion = async (job) => {
     }
 
     // Process user products
-    for (const product of user.products) {
-      // Delete product images from storage
-      for (const image of product.images) {
-        await deleteFile(image.url);
-      }
+    if (user.products.length > 0) {
+      for (const product of user.products) {
+        // Delete product images from storage
+        for (const image of product.images) {
+          await deleteFile(image.url);
+        }
 
-      // Release GTIN if exists
-      if (product.gtin) {
-        await prisma.gtin.update({
-          where: { gtin: product.gtin },
-          data: {
-            status: "AVAILABLE",
-          },
-        });
+        // Release GTIN if exists
+        if (product.gtin) {
+          await prisma.gtin.update({
+            where: { gtin: product.gtin },
+            data: {
+              status: "AVAILABLE",
+            },
+          });
+        }
       }
     }
 
