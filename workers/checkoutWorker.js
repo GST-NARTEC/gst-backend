@@ -23,7 +23,7 @@ const processCheckout = async (job) => {
 
   let vatAmount = vat;
 
-  if (vatType == "Percentage") {
+  if (activeVat.vatType == "PERCENTAGE") {
     vatAmount = (totalAmount * vat) / 100;
   }
 
