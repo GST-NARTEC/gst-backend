@@ -38,6 +38,7 @@ const processUserDeletion = async (job) => {
         },
       },
       docs: true,
+      brands: true,
     },
   });
 
