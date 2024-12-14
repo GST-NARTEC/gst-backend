@@ -31,7 +31,7 @@ const processUserDeletion = async (job) => {
         },
       },
       invoices: true,
-      userProducts: {
+      products: {
         include: {
           images: true,
         },
@@ -45,6 +45,15 @@ const processUserDeletion = async (job) => {
 
   // Delete everything in a transaction
   await prisma.$transaction(async (prisma) => {
+    // delete user product images
+    if (user.products.length > 0) {
+      for (const product of user.products) {
+        for (const image of product.images) {
+          await deleteFile(image.url);
+        }
+      }
+    }
+
     // Cart deletion
     if (user.cart) {
       await prisma.cartItemAddon.deleteMany({
@@ -108,14 +117,14 @@ const processUserDeletion = async (job) => {
     await prisma.productImage.deleteMany({
       where: {
         product: {
-          userId: userId
-        }
-      }
+          userId: userId,
+        },
+      },
     });
 
     // Delete all user products
     await prisma.userProduct.deleteMany({
-      where: { userId }
+      where: { userId },
     });
 
     // Delete cart
