@@ -109,10 +109,10 @@ const processUserDeletion = async (job) => {
           });
 
           if (existingGtin) {
-            await prisma.gtin.update({
+            await prisma.gTIN?.update({
               where: { gtin: product.gtin },
               data: {
-                status: "AVAILABLE",
+                status: "Available",
               },
             });
           }
