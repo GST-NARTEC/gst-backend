@@ -102,13 +102,20 @@ const processUserDeletion = async (job) => {
         }
 
         // Release GTIN if exists
-        if (product.gtin) {
-          await prisma.gtin.update({
+        if (product?.gtin) {
+          // Add a check if GTIN exists in the database
+          const existingGtin = await prisma.gtin.findUnique({
             where: { gtin: product.gtin },
-            data: {
-              status: "AVAILABLE",
-            },
           });
+
+          if (existingGtin) {
+            await prisma.gtin.update({
+              where: { gtin: product.gtin },
+              data: {
+                status: "AVAILABLE",
+              },
+            });
+          }
         }
       }
     }
