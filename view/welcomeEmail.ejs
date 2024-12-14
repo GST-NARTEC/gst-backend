@@ -188,8 +188,9 @@
                   %>
                 </p>
                 <p>
-                  ضريبة القيمة المضافة (<%= tax.value %><%= tax.type %>): <%=
-                  currency.symbol %> <%= order.vat %>
+                  ضريبة القيمة المضافة (<%= tax.value %> <%= tax.type ==
+                  "Percentage" ? "%" : "" %>): <%= currency.symbol %> <%=
+                  order.vat %>
                 </p>
                 <p>
                   المبلغ الإجمالي: <%= currency.symbol %> <%=

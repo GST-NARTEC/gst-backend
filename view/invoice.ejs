@@ -230,7 +230,7 @@
           </th>
         </tr>
       </thead>
-            <tbody>
+      <tbody>
         <% order.orderItems.forEach(item => { %>
         <tr>
           <td style="vertical-align: top; padding-right: 15px">
@@ -278,7 +278,7 @@
                 padding-top: 4px;
               "
             >
-              Add-ons Total / مجموع الإضافات:<br />
+               Add-ons Total / مجموع الإضافات:<br />
               <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem) => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
             </div>
             <% } %>
@@ -314,7 +314,7 @@
           justify-content: space-between;
         "
       >
-        <span style="font-size: 16px; font-weight: bold"
+         <span style="font-size: 16px; font-weight: bold"
           >VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span
         >
         <span style="font-size: 16px; font-weight: bold"
