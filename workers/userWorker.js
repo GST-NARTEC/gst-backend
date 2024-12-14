@@ -37,6 +37,7 @@ const processUserDeletion = async (job) => {
           images: true,
         },
       },
+      docs: true,
     },
   });
 
@@ -129,6 +130,14 @@ const processUserDeletion = async (job) => {
     // Delete cart
     if (user.cart) {
       await prisma.cart.delete({ where: { id: user.cart.id } });
+    }
+
+    // delete user docs
+    if (user.docs && user.docs?.length > 0) {
+      for (const doc of user.docs) {
+        await deleteFile(doc.doc);
+        await prisma.userDoc.delete({ where: { id: doc.id } });
+      }
     }
 
     // Finally delete user

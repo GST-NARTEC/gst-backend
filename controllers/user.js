@@ -390,6 +390,7 @@ class UserController {
                       overallAmount: true,
                     },
                   },
+                  docs: true,
                   createdAt: true,
                   status: true,
                 },

@@ -26,4 +26,5 @@ model User {
   refreshTokens    RefreshToken[]
   brands           Brand[]
   products         UserProduct[]
+  docs             UserDoc[]
 }
