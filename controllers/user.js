@@ -372,6 +372,7 @@ class UserController {
           case "docs":
             queryObject.select = {
               id: true,
+              docs: true,
               orders: {
                 select: {
                   id: true,
@@ -390,7 +391,7 @@ class UserController {
                       overallAmount: true,
                     },
                   },
-                  docs: true,
+
                   createdAt: true,
                   status: true,
                 },
