@@ -39,21 +39,14 @@ const processUserDeletion = async (job) => {
     },
   });
 
+  console.log(user);
+
   if (!user) {
     throw new Error("User not found");
   }
 
   // Delete everything in a transaction
   await prisma.$transaction(async (prisma) => {
-    // delete user product images
-    if (user.products.length > 0) {
-      for (const product of user.products) {
-        for (const image of product.images) {
-          await deleteFile(image.url);
-        }
-      }
-    }
-
     // Cart deletion
     if (user.cart) {
       await prisma.cartItemAddon.deleteMany({
@@ -99,7 +92,7 @@ const processUserDeletion = async (job) => {
     }
 
     // Process user products
-    for (const product of user.userProducts) {
+    for (const product of user.products) {
       // Delete product images from storage
       for (const image of product.images) {
         await deleteFile(image.url);
@@ -109,6 +102,9 @@ const processUserDeletion = async (job) => {
       if (product.gtin) {
         await prisma.gtin.update({
           where: { gtin: product.gtin },
+          data: {
+            status: "AVAILABLE",
+          },
         });
       }
     }
