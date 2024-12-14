@@ -21,10 +21,17 @@ const processCheckout = async (job) => {
     return sum + productTotal + addonsTotal;
   }, 0);
 
-  const vatAmount = vat;
+  let vatAmount = vat;
+
+  if (vatType == "Percentage") {
+    vatAmount = (totalAmount * vat) / 100;
+  }
+
   const overallAmount = totalAmount + vatAmount;
 
-  console.log(vatAmount, totalAmount, overallAmount);
+  console.log(
+    `vatAmount: ${vatAmount}, totalAmount: ${totalAmount}, overallAmount: ${overallAmount}`
+  );
 
   // Generate password
   const password = generatePassword();
