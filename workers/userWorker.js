@@ -140,6 +140,14 @@ const processUserDeletion = async (job) => {
       }
     }
 
+    // delete user brands
+    if (user.brands && user.brands?.length > 0) {
+      for (const brand of user.brands) {
+        await deleteFile(brand.document);
+        await prisma.brand.delete({ where: { id: brand.id } });
+      }
+    }
+
     // Finally delete user
     await prisma.user.delete({ where: { id: userId } });
   });
