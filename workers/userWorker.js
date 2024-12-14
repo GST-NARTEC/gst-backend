@@ -92,7 +92,7 @@ const processUserDeletion = async (job) => {
     }
 
     // Process user products
-    if (user.products.length > 0) {
+    if (user.products && user.products?.length > 0) {
       for (const product of user.products) {
         // Delete product images from storage
         for (const image of product.images) {
