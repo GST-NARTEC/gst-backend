@@ -24,6 +24,8 @@ const processCheckout = async (job) => {
   const vatAmount = vat;
   const overallAmount = totalAmount + vatAmount;
 
+  console.log(vatAmount, totalAmount, overallAmount);
+
   // Generate password
   const password = generatePassword();
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -125,6 +127,7 @@ const processCheckout = async (job) => {
     },
     tax: {
       value: activeVat.value,
+      type: activeVat.type,
     },
     attachments: [
       {

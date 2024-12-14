@@ -121,6 +121,15 @@ class EmailService {
         html,
       };
 
+      const adminMailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: process.env.EMAIL_FROM,
+        subject: `Bank Slip Received - Order ${order.orderNumber}`,
+        html,
+      };
+
+      // Send email to admin, as well as the user
+      await this.transporter.sendMail(adminMailOptions);
       await this.transporter.sendMail(mailOptions);
       return true;
     } catch (error) {
