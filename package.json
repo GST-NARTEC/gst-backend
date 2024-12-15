@@ -8,7 +8,7 @@
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
     "prisma-push": "npx prisma db push",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +37,13 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4",
-    "prisma": "5.22.0"
+    "prisma": "5.22.0",
+    "@babel/preset-env": "^7.16.0",
+    "jest": "^27.3.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   }
 }

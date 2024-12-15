@@ -6,6 +6,7 @@ import EmailService from "../utils/email.js";
 import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
+import { calculatePrice } from "../utils/priceCalculator.js";
 import prisma from "../utils/prismaClient.js";
 
 const processCheckout = async (job) => {
@@ -13,11 +14,20 @@ const processCheckout = async (job) => {
 
   // Calculate totals
   const totalAmount = cart.items.reduce((sum, item) => {
-    const productTotal = item.quantity * item.product.price;
+    const { totalPrice: productTotal } = calculatePrice(
+      item.product.price,
+      item.quantity
+    );
+
     const addonsTotal = item.addonItems.reduce(
       (acc, addonItem) => acc + addonItem.addon.price * addonItem.quantity,
       0
     );
+
+    console.log(
+      `productTotal: ${productTotal}, addonsTotal: ${addonsTotal}, sum: ${sum}`
+    );
+
     return sum + productTotal + addonsTotal;
   }, 0);
 

@@ -3,7 +3,17 @@ model UserDoc {
   name            String?
   doc             String?
   userId          String         @db.UniqueIdentifier
-  user            User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  docTypeId       String?        @db.UniqueIdentifier
+  docType         DocType?       @relation(fields: [docTypeId], references: [id], onDelete: Cascade)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+}
+
+model DocType {
+  id              String         @id @default(uuid()) @db.UniqueIdentifier
+  name            String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  userDocs        UserDoc[]
 }
