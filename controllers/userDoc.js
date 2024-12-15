@@ -49,7 +49,7 @@ class UserDocController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { name, doc } = value;
+      let { name, doc } = value;
 
       const existingDoc = await prisma.userDoc.findUnique({
         where: { id: req.params.id },
