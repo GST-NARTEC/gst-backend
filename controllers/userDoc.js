@@ -1,4 +1,7 @@
-import { userDocSchema } from "../schemas/userDoc.schema.js";
+import {
+  updateUserDocSchema,
+  userDocSchema,
+} from "../schemas/userDoc.schema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
