@@ -5,8 +5,8 @@ import puppeteer from "puppeteer";
 import QRCode from "qrcode";
 import { fileURLToPath } from "url";
 
-import prisma from "./prismaClient.js";
 import { calculatePrice } from "./priceCalculator.js";
+import prisma from "./prismaClient.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -179,6 +179,7 @@ class PDFGenerator {
         email: data.email,
         phone: data.phone,
         logo: LOGO_URL,
+        calculatePrice,
       });
 
       // Generate PDF
