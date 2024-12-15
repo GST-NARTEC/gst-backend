@@ -114,6 +114,9 @@ class UserDocController {
 
       const userDocs = await prisma.userDoc.findMany({
         where: { userId },
+        include: {
+          docType: true,
+        },
       });
 
       res

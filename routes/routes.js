@@ -7,6 +7,7 @@ import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
 import coreSolutionRoutes from "./coreSolution.js";
 import currencyRoutes from "./currency.js";
+import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
@@ -18,6 +19,7 @@ import proServiceRoutes from "./proService.js";
 import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import templateRoutes from "./template.js";
+import unitCodeRoutes from "./unitCode.js";
 import userRoutes from "./user.js";
 import userDocRoutes from "./userDoc.js";
 import userProductRoutes from "./userProducts.js";
@@ -25,7 +27,6 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-import unitCodeRoutes from "./unitCode.js";
 
 const router = express.Router();
 
@@ -54,7 +55,7 @@ router.use("/v1/brands", brandRoutes);
 router.use("/v1/user-products", userProductRoutes);
 router.use("/v1/user-docs", userDocRoutes);
 router.use("/v1/unit-codes", unitCodeRoutes);
-
+router.use("/v1/doc-types", docTypeRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
