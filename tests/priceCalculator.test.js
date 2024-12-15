@@ -13,6 +13,12 @@ describe("Price Calculator", () => {
     expect(result.unitPrice).toBe(18.8);
   });
 
+  test("Should calculate correct price for quantity 6", () => {
+    const result = calculatePrice(47, 6);
+    expect(result.totalPrice).toBe(112.8);
+    expect(result.unitPrice).toBe(18.8);
+  });
+
   test("should calculate correct price for quantity 10", () => {
     const result = calculatePrice(47, 10);
     expect(result.totalPrice).toBe(141);

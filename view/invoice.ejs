@@ -231,7 +231,9 @@
         </tr>
       </thead>
       <tbody>
-        <% order.orderItems.forEach(item => { %>
+        <% order.orderItems.forEach(item => { 
+          const calculatedPrice = calculatePrice(item.product.price, item.quantity);
+        %>
         <tr>
           <td style="vertical-align: top; padding-right: 15px">
             <div style="font-weight: bold; margin-bottom: 8px">
@@ -260,13 +262,13 @@
           <td
             style="text-align: right; vertical-align: top; white-space: nowrap"
           >
-            <%= currency.symbol %> <%= item.price.toFixed(2) %>
+            <%= currency.symbol %> <%= calculatedPrice.unitPrice.toFixed(2) %>
           </td>
           <td
             style="text-align: right; vertical-align: top; white-space: nowrap"
           >
             <div>
-              <%= currency.symbol %> <%= (item.price * item.quantity).toFixed(2) %>
+              <%= currency.symbol %> <%= calculatedPrice.totalPrice.toFixed(2) %>
             </div>
             <% if (item.addonItems && item.addonItems.length > 0) { %>
             <div

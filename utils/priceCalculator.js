@@ -25,45 +25,69 @@ export const PRICE_BRACKETS = [
  * @param {number} quantity - The quantity of items
  * @returns {Object} - Contains total price and unit price
  */
-export const calculatePrice = (basePrice = 47, quantity = 1) => {
-  if (quantity < 1) {
+export const calculatePrice = (basePrice, quantity) => {
+  if (!quantity || quantity < 1) {
     throw new Error("Quantity must be at least 1");
   }
 
-  // Find the appropriate price bracket
-  const bracket = [...PRICE_BRACKETS].reverse().find((b) => quantity >= b.min);
+  // Find the current bracket
+  const currentBracket = [...PRICE_BRACKETS]
+    .reverse()
+    .find((b) => quantity >= b.min);
 
-  if (!bracket) {
+  if (!currentBracket) {
+    throw new Error("Invalid quantity");
+  }
+
+  // For quantities exactly at bracket minimums, use the bracket price
+  if (quantity === currentBracket.min) {
     return {
-      totalPrice: basePrice,
-      unitPrice: basePrice,
+      totalPrice: currentBracket.price,
+      unitPrice: currentBracket.price / currentBracket.min,
     };
   }
 
-  // For quantities that exactly match a bracket
-  if (quantity === bracket.min) {
-    return {
-      totalPrice: bracket.price,
-      unitPrice: bracket.price / quantity,
-    };
-  }
+  // For quantities between brackets
+  const currentIndex = PRICE_BRACKETS.findIndex(
+    (b) => b.min === currentBracket.min
+  );
+  const nextBracket = PRICE_BRACKETS[currentIndex + 1];
 
-  // For quantities between brackets, use linear interpolation
-  const nextBracket = PRICE_BRACKETS.find((b) => b.min > quantity);
   if (nextBracket) {
-    const ratio = (quantity - bracket.min) / (nextBracket.min - bracket.min);
-    const totalPrice =
-      bracket.price + ratio * (nextBracket.price - bracket.price);
+    // Use the unit price from current bracket
+    const unitPrice = currentBracket.price / currentBracket.min;
+    const totalPrice = unitPrice * quantity;
     return {
       totalPrice: Math.round(totalPrice * 100) / 100,
-      unitPrice: Math.round((totalPrice / quantity) * 100) / 100,
+      unitPrice: Math.round(unitPrice * 100) / 100,
     };
   }
 
   // For quantities beyond the last bracket
-  const unitPrice = bracket.price / bracket.min;
+  const unitPrice = currentBracket.price / currentBracket.min;
   return {
     totalPrice: Math.round(unitPrice * quantity * 100) / 100,
     unitPrice: Math.round(unitPrice * 100) / 100,
+  };
+};
+
+export const calculateTotals = (items, vat = 15) => {
+  // Calculate subtotal
+  const subtotal = items.reduce((sum, item) => {
+    const itemTotal = item.quantity * item.unitPrice;
+    return sum + itemTotal;
+  }, 0);
+
+  // Calculate VAT amount
+  const vatAmount = (subtotal * vat) / 100;
+
+  // Calculate grand total
+  const grandTotal = subtotal + vatAmount;
+
+  return {
+    subtotal: Math.round(subtotal * 100) / 100,
+    vatAmount: Math.round(vatAmount * 100) / 100,
+    grandTotal: Math.round(grandTotal * 100) / 100,
+    vatPercentage: vat,
   };
 };

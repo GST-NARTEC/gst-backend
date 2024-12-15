@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import { fileURLToPath } from "url";
 
 import prisma from "./prismaClient.js";
+import { calculatePrice } from "./priceCalculator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -99,6 +100,7 @@ class PDFGenerator {
           id: activeVat.taxId,
           name: activeVat.name,
         },
+        calculatePrice,
       };
 
       // Generate QR code and render template (existing code)

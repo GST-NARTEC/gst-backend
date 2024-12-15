@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import { calculatePrice } from "./priceCalculator.js";
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -78,6 +80,7 @@ class EmailService {
         logo: LOGO_URL,
         currency,
         tax,
+        calculatePrice,
       };
 
       const html = await ejs.renderFile(templatePath, data);

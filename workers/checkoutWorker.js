@@ -14,7 +14,7 @@ const processCheckout = async (job) => {
 
   // Calculate totals
   const totalAmount = cart.items.reduce((sum, item) => {
-    const { totalPrice: productTotal } = calculatePrice(
+    const { totalPrice: productTotal, unitPrice } = calculatePrice(
       item.product.price,
       item.quantity
     );
