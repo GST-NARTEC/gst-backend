@@ -1,7 +1,10 @@
 model SuperAdmin {
-  id        String      @id @default(uuid())
-  email     String?      
-  password  String?      
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id            String         @id @default(uuid()) @db.UniqueIdentifier
+  email         String?        @unique
+  password      String?
+  refreshTokens RefreshToken[]     
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("super_admins")
 }
