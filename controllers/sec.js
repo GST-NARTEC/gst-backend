@@ -187,9 +187,9 @@ class SECController {
     }
   }
 
-  static async getByGtin(req, res, next) {
+  static async getByGtinAndType(req, res, next) {
     try {
-      const { gtin } = req.params;
+      const { gtin, digitalLinkType } = req.params;
       const { error, value } = querySchema.validate(req.query);
       if (error) {
         throw new MyError(error.details[0].message, 400);
@@ -212,6 +212,7 @@ class SECController {
 
       const where = {
         gtin,
+        digitalType: digitalLinkType,
         ...(search
           ? {
               OR: [

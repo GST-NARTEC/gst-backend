@@ -29,14 +29,14 @@ class DigitalLinkController {
     }
   }
 
-  static async getDigitalLinksByGtin(req, res, next) {
+  static async getDigitalLinksByGtinAndLinkType(req, res, next) {
     try {
       const { error, value } = querySchema.validate(req.query);
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { gtin } = req.params;
+      const { gtin, digitalLinkType } = req.params;
 
       const existingGtin = await prisma.gTIN.findFirst({
         where: {
@@ -53,6 +53,7 @@ class DigitalLinkController {
 
       const where = {
         gtin,
+        digitalType: digitalLinkType,
         ...(search
           ? {
               OR: [
