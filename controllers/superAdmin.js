@@ -26,7 +26,7 @@ class SuperAdminController {
       }
 
       // allow only one super admin
-      const superadmin = await prisma.superAdmin.findFirst({
+      let superadmin = await prisma.superAdmin.findFirst({
         where: {
           email: value.email,
         },
