@@ -59,11 +59,17 @@ class OrderController {
       });
 
       // Send email notification
-      await EmailService.sendBankSlipNotification({
+      const isSent = await EmailService.sendBankSlipNotification({
         email: updatedOrder.user.email,
         order: updatedOrder,
         user: updatedOrder.user,
       });
+
+      if (!isSent) {
+        console.log("Failed to send email notification");
+      } else {
+        console.log("Email notification sent successfully");
+      }
 
       res.status(200).json(
         response(200, true, "Bank slip uploaded successfully", {
