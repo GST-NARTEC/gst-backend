@@ -46,27 +46,34 @@ class SECController {
 
   static async getSECs(req, res, next) {
     try {
+      console.log("Request query:", req.query);
+
       const { error, value } = querySchema.validate(req.query);
       if (error) {
+        console.log("Validation error:", error);
         throw new MyError(error.details[0].message, 400);
       }
 
       const { page, limit, search } = value;
       const skip = (page - 1) * limit;
 
+      console.log("Query params:", { page, limit, search, skip });
+
       const where = search
         ? {
             OR: [
               { materialNo: { contains: search } },
-              { purchaceOrder: { contains: search } },
+              { purchaseOrder: { contains: search } },
               { vendor: { contains: search } },
               { serialNo: { contains: search } },
             ],
           }
         : {};
 
+      console.log("Where clause:", where);
+
       const [secs, total] = await Promise.all([
-        prisma.sEC.findMany({
+        prisma.SEC.findMany({
           where,
           skip,
           take: limit,
@@ -77,8 +84,11 @@ class SECController {
             createdAt: "desc",
           },
         }),
-        prisma.sEC.count({ where }),
+        prisma.SEC.count({ where }),
       ]);
+
+      console.log("Raw SECs data:", secs);
+      console.log("Total count:", total);
 
       const totalPages = Math.ceil(total / limit);
 
@@ -94,6 +104,7 @@ class SECController {
         })
       );
     } catch (error) {
+      console.error("Error in getSECs:", error);
       next(error);
     }
   }

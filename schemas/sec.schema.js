@@ -3,7 +3,7 @@ import Joi from "joi";
 
 export const secSchema = Joi.object({
   materialNo: Joi.string().allow("", null),
-  purchaceOrder: Joi.string().allow("", null),
+  purchaseOrder: Joi.string().allow("", null),
   vendor: Joi.string().allow("", null),
   serialNo: Joi.string().allow("", null),
   date: Joi.date().allow(null),
@@ -13,7 +13,7 @@ export const secSchema = Joi.object({
 
 export const secUpdateSchema = Joi.object({
   materialNo: Joi.string().allow("", null),
-  purchaceOrder: Joi.string().allow("", null),
+  purchaseOrder: Joi.string().allow("", null),
   vendor: Joi.string().allow("", null),
   serialNo: Joi.string().allow("", null),
   date: Joi.date().allow(null),

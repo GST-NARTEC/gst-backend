@@ -7,7 +7,7 @@ export const digitalLinkSchema = Joi.object({
 });
 
 export const digitalLinkUpdateSchema = Joi.object({
-  url: Joi.string().uri(),
+  url: Joi.string().required(),
   digitalType: Joi.string(),
   gtin: Joi.string(),
 });

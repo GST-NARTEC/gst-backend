@@ -1,15 +1,15 @@
 model SEC {
-  id                String   @id @default(cuid())
-  superadminId      String
-  materialNo        String?
-  purchaceOrder     String?
-  vendor            String?
-  serialNo          String?
-  date              DateTime?
-  text              String?
-  gtin              String?
-  userId            String?  @db.UniqueIdentifier
-  user              User?    @relation(fields: [userId], references: [id])
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id            String    @id @default(cuid())
+  superadminId  String?
+  materialNo    String?
+  purchaseOrder String?
+  vendor        String?
+  serialNo      String?
+  date          DateTime?
+  text          String?
+  gtin          String?
+  userId        String?   @db.UniqueIdentifier
+  user          User?     @relation(fields: [userId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
