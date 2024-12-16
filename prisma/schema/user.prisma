@@ -29,4 +29,5 @@ model User {
   products         UserProduct[]
   docs             UserDoc[]
   secs             SEC[]
+  digitalLinks     DigitalLink[]
 }

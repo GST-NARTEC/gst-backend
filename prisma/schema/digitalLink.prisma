@@ -3,6 +3,8 @@ model DigitalLink {
   url               String?
   digitalType       String?
   gtin              String?
+  userId            String?
+  user              User?    @relation(fields: [userId], references: [id])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }

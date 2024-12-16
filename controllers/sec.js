@@ -18,7 +18,7 @@ class SECController {
 
       // Check if user exists and has SEC access
       const user = await prisma.user.findUnique({
-        where: { id: value.userId },
+        where: { id: req.user.id },
       });
 
       if (!user) {
@@ -32,10 +32,7 @@ class SECController {
       const sec = await prisma.sEC.create({
         data: {
           ...value,
-          superadminId: req.user.id, // Assuming superadmin is creating this
-        },
-        include: {
-          user: true,
+          userId: req.user.id,
         },
       });
 

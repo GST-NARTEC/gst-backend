@@ -8,7 +8,6 @@ export const secSchema = Joi.object({
   serialNo: Joi.string().allow("", null),
   date: Joi.date().allow(null),
   text: Joi.string().allow("", null),
-  userId: Joi.string().required(),
 });
 
 export const secUpdateSchema = Joi.object({

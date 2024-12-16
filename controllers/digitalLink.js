@@ -16,7 +16,7 @@ class DigitalLinkController {
       }
 
       const digitalLink = await prisma.digitalLink.create({
-        data: value,
+        data: { ...value, userId: req.user.id },
       });
 
       res
@@ -51,17 +51,18 @@ class DigitalLinkController {
       const { page, limit, search, sortBy, sortOrder } = value;
       const skip = (page - 1) * limit;
 
-      const where = search
-        ? {
-            gtin,
-            OR: [
-              { name: { contains: search } },
-              { description: { contains: search } },
-            ],
-          }
-        : {
-            gtin,
-          };
+      const where = {
+        gtin,
+        ...(search
+          ? {
+              OR: [
+                { url: { contains: search } },
+                { digitalType: { contains: search } },
+                { createdAt: { contains: search } },
+              ],
+            }
+          : {}),
+      };
 
       const [digitalLinks, total] = await Promise.all([
         prisma.digitalLink.findMany({
@@ -121,7 +122,7 @@ class DigitalLinkController {
 
       const digitalLink = await prisma.digitalLink.update({
         where: { id },
-        data: value,
+        data: { ...value, userId: req.user.id },
       });
 
       res.json(

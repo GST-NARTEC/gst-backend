@@ -1,12 +1,13 @@
 import express from "express";
-import DigitalLinkController from "../controllers/digitalLink.js";
+import controller from "../controllers/digitalLink.js";
+import { verifyAccessToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.post("/", DigitalLinkController.createDigitalLink);
-router.get("/:gtin", DigitalLinkController.getDigitalLinksByGtin);
-router.get("/:id", DigitalLinkController.getDigitalLink);
-router.put("/:id", DigitalLinkController.updateDigitalLink);
-router.delete("/:id", DigitalLinkController.deleteDigitalLink);
+router.post("/", verifyAccessToken, controller.createDigitalLink);
+router.get("/:gtin", controller.getDigitalLinksByGtin);
+router.get("/:id", controller.getDigitalLink);
+router.put("/:id", verifyAccessToken, controller.updateDigitalLink);
+router.delete("/:id", verifyAccessToken, controller.deleteDigitalLink);
 
 export default router;
