@@ -7,7 +7,7 @@ import response from "../utils/response.js";
 
 const superAdminSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().required().min(8),
+  password: Joi.string().required(),
 });
 
 class SuperAdminController {
