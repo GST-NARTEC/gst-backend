@@ -8,6 +8,7 @@ export const secSchema = Joi.object({
   serialNo: Joi.string().allow("", null),
   date: Joi.date().allow(null),
   text: Joi.string().allow("", null),
+  gtin: Joi.string().required(),
 });
 
 export const secUpdateSchema = Joi.object({
@@ -17,6 +18,7 @@ export const secUpdateSchema = Joi.object({
   serialNo: Joi.string().allow("", null),
   date: Joi.date().allow(null),
   text: Joi.string().allow("", null),
+  gtin: Joi.string().allow("", null),
 });
 
 export const querySchema = Joi.object({

@@ -10,7 +10,7 @@ router.use(verifyAccessToken);
 
 router.post("/", SECController.createSEC);
 router.get("/", SECController.getSECs);
-router.get("/user/:gtin/:digitalLinkType", SECController.getByGtinAndType);
+router.get("/:gtin", SECController.getSecByGtin);
 router.get("/:id", SECController.getSEC);
 router.put("/:id", SECController.updateSEC);
 router.delete("/:id", SECController.deleteSEC);

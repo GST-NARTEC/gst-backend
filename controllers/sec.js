@@ -187,7 +187,7 @@ class SECController {
     }
   }
 
-  static async getByGtinAndType(req, res, next) {
+  static async getSecByGtin(req, res, next) {
     try {
       const { gtin, digitalLinkType } = req.params;
       const { error, value } = querySchema.validate(req.query);
@@ -195,24 +195,11 @@ class SECController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-      });
-
-      if (!user) {
-        throw new MyError("User not found", 404);
-      }
-
-      if (!user.isSec) {
-        throw new MyError("User does not have SEC access", 403);
-      }
-
       const { page, limit, search } = value;
       const skip = (page - 1) * limit;
 
       const where = {
         gtin,
-        digitalType: digitalLinkType,
         ...(search
           ? {
               OR: [
