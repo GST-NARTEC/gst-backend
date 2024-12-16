@@ -18,6 +18,7 @@ import productRouter from "./product.js";
 import proServiceRoutes from "./proService.js";
 import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
+import superAdminRoutes from "./superAdmin.js";
 import templateRoutes from "./template.js";
 import unitCodeRoutes from "./unitCode.js";
 import userRoutes from "./user.js";
@@ -56,6 +57,8 @@ router.use("/v1/user-products", userProductRoutes);
 router.use("/v1/user-docs", userDocRoutes);
 router.use("/v1/unit-codes", unitCodeRoutes);
 router.use("/v1/doc-types", docTypeRoutes);
+router.use("/v1/superadmin", superAdminRoutes);
+
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

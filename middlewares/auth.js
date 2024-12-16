@@ -16,6 +16,19 @@ export const verifyAccessToken = async (req, res, next) => {
 
     try {
       const decoded = JWT.verifyAccessToken(token);
+
+      if (decoded.superadminId) {
+        const superadmin = await prisma.superAdmin.findUnique({
+          where: { id: decoded.superadminId },
+        });
+
+        if (!superadmin) {
+          throw new MyError("Superadmin not found", 404);
+        }
+
+        req.superadmin = superadmin;
+        return next();
+      }
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
       });
@@ -46,6 +59,20 @@ export const verifyRefreshToken = async (req, res, next) => {
 
     try {
       const decoded = JWT.verifyRefreshToken(refreshToken);
+
+      if (decoded.superadminId) {
+        const superadmin = await prisma.superAdmin.findUnique({
+          where: { id: decoded.superadminId },
+        });
+
+        if (!superadmin) {
+          throw new MyError("Superadmin not found", 404);
+        }
+
+        req.superadmin = superadmin;
+        return next();
+      }
+
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
       });
