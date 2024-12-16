@@ -12,8 +12,15 @@ import prisma from "../utils/prismaClient.js";
 const processCheckout = async (job) => {
   const { cart, user, paymentType, vat, activeVat, activeCurrency } = job.data;
 
+  let isSec = false;
+
   // Calculate totals
   const totalAmount = cart.items.reduce((sum, item) => {
+    // check if prodcut title contains "sec"
+    if (item.product.title.toLowerCase().includes("sec")) {
+      isSec = true;
+    }
+
     const { totalPrice: productTotal, unitPrice } = calculatePrice(
       item.product.price,
       item.quantity
@@ -94,6 +101,7 @@ const processCheckout = async (job) => {
       data: {
         password: hashedPassword,
         isCreated: true,
+        isSec: isSec,
       },
     });
 

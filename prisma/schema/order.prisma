@@ -13,7 +13,7 @@ model Order {
   status              String    @default("Pending Payment")
   bankSlip            String?
   receipt             String?   
-  licenseCertificate  String?   
+  licenseCertificate  String? 
   assignedGtins       AssignedGtin[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
