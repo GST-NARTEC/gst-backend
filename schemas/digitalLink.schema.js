@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const digitalLinkSchema = Joi.object({
-  url: Joi.string().uri().required(),
+  url: Joi.string().required(),
   digitalType: Joi.string().required(),
   gtin: Joi.string().required(),
 });
