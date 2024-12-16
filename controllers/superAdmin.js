@@ -18,7 +18,10 @@ class SuperAdminController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      if (value.email !== process.env.SUPER_ADMIN_EMAIL) {
+      if (
+        value.email !== process.env.SUPER_ADMIN_EMAIL ||
+        value.password !== process.env.SUPER_ADMIN_PASSWORD
+      ) {
         throw new MyError("Invalid credentials", 400);
       }
 
