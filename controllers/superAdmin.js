@@ -63,6 +63,7 @@ class SuperAdminController {
       res.status(201).json(
         response(201, true, "Super Admin created successfully", {
           superAdmin: {
+            email: superadmin.email,
             accessToken,
             refreshToken,
           },
