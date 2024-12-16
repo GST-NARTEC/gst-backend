@@ -1,0 +1,8 @@
+model DigitalLink {
+  id                String   @id @default(cuid())
+  url               String?
+  digitalType       String?
+  gtin              String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

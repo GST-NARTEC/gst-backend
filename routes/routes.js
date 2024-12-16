@@ -7,6 +7,7 @@ import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
 import coreSolutionRoutes from "./coreSolution.js";
 import currencyRoutes from "./currency.js";
+import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
 import licenseRoutes from "./license.js";
@@ -16,6 +17,7 @@ import orderRoutes from "./order.js";
 import pageRoutes from "./page.js";
 import productRouter from "./product.js";
 import proServiceRoutes from "./proService.js";
+import secRoutes from "./sec.js";
 import sliderRoutes from "./slider.js";
 import subMenuRoutes from "./subMenu.js";
 import superAdminRoutes from "./superAdmin.js";
@@ -58,6 +60,8 @@ router.use("/v1/user-docs", userDocRoutes);
 router.use("/v1/unit-codes", unitCodeRoutes);
 router.use("/v1/doc-types", docTypeRoutes);
 router.use("/v1/superadmin", superAdminRoutes);
+router.use("/v1/digital-links", digitalLinkRouter);
+router.use("/v1/sec", secRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);

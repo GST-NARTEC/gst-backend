@@ -28,4 +28,5 @@ model User {
   brands           Brand[]
   products         UserProduct[]
   docs             UserDoc[]
+  secs             SEC[]
 }
