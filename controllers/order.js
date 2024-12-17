@@ -163,6 +163,38 @@ class OrderController {
       next(error);
     }
   }
+
+  static async getOrderSec(req, res, next) {
+    try {
+      const { gtin } = req.params;
+
+      const gtinRecord = await prisma.gTIN.findFirst({ where: { gtin: gtin } });
+
+      if (!gtinRecord) {
+        throw new MyError("Gtin not found", 404);
+      }
+
+      const assignedGtin = await prisma.assignedGtin.findFirst({
+        where: { gtinId: gtinRecord.id },
+        select: {
+          order: {
+            select: {
+              orderNumber: true,
+              isSec: true,
+            },
+          },
+        },
+      });
+
+      if (!assignedGtin) {
+        throw new MyError("Assigned gtin not found", 404);
+      }
+
+      res.status(200).json(response(200, true, "Order sec data", assignedGtin));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default OrderController;

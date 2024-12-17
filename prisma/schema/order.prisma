@@ -14,6 +14,7 @@ model Order {
   bankSlip            String?
   receipt             String?   
   licenseCertificate  String? 
+  isSec               Boolean?  @default(false)
   assignedGtins       AssignedGtin[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

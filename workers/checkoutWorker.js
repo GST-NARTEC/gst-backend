@@ -274,6 +274,7 @@ const processCheckouts = async (job) => {
     const order = await prisma.order.create({
       data: {
         orderNumber,
+        isSec,
         userId: user.id,
         paymentType,
         totalAmount,
