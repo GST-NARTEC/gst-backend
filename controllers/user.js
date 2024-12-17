@@ -872,6 +872,30 @@ class UserController {
         throw new MyError("User with this email already exists", 400);
       }
 
+      // check if company License No, company name en, company name ar are used by other users
+      const [companyLicenseNoCheck, companyNameEnCheck, companyNameArCheck] =
+        await Promise.all([
+          prisma.user.findFirst({
+            where: { companyLicenseNo: userInfo.companyLicenseNo },
+          }),
+          prisma.user.findFirst({
+            where: { companyNameEn: userInfo.companyNameEn },
+          }),
+          prisma.user.findFirst({
+            where: { companyNameAr: userInfo.companyNameAr },
+          }),
+        ]);
+
+      if (companyLicenseNoCheck) {
+        throw new MyError("Company license number already exists", 400);
+      }
+      if (companyNameEnCheck) {
+        throw new MyError("Company name (English) already exists", 400);
+      }
+      if (companyNameArCheck) {
+        throw new MyError("Company name (Arabic) already exists", 400);
+      }
+
       // 2. Then validate checkout data
       const { error: checkoutError, value: checkoutInfo } =
         userWithCartCheckout.validate({
