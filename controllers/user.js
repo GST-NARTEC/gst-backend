@@ -983,13 +983,17 @@ class UserController {
 
       const { userId, paymentType, vat, cartItems } = value;
 
-      const user = await prisma.user.findUnique({ where: { id: userId } });
+      // 1. First get user with their cart
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: { cart: true },
+      });
 
       if (!user) {
         throw new MyError("User not found", 404);
       }
 
-      // 0. check if user has already an active cart
+      // 2. Check if user has an active cart
       if (user.cart?.status === "ACTIVE") {
         throw new MyError(
           "User already has an active cart, please wait while your order is being processed",
@@ -997,7 +1001,14 @@ class UserController {
         );
       }
 
-      // 1. Update user and cart in transaction
+      // 3. If user has an existing cart that's not active, delete it first
+      if (user.cart) {
+        await prisma.cart.delete({
+          where: { id: user.cart.id },
+        });
+      }
+
+      // 4. Update user with new cart in transaction
       const existingUser = await prisma.$transaction(async (prisma) => {
         const user = await prisma.user.update({
           where: { id: userId },
