@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt";
 import { Worker } from "bullmq";
 
-import { connection } from "../config/queue.js";
-import EmailService from "../utils/email.js";
+import {
+  accountAdminNotificationQueue,
+  connection,
+  welcomeEmailQueue,
+} from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
@@ -140,8 +143,10 @@ const processCheckout = async (job) => {
     },
   });
 
-  // Send email
-  await EmailService.sendWelcomeEmail({
+  // Send account admin notification as well as send welcome email throw new queue job
+  await accountAdminNotificationQueue.add("account-admin-notification", user);
+
+  await welcomeEmailQueue.add("welcome-email", {
     email: user.email,
     order: result.order,
     password: result.password,
@@ -162,6 +167,29 @@ const processCheckout = async (job) => {
       },
     ],
   });
+
+  //   // Send email
+  //   await EmailService.sendWelcomeEmail({
+  //     email: user.email,
+  //     order: result.order,
+  //     password: result.password,
+  //     user,
+  //     currency: {
+  //       symbol: activeCurrency.symbol,
+  //       name: activeCurrency.name,
+  //     },
+  //     tax: {
+  //       value: activeVat.value,
+  //       type: activeVat.type,
+  //       computed: vatAmount,
+  //     },
+  //     attachments: [
+  //       {
+  //         filename: "invoice.pdf",
+  //         path: pdfResult.absolutePath,
+  //       },
+  //     ],
+  //   });
 
   return result;
 };

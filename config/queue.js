@@ -41,3 +41,15 @@ export const barcodeCertificateQueue = new Queue("barcode-certificate", {
     },
   },
 });
+
+// Email queues
+export const accountAdminNotificationQueue = new Queue(
+  "account-admin-notification",
+  {
+    connection,
+  }
+);
+
+export const welcomeEmailQueue = new Queue("welcome-email", {
+  connection,
+});

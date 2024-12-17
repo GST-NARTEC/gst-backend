@@ -126,7 +126,7 @@ class EmailService {
 
       const adminMailOptions = {
         from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_FROM,
+        to: process.env.SUPER_ADMIN_EMAIL,
         subject: `Bank Slip Received - Order ${order.orderNumber}`,
         html,
       };
@@ -205,6 +205,34 @@ class EmailService {
       return true;
     } catch (error) {
       console.error("Error sending status update email:", error);
+      return false;
+    }
+  }
+
+  async sendAccountAdminNotification(user) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/accountAdminNotification.ejs"
+      );
+      const data = {
+        logo: LOGO_URL,
+        user,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: process.env.SUPER_ADMIN_EMAIL,
+        subject: `New Account Created - GST Saudi Arabia`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending account admin notification email:", error);
       return false;
     }
   }

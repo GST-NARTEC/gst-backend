@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #0f4c81;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header img {
+        max-width: 150px;
+        margin-bottom: 15px;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .bilingual-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .en,
+      .ar {
+        flex: 1;
+      }
+
+      .ar {
+        text-align: right;
+        direction: rtl;
+      }
+
+      .user-details {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #0f4c81;
+      }
+
+      .value {
+        font-family: monospace;
+        color: #2c3e50;
+      }
+
+      .footer {
+        background: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        border-top: 1px solid #e9ecef;
+      }
+
+      h2 {
+        color: #0f4c81;
+        margin-bottom: 15px;
+      }
+
+      p {
+        color: #2c3e50;
+        margin: 0 0 15px;
+      }
+
+      .support-info {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="http://localhost:3000/assets/images/gst-logo.png"
+          alt="GST Logo"
+        />
+      </div>
+
+      <div class="content">
+        <div class="bilingual-container">
+          <div class="en">
+            <h2>New Account Registration Alert</h2>
+            <p>
+              A new user account has been created in the GST system. Here are
+              the account details:
+            </p>
+          </div>
+          <div class="ar">
+            <h2>تنبيه تسجيل حساب جديد</h2>
+            <p>
+              تم إنشاء حساب مستخدم جديد في نظام GST. فيما يلي تفاصيل الحساب:
+            </p>
+          </div>
+        </div>
+
+        <div class="user-details">
+          <div class="detail-row">
+            <span class="label">User ID:</span>
+            <span class="value">USR2024-03-ABCD1234</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Email:</span>
+            <span class="value">mohammed.ahmed@example.com</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Company Name (EN):</span>
+            <span class="value">Al Riyadh Trading Company</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Company Name (AR):</span>
+            <span class="value">شركة الرياض للتجارة</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Company License No:</span>
+            <span class="value">LIC-2024-5678901</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Registration Date:</span>
+            <span class="value">March 15, 2024 14:30:45 AST</span>
+          </div>
+        </div>
+
+        <div class="bilingual-container">
+          <div class="en">
+            <p>
+              Please review this account and take necessary actions if required.
+            </p>
+          </div>
+          <div class="ar">
+            <p>
+              يرجى مراجعة هذا الحساب واتخاذ الإجراءات اللازمة إذا لزم الأمر.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="bilingual-container">
+          <div class="en">
+            <p>This is an automated notification from GST System</p>
+          </div>
+          <div class="ar">
+            <p>هذا إشعار تلقائي من نظام GST</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
