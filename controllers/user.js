@@ -986,7 +986,17 @@ class UserController {
       // 1. First get user with their cart
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        include: { cart: true },
+        include: {
+          cart: {
+            include: {
+              items: {
+                include: {
+                  addonItems: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!user) {
@@ -994,17 +1004,34 @@ class UserController {
       }
 
       // 2. Check if user has an active cart
-      if (user.cart?.status === "ACTIVE") {
-        throw new MyError(
-          "User already has an active cart, please wait while your order is being processed",
-          400
-        );
-      }
+      //   if (user.cart?.items?.length > 0) {
+      //     throw new MyError(
+      //       "User already has an active cart, please wait while your order is being processed",
+      //       400
+      //     );
+      //   }
 
-      // 3. If user has an existing cart that's not active, delete it first
+      // 3. If user has an existing cart, delete it and its relations in the correct order
       if (user.cart) {
-        await prisma.cart.delete({
-          where: { id: user.cart.id },
+        await prisma.$transaction(async (prisma) => {
+          // First delete all cart item addons
+          for (const item of user.cart.items) {
+            if (item.addonItems.length > 0) {
+              await prisma.cartItemAddon.deleteMany({
+                where: { cartItemId: item.id },
+              });
+            }
+          }
+
+          // Then delete all cart items
+          await prisma.cartItem.deleteMany({
+            where: { cartId: user.cart.id },
+          });
+
+          // Finally delete the cart
+          await prisma.cart.delete({
+            where: { id: user.cart.id },
+          });
         });
       }
 
