@@ -37,6 +37,13 @@ export const verifyAccessToken = async (req, res, next) => {
         throw new MyError("User not found", 404);
       }
 
+      if (!user.isActive) {
+        throw new MyError(
+          "Your account is suspended. Please contact support.",
+          401
+        );
+      }
+
       req.user = user;
       next();
     } catch (error) {
