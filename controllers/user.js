@@ -991,7 +991,10 @@ class UserController {
 
       // 0. check if user has already an active cart
       if (user.cart?.status === "ACTIVE") {
-        throw new MyError("User already has an active cart", 400);
+        throw new MyError(
+          "User already has an active cart, please wait while your order is being processed",
+          400
+        );
       }
 
       // 1. Update user and cart in transaction
