@@ -149,9 +149,9 @@ class SECController {
         throw new MyError("SEC not found", 404);
       }
 
-      if (!existingSEC.user.isSec) {
-        throw new MyError("User does not have SEC access", 403);
-      }
+      //   if (!existingSEC.user.isSec) {
+      //     throw new MyError("User does not have SEC access", 403);
+      //   }
 
       const updatedSEC = await prisma.sEC.update({
         where: { id },
