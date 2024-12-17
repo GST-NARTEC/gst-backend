@@ -2,6 +2,8 @@ import { Worker } from "bullmq";
 import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
 
+// Processors
+
 const processWelcomeEmail = async (job) => {
   await EmailService.sendWelcomeEmail(job.data);
 };
@@ -31,7 +33,7 @@ const processBankSlipNotification = async (job) => {
   }
 };
 
-// create welcome email worker
+// Workers
 const welcomeEmailWorker = new Worker("welcome-email", processWelcomeEmail, {
   connection,
 });
