@@ -44,11 +44,15 @@ export const loginSchema = Joi.object({
 }).custom((obj, helpers) => {
   // Check if at least one of password or companyLicenseNo is provided
   if (!obj.password && !obj.companyLicenseNo) {
-    return helpers.error('any.required', { message: 'Either password or company license number is required' });
+    return helpers.error("any.required", {
+      message: "Either password or company license number is required",
+    });
   }
   // Check if both are not provided simultaneously
   if (obj.password && obj.companyLicenseNo) {
-    return helpers.error('object.xor', { message: 'Provide either password or company license number, not both' });
+    return helpers.error("object.xor", {
+      message: "Provide either password or company license number, not both",
+    });
   }
   return obj;
 });
@@ -104,4 +108,26 @@ export const userWithCartCheckout = Joi.object({
   //   "Tabby"
   // )
   vat: Joi.number().min(0).default(0),
+});
+
+export const userNewOrderSchema = Joi.object({
+  userId: Joi.string().required(),
+  paymentType: Joi.string().required(),
+  vat: Joi.number().min(0).default(0),
+  cartItems: Joi.array()
+    .items(
+      Joi.object({
+        productId: Joi.string().uuid().required(),
+        quantity: Joi.number().integer().min(1).required(),
+        addons: Joi.array()
+          .items(
+            Joi.object({
+              id: Joi.string().uuid().required(),
+              quantity: Joi.number().integer().min(1).required(),
+            })
+          )
+          .optional(),
+      })
+    )
+    .required(),
 });

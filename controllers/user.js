@@ -8,6 +8,7 @@ import {
   userDetailsSchema,
   userGtinsQuerySchema,
   userInfoSchema,
+  userNewOrderSchema,
   userUpdateSchema,
   userWithCartCheckout,
 } from "../schemas/user.schema.js";
@@ -967,6 +968,110 @@ class UserController {
           user: newUser,
         })
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async createNewOrder(req, res, next) {
+    try {
+      const { error, value } = userNewOrderSchema.validate(req.body);
+
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { userId, paymentType, vat, cartItems } = value;
+
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      // 0. check if user has already an active cart
+      if (user.cart?.status === "ACTIVE") {
+        throw new MyError("User already has an active cart", 400);
+      }
+
+      // 1. Update user and cart in transaction
+      const existingUser = await prisma.$transaction(async (prisma) => {
+        const user = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            cart: {
+              create: {
+                status: "ACTIVE",
+                items: {
+                  create: cartItems.map((item) => ({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    addonItems: {
+                      create: (item.addons || []).map((addon) => ({
+                        addonId: addon.id,
+                        quantity: addon.quantity,
+                      })),
+                    },
+                  })),
+                },
+              },
+            },
+          },
+          include: {
+            cart: {
+              include: {
+                items: {
+                  include: {
+                    product: true,
+                    addonItems: {
+                      include: {
+                        addon: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return user;
+      });
+
+      // 2. check for active vat and currency
+      const [activeVat, activeCurrency] = await Promise.all([
+        prisma.vat.findFirst({ where: { isActive: true } }),
+        prisma.currency.findFirst({ orderBy: { createdAt: "desc" } }),
+      ]);
+
+      if (!activeVat)
+        throw new MyError("No active VAT configuration found", 400);
+      if (!activeCurrency)
+        throw new MyError("No active currency configuration found", 400);
+
+      // 3. Add checkout job to queue
+      await checkoutQueue.add(
+        "process-checkout",
+        {
+          cart: existingUser.cart,
+          user: existingUser,
+          paymentType: paymentType,
+          vat: vat,
+          activeVat,
+          activeCurrency,
+          orderNumber: generateOrderId(),
+          isNewOrder: true,
+        },
+        {
+          attempts: 3,
+          backoff: {
+            type: "exponential",
+            delay: 5000,
+          },
+        }
+      );
+
+      res.status(201).json(response(201, true, "Order created successfully"));
     } catch (error) {
       next(error);
     }

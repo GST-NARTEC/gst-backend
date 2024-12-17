@@ -8,6 +8,7 @@ const router = express.Router();
 router.post("/send-otp", controller.sendEmailOTP);
 router.post("/verify-otp", controller.verifyEmailOTP);
 router.post("/login", controller.login);
+router.post("/create-order", controller.createNewOrder);
 router.get("/search", controller.searchUsers);
 router.get("/:id", controller.getUserDetails);
 router.get("/member/:id", verifyAccessToken, controller.getUserDetails);
