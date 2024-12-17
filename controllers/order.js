@@ -1,6 +1,8 @@
 import Joi from "joi";
-import { orderActivationQueue } from "../config/queue.js";
-import EmailService from "../utils/email.js";
+import {
+  bankSlipNotificationQueue,
+  orderActivationQueue,
+} from "../config/queue.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -58,18 +60,31 @@ class OrderController {
         },
       });
 
-      // Send email notification
-      const isSent = await EmailService.sendBankSlipNotification({
-        email: updatedOrder.user.email,
-        order: updatedOrder,
-        user: updatedOrder.user,
-      });
+      // Add job to queue, send email notification
+      await bankSlipNotificationQueue.add(
+        "bank-slip-notification",
+        updatedOrder,
+        {
+          attempts: 3,
+          backoff: {
+            type: "exponential",
+            delay: 5000,
+          },
+        }
+      );
 
-      if (!isSent) {
-        console.log("Failed to send email notification");
-      } else {
-        console.log("Email notification sent successfully");
-      }
+      //   // Send email notification
+      //   const isSent = await EmailService.sendBankSlipNotification({
+      //     email: updatedOrder.user.email,
+      //     order: updatedOrder,
+      //     user: updatedOrder.user,
+      //   });
+
+      //   if (!isSent) {
+      //     console.log("Failed to send email notification");
+      //   } else {
+      //     console.log("Email notification sent successfully");
+      //   }
 
       res.status(200).json(
         response(200, true, "Bank slip uploaded successfully", {

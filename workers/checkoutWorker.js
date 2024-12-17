@@ -144,29 +144,45 @@ const processCheckout = async (job) => {
   });
 
   // Send account admin notification as well as send welcome email throw new queue job
-  await accountAdminNotificationQueue.add("account-admin-notification", user);
-
-  await welcomeEmailQueue.add("welcome-email", {
-    email: user.email,
-    order: result.order,
-    password: result.password,
-    user,
-    currency: {
-      symbol: activeCurrency.symbol,
-      name: activeCurrency.name,
+  await accountAdminNotificationQueue.add("account-admin-notification", user, {
+    attempts: 3,
+    backoff: {
+      type: "exponential",
+      delay: 5000,
     },
-    tax: {
-      value: activeVat.value,
-      type: activeVat.type,
-      computed: vatAmount,
-    },
-    attachments: [
-      {
-        filename: "invoice.pdf",
-        path: pdfResult.absolutePath,
-      },
-    ],
   });
+
+  await welcomeEmailQueue.add(
+    "welcome-email",
+    {
+      email: user.email,
+      order: result.order,
+      password: result.password,
+      user,
+      currency: {
+        symbol: activeCurrency.symbol,
+        name: activeCurrency.name,
+      },
+      tax: {
+        value: activeVat.value,
+        type: activeVat.type,
+        computed: vatAmount,
+      },
+      attachments: [
+        {
+          filename: "invoice.pdf",
+          path: pdfResult.absolutePath,
+        },
+      ],
+    },
+    {
+      attempts: 3,
+      backoff: {
+        type: "exponential",
+        delay: 5000,
+      },
+    }
+  );
 
   //   // Send email
   //   await EmailService.sendWelcomeEmail({

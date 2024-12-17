@@ -53,3 +53,7 @@ export const accountAdminNotificationQueue = new Queue(
 export const welcomeEmailQueue = new Queue("welcome-email", {
   connection,
 });
+
+export const bankSlipNotificationQueue = new Queue("bank-slip-notification", {
+  connection,
+});
