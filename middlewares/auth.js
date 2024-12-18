@@ -14,45 +14,41 @@ export const verifyAccessToken = async (req, res, next) => {
       throw new MyError("User not authenticated", 401);
     }
 
-    try {
-      const decoded = JWT.verifyAccessToken(token);
+    const decoded = JWT.verifyAccessToken(token);
 
-      if (decoded.superadminId) {
-        const superadmin = await prisma.superAdmin.findUnique({
-          where: { id: decoded.superadminId },
-        });
-
-        if (!superadmin) {
-          throw new MyError("Superadmin not found", 404);
-        }
-
-        req.superadmin = superadmin;
-        return next();
-      }
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId },
+    if (decoded.superadminId) {
+      const superadmin = await prisma.superAdmin.findUnique({
+        where: { id: decoded.superadminId },
       });
 
-      if (!user) {
-        throw new MyError("User not found", 404);
+      if (!superadmin) {
+        throw new MyError("Superadmin not found", 404);
       }
 
-      if (!user.isActive) {
-        throw new MyError(
-          "Your account is suspended. Please contact support.",
-          401
-        );
-      }
-
-      req.user = user;
-      next();
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        throw new MyError("Access token expired", 419);
-      }
-      throw new MyError("Invalid token", 401);
+      req.superadmin = superadmin;
+      return next();
     }
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+    });
+
+    if (!user) {
+      throw new MyError("User not found", 404);
+    }
+
+    if (!user.isActive) {
+      throw new MyError(
+        "Your account is suspended. Please contact support.",
+        401
+      );
+    }
+
+    req.user = user;
+    next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return next(new MyError("Access token expired", 419));
+    }
     next(error);
   }
 };
@@ -64,39 +60,35 @@ export const verifyRefreshToken = async (req, res, next) => {
       throw new MyError("No refresh token provided", 401);
     }
 
-    try {
-      const decoded = JWT.verifyRefreshToken(refreshToken);
+    const decoded = JWT.verifyRefreshToken(refreshToken);
 
-      if (decoded.superadminId) {
-        const superadmin = await prisma.superAdmin.findUnique({
-          where: { id: decoded.superadminId },
-        });
-
-        if (!superadmin) {
-          throw new MyError("Superadmin not found", 404);
-        }
-
-        req.superadmin = superadmin;
-        return next();
-      }
-
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.userId },
+    if (decoded.superadminId) {
+      const superadmin = await prisma.superAdmin.findUnique({
+        where: { id: decoded.superadminId },
       });
 
-      if (!user) {
-        throw new MyError("User not found", 404);
+      if (!superadmin) {
+        throw new MyError("Superadmin not found", 404);
       }
 
-      req.user = user;
-      next();
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        throw new MyError("Refresh token expired", 419);
-      }
-      throw new MyError("Invalid refresh token", 401);
+      req.superadmin = superadmin;
+      return next();
     }
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+    });
+
+    if (!user) {
+      throw new MyError("User not found", 404);
+    }
+
+    req.user = user;
+    next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return next(new MyError("Refresh token expired", 419));
+    }
     next(error);
   }
 };
