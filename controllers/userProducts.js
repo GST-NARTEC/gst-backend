@@ -84,7 +84,7 @@ class UserProductsController {
           randomGtin =
             availableGtins[Math.floor(Math.random() * availableGtins.length)];
 
-          // update the gtin status to used
+          // Update GTIN status to "Used"
           await prisma.gTIN.update({
             where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
             data: {
@@ -92,10 +92,18 @@ class UserProductsController {
             },
           });
 
-          // create the product
-          product = await prisma.userProduct.create({
+          // Create product
+          const product = await prisma.userProduct.create({
             data: {
               ...productData,
+              gtin: randomGtin.gtin.gtin,
+              userId: req.user.id,
+              images: {
+                create: imageUrls.map((url) => ({ url })),
+              },
+            },
+            include: {
+              images: true,
             },
           });
         }
