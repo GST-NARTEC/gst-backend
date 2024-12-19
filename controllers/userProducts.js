@@ -60,49 +60,48 @@ class UserProductsController {
               isSec: false,
             },
           });
-        } else {
-          console.log("Inside else block");
-          // find available gtin in the order
-          const availableGtins = order.assignedGtins.filter(
-            (gtin) => gtin.gtin?.status === "Sold"
-          );
-
-          // check if it is last gtin of the order
-          if (availableGtins.length === 1) {
-            // update the isSec to false for this specific order
-            await prisma.order.update({
-              where: {
-                id: order.id,
-              },
-              data: {
-                isSec: false,
-              },
-            });
-          }
-
-          if (availableGtins.length > 0) {
-            // pick a random gtin from available gtins
-            randomGtin =
-              availableGtins[Math.floor(Math.random() * availableGtins.length)];
-
-            // update the gtin status to used
-            await prisma.gTIN.update({
-              where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
-              data: {
-                status: "Used",
-              },
-            });
-
-            // create the product
-            product = await prisma.userProduct.create({
-              data: {
-                ...productData,
-              },
-            });
-          }
-
-          break;
         }
+        console.log("Inside else block");
+        // find available gtin in the order
+        const availableGtins = order.assignedGtins.filter(
+          (gtin) => gtin.gtin?.status === "Sold"
+        );
+
+        // check if it is last gtin of the order
+        if (availableGtins.length === 1) {
+          // update the isSec to false for this specific order
+          await prisma.order.update({
+            where: {
+              id: order.id,
+            },
+            data: {
+              isSec: false,
+            },
+          });
+        }
+
+        if (availableGtins.length > 0) {
+          // pick a random gtin from available gtins
+          randomGtin =
+            availableGtins[Math.floor(Math.random() * availableGtins.length)];
+
+          // update the gtin status to used
+          await prisma.gTIN.update({
+            where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
+            data: {
+              status: "Used",
+            },
+          });
+
+          // create the product
+          product = await prisma.userProduct.create({
+            data: {
+              ...productData,
+            },
+          });
+        }
+
+        break;
       }
 
       // Handle image uploads
