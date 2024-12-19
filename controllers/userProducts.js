@@ -84,6 +84,16 @@ class UserProductsController {
           randomGtin =
             availableGtins[Math.floor(Math.random() * availableGtins.length)];
 
+          // Handle image uploads
+          const imageUrls = [];
+          if (req.files?.images) {
+            for (const file of req.files.images) {
+              const imagePath = addDomain(file.path);
+              imageUrls.push(imagePath);
+              imagePaths.push(imagePath);
+            }
+          }
+
           // Update GTIN status to "Used"
           await prisma.gTIN.update({
             where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
@@ -93,7 +103,7 @@ class UserProductsController {
           });
 
           // Create product
-          const product = await prisma.userProduct.create({
+          product = await prisma.userProduct.create({
             data: {
               ...productData,
               gtin: randomGtin.gtin.gtin,
@@ -111,15 +121,15 @@ class UserProductsController {
         break;
       }
 
-      // Handle image uploads
-      const imageUrls = [];
-      if (req.files?.images) {
-        for (const file of req.files.images) {
-          const imagePath = addDomain(file.path);
-          imageUrls.push(imagePath);
-          imagePaths.push(imagePath);
-        }
-      }
+      //   // Handle image uploads
+      //   const imageUrls = [];
+      //   if (req.files?.images) {
+      //     for (const file of req.files.images) {
+      //       const imagePath = addDomain(file.path);
+      //       imageUrls.push(imagePath);
+      //       imagePaths.push(imagePath);
+      //     }
+      //   }
 
       //   // Update GTIN status to "Used"
       //   await prisma.gTIN.update({
