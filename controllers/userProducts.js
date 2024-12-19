@@ -125,9 +125,8 @@ class UserProductsController {
           });
 
           console.log("Product created" + product.id);
+          break;
         }
-
-        break;
       }
 
       //   // Handle image uploads
