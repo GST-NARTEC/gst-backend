@@ -61,7 +61,6 @@ class UserProductsController {
             },
           });
         }
-        console.log("Inside else block");
         // find available gtin in the order
         const availableGtins = order.assignedGtins.filter(
           (gtin) => gtin.gtin?.status === "Sold"
