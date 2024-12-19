@@ -260,28 +260,21 @@ class UserProductsController {
         throw new MyError("Product not found or unauthorized", 404);
       }
 
-      // Find the order and assigned GTIN
-      const order = await prisma.order.findFirst({
+      // Find the order and assigned GTIN - Modified to search all orders
+      const assignedGtin = await prisma.assignedGtin.findFirst({
         where: {
-          userId: req.user.id,
-        },
-        include: {
-          assignedGtins: {
-            include: {
-              gtin: true,
-            },
+          gtin: {
+            gtin: product.gtin,
+          },
+          order: {
+            userId: req.user.id,
           },
         },
+        include: {
+          gtin: true,
+          order: true,
+        },
       });
-
-      if (!order) {
-        throw new MyError("Order not found", 404);
-      }
-
-      // Find the assigned GTIN record that matches the product's GTIN
-      const assignedGtin = order.assignedGtins.find(
-        (ag) => ag.gtin.gtin === product.gtin
-      );
 
       if (!assignedGtin) {
         throw new MyError("GTIN assignment not found", 404);

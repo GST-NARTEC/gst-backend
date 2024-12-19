@@ -16,7 +16,7 @@ class SECController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      // Check if user exists and has SEC access
+      // Check if user exists
       const user = await prisma.user.findUnique({
         where: { id: req.user.id },
       });
@@ -25,8 +25,16 @@ class SECController {
         throw new MyError("User not found", 404);
       }
 
-      if (!user.isSec) {
-        throw new MyError("User does not have SEC access", 403);
+      // Check if user has any orders with isSec=true
+      const hasSecOrder = await prisma.order.findFirst({
+        where: {
+          userId: req.user.id,
+          isSec: true
+        }
+      });
+
+      if (!hasSecOrder) {
+        throw new MyError("User does not have any SEC enabled orders", 403);
       }
 
       const sec = await prisma.sEC.create({
