@@ -166,31 +166,23 @@ class OrderController {
 
   static async getOrderSec(req, res, next) {
     try {
-      const { gtin } = req.params;
+      const { userId } = req.params;
 
-      const gtinRecord = await prisma.gTIN.findFirst({ where: { gtin: gtin } });
+      const user = await prisma.user.findFirst({ where: { id: userId } });
 
-      if (!gtinRecord) {
-        throw new MyError("Gtin not found", 404);
+      if (!user) {
+        throw new MyError("User not found", 404);
       }
 
-      const assignedGtin = await prisma.assignedGtin.findFirst({
-        where: { gtinId: gtinRecord.id },
+      // check user's all orders and find the order with isSec true
+      const order = await prisma.order.findFirst({
+        where: { userId, isSec: true },
         select: {
-          order: {
-            select: {
-              orderNumber: true,
-              isSec: true,
-            },
-          },
+          isSec: true,
         },
       });
 
-      if (!assignedGtin) {
-        throw new MyError("Assigned gtin not found", 404);
-      }
-
-      res.status(200).json(response(200, true, "Order sec data", assignedGtin));
+      res.status(200).json(response(200, true, "Order sec data", order));
     } catch (error) {
       next(error);
     }
