@@ -17,7 +17,31 @@ router.get("/:barcode", async (req, res, next) => {
 
     res.status(200).json(response.data);
   } catch (error) {
-    next(error);
+    if (error.response) {
+      switch (error.response.status) {
+        case 403:
+          return res.status(403).json({
+            error: "Invalid API key",
+          });
+        case 404:
+          return res.status(404).json({
+            error: "Product not found",
+          });
+        case 429:
+          return res.status(429).json({
+            error: "API rate limit exceeded. Please try again later",
+          });
+        default:
+          return res.status(500).json({
+            error: "An unexpected error occurred",
+          });
+      }
+    }
+
+    // Handle network errors or other issues
+    return res.status(500).json({
+      error: "Unable to connect to barcode lookup service",
+    });
   }
 });
 
