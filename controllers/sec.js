@@ -59,16 +59,19 @@ class SECController {
 
       console.log("Query params:", { page, limit, search, skip });
 
-      const where = search
-        ? {
-            OR: [
-              { materialNo: { contains: search } },
-              { purchaseOrder: { contains: search } },
-              { vendor: { contains: search } },
-              { serialNo: { contains: search } },
-            ],
-          }
-        : {};
+      const where = {
+        userId: req.user.id,
+        ...(search
+          ? {
+              OR: [
+                { materialNo: { contains: search } },
+                { purchaseOrder: { contains: search } },
+                { vendor: { contains: search } },
+                { serialNo: { contains: search } },
+              ],
+            }
+          : {}),
+      };
 
       console.log("Where clause:", where);
 
@@ -114,7 +117,10 @@ class SECController {
       const { id } = req.params;
 
       const sec = await prisma.sEC.findUnique({
-        where: { id },
+        where: {
+          id,
+          userId: req.user.id,
+        },
         include: {
           user: true,
         },
@@ -211,11 +217,12 @@ class SECController {
 
       const where = {
         gtin,
+        userId: req.user.id,
         ...(search
           ? {
               OR: [
                 { materialNo: { contains: search } },
-                { purchaceOrder: { contains: search } },
+                { purchaseOrder: { contains: search } },
                 { vendor: { contains: search } },
                 { serialNo: { contains: search } },
               ],

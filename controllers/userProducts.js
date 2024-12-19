@@ -24,6 +24,7 @@ class UserProductsController {
         prisma.order.findFirst({
           where: {
             userId: req.user.id,
+            status: "Activated",
           },
           include: {
             assignedGtins: {
@@ -31,7 +32,6 @@ class UserProductsController {
                 gtin: true,
               },
             },
-            user: true,
           },
         }),
       ]);
@@ -44,13 +44,22 @@ class UserProductsController {
         throw new MyError("User not found", 404);
       }
 
-      //   if (order.assignedGtins.length >= 10) {
-      //     throw new MyError("You have reached the maximum limit for GTINs", 400);
-      //   }
-
       if (order.assignedGtins.length < 1) {
         throw new MyError("User has no GTINs assigned", 400);
       }
+
+      // Find available GTINs with "Sold" status
+      const availableGtins = order.assignedGtins.filter(
+        (gtin) => gtin.gtin?.status === "Sold"
+      );
+
+      if (availableGtins.length === 0) {
+        throw new MyError("No available GTINs found for product creation", 400);
+      }
+
+      // Pick a random GTIN from available ones
+      const randomGtin =
+        availableGtins[Math.floor(Math.random() * availableGtins.length)];
 
       // Handle image uploads
       const imageUrls = [];
@@ -62,16 +71,7 @@ class UserProductsController {
         }
       }
 
-      // pick random gtin from order.assignedGtins having status "Sold" and assign it to productData
-      const randomGtin = order.assignedGtins.find(
-        (gtin) => gtin.gtin.status === "Sold"
-      );
-
-      if (!randomGtin) {
-        throw new MyError("No GTIN found for product creation", 400);
-      }
-
-      // assign randomGtin to productData and update its status to "Used" in the database
+      // Update GTIN status to "Used"
       await prisma.gTIN.update({
         where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
         data: {
@@ -79,7 +79,7 @@ class UserProductsController {
         },
       });
 
-      // Then create product
+      // Create product
       const product = await prisma.userProduct.create({
         data: {
           ...productData,
@@ -361,7 +361,7 @@ class UserProductsController {
       }
 
       // Find the specific image
-      const image = product.images.find(img => img.id === imageId);
+      const image = product.images.find((img) => img.id === imageId);
       if (!image) {
         throw new MyError("Image not found", 404);
       }
@@ -374,9 +374,9 @@ class UserProductsController {
         }),
       ]);
 
-      res.status(200).json(
-        response(200, true, "Image deleted successfully", null)
-      );
+      res
+        .status(200)
+        .json(response(200, true, "Image deleted successfully", null));
     } catch (error) {
       next(error);
     }
