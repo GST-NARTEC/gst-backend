@@ -15,13 +15,15 @@ class UserProductsController {
 
       const { gtin: _, ...productData } = value;
 
-      let user, order;
+      let user, orders;
 
-      [user, order] = await Promise.all([
+      [user, orders] = await Promise.all([
         prisma.user.findUnique({
           where: { id: req.user.id },
         }),
-        prisma.order.findFirst({
+
+        // get all user orders
+        prisma.order.findMany({
           where: {
             userId: req.user.id,
             status: "Activated",
@@ -40,26 +42,67 @@ class UserProductsController {
         throw new MyError("You are not authorized to create a product", 401);
       }
 
-      if (!order) {
-        throw new MyError("User not found", 404);
+      if (orders.length < 1) {
+        throw new MyError("User has no orders", 400);
       }
 
-      if (order.assignedGtins.length < 1) {
-        throw new MyError("User has no GTINs assigned", 400);
+      let randomGtin, product;
+
+      // now check each order one by one and check for available gtins in each order, if any order has available gtins, then pick one at random and create the product
+      for (const order of orders) {
+        if (order.assignedGtins.length < 1) {
+          // change isSec to false in case if no gtin is free in a specific order
+          await prisma.order.update({
+            where: {
+              id: order.id,
+            },
+            data: {
+              isSec: false,
+            },
+          });
+        } else {
+          // find available gtin in the order
+          const availableGtins = order.assignedGtins.filter(
+            (gtin) => gtin.gtin?.status === "Sold"
+          );
+
+          // check if it is last gtin of the order
+          if (availableGtins.length === 1) {
+            // update the isSec to false for this specific order
+            await prisma.order.update({
+              where: {
+                id: order.id,
+              },
+              data: {
+                isSec: false,
+              },
+            });
+          }
+
+          if (availableGtins.length > 0) {
+            // pick a random gtin from available gtins
+            randomGtin =
+              availableGtins[Math.floor(Math.random() * availableGtins.length)];
+
+            // update the gtin status to used
+            await prisma.gTIN.update({
+              where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
+              data: {
+                status: "Used",
+              },
+            });
+
+            // create the product
+            product = await prisma.userProduct.create({
+              data: {
+                ...productData,
+              },
+            });
+          }
+
+          break;
+        }
       }
-
-      // Find available GTINs with "Sold" status
-      const availableGtins = order.assignedGtins.filter(
-        (gtin) => gtin.gtin?.status === "Sold"
-      );
-
-      if (availableGtins.length === 0) {
-        throw new MyError("No available GTINs found for product creation", 400);
-      }
-
-      // Pick a random GTIN from available ones
-      const randomGtin =
-        availableGtins[Math.floor(Math.random() * availableGtins.length)];
 
       // Handle image uploads
       const imageUrls = [];
@@ -71,28 +114,28 @@ class UserProductsController {
         }
       }
 
-      // Update GTIN status to "Used"
-      await prisma.gTIN.update({
-        where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
-        data: {
-          status: "Used",
-        },
-      });
+      //   // Update GTIN status to "Used"
+      //   await prisma.gTIN.update({
+      //     where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
+      //     data: {
+      //       status: "Used",
+      //     },
+      //   });
 
-      // Create product
-      const product = await prisma.userProduct.create({
-        data: {
-          ...productData,
-          gtin: randomGtin.gtin.gtin,
-          userId: req.user.id,
-          images: {
-            create: imageUrls.map((url) => ({ url })),
-          },
-        },
-        include: {
-          images: true,
-        },
-      });
+      //   // Create product
+      //   const product = await prisma.userProduct.create({
+      //     data: {
+      //       ...productData,
+      //       gtin: randomGtin.gtin.gtin,
+      //       userId: req.user.id,
+      //       images: {
+      //         create: imageUrls.map((url) => ({ url })),
+      //       },
+      //     },
+      //     include: {
+      //       images: true,
+      //     },
+      //   });
 
       res.status(201).json(
         response(201, true, "Product created successfully", {
