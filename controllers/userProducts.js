@@ -68,7 +68,6 @@ class UserProductsController {
               isSec: false,
             },
           });
-          continue;
         }
 
         // check if it is last gtin of the order
@@ -83,7 +82,6 @@ class UserProductsController {
               isSec: false,
             },
           });
-          continue;
         }
 
         if (availableGtins.length > 0) {
