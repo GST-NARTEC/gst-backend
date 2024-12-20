@@ -72,7 +72,7 @@ class UserProductsController {
         if (availableGtins.length < 1) {
           console.log("No gtin is free in a specific order" + order.id);
           // change isSec to false in case if no gtin is free in a specific order
-            await prisma.order.update({
+          await prisma.order.update({
             where: {
               id: order.id,
             },
@@ -80,7 +80,6 @@ class UserProductsController {
               isSec: false,
             },
           });
-        }
           continue;
         }
 
