@@ -8,6 +8,9 @@ const whitelist = [
   "https://gstsa1.org",
   "https://www.gstsa1.org",
   "https://buybarcodeupc.com",
+  "http://gstsa1.org",
+  "http://www.gstsa1.org",
+  "http://buybarcodeupc.com",
   "http://localhost:5174",
 ].filter(Boolean);
 

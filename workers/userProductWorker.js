@@ -1,6 +1,6 @@
-import { connection } from "../config/queue";
+import { connection } from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
-import { prisma } from "../utils/prismaClient.js";
+import prisma from "../utils/prismaClient.js";
 
 export const userProductWorker = async (job) => {
   const { orders, productData } = job.data;
