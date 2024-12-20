@@ -12,6 +12,14 @@ export const connection = new IORedis({
   },
 });
 
+const defaultJobOptions = {
+  attempts: 3,
+  backoff: {
+    type: "exponential",
+    delay: 1000,
+  },
+};
+
 // Create queues
 export const checkoutQueue = new Queue("checkout", { connection });
 export const emailQueue = new Queue("email", { connection });
@@ -22,24 +30,12 @@ export const orderActivationQueue = new Queue("order-activation", {
 
 export const userDeletionQueue = new Queue("user-deletion", {
   connection,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: "exponential",
-      delay: 5000,
-    },
-  },
+  defaultJobOptions,
 });
 
 export const barcodeCertificateQueue = new Queue("barcode-certificate", {
   connection,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: "exponential",
-      delay: 1000,
-    },
-  },
+  defaultJobOptions,
 });
 
 // Email queues
@@ -56,4 +52,10 @@ export const welcomeEmailQueue = new Queue("welcome-email", {
 
 export const bankSlipNotificationQueue = new Queue("bank-slip-notification", {
   connection,
+});
+
+// User product queues
+export const userProductQueue = new Queue("user-product", {
+  connection,
+  defaultJobOptions,
 });
