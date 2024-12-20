@@ -101,6 +101,15 @@ class UserProductsController {
           }
 
           // Create product
+
+          const existingProduct = await prisma.userProduct.findFirst({
+            where: { sku: productData.sku },
+          });
+          
+          if (existingProduct) {
+            throw new MyError("Product with SKU already exists", 400);
+          }
+
           product = await prisma.userProduct.create({
             data: {
               ...productData,
