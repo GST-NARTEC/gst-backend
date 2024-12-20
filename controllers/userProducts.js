@@ -51,10 +51,28 @@ class UserProductsController {
       // now check each order one by one and check for available gtins in each order, if any order has available gtins, then pick one at random and create the product
       for (const order of orders) {
         console.log("order id", order.id);
-        if (order.assignedGtins.length < 1) {
+        // if (order.assignedGtins.length < 1) {
+        //   console.log("No gtin is free in a specific order" + order.id);
+        //   // change isSec to false in case if no gtin is free in a specific order
+        //   await prisma.order.update({
+        //     where: {
+        //       id: order.id,
+        //     },
+        //     data: {
+        //       isSec: false,
+        //     },
+        //   });
+        // }
+
+        // find available gtin in the order
+        const availableGtins = order.assignedGtins.filter(
+          (gtin) => gtin.gtin?.status === "Sold"
+        );
+
+        if (availableGtins.length < 1) {
           console.log("No gtin is free in a specific order" + order.id);
           // change isSec to false in case if no gtin is free in a specific order
-          await prisma.order.update({
+            await prisma.order.update({
             where: {
               id: order.id,
             },
@@ -63,11 +81,8 @@ class UserProductsController {
             },
           });
         }
-
-        // find available gtin in the order
-        const availableGtins = order.assignedGtins.filter(
-          (gtin) => gtin.gtin?.status === "Sold"
-        );
+          continue;
+        }
 
         // check if it is last gtin of the order
         if (availableGtins.length === 1) {
