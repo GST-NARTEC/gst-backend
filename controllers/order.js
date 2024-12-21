@@ -163,30 +163,6 @@ class OrderController {
       next(error);
     }
   }
-
-  static async getOrderSec(req, res, next) {
-    try {
-      const { userId } = req.params;
-
-      const user = await prisma.user.findFirst({ where: { id: userId } });
-
-      if (!user) {
-        throw new MyError("User not found", 404);
-      }
-
-      // check user's all orders and find the order with isSec true
-      const order = await prisma.order.findFirst({
-        where: { userId, isSec: true },
-        select: {
-          isSec: true,
-        },
-      });
-
-      res.status(200).json(response(200, true, "Order sec data", order));
-    } catch (error) {
-      next(error);
-    }
-  }
 }
 
 export default OrderController;

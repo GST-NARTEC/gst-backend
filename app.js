@@ -1,3 +1,5 @@
+import "./instrument.js";
+
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import express from "express";
@@ -5,6 +7,7 @@ import path, { dirname } from "path";
 import swaggerUi from "swagger-ui-express";
 import { fileURLToPath } from "url";
 
+import * as Sentry from "@sentry/node";
 import swaggerSpec from "./config/swagger.js";
 import cors from "./middlewares/cors.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.js";
@@ -32,6 +35,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Error Routes
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+Sentry.setupExpressErrorHandler(app);
 
 app.listen(PORT, "localhost", function () {
   console.log(`Server is running on port ${PORT}`);

@@ -13,4 +13,5 @@ export const userProductSchema = Joi.object({
   brandName: Joi.string().allow(null, ""),
   countryOfOrigin: Joi.string().allow(null, ""),
   countryOfSale: Joi.string().allow(null, ""),
+  isSec: Joi.boolean().default(false),
 }).unknown(true);

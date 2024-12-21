@@ -9,6 +9,11 @@ router.post("/send-otp", controller.sendEmailOTP);
 router.post("/verify-otp", controller.verifyEmailOTP);
 router.post("/login", controller.login);
 router.post("/create-order", controller.createNewOrder);
+router.get(
+  "/total-sec-quantity",
+  verifyAccessToken,
+  controller.getTotalSecQuantity
+);
 router.get("/search", controller.searchUsers);
 router.get("/:id", controller.getUserDetails);
 router.get("/member/:id", verifyAccessToken, controller.getUserDetails);

@@ -15,6 +15,4 @@ router.delete("/bank-slip/:orderNumber", OrderController.deleteBankSlip);
 
 router.patch("/activate/:orderNumber", OrderController.activateOrderStatus);
 
-router.get("/sec/:userId", OrderController.getOrderSec);
-
 export default router;

@@ -1146,6 +1146,25 @@ class UserController {
       next(error);
     }
   }
+
+  static async getTotalSecQuantity(req, res, next) {
+    try {
+      const { id: userId } = req.user;
+
+      const user = await prisma.user.findFirst({
+        where: { id: userId },
+        select: { secQuantity: true },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      res.status(200).json(response(200, true, "Order sec data", user));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default UserController;

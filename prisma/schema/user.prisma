@@ -19,6 +19,7 @@ model User {
   longitude        Float?
   isSec            Boolean?       @default(false)
   isActive         Boolean?       @default(true)
+  secQuantity      Int?           @default(0)
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   cart             Cart?

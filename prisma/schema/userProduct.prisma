@@ -13,6 +13,7 @@ model UserProduct {
     brandName       String?
     countryOfOrigin String?
     countryOfSale   String?
+    isSec           Boolean?     @default(false)
 
     // Timestamps
     createdAt DateTime @default(now())

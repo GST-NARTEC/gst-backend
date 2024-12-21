@@ -223,12 +223,14 @@ const processCheckouts = async (job) => {
   } = job.data;
 
   let isSec = false;
+  let secQuantity = 0;
 
   // Calculate totals
   const totalAmount = cart.items.reduce((sum, item) => {
     // check if prodcut title contains "sec"
     if (!isSec && item.product.title.toLowerCase().includes("sec")) {
       isSec = true;
+      secQuantity = item.quantity;
     }
 
     const { totalPrice: productTotal, unitPrice } = calculatePrice(
@@ -318,6 +320,7 @@ const processCheckouts = async (job) => {
           password: hashedPassword,
           isCreated: true,
           isSec: isSec,
+          secQuantity: Number(secQuantity),
         },
       });
     }

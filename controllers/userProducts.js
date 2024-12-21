@@ -57,33 +57,6 @@ class UserProductsController {
           (gtin) => gtin.gtin?.status === "Sold"
         );
 
-        // if (availableGtins.length < 1) {
-        //   console.log("No gtin is free in a specific order" + order.id);
-        //   // change isSec to false in case if no gtin is free in a specific order
-        //   await prisma.order.update({
-        //     where: {
-        //       id: order.id,
-        //     },
-        //     data: {
-        //       isSec: false,
-        //     },
-        //   });
-        // }
-
-        // // check if it is last gtin of the order
-        // if (availableGtins.length === 1) {
-        //   console.log("Last gtin of the order" + order.id);
-        //   // update the isSec to false for this specific order
-        //   await prisma.order.update({
-        //     where: {
-        //       id: order.id,
-        //     },
-        //     data: {
-        //       isSec: false,
-        //     },
-        //   });
-        // }
-
         if (availableGtins.length > 0) {
           console.log("Available gtin in a specific order" + order.id);
           // pick a random gtin from available gtins
@@ -114,6 +87,7 @@ class UserProductsController {
               ...productData,
               gtin: randomGtin.gtin.gtin,
               userId: req.user.id,
+              isSec: productData.isSec,
               images: {
                 create: imageUrls.map((url) => ({ url })),
               },
@@ -133,43 +107,22 @@ class UserProductsController {
             },
           });
 
+          if (productData.isSec) {
+            // update user sec quantity
+            await prisma.user.update({
+              where: { id: req.user.id },
+              data: {
+                secQuantity: {
+                  decrement: 1,
+                },
+              },
+            });
+          }
+
           console.log("GTIN status updated to Used" + randomGtin.gtin.gtin);
           break;
         }
       }
-
-      //   // Handle image uploads
-      //   const imageUrls = [];
-      //   if (req.files?.images) {
-      //     for (const file of req.files.images) {
-      //       const imagePath = addDomain(file.path);
-      //       imageUrls.push(imagePath);
-      //       imagePaths.push(imagePath);
-      //     }
-      //   }
-
-      //   // Update GTIN status to "Used"
-      //   await prisma.gTIN.update({
-      //     where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
-      //     data: {
-      //       status: "Used",
-      //     },
-      //   });
-
-      //   // Create product
-      //   const product = await prisma.userProduct.create({
-      //     data: {
-      //       ...productData,
-      //       gtin: randomGtin.gtin.gtin,
-      //       userId: req.user.id,
-      //       images: {
-      //         create: imageUrls.map((url) => ({ url })),
-      //       },
-      //     },
-      //     include: {
-      //       images: true,
-      //     },
-      //   });
 
       res.status(201).json(
         response(201, true, "Product created successfully", {
