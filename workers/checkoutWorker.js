@@ -312,7 +312,7 @@ const processCheckouts = async (job) => {
       },
     });
 
-    if (quantity != 0)
+    if (secQuantity != 0)
       await prisma.user.update({
         where: { id: user.id },
         data: {
