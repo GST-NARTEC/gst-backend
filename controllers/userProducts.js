@@ -57,32 +57,32 @@ class UserProductsController {
           (gtin) => gtin.gtin?.status === "Sold"
         );
 
-        if (availableGtins.length < 1) {
-          console.log("No gtin is free in a specific order" + order.id);
-          // change isSec to false in case if no gtin is free in a specific order
-          await prisma.order.update({
-            where: {
-              id: order.id,
-            },
-            data: {
-              isSec: false,
-            },
-          });
-        }
+        // if (availableGtins.length < 1) {
+        //   console.log("No gtin is free in a specific order" + order.id);
+        //   // change isSec to false in case if no gtin is free in a specific order
+        //   await prisma.order.update({
+        //     where: {
+        //       id: order.id,
+        //     },
+        //     data: {
+        //       isSec: false,
+        //     },
+        //   });
+        // }
 
-        // check if it is last gtin of the order
-        if (availableGtins.length === 1) {
-          console.log("Last gtin of the order" + order.id);
-          // update the isSec to false for this specific order
-          await prisma.order.update({
-            where: {
-              id: order.id,
-            },
-            data: {
-              isSec: false,
-            },
-          });
-        }
+        // // check if it is last gtin of the order
+        // if (availableGtins.length === 1) {
+        //   console.log("Last gtin of the order" + order.id);
+        //   // update the isSec to false for this specific order
+        //   await prisma.order.update({
+        //     where: {
+        //       id: order.id,
+        //     },
+        //     data: {
+        //       isSec: false,
+        //     },
+        //   });
+        // }
 
         if (availableGtins.length > 0) {
           console.log("Available gtin in a specific order" + order.id);
