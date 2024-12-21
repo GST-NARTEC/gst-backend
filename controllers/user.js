@@ -213,6 +213,11 @@ class UserController {
             createdAt: true,
             password: false,
             isActive: true,
+            orders: {
+              select: {
+                status: true,
+              },
+            },
           },
           skip,
           take: limit,
