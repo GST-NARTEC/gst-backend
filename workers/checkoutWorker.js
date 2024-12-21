@@ -312,13 +312,16 @@ const processCheckouts = async (job) => {
       },
     });
 
-    if (secQuantity != 0)
+    if (secQuantity > 0) {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          secQuantity: Number(secQuantity),
+          secQuantity: {
+            increment: Number(secQuantity),
+          },
         },
       });
+    }
 
     if (!isNewOrder) {
       // Update user
