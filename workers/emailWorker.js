@@ -33,6 +33,16 @@ const processBankSlipNotification = async (job) => {
   }
 };
 
+const processHelpTicketAdminNotification = async (job) => {
+  const ticket = job.data;
+  await EmailService.sendHelpTicketAdminNotification(ticket);
+};
+
+const processHelpTicketUserNotification = async (job) => {
+  const ticket = job.data;
+  await EmailService.sendHelpTicketUserNotification(ticket);
+};
+
 // Workers
 const welcomeEmailWorker = new Worker("welcome-email", processWelcomeEmail, {
   connection,
@@ -49,6 +59,22 @@ const accountAdminNotificationWorker = new Worker(
 const bankSlipNotificationWorker = new Worker(
   "bank-slip-notification",
   processBankSlipNotification,
+  {
+    connection,
+  }
+);
+
+const helpTicketAdminNotificationWorker = new Worker(
+  "help-ticket-admin",
+  processHelpTicketAdminNotification,
+  {
+    connection,
+  }
+);
+
+const helpTicketUserNotificationWorker = new Worker(
+  "help-ticket-user",
+  processHelpTicketUserNotification,
   {
     connection,
   }
@@ -78,9 +104,27 @@ bankSlipNotificationWorker.on("failed", (job, err) => {
   console.error(`Job ${job.id} failed with error: ${err.message}`);
 });
 
+helpTicketAdminNotificationWorker.on("completed", (job) => {
+  console.log(`Job ${job.id} completed successfully`);
+});
+
+helpTicketUserNotificationWorker.on("completed", (job) => {
+  console.log(`Job ${job.id} completed successfully`);
+});
+
+helpTicketAdminNotificationWorker.on("failed", (job, err) => {
+  console.error(`Job ${job.id} failed with error: ${err.message}`);
+});
+
+helpTicketUserNotificationWorker.on("failed", (job, err) => {
+  console.error(`Job ${job.id} failed with error: ${err.message}`);
+});
+
 // export workers
 export {
   accountAdminNotificationWorker,
   bankSlipNotificationWorker,
+  helpTicketAdminNotificationWorker,
+  helpTicketUserNotificationWorker,
   welcomeEmailWorker,
 };

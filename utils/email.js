@@ -236,6 +236,70 @@ class EmailService {
       return false;
     }
   }
+
+  async sendHelpTicketAdminNotification(ticket) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/helpTicketAdminNotification.ejs"
+      );
+
+      const data = {
+        ticket,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: process.env.SUPER_ADMIN_EMAIL,
+        subject: `New Help Ticket - GST Saudi Arabia`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error(
+        "Error sending help ticket admin notification email:",
+        error
+      );
+      return false;
+    }
+  }
+
+  async sendHelpTicketUserNotification(ticket) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/helpTicketUserNotification.ejs"
+      );
+
+      const data = {
+        ticket,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: ticket.user.email,
+        subject: `Help Ticket - GST Saudi Arabia`,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error(
+        "Error sending help ticket user notification email:",
+        error
+      );
+      return false;
+    }
+  }
 }
 
 export default new EmailService();

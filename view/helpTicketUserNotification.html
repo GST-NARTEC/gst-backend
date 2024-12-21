@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1b365d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .status-resolved {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-in-progress {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .status-closed {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .response-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .bilingual {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .arabic {
+            text-align: right;
+            direction: rtl;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="http://localhost:3000/assets/images/gst-logo.png" alt="GST Logo">
+            <h2>Help Ticket Update / تحديث تذكرة المساعدة</h2>
+        </div>
+
+        <div class="content">
+            <div class="bilingual">
+                <div>
+                    <h3>Your ticket has been updated</h3>
+                    <p>Ticket #12345</p>
+                </div>
+                <div class="arabic">
+                    <h3>تم تحديث تذكرتك</h3>
+                    <p>تذكرة رقم 12345#</p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <span class="status-badge status-resolved">RESOLVED / تم الحل</span>
+            </div>
+
+            <div class="response-box">
+                <div class="bilingual">
+                    <div>
+                        <h4>Response from Support Team:</h4>
+                        <p>Your issue has been resolved. The payment has been processed successfully.</p>
+                    </div>
+                    <div class="arabic">
+                        <h4>رد من فريق الدعم:</h4>
+                        <p>تم حل مشكلتك. تمت معالجة الدفع بنجاح.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>GST Help Desk System / نظام مكتب مساعدة GST</p>
+            <p>© 2024 GST Saudi Arabia. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

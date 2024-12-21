@@ -1,0 +1,35 @@
+model HelpTicket {
+  id                String   @id @default(cuid())
+  userId            String?  @db.UniqueIdentifier  
+  user              User?    @relation(fields: [userId], references: [id])
+  subject           String?
+  message           String?
+  status            String?  @default("OPEN")
+  priority          String?  @default("MEDIUM")
+  category          String?  @default("OTHER")
+  response          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+
+// enum Status {
+//   OPEN
+//   IN_PROGRESS
+//   RESOLVED
+//   CLOSED
+// }
+
+// enum Priority {
+//   LOW
+//   MEDIUM
+//   HIGH
+// }
+
+// enum TicketCategory {
+//   ACCOUNT
+//   ORDER
+//   PRODUCT
+//   PAYMENT
+//   OTHER
+// }

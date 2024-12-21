@@ -11,6 +11,7 @@ import currencyRoutes from "./currency.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
+import helpTicketRoutes from "./helpTicket.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
@@ -64,6 +65,7 @@ router.use("/v1/superadmin", superAdminRoutes);
 router.use("/v1/digital-links", digitalLinkRouter);
 router.use("/v1/sec", secRoutes);
 router.use("/v1/barcode-lookup", barcodeLookupRoutes);
+router.use("/v1/help-tickets", helpTicketRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

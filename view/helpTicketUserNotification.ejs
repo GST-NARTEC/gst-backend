@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Same CSS as HTML version */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="<%= logo %>" alt="GST Logo">
+            <h2>Help Ticket Update / تحديث تذكرة المساعدة</h2>
+        </div>
+
+        <div class="content">
+            <div class="bilingual">
+                <div>
+                    <h3>Your ticket has been updated</h3>
+                    <p>Ticket #<%= ticket.id %></p>
+                </div>
+                <div class="arabic">
+                    <h3>تم تحديث تذكرتك</h3>
+                    <p>تذكرة رقم <%= ticket.id %>#</p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <span class="status-badge status-<%= ticket.status.toLowerCase().replace('_', '-') %>">
+                    <%= ticket.status %> / <%= statusArabic[ticket.status] %>
+                </span>
+            </div>
+
+            <div class="response-box">
+                <div class="bilingual">
+                    <div>
+                        <h4>Response from Support Team:</h4>
+                        <p><%= ticket.response %></p>
+                    </div>
+                    <div class="arabic">
+                        <h4>رد من فريق الدعم:</h4>
+                        <p><%= ticket.responseAr || ticket.response %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>GST Help Desk System / نظام مكتب مساعدة GST</p>
+            <p>© <%= new Date().getFullYear() %> GST Saudi Arabia. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

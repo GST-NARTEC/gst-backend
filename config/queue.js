@@ -54,6 +54,14 @@ export const bankSlipNotificationQueue = new Queue("bank-slip-notification", {
   connection,
 });
 
+export const helpTicketAdminQueue = new Queue("help-ticket-admin", {
+  connection,
+});
+
+export const helpTicketUserQueue = new Queue("help-ticket-user", {
+  connection,
+});
+
 // User product queues
 export const userProductQueue = new Queue("user-product", {
   connection,

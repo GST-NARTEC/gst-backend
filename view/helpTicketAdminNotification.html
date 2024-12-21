@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1b365d;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .ticket-details {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #1b365d;
+        }
+
+        .value {
+            color: #2c3e50;
+        }
+
+        .priority-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1b365d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .action-button:hover {
+            background-color: #152a4a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="http://localhost:3000/assets/images/gst-logo.png" alt="GST Logo">
+            <h2>New Help Ticket Notification</h2>
+        </div>
+
+        <div class="content">
+            <h3>A new help ticket has been created</h3>
+            
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Ticket ID:</span>
+                    <span class="value">#12345</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Subject:</span>
+                    <span class="value">Payment Issue</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Priority:</span>
+                    <span class="value priority-high">HIGH</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Category:</span>
+                    <span class="value">PAYMENT</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">User:</span>
+                    <span class="value">john.doe@example.com</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Created At:</span>
+                    <span class="value">March 15, 2024 14:30</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Message:</span>
+                    <span class="value">I'm having issues with my recent payment...</span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="#" class="action-button">View Ticket</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message from GST Help Desk System</p>
+            <p>© 2024 GST Saudi Arabia. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

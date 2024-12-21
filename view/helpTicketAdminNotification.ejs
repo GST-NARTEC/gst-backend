@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Same CSS as HTML version */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="<%= logo %>" alt="GST Logo">
+            <h2>New Help Ticket Notification</h2>
+        </div>
+
+        <div class="content">
+            <h3>A new help ticket has been created</h3>
+            
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Ticket ID:</span>
+                    <span class="value">#<%= ticket.id %></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Subject:</span>
+                    <span class="value"><%= ticket.subject %></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Priority:</span>
+                    <span class="value priority-<%= ticket.priority.toLowerCase() %>">
+                        <%= ticket.priority %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Category:</span>
+                    <span class="value"><%= ticket.category %></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">User:</span>
+                    <span class="value"><%= ticket.user.email %></span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Created At:</span>
+                    <span class="value">
+                        <%= new Date(ticket.createdAt).toLocaleString() %>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Message:</span>
+                    <span class="value"><%= ticket.message %></span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="<%= adminUrl %>/tickets/<%= ticket.id %>" class="action-button">View Ticket</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message from GST Help Desk System</p>
+            <p>© <%= new Date().getFullYear() %> GST Saudi Arabia. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 
