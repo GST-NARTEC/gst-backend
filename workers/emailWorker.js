@@ -1,130 +1,60 @@
 import { Worker } from "bullmq";
-import { connection } from "../config/queue.js";
 import EmailService from "../utils/email.js";
+import { REDIS_CONFIG } from "../config/redis.js";
 
-// Processors
+const emailWorker = new Worker(
+  "email",
+  async (job) => {
+    try {
+      switch (job.name) {
+        case "admin-help-ticket-notification":
+          const { ticket } = job.data;
+          if (!ticket) {
+            throw new Error("Ticket data is required");
+          }
+          
+          const adminSent = await EmailService.sendHelpTicketAdminNotification(ticket);
+          if (!adminSent) {
+            throw new Error("Failed to send admin notification email");
+          }
+          break;
 
-const processWelcomeEmail = async (job) => {
-  await EmailService.sendWelcomeEmail(job.data);
-};
+        case "user-help-ticket-notification":
+          const { ticket: userTicket } = job.data;
+          if (!userTicket) {
+            throw new Error("Ticket data is required");
+          }
 
-const processAccountAdminNotification = async (job) => {
-  const user = job.data;
-  await EmailService.sendAccountAdminNotification(user);
-};
+          const userSent = await EmailService.sendHelpTicketUserNotification(userTicket);
+          if (!userSent) {
+            throw new Error("Failed to send user notification email");
+          }
+          break;
 
-const processBankSlipNotification = async (job) => {
-  const updatedOrder = job.data;
-  // Send email notification
-  const isSent = await EmailService.sendBankSlipNotification({
-    email: updatedOrder.user.email,
-    order: updatedOrder,
-    user: updatedOrder.user,
-  });
-
-  if (!isSent) {
-    console.log(
-      `Failed to send bank slip notification for order ${updatedOrder.orderNumber} to ${updatedOrder.user.email}`
-    );
-  } else {
-    console.log(
-      `Bank slip notification sent successfully for order ${updatedOrder.orderNumber} to ${updatedOrder.user.email}`
-    );
-  }
-};
-
-const processHelpTicketAdminNotification = async (job) => {
-  const ticket = job.data;
-  await EmailService.sendHelpTicketAdminNotification(ticket);
-};
-
-const processHelpTicketUserNotification = async (job) => {
-  const ticket = job.data;
-  await EmailService.sendHelpTicketUserNotification(ticket);
-};
-
-// Workers
-const welcomeEmailWorker = new Worker("welcome-email", processWelcomeEmail, {
-  connection,
-});
-
-const accountAdminNotificationWorker = new Worker(
-  "account-admin-notification",
-  processAccountAdminNotification,
+        default:
+          console.log(`Unknown job name: ${job.name}`);
+      }
+    } catch (error) {
+      console.error(`Error sending ${job.name} email:`, error);
+      throw error; // Rethrow to trigger job retry
+    }
+  },
   {
-    connection,
+    connection: REDIS_CONFIG,
+    concurrency: 5,
+    limiter: {
+      max: 100,
+      duration: 1000 * 60, // 1 minute
+    },
   }
 );
 
-const bankSlipNotificationWorker = new Worker(
-  "bank-slip-notification",
-  processBankSlipNotification,
-  {
-    connection,
-  }
-);
-
-const helpTicketAdminNotificationWorker = new Worker(
-  "help-ticket-admin",
-  processHelpTicketAdminNotification,
-  {
-    connection,
-  }
-);
-
-const helpTicketUserNotificationWorker = new Worker(
-  "help-ticket-user",
-  processHelpTicketUserNotification,
-  {
-    connection,
-  }
-);
-
-welcomeEmailWorker.on("completed", (job) => {
+emailWorker.on("completed", (job) => {
   console.log(`Job ${job.id} completed successfully`);
 });
 
-welcomeEmailWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
+emailWorker.on("failed", (job, error) => {
+  console.error(`Job ${job?.id} failed:`, error);
 });
 
-accountAdminNotificationWorker.on("completed", (job) => {
-  console.log(`Job ${job.id} completed successfully`);
-});
-
-accountAdminNotificationWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
-});
-
-bankSlipNotificationWorker.on("completed", (job) => {
-  console.log(`Job ${job.id} completed successfully`);
-});
-
-bankSlipNotificationWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
-});
-
-helpTicketAdminNotificationWorker.on("completed", (job) => {
-  console.log(`Job ${job.id} completed successfully`);
-});
-
-helpTicketUserNotificationWorker.on("completed", (job) => {
-  console.log(`Job ${job.id} completed successfully`);
-});
-
-helpTicketAdminNotificationWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
-});
-
-helpTicketUserNotificationWorker.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed with error: ${err.message}`);
-});
-
-// export workers
-export {
-  accountAdminNotificationWorker,
-  bankSlipNotificationWorker,
-  helpTicketAdminNotificationWorker,
-  helpTicketUserNotificationWorker,
-  welcomeEmailWorker,
-};
+export default emailWorker;

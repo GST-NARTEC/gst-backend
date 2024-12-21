@@ -247,6 +247,12 @@ class EmailService {
       const data = {
         ticket,
         logo: LOGO_URL,
+        statusArabic: {
+          OPEN: "مفتوح",
+          IN_PROGRESS: "قيد التنفيذ",
+          RESOLVED: "تم الحل",
+          CLOSED: "مغلق",
+        },
       };
 
       const html = await ejs.renderFile(templatePath, data);
@@ -254,7 +260,7 @@ class EmailService {
       const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: process.env.SUPER_ADMIN_EMAIL,
-        subject: `New Help Ticket - GST Saudi Arabia`,
+        subject: `New Help Ticket #${ticket.id} - GST Saudi Arabia`,
         html,
       };
 
@@ -279,6 +285,12 @@ class EmailService {
       const data = {
         ticket,
         logo: LOGO_URL,
+        statusArabic: {
+          OPEN: "مفتوح",
+          IN_PROGRESS: "قيد التنفيذ",
+          RESOLVED: "تم الحل",
+          CLOSED: "مغلق",
+        },
       };
 
       const html = await ejs.renderFile(templatePath, data);
@@ -286,7 +298,7 @@ class EmailService {
       const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: ticket.user.email,
-        subject: `Help Ticket - GST Saudi Arabia`,
+        subject: `Help Ticket #${ticket.id} Update - GST Saudi Arabia`,
         html,
       };
 
