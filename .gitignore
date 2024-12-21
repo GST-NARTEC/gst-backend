@@ -8,3 +8,5 @@ node_modules
 uploads/*
 !uploads/.gitkeep
 seed/*
+# Sentry Config File
+.sentryclirc

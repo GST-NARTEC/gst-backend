@@ -8,13 +8,15 @@
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
     "prisma-push": "npx prisma db push",
-    "test": "jest"
+    "test": "jest",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org nartec-solutions --project gst ./ && sentry-cli sourcemaps upload --org nartec-solutions --project gst ./"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "5.22.0",
+    "@sentry/cli": "^2.39.1",
     "@sentry/node": "^8.47.0",
     "@sentry/profiling-node": "^8.47.0",
     "axios": "^1.7.9",

@@ -31,7 +31,6 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 // API Routes
 app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 // Error Routes
 Sentry.setupExpressErrorHandler(app);
 app.use(notFoundHandler);
