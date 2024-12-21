@@ -6,6 +6,9 @@ import prisma from "../utils/prismaClient.js";
 
 export const userProductWorker = async (job) => {
   const { orders, productData } = job.data;
+  let randomGtin,
+    product,
+    imagePaths = [];
 
   // now check each order one by one and check for available gtins in each order, if any order has available gtins, then pick one at random and create the product
   for (const order of orders) {
