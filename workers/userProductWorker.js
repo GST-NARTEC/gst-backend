@@ -1,3 +1,5 @@
+import { Worker } from "bullmq";
+
 import { connection } from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
