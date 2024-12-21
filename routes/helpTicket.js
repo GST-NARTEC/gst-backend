@@ -15,6 +15,7 @@ router.use(verifyAccessToken);
 
 router.post("/", upload, HelpTicketController.createTicket);
 router.get("/", HelpTicketController.getTickets);
+router.get("/admin", HelpTicketController.getAdminTickets);
 router.get("/:id", HelpTicketController.getTicket);
 router.patch("/:id", HelpTicketController.updateTicket);
 router.delete("/:id", HelpTicketController.deleteTicket);

@@ -1,4 +1,4 @@
-import { helpTicketAdminQueue } from "../config/queue.js";
+import { helpTicketAdminQueue,helpTicketUserQueue} from "../config/queue.js";
 import {
   helpTicketSchema,
   helpTicketUpdateSchema,
@@ -154,11 +154,13 @@ class HelpTicketController {
         throw new MyError(error.details[0].message, 400);
       }
 
+      // Check if user is admin
+      if (!req.superadmin) {
+        throw new MyError("Admin access required", 403);
+      }
+
       const ticket = await prisma.helpTicket.findUnique({
-        where: {
-          id,
-          userId: req.user.id,
-        },
+        where: { id },
       });
 
       if (!ticket) {
@@ -198,11 +200,13 @@ class HelpTicketController {
     try {
       const { id } = req.params;
 
+      // Check if user is admin
+      if (!req.superadmin) {
+        throw new MyError("Admin access required", 403);
+      }
+
       const ticket = await prisma.helpTicket.findUnique({
-        where: {
-          id,
-          userId: req.user.id,
-        },
+        where: { id },
       });
 
       if (!ticket) {
@@ -220,6 +224,67 @@ class HelpTicketController {
       res
         .status(200)
         .json(response(200, true, "Help ticket deleted successfully", null));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getAdminTickets(req, res, next) {
+    try {
+      // Check if the request is from a superadmin
+      if (!req.superadmin) {
+        throw new MyError("Admin access required", 403);
+      }
+
+      const { error, value } = querySchema.validate(req.query);
+      if (error) {
+        throw new MyError(error.details[0].message, 400);
+      }
+
+      const { page, limit, search, status, priority, category } = value;
+      const skip = (page - 1) * limit;
+
+      // Build where clause for filtering (without userId filter)
+      const where = {
+        ...(status && { status }),
+        ...(priority && { priority }),
+        ...(category && { category }),
+        ...(search
+          ? {
+              OR: [
+                { subject: { contains: search } },
+                { message: { contains: search } },
+              ],
+            }
+          : {}),
+      };
+
+      const [tickets, total] = await Promise.all([
+        prisma.helpTicket.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+          include: {
+            user: true,
+          },
+        }),
+        prisma.helpTicket.count({ where }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Help tickets retrieved successfully", {
+          tickets,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            limit,
+          },
+        })
+      );
     } catch (error) {
       next(error);
     }
