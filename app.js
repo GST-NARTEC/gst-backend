@@ -33,10 +33,9 @@ app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Error Routes
+Sentry.setupExpressErrorHandler(app);
 app.use(notFoundHandler);
 app.use(errorHandler);
-
-Sentry.setupExpressErrorHandler(app);
 
 app.listen(PORT, "localhost", function () {
   console.log(`Server is running on port ${PORT}`);
