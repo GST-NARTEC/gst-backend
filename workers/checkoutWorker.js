@@ -312,6 +312,14 @@ const processCheckouts = async (job) => {
       },
     });
 
+    if (quantity != 0)
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          secQuantity: Number(secQuantity),
+        },
+      });
+
     if (!isNewOrder) {
       // Update user
       await prisma.user.update({
@@ -320,7 +328,6 @@ const processCheckouts = async (job) => {
           password: hashedPassword,
           isCreated: true,
           isSec: isSec,
-          secQuantity: Number(secQuantity),
         },
       });
     }

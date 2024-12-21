@@ -1160,7 +1160,7 @@ class UserController {
         throw new MyError("User not found", 404);
       }
 
-      res.status(200).json(response(200, true, "Order sec data", user));
+      res.status(200).json(response(200, true, "Total sec quantity", user));
     } catch (error) {
       next(error);
     }
