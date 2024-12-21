@@ -5,21 +5,28 @@ import {
   querySchema,
 } from "../schemas/helpTicket.schema.js";
 import MyError from "../utils/error.js";
+import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
 class HelpTicketController {
   static async createTicket(req, res, next) {
+    let doc;
     try {
       const { error, value } = helpTicketSchema.validate(req.body);
       if (error) {
         throw new MyError(error.details[0].message, 400);
       }
 
+      if (req.file) {
+        doc = addDomain(req.file.path);
+      }
+
       const ticket = await prisma.helpTicket.create({
         data: {
           ...value,
           userId: req.user.id,
+          doc,
         },
         include: {
           user: true,
@@ -47,6 +54,9 @@ class HelpTicketController {
         })
       );
     } catch (error) {
+      if (doc) {
+        await deleteFile(doc);
+      }
       next(error);
     }
   }
@@ -197,6 +207,10 @@ class HelpTicketController {
 
       if (!ticket) {
         throw new MyError("Help ticket not found", 404);
+      }
+
+      if (ticket.doc) {
+        await deleteFile(ticket.doc);
       }
 
       await prisma.helpTicket.delete({

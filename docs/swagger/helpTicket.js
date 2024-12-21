@@ -25,6 +25,9 @@
  *           default: OTHER
  *         response:
  *           type: string
+ *         doc:
+ *           type: string
+ *           description: URL to the uploaded document
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -59,7 +62,7 @@
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -78,9 +81,32 @@
  *                 type: string
  *                 enum: [ACCOUNT, ORDER, PRODUCT, PAYMENT, OTHER]
  *                 default: OTHER
+ *               doc:
+ *                 type: string
+ *                 format: binary
+ *                 description: Supporting document (image only)
  *     responses:
  *       201:
  *         description: Help ticket created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 201
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Help ticket created successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ticket:
+ *                       $ref: '#/components/schemas/HelpTicket'
  *       400:
  *         description: Invalid input
  *       401:
@@ -140,10 +166,13 @@
  *               properties:
  *                 status:
  *                   type: number
+ *                   example: 200
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: Help tickets retrieved successfully
  *                 data:
  *                   type: object
  *                   properties:
@@ -188,8 +217,20 @@
  *             schema:
  *               type: object
  *               properties:
- *                 ticket:
- *                   $ref: '#/components/schemas/HelpTicket'
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Help ticket retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ticket:
+ *                       $ref: '#/components/schemas/HelpTicket'
  *       404:
  *         description: Help ticket not found
  *
@@ -210,6 +251,7 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             minProperties: 1
  *             properties:
  *               subject:
  *                 type: string
@@ -229,6 +271,25 @@
  *     responses:
  *       200:
  *         description: Help ticket updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Help ticket updated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ticket:
+ *                       $ref: '#/components/schemas/HelpTicket'
  *       404:
  *         description: Help ticket not found
  *
@@ -246,6 +307,22 @@
  *     responses:
  *       200:
  *         description: Help ticket deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Help ticket deleted successfully
+ *                 data:
+ *                   type: null
  *       404:
  *         description: Help ticket not found
  */
