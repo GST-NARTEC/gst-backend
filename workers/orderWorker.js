@@ -71,16 +71,25 @@ const processOrderActivation = async (job) => {
   console.log("All order items:", order.orderItems);
 
   // Then modify the mapping with detailed logging
-  const availableGtinsWithProduct = availableGtins.map((gtin, index) => {
-    const orderItem = order.orderItems[index];
-    console.log(`Order item at index ${index}:`, orderItem);
-    console.log(`Product for order item ${index}:`, orderItem?.product);
+  const availableGtinsWithProduct = [];
+  for (let i = 0; i < order.orderItems.length; i++) {
+    // show logs as well
+    console.log(`Order item at index ${i}:`, order.orderItems[i]);
+    const orderItem = order.orderItems[i];
+    const quantity = orderItem.quantity;
+    const barcodeType = orderItem.product?.barcodeTypeId;
 
-    return {
-      ...gtin,
-      barcodeTypeId: orderItem?.product?.barcodeTypeId,
-    };
-  });
+    console.log(`Barcode type at index ${i}:`, barcodeType);
+
+    // update quantity number of times in single iteration
+    for (let i = 0; i < quantity; i++) {
+      console.log(`Available gtin at index ${i}:`, availableGtins[i]);
+      availableGtinsWithProduct.push({
+        ...availableGtins[i],
+        barcodeTypeId: barcodeType,
+      });
+    }
+  }
 
   // Log the final result
   console.log("Final GTINs with products:", availableGtinsWithProduct);
