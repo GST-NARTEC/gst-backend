@@ -13,28 +13,39 @@ class UserProductsController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { gtin: _, ...productData } = value;
+      const { gtin: _, barcodeType, ...productData } = value;
 
-      let user, orders;
+      // First, find the barcodeType record
+      const barcodeTypeRecord = await prisma.barcodeType.findFirst({
+        where: { type: barcodeType },
+      });
 
-      [user, orders] = await Promise.all([
+      if (!barcodeTypeRecord) {
+        throw new MyError("Invalid barcode type", 400);
+      }
+
+      // Get user and find ONE available GTIN of the requested type
+      const [user, availableGtin] = await Promise.all([
         prisma.user.findUnique({
           where: { id: req.user.id },
         }),
-
-        // get all user orders
-        prisma.order.findMany({
+        prisma.assignedGtin.findFirst({
           where: {
-            userId: req.user.id,
-            status: "Activated",
+            order: {
+              userId: req.user.id,
+              status: "Activated",
+            },
+            barcodeTypeId: barcodeTypeRecord.id,
+            gtin: {
+              status: "Sold", // Only get unused GTINs
+            },
           },
           include: {
-            assignedGtins: {
-              include: {
-                gtin: true,
-                barcodeType: true,
-              },
-            },
+            gtin: true,
+            order: true,
+          },
+          orderBy: {
+            createdAt: 'asc', // Get oldest GTIN first
           },
         }),
       ]);
@@ -43,90 +54,71 @@ class UserProductsController {
         throw new MyError("You are not authorized to create a product", 401);
       }
 
-      if (orders.length < 1) {
-        throw new MyError("User has no orders", 400);
+      if (!availableGtin) {
+        throw new MyError(`No available GTINs found for barcode type: ${barcodeType}`, 400);
       }
 
-      let randomGtin, product;
-
-      // now check each order one by one and check for available gtins in each order, if any order has available gtins, then pick one at random and create the product
-      for (const order of orders) {
-        console.log("order id", order.id);
-
-        // find available gtin in the order with the same barcode type
-        const availableGtins = order.assignedGtins.filter(
-          (gtin) =>
-            gtin.gtin?.status === "Sold" &&
-            gtin.barcodeType != null &&
-            gtin.barcodeType.type === productData.barcodeType
-        );
-
-        if (availableGtins.length > 0) {
-          console.log("Available gtin in a specific order" + order.id);
-          // pick a random gtin from available gtins
-          randomGtin =
-            availableGtins[Math.floor(Math.random() * availableGtins.length)];
-
-          // Handle image uploads
-          const imageUrls = [];
-          if (req.files?.images) {
-            for (const file of req.files.images) {
-              const imagePath = addDomain(file.path);
-              imageUrls.push(imagePath);
-              imagePaths.push(imagePath);
-            }
-          }
-
-          // Create product
-          const existingProduct = await prisma.userProduct.findFirst({
-            where: { sku: productData.sku },
-          });
-
-          if (existingProduct) {
-            throw new MyError("Product with SKU already exists", 400);
-          }
-
-          product = await prisma.userProduct.create({
-            data: {
-              ...productData,
-              gtin: randomGtin.gtin.gtin,
-              userId: req.user.id,
-              isSec: productData.isSec,
-              images: {
-                create: imageUrls.map((url) => ({ url })),
-              },
-            },
-            include: {
-              images: true,
-            },
-          });
-
-          console.log("Product created" + product.id);
-
-          // Update GTIN status to "Used"
-          await prisma.gTIN.update({
-            where: { gtin: randomGtin.gtin.gtin, status: "Sold" },
-            data: {
-              status: "Used",
-            },
-          });
-
-          if (productData.isSec) {
-            // update user sec quantity
-            await prisma.user.update({
-              where: { id: req.user.id },
-              data: {
-                secQuantity: {
-                  decrement: 1,
-                },
-              },
-            });
-          }
-
-          console.log("GTIN status updated to Used" + randomGtin.gtin.gtin);
-          break;
+      // Handle image uploads
+      const imageUrls = [];
+      if (req.files?.images) {
+        for (const file of req.files.images) {
+          const imagePath = addDomain(file.path);
+          imageUrls.push(imagePath);
+          imagePaths.push(imagePath);
         }
       }
+
+      // Check for existing SKU
+      const existingProduct = await prisma.userProduct.findFirst({
+        where: { sku: productData.sku },
+      });
+
+      if (existingProduct) {
+        throw new MyError("Product with SKU already exists", 400);
+      }
+
+      // Create product using transaction to ensure data consistency
+      const product = await prisma.$transaction(async (prisma) => {
+        // Create the product with single GTIN
+        const newProduct = await prisma.userProduct.create({
+          data: {
+            ...productData,
+            gtin: availableGtin.gtin.gtin,
+            userId: req.user.id,
+            isSec: productData.isSec,
+            images: {
+              create: imageUrls.map((url) => ({ url })),
+            },
+          },
+          include: {
+            images: true,
+          },
+        });
+
+        // Update only this single GTIN's status
+        await prisma.gTIN.update({
+          where: { 
+            id: availableGtin.gtinId,
+          },
+          data: {
+            status: "Used",
+          },
+        });
+
+        // Update user's SEC quantity if applicable
+        if (productData.isSec) {
+          await prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+              secQuantity: {
+                decrement: 1,
+              },
+            },
+          });
+        }
+
+        return newProduct;
+      });
 
       res.status(201).json(
         response(201, true, "Product created successfully", {
@@ -337,6 +329,7 @@ class UserProductsController {
         }),
       };
 
+      // First get the products
       const [products, total] = await Promise.all([
         prisma.userProduct.findMany({
           where: whereClause,
@@ -350,11 +343,32 @@ class UserProductsController {
         prisma.userProduct.count({ where: whereClause }),
       ]);
 
+      // Get barcodeType information for each product
+      const productsWithBarcodeType = await Promise.all(
+        products.map(async (product) => {
+          const assignedGtin = await prisma.assignedGtin.findFirst({
+            where: {
+              gtin: {
+                gtin: product.gtin
+              }
+            },
+            include: {
+              barcodeType: true
+            }
+          });
+
+          return {
+            ...product,
+            barcodeType: assignedGtin?.barcodeType?.type || null
+          };
+        })
+      );
+
       const totalPages = Math.ceil(total / limit);
 
       res.status(200).json(
         response(200, true, "Products retrieved successfully", {
-          products,
+          products: productsWithBarcodeType,
           pagination: {
             total,
             page: Number(page),

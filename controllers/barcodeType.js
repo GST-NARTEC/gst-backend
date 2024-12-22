@@ -165,6 +165,7 @@ class BarcodeTypeController {
             assignedGtins: {
               include: {
                 barcodeType: true,
+                gtin: true,
               },
             },
           },
@@ -179,20 +180,42 @@ class BarcodeTypeController {
         throw new MyError("Orders not found", 404);
       }
 
-      // get all the assigned gtins from all orders and count the number of each barcode type
-      const assignedGtins = orders.flatMap((order) =>
-        order.assignedGtins.map((assignedGtin) => assignedGtin.barcodeType)
-      );
+      // Get all assigned GTINs and count based on status
+      const barcodeTypes = {};
+      
+      orders.forEach(order => {
+        order.assignedGtins.forEach(assignedGtin => {
+          const type = assignedGtin.barcodeType?.type || "unassigned";
+          
+          // Initialize the type if it doesn't exist
+          if (!barcodeTypes[type]) {
+            barcodeTypes[type] = {
+              total: 0,
+              used: 0,
+              available: 0
+            };
+          }
+          
+          barcodeTypes[type].total += 1;
+          
+          // Count based on GTIN status
+          if (assignedGtin.gtin.status === "Used") {
+            barcodeTypes[type].used += 1;
+          } else if (assignedGtin.gtin.status === "Sold") {
+            barcodeTypes[type].available += 1;
+          }
+        });
+      });
 
-      const barcodeTypes = assignedGtins.reduce((acc, barcodeType) => {
-        const type = barcodeType?.type || "unassigned";
-        acc[type] = (acc[type] || 0) + 1;
+      // Convert to final format showing only available counts
+      const finalCounts = Object.entries(barcodeTypes).reduce((acc, [type, counts]) => {
+        acc[type] = counts.available;
         return acc;
       }, {});
 
       res.status(200).json(
         response(200, true, "Barcode types retrieved successfully", {
-          barcodeTypes,
+          barcodeTypes: finalCounts,
         })
       );
     } catch (error) {

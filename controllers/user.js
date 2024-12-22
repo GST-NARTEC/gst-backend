@@ -946,9 +946,7 @@ class UserController {
               include: {
                 items: {
                   include: {
-                    product: {
-                      barcodeType: true,
-                    },
+                    product: true,
                     addonItems: {
                       include: {
                         addon: true,
@@ -1169,8 +1167,6 @@ class UserController {
       next(error);
     }
   }
-
-
 }
 
 export default UserController;
