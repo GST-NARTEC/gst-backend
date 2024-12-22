@@ -52,9 +52,11 @@ class UserProductsController {
       for (const order of orders) {
         console.log("order id", order.id);
 
-        // find available gtin in the order
+        // find available gtin in the order with the same barcode type
         const availableGtins = order.assignedGtins.filter(
-          (gtin) => gtin.gtin?.status === "Sold"
+          (gtin) =>
+            gtin.gtin?.status === "Sold" &&
+            gtin.barcodeTypeId === productData.barcodeTypeId
         );
 
         if (availableGtins.length > 0) {

@@ -1,10 +1,10 @@
 model BarcodeType {
-    id              String      @id     @default(cuid())
-    type            String?
-    products        Product[]
-    assignedGtins    AssignedGtin[]
-    createdAt       DateTime    @default(now())
-    updatedAt       DateTime    @updatedAt
+    id                  String      @id     @default(cuid())
+    type                String?
+    products            Product[]
+    assignedGtins       AssignedGtin[]
+    createdAt           DateTime    @default(now())
+    updatedAt           DateTime    @updatedAt
 }
 
 // enum BarcodeTypes{
