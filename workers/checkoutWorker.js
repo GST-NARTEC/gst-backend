@@ -104,6 +104,7 @@ const processCheckout = async (job) => {
       data: {
         password: hashedPassword,
         isSec: isSec,
+        isCreated: true,
       },
     });
 
@@ -329,6 +330,7 @@ const processCheckouts = async (job) => {
         data: {
           password: hashedPassword,
           isSec: isSec,
+          isCreated: true,
         },
       });
     }
