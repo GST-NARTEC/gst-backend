@@ -2,6 +2,7 @@ import express from "express";
 
 import addonRoutes from "./addon.js";
 import barcodeLookupRoutes from "./barcodeLookup.js";
+import barcodeTypeRoutes from "./barcodeType.js";
 import brandRoutes from "./brand.js";
 import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
@@ -66,6 +67,7 @@ router.use("/v1/digital-links", digitalLinkRouter);
 router.use("/v1/sec", secRoutes);
 router.use("/v1/barcode-lookup", barcodeLookupRoutes);
 router.use("/v1/help-tickets", helpTicketRoutes);
+router.use("/v1/barcode-types", barcodeTypeRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

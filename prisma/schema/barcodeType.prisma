@@ -1,0 +1,17 @@
+model BarcodeType {
+    id              String      @id     @default(cuid())
+    type            String?
+    createdAt       DateTime    @default(now())
+    updatedAt       DateTime    @updatedAt
+}
+
+// enum BarcodeTypes{
+//     GTIN
+//     GLN
+//     SSCC
+//     SEC
+//     UDI
+//     SFDA
+//     SASO
+//     OTA
+// }
