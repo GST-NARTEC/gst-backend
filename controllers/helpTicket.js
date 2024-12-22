@@ -244,7 +244,7 @@ class HelpTicketController {
       const { page, limit, search, status, priority, category } = value;
       const skip = (page - 1) * limit;
 
-      // Build where clause for filtering (without userId filter)
+      // Build where clause for filtering
       const where = {
         ...(status && { status }),
         ...(priority && { priority }),
