@@ -827,6 +827,7 @@ class UserController {
         barcodeCertificate: ag.barcodeCertificate
           ? ag.barcodeCertificate
           : null,
+        barcodeType: ag.barcodeType,
       }));
 
       res.status(200).json(
