@@ -103,7 +103,6 @@ const processCheckout = async (job) => {
       where: { id: user.id },
       data: {
         password: hashedPassword,
-        isCreated: true,
         isSec: isSec,
       },
     });
@@ -329,7 +328,6 @@ const processCheckouts = async (job) => {
         where: { id: user.id },
         data: {
           password: hashedPassword,
-          isCreated: true,
           isSec: isSec,
         },
       });

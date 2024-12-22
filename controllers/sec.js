@@ -25,16 +25,8 @@ class SECController {
         throw new MyError("User not found", 404);
       }
 
-      // Check if user has any orders with isSec=true
-      const hasSecOrder = await prisma.order.findFirst({
-        where: {
-          userId: req.user.id,
-          isSec: true
-        }
-      });
-
-      if (!hasSecOrder) {
-        throw new MyError("User does not have any SEC enabled orders", 403);
+      if (user.secQuantity < 1) {
+        throw new MyError("User has reached the maximum SEC limit", 403);
       }
 
       const sec = await prisma.sEC.create({
@@ -163,10 +155,6 @@ class SECController {
         throw new MyError("SEC not found", 404);
       }
 
-      //   if (!existingSEC.user.isSec) {
-      //     throw new MyError("User does not have SEC access", 403);
-      //   }
-
       const updatedSEC = await prisma.sEC.update({
         where: { id },
         data: value,
@@ -196,10 +184,6 @@ class SECController {
 
       if (!existingSEC) {
         throw new MyError("SEC not found", 404);
-      }
-
-      if (!existingSEC.user.isSec) {
-        throw new MyError("User does not have SEC access", 403);
       }
 
       await prisma.sEC.delete({

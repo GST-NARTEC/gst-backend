@@ -3,8 +3,8 @@ model User {
   userId           String?
   email            String?        @unique
   password         String?
-  isCreated        Boolean        @default(false)
-  isEmailVerified  Boolean        @default(false)
+  isCreated        Boolean?       @default(false)
+  isEmailVerified  Boolean?       @default(false)
   companyLicenseNo String?
   companyNameEn    String?
   companyNameAr    String?

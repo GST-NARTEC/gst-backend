@@ -1,4 +1,4 @@
-import { helpTicketAdminQueue,helpTicketUserQueue} from "../config/queue.js";
+import { helpTicketAdminQueue, helpTicketUserQueue } from "../config/queue.js";
 import {
   helpTicketSchema,
   helpTicketUpdateSchema,
