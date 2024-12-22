@@ -10,6 +10,7 @@ const productSchema = Joi.object({
   qty: Joi.number().integer().min(0).optional(),
   status: Joi.string().valid("active", "inactive").default("active"),
   addonIds: Joi.array().items(Joi.string().uuid()).optional(),
+  barcodeTypeId: Joi.string().allow(null, "").optional(),
 });
 
 const querySchema = Joi.object({
@@ -27,6 +28,7 @@ const productUpdateSchema = Joi.object({
   qty: Joi.number().integer().min(0).optional(),
   status: Joi.string().valid("active", "inactive").optional(),
   addonIds: Joi.array().items(Joi.string().uuid()).optional(),
+  barcodeTypeId: Joi.string().allow(null, "").optional(),
 });
 
 export { productSchema, productUpdateSchema, querySchema };

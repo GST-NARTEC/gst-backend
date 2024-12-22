@@ -9,6 +9,8 @@ model Product {
   categoryId  String?   @db.UniqueIdentifier
   category    Category? @relation(fields: [categoryId], references: [id])
   addons      Addon[]   @relation("ProductToAddon")
+  barcodeTypeId String?
+  barcodeType   BarcodeType? @relation(fields: [barcodeTypeId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   cartItems   CartItem[]

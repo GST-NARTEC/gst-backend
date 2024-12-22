@@ -22,6 +22,10 @@
  *         categoryId:
  *           type: string
  *           format: uuid
+ *         barcodeTypeId:
+ *           type: string
+ *           format: cuid
+ *           description: ID of the associated barcode type
  *         qty:
  *           type: integer
  *           minimum: 0
@@ -51,6 +55,8 @@
  *               format: date-time
  *             category:
  *               $ref: '#/components/schemas/Category'
+ *             barcodeType:
+ *               $ref: '#/components/schemas/BarcodeType'
  *             addons:
  *               type: array
  *               items:
@@ -60,7 +66,7 @@
  *   post:
  *     tags: [Products]
  *     summary: Create a new product
- *     description: Creates a new product with optional category, addons, and image upload support
+ *     description: Creates a new product with optional category, barcode type, addons, and image upload support
  *     requestBody:
  *       required: true
  *       content:
@@ -83,6 +89,9 @@
  *               categoryId:
  *                 type: string
  *                 format: uuid
+ *               barcodeTypeId:
+ *                 type: string
+ *                 format: cuid
  *               image:
  *                 type: string
  *                 format: binary
@@ -93,13 +102,11 @@
  *               status:
  *                 type: string
  *                 enum: [active, inactive]
- *                 default: active
  *               addonIds:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: uuid
- *                 description: Optional array of addon IDs to associate with the product
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -109,7 +116,7 @@
  *               type: object
  *               properties:
  *                 status:
- *                   type: integer
+ *                   type: number
  *                   example: 201
  *                 success:
  *                   type: boolean
@@ -270,6 +277,10 @@
  *                 type: string
  *                 format: uuid
  *                 nullable: true
+ *               barcodeTypeId:
+ *                 type: string
+ *                 format: cuid
+ *                 nullable: true
  *               image:
  *                 type: string
  *                 format: binary
@@ -280,6 +291,11 @@
  *               status:
  *                 type: string
  *                 enum: [active, inactive]
+ *               addonIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -289,7 +305,7 @@
  *               type: object
  *               properties:
  *                 status:
- *                   type: integer
+ *                   type: number
  *                   example: 200
  *                 success:
  *                   type: boolean

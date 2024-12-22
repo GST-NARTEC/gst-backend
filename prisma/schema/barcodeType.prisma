@@ -1,6 +1,7 @@
 model BarcodeType {
     id              String      @id     @default(cuid())
     type            String?
+    products        Product[]
     createdAt       DateTime    @default(now())
     updatedAt       DateTime    @updatedAt
 }

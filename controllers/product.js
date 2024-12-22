@@ -72,6 +72,11 @@ class ProductController {
           price: value.price,
           image: value.image,
           qty: value.qty,
+          barcodeTypeId: value.barcodeTypeId
+            ? {
+                connect: { id: value.barcodeTypeId },
+              }
+            : undefined,
           status: value.status,
           category: value.categoryId
             ? {
@@ -256,6 +261,12 @@ class ProductController {
         ...(value.title !== undefined && { title: value.title }),
         ...(value.description !== undefined && {
           description: value.description,
+        }),
+
+        ...(value.barcodeTypeId !== undefined && {
+          barcodeType: {
+            connect: { id: value.barcodeTypeId },
+          },
         }),
 
         ...(value.price !== undefined && { price: value.price }),
