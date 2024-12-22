@@ -48,12 +48,14 @@ model OrderItemAddon {
 }
 
 model AssignedGtin {
-  id        String   @id @default(uuid()) @db.UniqueIdentifier
-  orderId   String   @db.UniqueIdentifier
-  order     Order    @relation(fields: [orderId], references: [id])
-  gtinId    String   @db.UniqueIdentifier
-  gtin      GTIN     @relation(fields: [gtinId], references: [id])
-  barcodeCertificate String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                    String   @id @default(uuid()) @db.UniqueIdentifier
+  orderId               String   @db.UniqueIdentifier
+  order                 Order    @relation(fields: [orderId], references: [id])
+  gtinId                String   @db.UniqueIdentifier
+  gtin                  GTIN     @relation(fields: [gtinId], references: [id])
+  barcodeTypeId         String?
+  barcodeType           BarcodeType? @relation(fields: [barcodeTypeId], references: [id])
+  barcodeCertificate    String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

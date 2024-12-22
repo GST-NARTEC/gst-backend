@@ -9,7 +9,7 @@
     "dev": "nodemon app.js",
     "prisma-push": "npx prisma db push",
     "test": "jest",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org nartec-solutions --project gst ./ && sentry-cli sourcemaps upload --org nartec-solutions --project gst ./"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gst-sz --project gst-api ./ && sentry-cli sourcemaps upload --org gst-sz --project gst-api ./"
   },
   "keywords": [],
   "author": "",

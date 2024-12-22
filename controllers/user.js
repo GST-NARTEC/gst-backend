@@ -795,6 +795,7 @@ class UserController {
                 createdAt: true,
               },
             },
+            barcodeType: true,
           },
           orderBy: {
             [sortBy === "gtin" ? "gtin" : "createdAt"]: sortOrder,
@@ -944,7 +945,9 @@ class UserController {
               include: {
                 items: {
                   include: {
-                    product: true,
+                    product: {
+                      barcodeType: true,
+                    },
                     addonItems: {
                       include: {
                         addon: true,

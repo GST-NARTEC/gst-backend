@@ -24,7 +24,11 @@ const processOrderActivation = async (job) => {
       invoice: true,
       orderItems: {
         include: {
-          product: true,
+          product: {
+            include: {
+              barcodeType: true,
+            },
+          },
           addonItems: {
             include: {
               addon: true,
@@ -63,6 +67,11 @@ const processOrderActivation = async (job) => {
     throw new Error("Not enough GTINs available");
   }
 
+  const availableGtinsWithProduct = availableGtins.map((gtin, index) => ({
+    ...gtin,
+    barcodeTypeId: order.orderItems[index].product?.barcodeTypeId,
+  }));
+
   // Process everything in a transaction
   const result = await prisma.$transaction(async (prisma) => {
     // Update order status
@@ -74,7 +83,11 @@ const processOrderActivation = async (job) => {
         invoice: true,
         orderItems: {
           include: {
-            product: true,
+            product: {
+              include: {
+                barcodeType: true,
+              },
+            },
             addonItems: {
               include: { addon: true },
             },
@@ -85,11 +98,18 @@ const processOrderActivation = async (job) => {
 
     // Update GTINs status and create assignments
     const gtinAssignments = await Promise.all(
-      availableGtins.map((gtin) =>
+      availableGtinsWithProduct.map((gtin) =>
         prisma.assignedGtin.create({
           data: {
             orderId: order.id,
             gtinId: gtin.id,
+            barcodeTypeId: gtin.barcodeTypeId
+              ? {
+                  connect: {
+                    id: gtin.barcodeTypeId,
+                  },
+                }
+              : undefined,
           },
         })
       )
