@@ -67,10 +67,23 @@ const processOrderActivation = async (job) => {
     throw new Error("Not enough GTINs available");
   }
 
-  const availableGtinsWithProduct = availableGtins.map((gtin, index) => ({
-    ...gtin,
-    barcodeTypeId: order.orderItems[index].product?.barcodeTypeId,
-  }));
+  // First, log the entire order items array
+  console.log("All order items:", order.orderItems);
+
+  // Then modify the mapping with detailed logging
+  const availableGtinsWithProduct = availableGtins.map((gtin, index) => {
+    const orderItem = order.orderItems[index];
+    console.log(`Order item at index ${index}:`, orderItem);
+    console.log(`Product for order item ${index}:`, orderItem?.product);
+
+    return {
+      ...gtin,
+      barcodeTypeId: orderItem?.product?.barcodeTypeId,
+    };
+  });
+
+  // Log the final result
+  console.log("Final GTINs with products:", availableGtinsWithProduct);
 
   // Process everything in a transaction
   const result = await prisma.$transaction(async (prisma) => {
