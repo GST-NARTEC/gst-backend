@@ -103,13 +103,7 @@ const processOrderActivation = async (job) => {
           data: {
             orderId: order.id,
             gtinId: gtin.id,
-            barcodeTypeId: gtin.barcodeTypeId
-              ? {
-                  connect: {
-                    id: gtin.barcodeTypeId,
-                  },
-                }
-              : undefined,
+            barcodeTypeId: gtin.barcodeTypeId || null,
           },
         })
       )
