@@ -57,6 +57,7 @@ class UserProductsController {
         const availableGtins = order.assignedGtins.filter(
           (gtin) =>
             gtin.gtin?.status === "Sold" &&
+            gtin.barcodeType != null &&
             gtin.barcodeType.type === productData.barcodeType
         );
 
