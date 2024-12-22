@@ -1,12 +1,13 @@
 import express from "express";
-import BarcodeTypeController from "../controllers/barcodeType.js";
+import Controller from "../controllers/barcodeType.js";
+import { verifyAccessToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.post("/", BarcodeTypeController.createBarcodeType);
-router.get("/", BarcodeTypeController.getBarcodeTypes);
-router.get("/:id", BarcodeTypeController.getBarcodeType);
-router.put("/:id", BarcodeTypeController.updateBarcodeType);
-router.delete("/:id", BarcodeTypeController.deleteBarcodeType);
-
+router.post("/", Controller.createBarcodeType);
+router.get("/", Controller.getBarcodeTypes);
+router.get("/counts", verifyAccessToken, Controller.getBarcodeTypesWithCounts);
+router.get("/:id", Controller.getBarcodeType);
+router.put("/:id", Controller.updateBarcodeType);
+router.delete("/:id", Controller.deleteBarcodeType);
 export default router;

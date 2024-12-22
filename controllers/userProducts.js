@@ -32,6 +32,7 @@ class UserProductsController {
             assignedGtins: {
               include: {
                 gtin: true,
+                barcodeType: true,
               },
             },
           },
@@ -56,7 +57,7 @@ class UserProductsController {
         const availableGtins = order.assignedGtins.filter(
           (gtin) =>
             gtin.gtin?.status === "Sold" &&
-            gtin.barcodeTypeId === productData.barcodeTypeId
+            gtin.barcodeType.type === productData.barcodeType
         );
 
         if (availableGtins.length > 0) {

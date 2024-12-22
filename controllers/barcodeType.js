@@ -152,6 +152,53 @@ class BarcodeTypeController {
       next(error);
     }
   }
+
+  static async getBarcodeTypesWithCounts(req, res, next) {
+    try {
+      const [user, orders] = await Promise.all([
+        prisma.user.findUnique({
+          where: { id: req.user.id },
+        }),
+        prisma.order.findMany({
+          where: { userId: req.user.id },
+          include: {
+            assignedGtins: {
+              include: {
+                barcodeType: true,
+              },
+            },
+          },
+        }),
+      ]);
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      if (!orders || orders.length === 0) {
+        throw new MyError("Orders not found", 404);
+      }
+
+      // get all the assigned gtins from all orders and count the number of each barcode type
+      const assignedGtins = orders.flatMap((order) =>
+        order.assignedGtins.map((assignedGtin) => assignedGtin.barcodeType)
+      );
+
+      const barcodeTypes = assignedGtins.reduce((acc, barcodeType) => {
+        const type = barcodeType?.type || "unassigned";
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      }, {});
+
+      res.status(200).json(
+        response(200, true, "Barcode types retrieved successfully", {
+          barcodeTypes,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default BarcodeTypeController;
