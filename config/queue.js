@@ -67,3 +67,14 @@ export const userProductQueue = new Queue("user-product", {
   connection,
   defaultJobOptions,
 });
+
+export const gtinQueue = new Queue("gtin-processing", {
+  connection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: "exponential",
+      delay: 1000,
+    },
+  },
+});

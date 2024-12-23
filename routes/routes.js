@@ -12,6 +12,7 @@ import currencyRoutes from "./currency.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
+import gtinRoutes from "./gtin.js";
 import helpTicketRoutes from "./helpTicket.js";
 import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
@@ -68,6 +69,7 @@ router.use("/v1/sec", secRoutes);
 router.use("/v1/barcode-lookup", barcodeLookupRoutes);
 router.use("/v1/help-tickets", helpTicketRoutes);
 router.use("/v1/barcode-types", barcodeTypeRoutes);
+router.use("/v1/gtins", gtinRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
