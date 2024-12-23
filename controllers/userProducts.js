@@ -98,7 +98,7 @@ class UserProductsController {
           },
         });
 
-        console.log(`Updating GTIN ${availableGtin.gtinId} to Used`);
+        console.log(`Updating GTIN ${availableGtin.gtin.gtin} to Used`);
 
         // Update only this single GTIN's status
         await prisma.gTIN.update({
