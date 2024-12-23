@@ -45,7 +45,7 @@ class UserProductsController {
             order: true,
           },
           orderBy: {
-            createdAt: 'asc', // Get oldest GTIN first
+            createdAt: "asc", // Get oldest GTIN first
           },
         }),
       ]);
@@ -55,7 +55,10 @@ class UserProductsController {
       }
 
       if (!availableGtin) {
-        throw new MyError(`No available GTINs found for barcode type: ${barcodeType}`, 400);
+        throw new MyError(
+          `No available GTINs found for barcode type: ${barcodeType}`,
+          400
+        );
       }
 
       // Handle image uploads
@@ -97,8 +100,9 @@ class UserProductsController {
 
         // Update only this single GTIN's status
         await prisma.gTIN.update({
-          where: { 
+          where: {
             id: availableGtin.gtinId,
+            gtin: availableGtin.gtin.gtin,
           },
           data: {
             status: "Used",
@@ -349,17 +353,17 @@ class UserProductsController {
           const assignedGtin = await prisma.assignedGtin.findFirst({
             where: {
               gtin: {
-                gtin: product.gtin
-              }
+                gtin: product.gtin,
+              },
             },
             include: {
-              barcodeType: true
-            }
+              barcodeType: true,
+            },
           });
 
           return {
             ...product,
-            barcodeType: assignedGtin?.barcodeType?.type || null
+            barcodeType: assignedGtin?.barcodeType?.type || null,
           };
         })
       );
