@@ -57,14 +57,29 @@ const processOrderActivation = async (job) => {
     0
   );
 
-  // Get available GTINs
+  // Get available GTINs with distinct values
   const availableGtins = await prisma.gTIN.findMany({
-    where: { status: "Available" },
+    where: {
+      status: "Available",
+      // Add NOT IN clause to exclude already assigned GTINs
+      gtin: {
+        notIn: await prisma.gTIN
+          .findMany({
+            where: { status: { not: "Available" } },
+            select: { gtin: true },
+          })
+          .then((gtins) => gtins.map((g) => g.gtin)),
+      },
+    },
+    distinct: ["gtin"], // Ensure unique GTINs
     take: totalQuantity,
+    orderBy: {
+      createdAt: "asc", // Get oldest available GTINs first
+    },
   });
 
   if (availableGtins.length < totalQuantity) {
-    throw new Error("Not enough GTINs available");
+    throw new Error("Not enough unique GTINs available");
   }
 
   // First, log the entire order items array
