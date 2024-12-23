@@ -8,6 +8,8 @@ const processGTINs = async (gtins) => {
     skipped: 0,
   };
 
+  console.log("GTINs to be processed:", gtins);
+
   for (const gtin of gtins) {
     try {
       await prisma.gTIN.create({
@@ -17,10 +19,12 @@ const processGTINs = async (gtins) => {
         },
       });
       results.inserted++;
+      console.log("GTIN inserted:", gtin);
     } catch (error) {
       if (error.code === "P2002") {
         // Unique constraint violation
         results.skipped++;
+        console.log("GTIN skipped:", gtin);
       } else {
         throw error;
       }
