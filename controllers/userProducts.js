@@ -98,11 +98,13 @@ class UserProductsController {
           },
         });
 
+        console.log(`Updating GTIN ${availableGtin.gtinId} to Used`);
+
         // Update only this single GTIN's status
         await prisma.gTIN.update({
           where: {
             id: availableGtin.gtinId,
-            gtin: availableGtin.gtin.gtin,
+            gtin: newProduct.gtin,
           },
           data: {
             status: "Used",
