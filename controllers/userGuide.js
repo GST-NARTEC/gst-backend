@@ -1,8 +1,5 @@
 // controllers/userGuide.js
-import {
-  userGuideSchema,
-  userGuideUpdateSchema,
-} from "../schemas/userGuide.schema.js";
+import { userGuideSchema } from "../schemas/userGuide.schema.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -127,7 +124,7 @@ class UserGuideController {
 
   async update(req, res, next) {
     try {
-      const { error, value } = userGuideUpdateSchema.validate(req.body);
+      const { error, value } = userGuideSchema.validate(req.body);
       if (error) return next(error);
 
       const existingGuide = await prisma.userGuide.findUnique({
