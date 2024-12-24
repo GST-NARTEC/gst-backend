@@ -1,7 +1,7 @@
 model HelpTicket {
   id                String   @id @default(cuid())
   userId            String?  @db.UniqueIdentifier  
-  user              User?    @relation(fields: [userId], references: [id])
+  user              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   subject           String?
   message           String?
   status            String?  @default("OPEN")
