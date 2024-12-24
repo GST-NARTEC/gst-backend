@@ -13,10 +13,6 @@
  *         multipart/form-data:
  *           schema:
  *             type: object
- *             required:
- *               - titleEn
- *               - titleAr
- *               - link
  *             properties:
  *               titleEn:
  *                 type: string
@@ -30,55 +26,26 @@
  *               descriptionAr:
  *                 type: string
  *                 description: Description in Arabic
- *               type:
- *                 type: string
- *                 enum: [pdf, video, image]
- *               link:
+ *               pdf:
  *                 type: string
  *                 format: binary
+ *                 description: PDF file (mutually exclusive with video)
+ *               video:
+ *                 type: string
+ *                 format: binary
+ *                 description: Video file (mutually exclusive with pdf)
  *     responses:
  *       201:
  *         description: User guide created successfully
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                   example: 201
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: User guide created
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     titleEn:
- *                       type: string
- *                     titleAr:
- *                       type: string
- *                     descriptionEn:
- *                       type: string
- *                     descriptionAr:
- *                       type: string
- *                     link:
- *                       type: string
- *                     type:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
+ *               $ref: '#/components/schemas/UserGuideResponse'
+ *       400:
+ *         description: Invalid input or missing required files
  *
  *   get:
- *     summary: Get all user guides with pagination, search, and sorting
+ *     summary: Get all user guides with pagination, search, and filtering
  *     tags: [User Guides]
  *     parameters:
  *       - in: query
@@ -101,6 +68,12 @@
  *         schema:
  *           type: string
  *         description: Search term for titles and descriptions (in both languages)
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [pdf, video]
+ *         description: Filter by file type (pdf or video)
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -128,56 +101,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                   example: 200
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: User guides retrieved
- *                 data:
- *                   type: object
- *                   properties:
- *                     guides:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           title:
- *                             type: string
- *                             description: Title in requested language
- *                           description:
- *                             type: string
- *                             description: Description in requested language
- *                           link:
- *                             type: string
- *                           type:
- *                             type: string
- *                           createdAt:
- *                             type: string
- *                             format: date-time
- *                           updatedAt:
- *                             type: string
- *                             format: date-time
- *                     pagination:
- *                       type: object
- *                       properties:
- *                         total:
- *                           type: integer
- *                         page:
- *                           type: integer
- *                         totalPages:
- *                           type: integer
- *                         limit:
- *                           type: integer
- *                         hasMore:
- *                           type: boolean
+ *               $ref: '#/components/schemas/UserGuidesListResponse'
  *
  * /api/v1/user-guides/{id}:
  *   get:
@@ -202,39 +126,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                   example: 200
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     titleEn:
- *                       type: string
- *                     titleAr:
- *                       type: string
- *                     descriptionEn:
- *                       type: string
- *                     descriptionAr:
- *                       type: string
- *                     link:
- *                       type: string
- *                     type:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
+ *               $ref: '#/components/schemas/UserGuideResponse'
  *
  *   put:
  *     summary: Update a user guide
@@ -261,10 +153,10 @@
  *                 type: string
  *               descriptionAr:
  *                 type: string
- *               type:
+ *               pdf:
  *                 type: string
- *                 enum: [pdf, video, image]
- *               link:
+ *                 format: binary
+ *               video:
  *                 type: string
  *                 format: binary
  *     responses:
@@ -292,17 +184,7 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: number
- *                   example: 200
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: User guide deleted
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
 
 /**
@@ -314,8 +196,10 @@
  *       properties:
  *         status:
  *           type: number
+ *           example: 200
  *         success:
  *           type: boolean
+ *           example: true
  *         message:
  *           type: string
  *         data:
@@ -335,10 +219,75 @@
  *               type: string
  *             type:
  *               type: string
+ *               enum: [application/pdf, video/mp4]
  *             createdAt:
  *               type: string
  *               format: date-time
  *             updatedAt:
  *               type: string
  *               format: date-time
+ *
+ *     UserGuidesListResponse:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: number
+ *           example: 200
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *           example: User guides retrieved
+ *         data:
+ *           type: object
+ *           properties:
+ *             guides:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   link:
+ *                     type: string
+ *                   type:
+ *                     type: string
+ *                     enum: [application/pdf, video/mp4]
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *             pagination:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 hasMore:
+ *                   type: boolean
+ *
+ *     SuccessResponse:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: number
+ *           example: 200
+ *         success:
+ *           type: boolean
+ *           example: true
+ *         message:
+ *           type: string
+ *           example: Operation successful
  */

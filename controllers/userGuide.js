@@ -10,23 +10,55 @@ class UserGuideController {
       const { error, value } = userGuideSchema.validate(req.body);
       if (error) return next(error);
 
-      if (!req.file) return next(new Error("File is required"));
+      // Check if any file was uploaded
+      if (!req.files || (!req.files.pdf && !req.files.video)) {
+        return next(new Error("Either PDF or video file is required"));
+      }
 
-      value.link = addDomain(req.file.path);
-      value.type = req.file.mimetype;
+      // Handle empty file fields
+      if (req.files.pdf && req.files.pdf[0].size === 0) {
+        await deleteFile(req.files.pdf[0].path);
+        return next(new Error("PDF file cannot be empty"));
+      }
+
+      if (req.files.video && req.files.video[0].size === 0) {
+        await deleteFile(req.files.video[0].path);
+        return next(new Error("Video file cannot be empty"));
+      }
+
+      // Extract only the fields that exist in Prisma schema
+      const prismaData = {
+        titleEn: value.titleEn,
+        titleAr: value.titleAr,
+        descriptionEn: value.descriptionEn,
+        descriptionAr: value.descriptionAr,
+      };
+
+      // Set file type and link
+      if (req.files.pdf) {
+        prismaData.link = addDomain(req.files.pdf[0].path);
+        prismaData.type = "pdf";
+      } else if (req.files.video) {
+        prismaData.link = addDomain(req.files.video[0].path);
+        prismaData.type = "video";
+      }
 
       const userGuide = await prisma.userGuide.create({
-        data: {
-          ...value,
-        },
+        data: prismaData,
       });
 
       return res
         .status(201)
         .json(response(201, true, "User guide created", userGuide));
     } catch (error) {
-      if (req.file) {
-        await deleteFile(req.file.path);
+      // Clean up uploaded files in case of error
+      if (req.files) {
+        if (req.files.pdf) {
+          await deleteFile(req.files.pdf[0].path);
+        }
+        if (req.files.video) {
+          await deleteFile(req.files.video[0].path);
+        }
       }
       next(error);
     }
@@ -41,6 +73,7 @@ class UserGuideController {
         sortBy = "createdAt",
         sortOrder = "desc",
         language = "en", // 'en' or 'ar'
+        type, // pdf or video
       } = req.query;
 
       const skip = (Number(page) - 1) * Number(limit);
@@ -60,7 +93,10 @@ class UserGuideController {
       // Get total count for pagination
       const [userGuides, total] = await Promise.all([
         prisma.userGuide.findMany({
-          where: whereClause,
+          where: {
+            ...whereClause,
+            type: type,
+          },
           skip,
           take: Number(limit),
           orderBy: {
@@ -132,12 +168,25 @@ class UserGuideController {
       });
       if (!existingGuide) return next(new Error("User guide not found"));
 
-      let updateData = { ...value };
+      // Extract only the fields that exist in Prisma schema
+      const updateData = {
+        titleEn: value.titleEn,
+        titleAr: value.titleAr,
+        descriptionEn: value.descriptionEn,
+        descriptionAr: value.descriptionAr,
+      };
 
-      if (req.file) {
-        await deleteFile(existingGuide.link);
-        updateData.link = addDomain(req.file.path);
-        updateData.type = req.file.mimetype;
+      // Handle file updates if provided
+      if (req.files) {
+        if (req.files.pdf && req.files.pdf[0].size > 0) {
+          await deleteFile(existingGuide.link);
+          updateData.link = addDomain(req.files.pdf[0].path);
+          updateData.type = "pdf";
+        } else if (req.files.video && req.files.video[0].size > 0) {
+          await deleteFile(existingGuide.link);
+          updateData.link = addDomain(req.files.video[0].path);
+          updateData.type = "video";
+        }
       }
 
       const userGuide = await prisma.userGuide.update({
@@ -147,8 +196,14 @@ class UserGuideController {
 
       return res.json(response(200, true, "User guide updated", userGuide));
     } catch (error) {
-      if (req.file) {
-        await deleteFile(req.file.path);
+      // Clean up uploaded files in case of error
+      if (req.files) {
+        if (req.files.pdf) {
+          await deleteFile(req.files.pdf[0].path);
+        }
+        if (req.files.video) {
+          await deleteFile(req.files.video[0].path);
+        }
       }
       next(error);
     }

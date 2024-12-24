@@ -7,4 +7,4 @@ export const userGuideSchema = Joi.object({
   descriptionAr: Joi.string().optional(),
   link: Joi.string().optional(),
   type: Joi.string().optional(),
-});
+}).unknown(true);

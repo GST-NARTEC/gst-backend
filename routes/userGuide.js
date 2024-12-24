@@ -1,13 +1,22 @@
 // routes/userGuide.js
 import express from "express";
-import { uploadSingle } from "multermate-es";
+import { uploadMultiple } from "multermate-es";
 import UserGuideController from "../controllers/userGuide.js";
 
 const router = express.Router();
 const userGuideController = new UserGuideController();
 
-const upload = uploadSingle({
-  filename: "link",
+const upload = uploadMultiple({
+  fields: [
+    {
+      name: "pdf",
+      maxCount: 1,
+    },
+    {
+      name: "video",
+      maxCount: 5,
+    },
+  ],
   destination: "uploads/user-guide",
 });
 
