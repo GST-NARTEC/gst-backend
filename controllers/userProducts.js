@@ -428,6 +428,68 @@ class UserProductsController {
       next(error);
     }
   }
+
+  static async searchProducts(req, res, next) {
+    try {
+      //   const { search } = req.query;
+      //   const products = await prisma.userProduct.findMany({
+      //     where: {
+      //       OR: [
+      //         { title: { contains: search } },
+      //         { description: { contains: search } },
+      //         { sku: { contains: search } },
+      //         { gtin: { contains: search } },
+      //       ],
+      //     },
+      //     include: {
+      //       images: true,
+      //       user: {
+      //         select: {
+      //           companyNameEn: true,
+      //           companyNameAr: true,
+      //         },
+      //       },
+      //     },
+      //   });
+
+      //   res
+      //     .status(200)
+      //     .json(response(200, true, "Products retrieved successfully", products));
+
+      const { gtin } = req.query;
+      const product = await prisma.userProduct.findFirst({
+        where: {
+          gtin: {
+            contains: gtin,
+          },
+        },
+        include: {
+          images: true,
+          user: {
+            select: {
+              companyNameEn: true,
+              companyNameAr: true,
+            },
+          },
+        },
+      });
+
+      if (!product) {
+        throw new MyError(
+          `We couldn't find the barcode ${gtin} in our database. Please verify the number and try again.`,
+          404
+        );
+      }
+
+      res
+        .status(200)
+        .json(
+          response(200, true, "Products retrieved successfully", { product })
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default UserProductsController;
