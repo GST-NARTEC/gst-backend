@@ -12,11 +12,12 @@ const productUpload = uploadMultiple({
   fileSizeLimit: 5 * 1024 * 1024,
 });
 
+router.get("/search", controller.searchProducts);
+
 router.use(verifyAccessToken);
 
 router.post("/", productUpload, controller.createProduct);
 router.get("/", controller.listProducts);
-router.get("/search", controller.searchProducts);
 router.get("/:id", controller.getProduct);
 router.put("/:id", productUpload, controller.updateProduct);
 router.delete("/:id", controller.deleteProduct);
