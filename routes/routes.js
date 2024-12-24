@@ -29,6 +29,7 @@ import templateRoutes from "./template.js";
 import unitCodeRoutes from "./unitCode.js";
 import userRoutes from "./user.js";
 import userDocRoutes from "./userDoc.js";
+import userGuideRoutes from "./userGuide.js";
 import userProductRoutes from "./userProducts.js";
 import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
@@ -70,6 +71,7 @@ router.use("/v1/barcode-lookup", barcodeLookupRoutes);
 router.use("/v1/help-tickets", helpTicketRoutes);
 router.use("/v1/barcode-types", barcodeTypeRoutes);
 router.use("/v1/gtins", gtinRoutes);
+router.use("/v1/user-guides", userGuideRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
