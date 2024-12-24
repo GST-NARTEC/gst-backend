@@ -39,6 +39,7 @@ const processUserDeletion = async (job) => {
       },
       docs: true,
       brands: true,
+      helpTickets: true,
     },
   });
 
@@ -65,6 +66,16 @@ const processUserDeletion = async (job) => {
 
     // Process orders
     for (const order of user.orders) {
+      // release GTINs
+      if (order.assignedGtins && order.assignedGtins?.length > 0) {
+        for (const gtin of order.assignedGtins) {
+          await prisma.gTIN?.update({
+            where: { gtin: gtin.gtin },
+            data: { status: "Available" },
+          });
+        }
+      }
+
       // Delete GTINs first
       await prisma.assignedGtin.deleteMany({
         where: { orderId: order.id },
@@ -153,6 +164,14 @@ const processUserDeletion = async (job) => {
       for (const brand of user.brands) {
         await deleteFile(brand.document);
         await prisma.brand.delete({ where: { id: brand.id } });
+      }
+    }
+
+    // delete user help tickets
+    if (user.helpTickets && user.helpTickets?.length > 0) {
+      for (const ticket of user.helpTickets) {
+        if (ticket.doc) await deleteFile(ticket.doc);
+        await prisma.helpTicket.delete({ where: { id: ticket.id } });
       }
     }
 
