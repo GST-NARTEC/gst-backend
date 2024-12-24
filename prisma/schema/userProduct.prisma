@@ -20,13 +20,13 @@ model UserProduct {
     updatedAt DateTime @updatedAt
 
     // Relations
-    user   User   @relation(fields: [userId], references: [id])
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String @db.UniqueIdentifier
 }
 
 model ProductImage {
     id        String      @id @default(uuid()) @db.UniqueIdentifier
     url       String
-    product   UserProduct @relation(fields: [productId], references: [id])
+    product   UserProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String      @db.UniqueIdentifier
 }
