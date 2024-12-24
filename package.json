@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
-    "build": "build.bat && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps",
+    "build": "build.bat && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps",
     "prisma-push": "npx prisma db push",
     "test": "jest",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gst-sz --project gst-api ./ && sentry-cli sourcemaps upload --org gst-sz --project gst-api ./"
