@@ -112,7 +112,7 @@
         max-width: 300px;
       }
 
-      .stamp {
+      /* .stamp {
         text-align: center;
         padding: 20px;
         border: 2px solid #005999;
@@ -123,7 +123,7 @@
         align-items: center;
         justify-content: center;
         color: #005999;
-      }
+      } */
 
       .bottom-bar {
         position: absolute;
@@ -197,7 +197,11 @@
         </div>
         <div>
           <img
-            src="<%= logo.replace('gst-logo.png', 'gst-stamp.png') %>"
+            src="<%=
+              !logo
+                ? 'http://localhost:3000/assets/images/gst-stamp.png'
+                : logo.replace('gst-logo.png', 'gst-stamp.png')
+            %>"
             alt="GST Stamp"
             style="width: 120px; height: auto"
           />
