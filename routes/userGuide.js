@@ -1,6 +1,7 @@
 // routes/userGuide.js
 import express from "express";
-import { uploadMultiple } from "multermate-es";
+import { uploadMultiple } from "../config/multermate.js";
+
 import UserGuideController from "../controllers/userGuide.js";
 
 const router = express.Router();
@@ -11,13 +12,18 @@ const upload = uploadMultiple({
     {
       name: "pdf",
       maxCount: 1,
+      fileSizeLimit: 500 * 1024 * 1024,
     },
     {
       name: "video",
-      maxCount: 5,
+      maxCount: 1,
+      fileSizeLimit: 500 * 1024 * 1024,
     },
   ],
   destination: "uploads/user-guide",
+  limits: {
+    fileSize: 500 * 1024 * 1024,
+  },
 });
 
 // router.use(verifyAccessToken);

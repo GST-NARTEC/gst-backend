@@ -7,6 +7,11 @@ import response from "../utils/response.js";
 class UserGuideController {
   async create(req, res, next) {
     try {
+      // Add upload progress monitoring
+      req.on("progress", (progress) => {
+        console.log(`Upload progress: ${progress}%`);
+      });
+
       const { error, value } = userGuideSchema.validate(req.body);
       if (error) return next(error);
 

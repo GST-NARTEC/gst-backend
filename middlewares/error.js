@@ -1,3 +1,4 @@
+import { MulterError } from "multer";
 import MyError from "../utils/error.js";
 import response from "../utils/response.js";
 
@@ -14,7 +15,7 @@ export const errorHandler = (error, req, res, next) => {
   let data = null;
   let success = false;
 
-  if (error instanceof MyError) {
+  if (error instanceof MyError || error instanceof MulterError) {
     status = error.statusCode || 500;
     message = error.message || message;
     data = error.data || null;
