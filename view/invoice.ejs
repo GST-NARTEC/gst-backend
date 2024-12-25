@@ -231,9 +231,9 @@
         </tr>
       </thead>
       <tbody>
-        <% order.orderItems.forEach(item => { 
+         <% order.orderItems.forEach(item => { 
           const calculatedPrice = calculatePrice(item.product.price, item.quantity);
-        %>
+        %>        
         <tr>
           <td style="vertical-align: top; padding-right: 15px">
             <div style="font-weight: bold; margin-bottom: 8px">
@@ -316,7 +316,7 @@
           justify-content: space-between;
         "
       >
-         <span style="font-size: 16px; font-weight: bold"
+        <span style="font-size: 16px; font-weight: bold"
           >VAT (<%= tax.value %>%) / ضريبة القيمة المضافة</span
         >
         <span style="font-size: 16px; font-weight: bold"
@@ -424,10 +424,34 @@
       <div style="border-top: 1px solid #000; margin-top: 20px"></div>
     </div>
 
-    <div class="qr-code">
-      <img src="<%= qrCode %>" alt="QR Code" />
-      <div><%= invoice.number %></div>
-      <div class="bilingual">Scan to verify / امسح للتحقق</div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      "
+    >
+      <div class="qr-code" style="text-align: center">
+        <img
+          src="<%= qrCode %>"
+          alt="QR Code"
+          style="width: 100px; height: 100px"
+        />
+        <div><%= invoice.number %></div>
+        <div class="bilingual">Scan to verify / امسح للتحقق</div>
+      </div>
+      <div>
+        <img
+          src="<%=
+            !logo
+              ? 'http://localhost:3000/assets/images/gst-stamp.png'
+              : logo.replace('gst-logo.png', 'gst-stamp.png')
+          %>"
+          alt="GST Stamp"
+          style="width: 120px; height: auto"
+        />
+      </div>
     </div>
   </body>
 </html>
