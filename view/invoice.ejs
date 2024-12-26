@@ -231,9 +231,8 @@
         </tr>
       </thead>
       <tbody>
-         <% order.orderItems.forEach(item => { 
-          const calculatedPrice = calculatePrice(item.product.price, item.quantity);
-        %>        
+        <% order.orderItems.forEach(item => { const calculatedPrice =
+        calculatePrice(item.product.price, item.quantity); %>
         <tr>
           <td style="vertical-align: top; padding-right: 15px">
             <div style="font-weight: bold; margin-bottom: 8px">
@@ -268,7 +267,8 @@
             style="text-align: right; vertical-align: top; white-space: nowrap"
           >
             <div>
-              <%= currency.symbol %> <%= calculatedPrice.totalPrice.toFixed(2) %>
+              <%= currency.symbol %> <%= calculatedPrice.totalPrice.toFixed(2)
+              %>
             </div>
             <% if (item.addonItems && item.addonItems.length > 0) { %>
             <div
@@ -280,8 +280,9 @@
                 padding-top: 4px;
               "
             >
-               Add-ons Total / مجموع الإضافات:<br />
-              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem) => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
+              Add-ons Total / مجموع الإضافات:<br />
+              <%= currency.symbol %> <%= item.addonItems.reduce((sum, addonItem)
+              => sum + (addonItem.price * addonItem.quantity), 0).toFixed(2) %>
             </div>
             <% } %>
           </td>
@@ -421,27 +422,27 @@
 
     <div class="bilingual" style="margin-top: 10px; text-align: center">
       Signature / التوقيع
-      <div style="border-top: 1px solid #000; margin-top: 20px"></div>
     </div>
 
     <div
       style="
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
         margin-top: 20px;
+        padding: 0 20px;
       "
     >
-      <div class="qr-code" style="text-align: center">
+      <div class="qr-code" style="text-align: left">
         <img
           src="<%= qrCode %>"
           alt="QR Code"
           style="width: 100px; height: 100px"
         />
-        <div><%= invoice.number %></div>
+        <div style="margin-top: 5px"><%= invoice.number %></div>
         <div class="bilingual">Scan to verify / امسح للتحقق</div>
       </div>
-      <div>
+      <div style="text-align: right">
         <img
           src="<%=
             !logo
