@@ -35,6 +35,9 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
+import countryOfOriginSaleRoutes from "./countryOfOriginSale.js";
+import packagingTypeRoutes from "./packagingType.js";
+import productTypeRoutes from "./productType.js";
 
 const router = express.Router();
 
@@ -72,6 +75,9 @@ router.use("/v1/help-tickets", helpTicketRoutes);
 router.use("/v1/barcode-types", barcodeTypeRoutes);
 router.use("/v1/gtins", gtinRoutes);
 router.use("/v1/user-guides", userGuideRoutes);
+router.use("/v1/country-of-origin-sale", countryOfOriginSaleRoutes);
+router.use("/v1/packaging-type", packagingTypeRoutes);
+router.use("/v1/product-type", productTypeRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

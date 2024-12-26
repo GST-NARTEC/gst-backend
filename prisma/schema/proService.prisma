@@ -1,16 +1,16 @@
 model ProService {
-    id            String   @id @default(uuid())
-    image         String?
-    titleEn       String?
-    titleAr       String?
-    descriptionEn String?
-    descriptionAr String?
-    captionEn     String?
-    captionAr     String?
-    status        Int      @default(1)
-    page          Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
-    pageId        String?
-    externalUrl   String?
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+  id            String   @id @default(uuid())
+  image         String?
+  titleEn       String?
+  titleAr       String?
+  descriptionEn String?
+  descriptionAr String?
+  status        Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  captionAr     String?
+  captionEn     String?
+  pageId        String?
+  externalUrl   String?
+  page          Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }

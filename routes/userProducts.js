@@ -16,6 +16,7 @@ router.get("/search", controller.searchProducts);
 
 router.use(verifyAccessToken);
 
+router.get("/export-excel", controller.exportExcelProducts);
 router.post("/", productUpload, controller.createProduct);
 router.get("/", controller.listProducts);
 router.get("/:id", controller.getProduct);

@@ -2,7 +2,7 @@ model GTIN {
   id            String         @id @default(uuid()) @db.UniqueIdentifier
   gtin          String?        @unique
   status        String?        @default("Available")
-  assignedGtins AssignedGtin[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  assignedGtins AssignedGtin[]
 }

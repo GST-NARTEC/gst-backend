@@ -1,4 +1,3 @@
-
 model OTP {
   id        String   @id @default(uuid()) @db.UniqueIdentifier
   email     String

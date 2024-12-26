@@ -1,14 +1,14 @@
 model Addon {
-  id          String      @id @default(uuid()) @db.UniqueIdentifier
-  name        String?
-  price       Float?
-  unit        String?
-  status      String?     @default("active")
-  stock       Int?        @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  products    Product[]   @relation("ProductToAddon")
-  cartItemAddons CartItemAddon[]
+  id              String           @id @default(uuid()) @db.UniqueIdentifier
+  name            String?
+  price           Float?
+  unit            String?
+  status          String?          @default("active")
+  stock           Int?             @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  cartItemAddons  CartItemAddon[]
   orderItemAddons OrderItemAddon[]
-  orderItems OrderItem[]
+  orderItems      OrderItem[]      @relation("AddonToOrderItem")
+  products        Product[]        @relation("ProductToAddon")
 }

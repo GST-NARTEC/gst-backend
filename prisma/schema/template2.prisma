@@ -1,27 +1,27 @@
 model Template2 {
-  id                    String   @id @default(cuid())
-  nameEn                String?  @db.NVarChar(max)
-  nameAr                String?  @db.NVarChar(max)
-  seoDescriptionEn      String?  @db.NVarChar(max)
-  seoDescriptionAr      String?  @db.NVarChar(max)
-  isActive              Boolean  @default(true)
-  headingEn             String?  @db.NVarChar(max)
-  headingAr             String?  @db.NVarChar(max)
-  description1En        String?  @db.NVarChar(max)
-  description1Ar        String?  @db.NVarChar(max)
-  description2En        String?  @db.NVarChar(max)
-  description2Ar        String?  @db.NVarChar(max)
-  description3En        String?  @db.NVarChar(max)
-  description3Ar        String?  @db.NVarChar(max)
-  image1                String?
-  image2                String?
-  image3                String?
-  buttonTextEn          String?  @db.NVarChar(max)
-  buttonTextAr          String?  @db.NVarChar(max)
-  buttonNavigationEn    String?  @db.NVarChar(max)
-  buttonNavigationAr    String?  @db.NVarChar(max)
-  page                  Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  pageId                String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  nameEn             String?  @db.NVarChar(Max)
+  nameAr             String?  @db.NVarChar(Max)
+  seoDescriptionEn   String?  @db.NVarChar(Max)
+  seoDescriptionAr   String?  @db.NVarChar(Max)
+  isActive           Boolean  @default(true)
+  headingEn          String?  @db.NVarChar(Max)
+  headingAr          String?  @db.NVarChar(Max)
+  description1En     String?  @db.NVarChar(Max)
+  description1Ar     String?  @db.NVarChar(Max)
+  description2En     String?  @db.NVarChar(Max)
+  description2Ar     String?  @db.NVarChar(Max)
+  description3En     String?  @db.NVarChar(Max)
+  description3Ar     String?  @db.NVarChar(Max)
+  image1             String?
+  image2             String?
+  image3             String?
+  pageId             String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  buttonNavigationAr String?  @db.NVarChar(Max)
+  buttonNavigationEn String?  @db.NVarChar(Max)
+  buttonTextAr       String?  @db.NVarChar(Max)
+  buttonTextEn       String?  @db.NVarChar(Max)
+  page               Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }

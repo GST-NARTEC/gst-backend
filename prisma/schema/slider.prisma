@@ -1,17 +1,17 @@
 model Slider {
-    id                  String      @id     @default(uuid())
-    titleEn             String?
-    titleAr             String?
-    descriptionEn       String?
-    descriptionAr       String?
-    captionEn           String?
-    captionAr           String?
-    imageEn             String?
-    imageAr             String?
-    page                Page?    @relation(fields: [pageId], references: [id])
-    pageId              String?
-    externalUrl         String?
-    status              Int?    @default(1)
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
+  id            String   @id @default(uuid())
+  titleEn       String?
+  titleAr       String?
+  descriptionEn String?
+  descriptionAr String?
+  captionEn     String?
+  captionAr     String?
+  imageEn       String?
+  imageAr       String?
+  status        Int?     @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  pageId        String?
+  externalUrl   String?
+  page          Page?    @relation(fields: [pageId], references: [id])
 }

@@ -3,6 +3,7 @@ import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
+import ExcelJS from "exceljs";
 
 class UserProductsController {
   static async createProduct(req, res, next) {
@@ -487,6 +488,138 @@ class UserProductsController {
           response(200, true, "Products retrieved successfully", { product })
         );
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async exportExcelProducts(req, res, next) {
+    try {
+      // Fetch all products for the user
+      const products = await prisma.userProduct.findMany({
+        where: {
+          userId: req.user.id,
+        },
+        include: {
+          images: true,
+          user: {
+            select: {
+              companyNameEn: true,
+              companyNameAr: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      console.log(`Found ${products.length} products for user ${req.user.id}`); // Debug log
+
+      if (products.length === 0) {
+        throw new MyError("No products found for export", 404);
+      }
+
+      // Create a new workbook and worksheet
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Products");
+
+      // Define columns
+      worksheet.columns = [
+        { header: "Title", key: "title", width: 30 },
+        { header: "SKU", key: "sku", width: 15 },
+        { header: "GTIN", key: "gtin", width: 15 },
+        { header: "Status", key: "status", width: 10 },
+        { header: "Brand Name", key: "brandName", width: 20 },
+        { header: "Description", key: "description", width: 50 },
+        { header: "GPC", key: "gpc", width: 15 },
+        { header: "HS Code", key: "hsCode", width: 15 },
+        { header: "Packaging Type", key: "packagingType", width: 15 },
+        { header: "Unit of Measure", key: "unitOfMeasure", width: 15 },
+        { header: "Country of Origin", key: "countryOfOrigin", width: 15 },
+        { header: "Country of Sale", key: "countryOfSale", width: 15 },
+        { header: "Product Type", key: "productType", width: 15 },
+        { header: "Is SEC", key: "isSec", width: 10 },
+        { header: "Created At", key: "createdAt", width: 20 },
+        { header: "Images", key: "images", width: 50 },
+      ];
+
+      // Style the header row
+      worksheet.getRow(1).font = { bold: true };
+      worksheet.getRow(1).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE0E0E0" },
+      };
+
+      // Add products data
+      products.forEach((product, index) => {
+        try {
+          const rowData = {
+            title: product.title || "",
+            sku: product.sku || "",
+            gtin: product.gtin || "",
+            status: product.status || "",
+            brandName: product.brandName || "",
+            description: product.description || "",
+            gpc: product.gpc || "",
+            hsCode: product.hsCode || "",
+            packagingType: product.packagingType || "",
+            unitOfMeasure: product.unitOfMeasure || "",
+            countryOfOrigin: product.countryOfOrigin || "",
+            countryOfSale: product.countryOfSale || "",
+            productType: product.productType || "",
+            isSec: product.isSec ? "Yes" : "No",
+            createdAt: product.createdAt
+              ? new Date(product.createdAt).toLocaleDateString()
+              : "",
+            images: product.images?.map((img) => img.url).join(", ") || "",
+          };
+
+          worksheet.addRow(rowData);
+
+          // Add border to cells
+          const row = worksheet.getRow(index + 2); // +2 because index starts at 0 and we have header row
+          row.eachCell({ includeEmpty: true }, (cell) => {
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+        } catch (err) {
+          console.error(`Error adding row for product ${product.id}:`, err);
+        }
+      });
+
+      // Auto-fit columns
+      worksheet.columns.forEach((column) => {
+        column.width = Math.min(
+          Math.max(
+            column.width || 10,
+            ...worksheet
+              .getColumn(column.key)
+              .values.map((v) => (v ? v.toString().length : 0))
+          ),
+          50 // Maximum width
+        );
+      });
+
+      // Set response headers
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="products.xlsx"'
+      );
+
+      // Write to response
+      await workbook.xlsx.write(res);
+
+      // End the response
+      res.end();
+    } catch (error) {
+      console.error("Excel export error:", error); // Debug log
       next(error);
     }
   }

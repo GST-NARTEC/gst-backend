@@ -1,61 +1,61 @@
 model Order {
-  id                  String    @id @default(uuid()) @db.UniqueIdentifier
-  orderNumber         String?        
-  userId              String    @db.UniqueIdentifier
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems          OrderItem[]
-  invoice             Invoice?
-  paymentType         String
-  totalAmount         Float
-  taxAmount           Float     @default(0)
-  vat                 Float     @default(0)
-  overallAmount       Float
-  status              String    @default("Pending Payment")
-  bankSlip            String?
-  receipt             String?   
-  licenseCertificate  String? 
-  isSec               Boolean?  @default(false)
-  assignedGtins       AssignedGtin[]
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                 String         @id @default(uuid()) @db.UniqueIdentifier
+  userId             String         @db.UniqueIdentifier
+  paymentType        String
+  totalAmount        Float
+  vat                Float          @default(0)
+  overallAmount      Float
+  status             String         @default("Pending Payment")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  taxAmount          Float          @default(0)
+  orderNumber        String?
+  bankSlip           String?
+  licenseCertificate String?
+  receipt            String?
+  isSec              Boolean?       @default(false)
+  assignedGtins      AssignedGtin[]
+  invoice            Invoice?
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems         OrderItem[]
 }
 
 model OrderItem {
-  id        String   @id @default(uuid()) @db.UniqueIdentifier
-  orderId   String   @db.UniqueIdentifier
-  order     Order    @relation(fields: [orderId], references: [id])
-  productId String   @db.UniqueIdentifier
-  product   Product  @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Float
-  addons    Addon[]
+  id         String           @id @default(uuid()) @db.UniqueIdentifier
+  orderId    String           @db.UniqueIdentifier
+  productId  String           @db.UniqueIdentifier
+  quantity   Int
+  price      Float
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  tax        Float            @default(0)
+  order      Order            @relation(fields: [orderId], references: [id])
+  product    Product          @relation(fields: [productId], references: [id])
   addonItems OrderItemAddon[]
-  tax       Float    @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  addons     Addon[]          @relation("AddonToOrderItem")
 }
 
 model OrderItemAddon {
   id          String    @id @default(uuid()) @db.UniqueIdentifier
   orderItemId String    @db.UniqueIdentifier
-  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
   addonId     String    @db.UniqueIdentifier
-  addon       Addon     @relation(fields: [addonId], references: [id])
   quantity    Int       @default(1)
   price       Float
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  addon       Addon     @relation(fields: [addonId], references: [id])
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
 }
 
 model AssignedGtin {
-  id                    String   @id @default(uuid()) @db.UniqueIdentifier
-  orderId               String   @db.UniqueIdentifier
-  order                 Order    @relation(fields: [orderId], references: [id])
-  gtinId                String   @db.UniqueIdentifier
-  gtin                  GTIN     @relation(fields: [gtinId], references: [id])
-  barcodeTypeId         String?
-  barcodeType           BarcodeType? @relation(fields: [barcodeTypeId], references: [id])
-  barcodeCertificate    String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                 String       @id @default(uuid()) @db.UniqueIdentifier
+  orderId            String       @db.UniqueIdentifier
+  gtinId             String       @db.UniqueIdentifier
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  barcodeCertificate String?
+  barcodeTypeId      String?
+  barcodeType        BarcodeType? @relation(fields: [barcodeTypeId], references: [id])
+  gtin               GTIN         @relation(fields: [gtinId], references: [id])
+  order              Order        @relation(fields: [orderId], references: [id])
 }

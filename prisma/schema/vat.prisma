@@ -1,11 +1,11 @@
 model Vat {
-    id          String   @id @default(cuid())
-    name        String?
-    description String?
-    value       Float?
-    type        String?
-    taxId       String?
-    isActive    Boolean? @default(true)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+  id          String   @id @default(cuid())
+  value       Float?
+  type        String?
+  createdAt   DateTime @default(now())
+  description String?
+  name        String?
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean? @default(true)
+  taxId       String?
 }

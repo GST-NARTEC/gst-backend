@@ -5,10 +5,10 @@ model WhyBarcode {
   descriptionEn String?
   descriptionAr String?
   image         String?
-  isActive      Boolean  @default(true)
-  page          Page?     @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  pageId        String?
-  externalUrl   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  isActive      Boolean  @default(true)
+  pageId        String?
+  externalUrl   String?
+  page          Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }

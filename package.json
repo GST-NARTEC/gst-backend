@@ -10,6 +10,7 @@
     "build": "build.bat && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps && pnpm sentry:sourcemaps",
     "prisma-push": "npx prisma db push",
     "test": "jest",
+    "seed": "node prisma/schema/seed/seed.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gst-sz --project gst-api ./ && sentry-cli sourcemaps upload --org gst-sz --project gst-api ./"
   },
   "keywords": [],
@@ -27,6 +28,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
+    "exceljs": "^4.4.0",
     "express": "^4.19.2",
     "fs-extra": "^11.2.0",
     "ioredis": "^5.4.1",

@@ -1,9 +1,9 @@
 model mega_menus {
-  id         String    @id @default(cuid())
-  name_en    String?   @db.NVarChar(Max)
-  name_ar    String?   @db.NVarChar(Max)
-  status     Int
-  created_at DateTime? @default(now()) @db.DateTime
-  updated_at DateTime  @default(now()) @db.DateTime
+  id                   String                 @id @default(cuid())
+  name_en              String?                @db.NVarChar(Max)
+  name_ar              String?                @db.NVarChar(Max)
+  status               Int
+  created_at           DateTime?              @default(now()) @db.DateTime
+  updated_at           DateTime               @default(now()) @db.DateTime
   mega_menu_categories mega_menu_categories[]
 }

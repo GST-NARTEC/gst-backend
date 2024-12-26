@@ -3,30 +3,27 @@ model UserProduct {
     title           String
     description     String?        @db.Text
     status          String         @default("ACTIVE")
-    images          ProductImage[]
     sku             String         @unique
-    gtin            String? // Global Trade Item Number
-    gpc             String? // Global Product Classification
-    hsCode          String? // Harmonized System Code
-    packingUnit     String?
+    gtin            String?
+    gpc             String?
+    hsCode          String?
+    packagingType   String?
     unitOfMeasure   String?
     brandName       String?
     countryOfOrigin String?
     countryOfSale   String?
-    isSec           Boolean?     @default(false)
-
-    // Timestamps
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    // Relations
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String @db.UniqueIdentifier
+    productType     String?
+    createdAt       DateTime       @default(now())
+    updatedAt       DateTime       @updatedAt
+    userId          String         @db.UniqueIdentifier
+    isSec           Boolean?       @default(false)
+    images          ProductImage[]
+    user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ProductImage {
     id        String      @id @default(uuid()) @db.UniqueIdentifier
     url       String
-    product   UserProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String      @db.UniqueIdentifier
+    product   UserProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

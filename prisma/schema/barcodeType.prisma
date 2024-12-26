@@ -1,19 +1,8 @@
 model BarcodeType {
-    id                  String      @id     @default(cuid())
-    type                String?
-    products            Product[]
-    assignedGtins       AssignedGtin[]
-    createdAt           DateTime    @default(now())
-    updatedAt           DateTime    @updatedAt
+  id            String         @id @default(cuid())
+  type          String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  assignedGtins AssignedGtin[]
+  products      Product[]
 }
-
-// enum BarcodeTypes{
-//     GTIN
-//     GLN
-//     SSCC
-//     SEC
-//     UDI
-//     SFDA
-//     SASO
-//     OTA
-// }

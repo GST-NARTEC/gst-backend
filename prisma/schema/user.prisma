@@ -1,10 +1,6 @@
 model User {
   id               String         @id @default(uuid()) @db.UniqueIdentifier
-  userId           String?
   email            String?        @unique
-  password         String?
-  isCreated        Boolean?       @default(false)
-  isEmailVerified  Boolean?       @default(false)
   companyLicenseNo String?
   companyNameEn    String?
   companyNameAr    String?
@@ -15,21 +11,25 @@ model User {
   city             String?
   zipCode          String?
   streetAddress    String?
-  latitude         Float?
-  longitude        Float?
-  isSec            Boolean?       @default(false)
-  isActive         Boolean?       @default(true)
-  secQuantity      Int?           @default(0)
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-  cart             Cart?
-  orders           Order[]
-  invoices         Invoice[]
-  refreshTokens    RefreshToken[]
+  isEmailVerified  Boolean?       @default(false)
+  password         String?
+  latitude         Float?
+  longitude        Float?
+  isCreated        Boolean?       @default(false)
+  isActive         Boolean?       @default(true)
+  userId           String?
+  isSec            Boolean?       @default(false)
+  secQuantity      Int?           @default(0)
   brands           Brand[]
-  products         UserProduct[]
-  docs             UserDoc[]
-  secs             SEC[]
+  cart             Cart?
   digitalLinks     DigitalLink[]
   helpTickets      HelpTicket[]
+  invoices         Invoice[]
+  orders           Order[]
+  refreshTokens    RefreshToken[]
+  secs             SEC[]
+  docs             UserDoc[]
+  products         UserProduct[]
 }

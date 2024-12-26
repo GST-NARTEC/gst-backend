@@ -1,11 +1,10 @@
 model DigitalLink {
-  id                String   @id @default(cuid())
-  url               String?
-  digitalType       String?
-  gtin              String?
-  userId            String?  @db.UniqueIdentifier  
-
-  user              User?    @relation(fields: [userId], references: [id])
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id          String   @id @default(cuid())
+  url         String?
+  digitalType String?
+  gtin        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String?  @db.UniqueIdentifier
+  user        User?    @relation(fields: [userId], references: [id])
 }

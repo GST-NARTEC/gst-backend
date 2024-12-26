@@ -1,14 +1,14 @@
 model SubMenu {
-  id        String   @id @default(uuid())
-  nameEn    String?
-  nameAr    String?
-  headingEn String?
-  headingAr String?
-  menu      Menu?    @relation("MenuToSubMenu", fields: [menuId], references: [id], onDelete: Cascade)
-  menuId    String?
-  page      Page?    @relation(fields: [pageId], references: [id])
-  pageId    String?
+  id          String   @id @default(uuid())
+  nameEn      String?
+  nameAr      String?
+  headingEn   String?
+  headingAr   String?
+  menuId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  pageId      String?
   externalUrl String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  menu        Menu?    @relation("MenuToSubMenu", fields: [menuId], references: [id], onDelete: Cascade)
+  page        Page?    @relation(fields: [pageId], references: [id])
 }

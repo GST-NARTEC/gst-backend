@@ -1,10 +1,10 @@
 model Menu {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   nameEn    String?
   nameAr    String?
-  status    Int? @default(1)
-  image     String?  
+  status    Int?      @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  image     String?
   subMenus  SubMenu[] @relation("MenuToSubMenu")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

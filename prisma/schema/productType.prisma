@@ -1,7 +1,7 @@
-model License {
+model ProductType {
   id        String   @id @default(uuid()) @db.UniqueIdentifier
-  license   String?
+  nameEn    String   @db.NVarChar(Max)
+  nameAr    String   @db.NVarChar(Max)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  document  String?
 }
