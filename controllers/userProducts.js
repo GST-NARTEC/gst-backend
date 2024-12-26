@@ -4,6 +4,14 @@ import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 import ExcelJS from "exceljs";
+import puppeteer from "puppeteer";
+import ejs from "ejs";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs/promises";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class UserProductsController {
   static async createProduct(req, res, next) {
@@ -511,8 +519,6 @@ class UserProductsController {
         orderBy: { createdAt: "desc" },
       });
 
-      console.log(`Found ${products.length} products for user ${req.user.id}`); // Debug log
-
       if (products.length === 0) {
         throw new MyError("No products found for export", 404);
       }
@@ -536,9 +542,9 @@ class UserProductsController {
         { header: "Country of Origin", key: "countryOfOrigin", width: 15 },
         { header: "Country of Sale", key: "countryOfSale", width: 15 },
         { header: "Product Type", key: "productType", width: 15 },
-        { header: "Is SEC", key: "isSec", width: 10 },
         { header: "Created At", key: "createdAt", width: 20 },
         { header: "Images", key: "images", width: 50 },
+        {},
       ];
 
       // Style the header row
@@ -566,7 +572,6 @@ class UserProductsController {
             countryOfOrigin: product.countryOfOrigin || "",
             countryOfSale: product.countryOfSale || "",
             productType: product.productType || "",
-            isSec: product.isSec ? "Yes" : "No",
             createdAt: product.createdAt
               ? new Date(product.createdAt).toLocaleDateString()
               : "",
@@ -620,6 +625,106 @@ class UserProductsController {
       res.end();
     } catch (error) {
       console.error("Excel export error:", error); // Debug log
+      next(error);
+    }
+  }
+
+  static async exportPdfProducts(req, res, next) {
+    try {
+      // Fetch all products for the user with user information
+      const [products, user] = await Promise.all([
+        prisma.userProduct.findMany({
+          where: {
+            userId: req.user.id,
+          },
+          include: {
+            images: true,
+          },
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.user.findUnique({
+          where: { id: req.user.id },
+          select: {
+            companyNameEn: true,
+            companyNameAr: true,
+          },
+        }),
+      ]);
+
+      if (products.length === 0) {
+        throw new MyError("No products found for export", 404);
+      }
+
+      // Create a unique filename
+      const timestamp = Date.now();
+      const fileName = `products-${timestamp}.pdf`;
+      const pdfPath = path.join(__dirname, "../uploads/pdfs", fileName);
+
+      // Ensure the pdfs directory exists
+      await fs.mkdir(path.join(__dirname, "../uploads/pdfs"), {
+        recursive: true,
+      });
+
+      // Render the EJS template
+      const templatePath = path.join(__dirname, "../view/productsList.ejs");
+      const html = await ejs.renderFile(templatePath, { products, user });
+
+      // Launch puppeteer with specific configurations
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-accelerated-2d-canvas",
+          "--disable-gpu",
+          "--window-size=1920x1080",
+        ],
+      });
+
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1920, height: 1080 });
+
+      // Set content and wait for images to load
+      await page.setContent(html, {
+        waitUntil: ["networkidle0", "domcontentloaded"],
+        timeout: 30000,
+      });
+
+      // Generate PDF with specific settings
+      await page.pdf({
+        path: pdfPath,
+        format: "A4",
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+        printBackground: true,
+        preferCSSPageSize: true,
+      });
+
+      await browser.close();
+
+      // Read the generated PDF file
+      const pdfBuffer = await fs.readFile(pdfPath);
+
+      // Set response headers
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="products-${timestamp}.pdf"`
+      );
+
+      // Send the PDF
+      res.send(pdfBuffer);
+
+      // Optionally, delete the file after sending
+      // Uncomment the following line if you want to delete the file after sending
+      // await fs.unlink(pdfPath);
+    } catch (error) {
+      console.error("PDF export error:", error);
       next(error);
     }
   }
