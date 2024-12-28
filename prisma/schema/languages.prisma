@@ -1,8 +1,0 @@
-model languages {
-  id         String   @id @default(cuid())
-  type       String?  @db.NVarChar(Max)
-  key        String?  @db.NVarChar(Max)
-  value      String?  @db.NVarChar(Max)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}

@@ -6,5 +6,4 @@ const router = express.Router();
 router.post("/initiate", PaymentController.initiatePayment);
 router.post("/response", PaymentController.handlePaymentResponse);
 
-
 export default router;

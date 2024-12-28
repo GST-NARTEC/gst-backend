@@ -16,6 +16,7 @@ import frontend from "./frontend.js";
 import gtinRoutes from "./gtin.js";
 import helpTicketRoutes from "./helpTicket.js";
 import licenseRoutes from "./license.js";
+import localizationRoutes from "./localization.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
 import orderRoutes from "./order.js";
@@ -39,6 +40,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
+
 const router = express.Router();
 
 // V1 Routes
@@ -79,6 +81,8 @@ router.use("/v1/country-of-origin-sale", countryOfOriginSaleRoutes);
 router.use("/v1/packaging-type", packagingTypeRoutes);
 router.use("/v1/product-type", productTypeRoutes);
 router.use("/v1/payment", paymentRoutes);
+router.use("/v1/localizations", localizationRoutes);
+
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
