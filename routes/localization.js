@@ -6,6 +6,6 @@ const router = express.Router();
 router.post("/", LocalizationController.createLocalization);
 router.get("/all", LocalizationController.getAllLocalizations);
 router.get("/", LocalizationController.getLocalizations);
-router.put("/:id", LocalizationController.updateLocalization);
+router.put("/", LocalizationController.updateLocalization);
 router.delete("/:id", LocalizationController.deleteLocalization);
 export default router;

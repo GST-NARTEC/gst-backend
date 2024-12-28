@@ -113,14 +113,17 @@ class LocalizationController {
 
   static async updateLocalization(req, res, next) {
     try {
-      const { key } = req.params;
       const { error, value } = localizationSchema.validate(req.body);
       if (error) {
         throw new MyError(error.message, 400);
       }
 
+      const word = await prisma.localization.findFirst({
+        where: { key: value.key },
+      });
+
       const localization = await prisma.localization.update({
-        where: { key },
+        where: { id: word.id },
         data: {
           valueEn: value.valueEn,
           valueAr: value.valueAr,
