@@ -5,43 +5,74 @@
  *   schemas:
  *     Aggregation:
  *       type: object
+ *       required:
+ *         - gtin
+ *         - qty
  *       properties:
  *         id:
  *           type: integer
  *           format: int32
+ *           readOnly: true
  *         serialNo:
  *           type: string
- *           description: Automatically generated serial number (GTIN-BATCH-ID format)
+ *           readOnly: true
+ *           description: "Auto-generated serial number (format: GTIN-BATCH-ID)"
+ *         gtin:
+ *           type: string
+ *           description: "Global Trade Item Number"
  *         qty:
  *           type: integer
- *           description: Quantity of records to generate
+ *           minimum: 0
+ *           description: "Quantity of records to generate"
  *         batchNo:
  *           type: string
- *           description: Batch number for the aggregation
- *         expiryDate:
- *           type: string
- *           format: date-time
+ *           nullable: true
+ *           description: "Batch number for the aggregation"
  *         manufacturingDate:
  *           type: string
  *           format: date-time
- *         gtin:
+ *           nullable: true
+ *           description: "Manufacturing date of the product"
+ *         expiryDate:
  *           type: string
- *           description: Global Trade Item Number
+ *           format: date-time
+ *           nullable: true
+ *           description: "Expiry date of the product"
  *         createdAt:
  *           type: string
  *           format: date-time
+ *           readOnly: true
  *         updatedAt:
  *           type: string
  *           format: date-time
- */
-
-/**
- * @swagger
+ *           readOnly: true
+ *
+ *   responses:
+ *     AggregationSuccess:
+ *       description: Operation successful
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: integer
+ *               success:
+ *                 type: boolean
+ *               message:
+ *                 type: string
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                   aggregation:
+ *                     $ref: '#/components/schemas/Aggregation'
+ *
  * /api/v1/aggregations:
  *   post:
- *     tags: [Aggregations]
- *     summary: Create multiple aggregation records using a worker queue
- *     description: Creates specified quantity of aggregation records with auto-generated serial numbers
+ *     tags:
+ *       - Aggregations
+ *     summary: "Create multiple aggregation records using worker queue"
+ *     description: "Creates specified quantity of aggregation records with auto-generated serial numbers"
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -52,22 +83,32 @@
  *             type: object
  *             required:
  *               - gtin
- *               - batchNo
  *               - qty
  *             properties:
  *               gtin:
  *                 type: string
- *                 description: Global Trade Item Number
- *               batchNo:
- *                 type: string
- *                 description: Batch number for the aggregation
+ *                 description: "Global Trade Item Number"
  *               qty:
  *                 type: integer
- *                 minimum: 1
- *                 description: Number of records to generate
+ *                 minimum: 0
+ *                 description: "Number of records to generate"
+ *               batchNo:
+ *                 type: string
+ *                 nullable: true
+ *                 description: "Batch number for the aggregation"
+ *               manufacturingDate:
+ *                 type: string
+ *                 format: date-time
+ *                 nullable: true
+ *                 description: "Manufacturing date of the product"
+ *               expiryDate:
+ *                 type: string
+ *                 format: date-time
+ *                 nullable: true
+ *                 description: "Expiry date of the product"
  *     responses:
  *       201:
- *         description: Aggregation job queued successfully
+ *         description: "Aggregation job queued successfully"
  *         content:
  *           application/json:
  *             schema:
@@ -81,15 +122,12 @@
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: Aggregation created successfully
- *       400:
- *         description: Invalid input
- *       401:
- *         description: Unauthorized
+ *                   example: "Aggregation created successfully"
  *
  *   get:
- *     tags: [Aggregations]
- *     summary: Get all aggregations with pagination and search
+ *     tags:
+ *       - Aggregations
+ *     summary: "Get all aggregations with pagination and search"
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -97,24 +135,30 @@
  *         name: page
  *         schema:
  *           type: integer
+ *           minimum: 1
  *           default: 1
- *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
+ *           minimum: 1
+ *           maximum: 100
  *           default: 10
- *         description: Number of items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by batch number
+ *         description: "Search by batch number"
+ *       - in: query
+ *         name: gtin
+ *         schema:
+ *           type: string
+ *         description: "Search by gtin"
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *           enum: [createdAt, batchNo, gtin]
+ *           enum: [qty, batchNo, manufacturingDate, expiryDate, createdAt]
  *           default: createdAt
  *       - in: query
  *         name: sortOrder
@@ -124,7 +168,7 @@
  *           default: desc
  *     responses:
  *       200:
- *         description: List of aggregations
+ *         description: "List of aggregations"
  *         content:
  *           application/json:
  *             schema:
@@ -142,26 +186,24 @@
  *                     aggregations:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/Aggregation'
+ *                         $ref: "#/components/schemas/Aggregation"
  *                     pagination:
  *                       type: object
  *                       properties:
- *                         page:
- *                           type: integer
- *                         limit:
- *                           type: integer
  *                         total:
+ *                           type: integer
+ *                         page:
  *                           type: integer
  *                         pages:
  *                           type: integer
- */
-
-/**
- * @swagger
+ *                         limit:
+ *                           type: integer
+ *
  * /api/v1/aggregations/{id}:
  *   put:
- *     tags: [Aggregations]
- *     summary: Update an aggregation record
+ *     tags:
+ *       - Aggregations
+ *     summary: "Update an aggregation record"
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -170,7 +212,7 @@
  *         required: true
  *         schema:
  *           type: integer
- *         description: Aggregation ID
+ *         description: "Aggregation ID"
  *     requestBody:
  *       required: true
  *       content:
@@ -180,17 +222,18 @@
  *             properties:
  *               batchNo:
  *                 type: string
- *               expiryDate:
- *                 type: string
- *                 format: date-time
+ *                 nullable: true
  *               manufacturingDate:
  *                 type: string
  *                 format: date-time
- *               gtin:
+ *                 nullable: true
+ *               expiryDate:
  *                 type: string
+ *                 format: date-time
+ *                 nullable: true
  *     responses:
  *       200:
- *         description: Aggregation updated successfully
+ *         description: "Aggregation updated successfully"
  *         content:
  *           application/json:
  *             schema:
@@ -206,15 +249,14 @@
  *                   type: object
  *                   properties:
  *                     aggregation:
- *                       $ref: '#/components/schemas/Aggregation'
- *       400:
- *         description: Invalid input
+ *                       $ref: "#/components/schemas/Aggregation"
  *       404:
- *         description: Aggregation not found
+ *         description: "Aggregation not found"
  *
  *   delete:
- *     tags: [Aggregations]
- *     summary: Delete an aggregation record
+ *     tags:
+ *       - Aggregations
+ *     summary: "Delete an aggregation record"
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -223,10 +265,22 @@
  *         required: true
  *         schema:
  *           type: integer
- *         description: Aggregation ID
+ *         description: "Aggregation ID"
  *     responses:
  *       200:
- *         description: Aggregation deleted successfully
- *       404:
- *         description: Aggregation not found
+ *         description: "Aggregation deleted successfully"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 200
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Aggregation deleted successfully"
  */

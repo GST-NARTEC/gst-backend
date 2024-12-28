@@ -8,6 +8,16 @@ import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
+const calculateSerialNo = async (gtin, batch, id) => {
+  // last 10 digits of gtin
+  const gtinLast10 = gtin.slice(-10);
+
+  // concate gtinLast10 with batch and id along with dashes
+  const serialNo = `${gtinLast10}-${batch}-${id}`;
+
+  return serialNo;
+};
+
 class AggregationController {
   static async createAggregation(req, res, next) {
     try {
@@ -21,6 +31,7 @@ class AggregationController {
         gtin: value.gtin,
         batchNo: value.batchNo,
         qty: value.qty,
+        calculateSerialNo,
       });
 
       return res
@@ -38,12 +49,16 @@ class AggregationController {
         throw new MyError(error.message, 400);
       }
 
-      const { page, limit, search, sortBy, sortOrder } = value;
+      const { page, limit, search, sortBy, sortOrder, gtin } = value;
       const skip = (page - 1) * limit;
 
       const where = {};
       if (search) {
         where.OR = [{ batchNo: { contains: search } }];
+      }
+
+      if (gtin) {
+        where.gtin = { contains: gtin };
       }
 
       const [aggregations, total] = await Promise.all([
@@ -90,9 +105,19 @@ class AggregationController {
         throw new MyError(error.message, 400);
       }
 
+      const existingAggrigation = await prisma.aggregation.findFirst({
+        where: { id: id },
+      });
+
+      const serialNo = await calculateSerialNo(
+        existingAggrigation.gtin,
+        value.batchNo || existingAggrigation.batchNo,
+        id
+      );
+
       const aggregation = await prisma.aggregation.update({
         where: { id },
-        data: value,
+        data: { ...value, serialNo },
       });
 
       return res.json(

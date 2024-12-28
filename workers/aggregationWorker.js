@@ -3,18 +3,8 @@ import { connection } from "../config/queue.js";
 
 import prisma from "../utils/prismaClient.js";
 
-const calculateSerialNo = async (gtin, batch, id) => {
-  // last 10 digits of gtin
-  const gtinLast10 = gtin.slice(-10);
-
-  // concate gtinLast10 with batch and id along with dashes
-  const serialNo = `${gtinLast10}-${batch}-${id}`;
-
-  return serialNo;
-};
-
 const processAggregation = async (job) => {
-  const { gtin, batchNo, qty } = job.data;
+  const { gtin, batchNo, qty, calculateSerialNo } = job.data;
 
   // create qty number of records
   for (let i = 0; i < qty; i++) {
