@@ -140,6 +140,24 @@
       .items-table tbody tr:last-child td {
         border-bottom: 2px solid #dee2e6;
       }
+      .totals {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+      .totals .bilingual {
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .totals .grand-total {
+        font-size: 16px;
+        font-weight: bold;
+        color: #003366;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 3px solid #003366;
+      }
     </style>
   </head>
   <body>
@@ -192,7 +210,9 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th class="bilingual" style="width: 45%">Description / الوصف</th>
+          <th class="bilingual" style="width: 45%; text-align: left">
+            Description / الوصف
+          </th>
           <th class="bilingual" style="width: 15%; text-align: center">
             Qty / الكمية
           </th>
@@ -206,7 +226,7 @@
       </thead>
       <tbody>
         <tr>
-          <td style="vertical-align: top">
+          <td style="vertical-align: top; padding-right: 15px">
             <div style="font-weight: bold; margin-bottom: 8px">
               GS1 EAN-13 Barcode Registration
             </div>
@@ -249,14 +269,20 @@
 
     <div class="totals">
       <div class="bilingual">
-        <span>Subtotal / المجموع الفرعي</span>
-        <span>SAR 200.00</span>
+        <span style="font-size: 16px; font-weight: bold"
+          >Subtotal / المجموع الفرعي</span
+        >
+        <span style="font-size: 16px; font-weight: bold">SAR 200.00</span>
       </div>
+
       <div class="bilingual">
-        <span>VAT (15%) / ضريبة القيمة المضافة</span>
-        <span>SAR 30.00</span>
+        <span style="font-size: 16px; font-weight: bold"
+          >VAT (15%) / ضريبة القيمة المضافة</span
+        >
+        <span style="font-size: 16px; font-weight: bold">SAR 30.00</span>
       </div>
-      <div class="bilingual">
+
+      <div class="bilingual grand-total">
         <span>Grand Total / المجموع الكلي</span>
         <span>SAR 230.00</span>
       </div>
@@ -264,11 +290,21 @@
 
     <div
       class="invoice-details"
-      style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px"
+      style="
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+        font-size: 16px;
+      "
     >
-      <div class="bilingual">
-        <span>Tax Registration Number / الرقم الضريبي:</span>
-        <span>123456789</span>
+      <div
+        class="bilingual"
+        style="display: flex; justify-content: space-between"
+      >
+        <span style="font-weight: bold"
+          >Tax Registration Number / الرقم الضريبي:</span
+        >
+        <span style="font-weight: bold">123456789</span>
       </div>
     </div>
 
@@ -317,13 +353,31 @@
       <div style="border-top: 1px solid #000; margin-top: 20px"></div>
     </div>
 
-    <div class="qr-code">
-      <img
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
-        alt="QR Code"
-      />
-      <div>INV-2024-001</div>
-      <div class="bilingual">Scan to verify / امسح للتحقق</div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-top: 20px;
+        padding: 0 20px;
+      "
+    >
+      <div class="qr-code" style="text-align: left">
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+          alt="QR Code"
+          style="width: 100px; height: 100px"
+        />
+        <div style="margin-top: 5px">INV-2024-001</div>
+        <div class="bilingual">Scan to verify / امسح للتحقق</div>
+      </div>
+      <div style="text-align: right">
+        <img
+          src="https://example.com/gst-stamp.png"
+          alt="GST Stamp"
+          style="width: 120px; height: auto"
+        />
+      </div>
     </div>
   </body>
 </html>
