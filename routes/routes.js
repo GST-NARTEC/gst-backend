@@ -8,6 +8,7 @@ import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
 import coreSolutionRoutes from "./coreSolution.js";
+import countryOfOriginSaleRoutes from "./countryOfOriginSale.js";
 import currencyRoutes from "./currency.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
@@ -18,8 +19,11 @@ import licenseRoutes from "./license.js";
 import locationRoutes from "./location.js";
 import menuRoutes from "./menu.js";
 import orderRoutes from "./order.js";
+import packagingTypeRoutes from "./packagingType.js";
 import pageRoutes from "./page.js";
+import paymentRoutes from "./payment.js";
 import productRouter from "./product.js";
+import productTypeRoutes from "./productType.js";
 import proServiceRoutes from "./proService.js";
 import secRoutes from "./sec.js";
 import sliderRoutes from "./slider.js";
@@ -35,10 +39,6 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-import countryOfOriginSaleRoutes from "./countryOfOriginSale.js";
-import packagingTypeRoutes from "./packagingType.js";
-import productTypeRoutes from "./productType.js";
-
 const router = express.Router();
 
 // V1 Routes
@@ -78,6 +78,7 @@ router.use("/v1/user-guides", userGuideRoutes);
 router.use("/v1/country-of-origin-sale", countryOfOriginSaleRoutes);
 router.use("/v1/packaging-type", packagingTypeRoutes);
 router.use("/v1/product-type", productTypeRoutes);
+router.use("/v1/payment", paymentRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
