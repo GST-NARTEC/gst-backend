@@ -1,0 +1,11 @@
+model Aggregation {
+  id                    Int @id @default(autoincrement())
+  serialNo              String? @unique
+  qty                   Int?
+  batchNo               String?
+  expiryDate            DateTime? @default(now())
+  manufacturingDate     DateTime? @default(now())
+  gtin                  String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}

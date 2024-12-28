@@ -1,3 +1,4 @@
+import "./aggregationWorker.js";
 import "./barcodeCertificateWorker.js";
 import "./checkoutWorker.js";
 import "./emailWorker.js";

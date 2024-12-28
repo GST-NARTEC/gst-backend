@@ -1,6 +1,7 @@
 import express from "express";
 
 import addonRoutes from "./addon.js";
+import aggregationRoutes from "./aggregation.js";
 import barcodeLookupRoutes from "./barcodeLookup.js";
 import barcodeTypeRoutes from "./barcodeType.js";
 import brandRoutes from "./brand.js";
@@ -40,7 +41,6 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-
 const router = express.Router();
 
 // V1 Routes
@@ -82,6 +82,7 @@ router.use("/v1/packaging-type", packagingTypeRoutes);
 router.use("/v1/product-type", productTypeRoutes);
 router.use("/v1/payment", paymentRoutes);
 router.use("/v1/localizations", localizationRoutes);
+router.use("/v1/aggregations", aggregationRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);

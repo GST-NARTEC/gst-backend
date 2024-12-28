@@ -70,11 +70,11 @@ export const userProductQueue = new Queue("user-product", {
 
 export const gtinQueue = new Queue("gtin-processing", {
   connection,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: "exponential",
-      delay: 1000,
-    },
-  },
+  defaultJobOptions,
+});
+
+// Aggregation queues
+export const aggregationQueue = new Queue("aggregation", {
+  connection,
+  defaultJobOptions,
 });
