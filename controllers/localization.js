@@ -102,8 +102,8 @@ class LocalizationController {
 
       res.json(
         response(200, true, "Localizations fetched", {
-          en: formattedEn,
-          ar: formattedAr,
+          en: { translation: formattedEn },
+          ar: { translation: formattedAr },
         })
       );
     } catch (error) {
