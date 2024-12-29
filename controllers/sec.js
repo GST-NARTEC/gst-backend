@@ -46,8 +46,6 @@ class SECController {
 
   static async getSECs(req, res, next) {
     try {
-      console.log("Request query:", req.query);
-
       const { error, value } = querySchema.validate(req.query);
       if (error) {
         console.log("Validation error:", error);
@@ -56,8 +54,6 @@ class SECController {
 
       const { page, limit, search } = value;
       const skip = (page - 1) * limit;
-
-      console.log("Query params:", { page, limit, search, skip });
 
       const where = {
         userId: req.user.id,
