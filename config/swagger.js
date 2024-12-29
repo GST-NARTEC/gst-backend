@@ -78,6 +78,7 @@ const options = {
     path.join(__dirname, "../docs/swagger/userGuide.js"),
     path.join(__dirname, "../docs/swagger/localization.js"),
     path.join(__dirname, "../docs/swagger/aggregation.js"),
+    path.join(__dirname, "../docs/swagger/udi.js"),
     // add more paths...
   ],
 };

@@ -1,39 +1,47 @@
-import { aggregationQueue } from "../config/queue.js";
 import {
-  aggregationSchema,
-  aggregationUpdateSchema,
   querySchema,
-} from "../schemas/aggregation.schema.js";
+  udiSchema,
+  udiUpdateSchema,
+} from "../schemas/udi.schema.js";
+import calculateSerialNo from "../utils/calculateSerial.js";
 import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import calculateSerialNo from "../utils/calculateSerial.js";
 
-class AggregationController {
-  static async createAggregation(req, res, next) {
+class UDIController {
+  static async createUDI(req, res, next) {
     try {
-      const { error, value } = aggregationSchema.validate(req.body);
+      const { error, value } = udiSchema.validate(req.body);
       if (error) {
         throw new MyError(error.message, 400);
       }
 
-      // create Qty number of records using BullMQ
-      await aggregationQueue.add("aggregation", {
-        gtin: value.gtin,
-        batchNo: value.batchNo,
-        qty: value.qty,
-        calculateSerialNo,
+      const { gtin, batchNo, expiryDate } = value;
+
+      const udi = await prisma.uDI.create({
+        data: {
+          gtin,
+          batchNo,
+          expiryDate,
+        },
+      });
+
+      const serialNo = await calculateSerialNo(gtin, batchNo, udi.id);
+
+      await prisma.uDI.update({
+        where: { id: udi.id },
+        data: { serialNo },
       });
 
       return res
         .status(201)
-        .json(response(201, true, "Aggregation created successfully"));
+        .json(response(201, true, "UDI created successfully", udi));
     } catch (error) {
       next(error);
     }
   }
 
-  static async getAggregations(req, res, next) {
+  static async getUDIs(req, res, next) {
     try {
       const { error, value } = querySchema.validate(req.query);
       if (error) {
@@ -52,8 +60,8 @@ class AggregationController {
         where.gtin = { contains: gtin };
       }
 
-      const [aggregations, total] = await Promise.all([
-        prisma.aggregation.findMany({
+      const [udis, total] = await Promise.all([
+        prisma.uDI.findMany({
           where,
           skip,
           take: limit,
@@ -62,7 +70,6 @@ class AggregationController {
             gtin: true,
             batchNo: true,
             serialNo: true,
-            manufacturingDate: true,
             expiryDate: true,
             createdAt: true,
             updatedAt: true,
@@ -70,12 +77,12 @@ class AggregationController {
           //   orderBy: { [sortBy]: sortOrder },
           orderBy: { gtin: "asc" },
         }),
-        prisma.aggregation.count({ where }),
+        prisma.uDI.count({ where }),
       ]);
 
       return res.json(
-        response(200, true, "Aggregations retrieved successfully", {
-          aggregations,
+        response(200, true, "UDIs retrieved successfully", {
+          udis,
           pagination: {
             page,
             limit,
@@ -89,32 +96,32 @@ class AggregationController {
     }
   }
 
-  static async updateAggregation(req, res, next) {
+  static async updateUDI(req, res, next) {
     try {
       const { id } = req.params;
-      const { error, value } = aggregationUpdateSchema.validate(req.body);
+      const { error, value } = udiUpdateSchema.validate(req.body);
       if (error) {
         throw new MyError(error.message, 400);
       }
 
-      const existingAggrigation = await prisma.aggregation.findFirst({
+      const existingUDI = await prisma.uDI.findFirst({
         where: { id: Number(id) },
       });
 
       const serialNo = await calculateSerialNo(
-        existingAggrigation.gtin,
-        value.batchNo || existingAggrigation.batchNo,
+        existingUDI.gtin,
+        value.batchNo || existingUDI.batchNo,
         id
       );
 
-      const aggregation = await prisma.aggregation.update({
+      const udi = await prisma.uDI.update({
         where: { id: Number(id) },
         data: { ...value, serialNo },
       });
 
       return res.json(
-        response(200, true, "Aggregation updated successfully", {
-          aggregation,
+        response(200, true, "UDI updated successfully", {
+          udi,
         })
       );
     } catch (error) {
@@ -122,19 +129,19 @@ class AggregationController {
     }
   }
 
-  static async deleteAggregation(req, res, next) {
+  static async deleteUDI(req, res, next) {
     try {
       const { id } = req.params;
 
-      await prisma.aggregation.delete({
+      await prisma.uDI.delete({
         where: { id: Number(id) },
       });
 
-      return res.json(response(200, true, "Aggregation deleted successfully"));
+      return res.json(response(200, true, "UDI deleted successfully"));
     } catch (error) {
       next(error);
     }
   }
 }
 
-export default AggregationController;
+export default UDIController;

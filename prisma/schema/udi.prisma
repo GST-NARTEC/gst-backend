@@ -1,0 +1,9 @@
+model UDI {
+  id                    Int @id @default(autoincrement())
+  serialNo              String? @unique
+  batchNo               String?
+  expiryDate            DateTime? @default(now())
+  gtin                  String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
