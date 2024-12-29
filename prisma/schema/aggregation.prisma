@@ -6,6 +6,7 @@ model Aggregation {
   expiryDate            DateTime? @default(now())
   manufacturingDate     DateTime? @default(now())
   gtin                  String?
+  userId                String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }

@@ -4,17 +4,17 @@ import {
   aggregationUpdateSchema,
   querySchema,
 } from "../schemas/aggregation.schema.js";
+import calculateSerialNo from "../utils/calculateSerial.js";
 import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
-import calculateSerialNo from "../utils/calculateSerial.js";
 
 class AggregationController {
   static async createAggregation(req, res, next) {
     try {
       const { error, value } = aggregationSchema.validate(req.body);
       if (error) {
-        throw new MyError(error.message, 400);
+        throw new MyError(error.details[0].message, 400);
       }
 
       // create Qty number of records using BullMQ
@@ -23,6 +23,7 @@ class AggregationController {
         batchNo: value.batchNo,
         qty: value.qty,
         calculateSerialNo,
+        userId: req.user.id,
       });
 
       return res
@@ -37,7 +38,7 @@ class AggregationController {
     try {
       const { error, value } = querySchema.validate(req.query);
       if (error) {
-        throw new MyError(error.message, 400);
+        throw new MyError(error.details[0].message, 400);
       }
 
       const { page, limit, search, sortBy, sortOrder, gtin } = value;
@@ -94,12 +95,23 @@ class AggregationController {
       const { id } = req.params;
       const { error, value } = aggregationUpdateSchema.validate(req.body);
       if (error) {
-        throw new MyError(error.message, 400);
+        throw new MyError(error.details[0].message, 400);
       }
 
-      const existingAggrigation = await prisma.aggregation.findFirst({
+      const existingAggrigation = await prisma.aggregation.findUnique({
         where: { id: Number(id) },
       });
+
+      if (!existingAggrigation) {
+        throw new MyError("No aggregation found!");
+      }
+
+      if (
+        existingAggrigation.userId &&
+        existingAggrigation.userId != req.user.id
+      ) {
+        throw new MyError("You are not authorized to update this aggregation");
+      }
 
       const serialNo = await calculateSerialNo(
         existingAggrigation.gtin,
@@ -125,6 +137,18 @@ class AggregationController {
   static async deleteAggregation(req, res, next) {
     try {
       const { id } = req.params;
+
+      const aggregation = await prisma.aggregation.findUnique({
+        where: { id: Number(id) },
+      });
+
+      if (!aggregation) {
+        throw new MyError("No aggregation found with this ID!");
+      }
+
+      if (aggregation.userId && aggregation.userId != req.user.id) {
+        throw new MyError("You are not authorized to delete this aggregation");
+      }
 
       await prisma.aggregation.delete({
         where: { id: Number(id) },

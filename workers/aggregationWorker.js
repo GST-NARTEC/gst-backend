@@ -4,7 +4,7 @@ import { connection } from "../config/queue.js";
 import prisma from "../utils/prismaClient.js";
 
 const processAggregation = async (job) => {
-  const { gtin, batchNo, qty, calculateSerialNo } = job.data;
+  const { gtin, batchNo, qty, calculateSerialNo, userId } = job.data;
 
   // create qty number of records
   for (let i = 0; i < qty; i++) {
@@ -14,6 +14,7 @@ const processAggregation = async (job) => {
         gtin,
         batchNo,
         qty,
+        userId,
       },
     });
 
