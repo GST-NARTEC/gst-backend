@@ -23,6 +23,7 @@ class UDIController {
           gtin,
           batchNo,
           expiryDate,
+          userId: req.user.id,
         },
       });
 
@@ -108,6 +109,14 @@ class UDIController {
         where: { id: Number(id) },
       });
 
+      if (!existingUDI) {
+        throw new MyError("No UDI found with this ID!");
+      }
+
+      if (existingUDI.userId && existingUDI.userId != req.user.id) {
+        throw new MyError("You are not authorized to update this UDI");
+      }
+
       const serialNo = await calculateSerialNo(
         existingUDI.gtin,
         value.batchNo || existingUDI.batchNo,
@@ -132,6 +141,18 @@ class UDIController {
   static async deleteUDI(req, res, next) {
     try {
       const { id } = req.params;
+
+      const existingUDI = await prisma.uDI.findFirst({
+        where: { id: Number(id) },
+      });
+
+      if (!existingUDI) {
+        throw new MyError("No UDI found with this ID!");
+      }
+
+      if (existingUDI.userId && existingUDI.userId != req.user.id) {
+        throw new MyError("You are not authorized to delete this UDI");
+      }
 
       await prisma.uDI.delete({
         where: { id: Number(id) },
