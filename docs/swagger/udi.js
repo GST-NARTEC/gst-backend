@@ -9,9 +9,6 @@
  *         id:
  *           type: integer
  *           description: The UDI ID
- *         serialNo:
- *           type: string
- *           description: Serial number
  *         batchNo:
  *           type: string
  *           description: Batch number
@@ -45,11 +42,8 @@
  *           schema:
  *             type: object
  *             required:
- *               - serialNo
  *               - gtin
  *             properties:
- *               serialNo:
- *                 type: string
  *               batchNo:
  *                 type: string
  *               expiryDate:
@@ -96,7 +90,7 @@
  *         name: sortBy
  *         schema:
  *           type: string
- *           enum: [serialNo, batchNo, expiryDate, gtin, createdAt]
+ *           enum: [batchNo, expiryDate, gtin, createdAt]
  *           default: createdAt
  *       - in: query
  *         name: sortOrder
