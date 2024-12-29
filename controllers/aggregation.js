@@ -106,7 +106,7 @@ class AggregationController {
       }
 
       const existingAggrigation = await prisma.aggregation.findFirst({
-        where: { id: id },
+        where: { id: Number(id) },
       });
 
       const serialNo = await calculateSerialNo(
@@ -116,7 +116,7 @@ class AggregationController {
       );
 
       const aggregation = await prisma.aggregation.update({
-        where: { id },
+        where: { id: Number(id) },
         data: { ...value, serialNo },
       });
 
@@ -135,7 +135,7 @@ class AggregationController {
       const { id } = req.params;
 
       await prisma.aggregation.delete({
-        where: { id },
+        where: { id: Number(id) },
       });
 
       return res.json(response(200, true, "Aggregation deleted successfully"));
