@@ -1,6 +1,6 @@
 model Aggregation {
   id                    Int @id @default(autoincrement())
-  serialNo              String? @unique
+  serialNo              String?
   qty                   Int?
   batchNo               String?
   expiryDate            DateTime? @default(now())
