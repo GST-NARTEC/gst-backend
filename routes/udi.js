@@ -1,8 +1,10 @@
 import express from "express";
 import UDIController from "../controllers/udi.js";
+import { verifyAccessToken } from "../middlewares/auth.js";
+
 const router = express.Router();
 
-// router.use(verifyAccessToken);
+router.use(verifyAccessToken);
 
 router.post("/", UDIController.createUDI);
 router.get("/", UDIController.getUDIs);
