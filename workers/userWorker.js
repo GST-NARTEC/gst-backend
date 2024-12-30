@@ -54,29 +54,57 @@ const processUserDeletion = async (job) => {
     // Get all order IDs for this user
     const orders = await prisma.order.findMany({
       where: { userId },
-      select: { id: true },
+      select: {
+        id: true,
+        invoice: {
+          select: { id: true },
+        },
+        orderItems: {
+          select: { id: true },
+        },
+      },
     });
 
     const orderIds = orders.map((order) => order.id);
 
-    // 1. First delete all invoices
-    await prisma.invoice.deleteMany({
-      where: {
-        orderId: { in: orderIds },
-      },
-    });
+    if (orderIds.length > 0) {
+      // 1. First delete all invoices
+      await prisma.invoice.deleteMany({
+        where: {
+          orderId: { in: orderIds },
+        },
+      });
 
-    // 2. Delete all order items
-    await prisma.orderItem.deleteMany({
-      where: {
-        orderId: { in: orderIds },
-      },
-    });
+      // 2. Delete all order item addons
+      await prisma.orderItemAddon.deleteMany({
+        where: {
+          orderItem: {
+            orderId: { in: orderIds },
+          },
+        },
+      });
 
-    // 3. Now it's safe to delete orders
-    await prisma.order.deleteMany({
-      where: { userId },
-    });
+      // 3. Delete all order items
+      await prisma.orderItem.deleteMany({
+        where: {
+          orderId: { in: orderIds },
+        },
+      });
+
+      // 4. Delete assigned GTINs
+      await prisma.assignedGtin.deleteMany({
+        where: {
+          orderId: { in: orderIds },
+        },
+      });
+
+      // 5. Finally delete orders
+      await prisma.order.deleteMany({
+        where: {
+          id: { in: orderIds },
+        },
+      });
+    }
 
     // Cart deletion
     if (user.cart) {
