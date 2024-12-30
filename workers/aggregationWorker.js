@@ -21,6 +21,8 @@ const processAggregation = async (job) => {
     // update aggregation with serialNo
     const serialNo = await calculateSerialNo(gtin, batchNo, aggregation.id);
 
+    console.log("serialNo", serialNo);
+
     await prisma.aggregation.update({
       where: { id: aggregation.id },
       data: { serialNo },
