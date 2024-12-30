@@ -1,273 +1,185 @@
 import { Worker } from "bullmq";
 
 import { connection } from "../config/queue.js";
+import { deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
-
-// const processUserDeletion = async (job) => {
-//   const { userId } = job.data;
-
-//   // Fetch user with all related data
-//   const user = await prisma.user.findUnique({
-//     where: { id: userId },
-//     include: {
-//       cart: {
-//         include: {
-//           items: {
-//             include: {
-//               addonItems: true,
-//             },
-//           },
-//         },
-//       },
-//       orders: {
-//         include: {
-//           invoice: true,
-//           orderItems: {
-//             include: {
-//               addonItems: true,
-//             },
-//           },
-//           assignedGtins: true,
-//         },
-//       },
-//       invoices: true,
-//       products: {
-//         include: {
-//           images: true,
-//         },
-//       },
-//       docs: true,
-//       brands: true,
-//       helpTickets: true,
-//     },
-//   });
-
-//   console.log(user);
-
-//   if (!user) {
-//     throw new Error("User not found");
-//   }
-
-//   // Delete everything in a transaction
-//   await prisma.$transaction(async (prisma) => {
-//     // Cart deletion
-//     if (user.cart) {
-//       await prisma.cartItemAddon.deleteMany({
-//         where: {
-//           cartItemId: { in: user.cart.items.map((item) => item.id) },
-//         },
-//       });
-
-//       await prisma.cartItem.deleteMany({
-//         where: { cartId: user.cart.id },
-//       });
-//     }
-
-//     // Process orders
-//     for (const order of user.orders) {
-//       // release GTINs
-//       if (order.assignedGtins && order.assignedGtins?.length > 0) {
-//         for (const gtin of order.assignedGtins) {
-//           await prisma.gTIN?.update({
-//             where: { gtin: gtin.gtin },
-//             data: { status: "Available" },
-//           });
-//         }
-//       }
-
-//       // Delete GTINs first
-//       await prisma.assignedGtin.deleteMany({
-//         where: { orderId: order.id },
-//       });
-
-//       // Delete order items and addons
-//       await prisma.orderItemAddon.deleteMany({
-//         where: {
-//           orderItemId: { in: order.orderItems.map((item) => item.id) },
-//         },
-//       });
-
-//       await prisma.orderItem.deleteMany({
-//         where: { orderId: order.id },
-//       });
-
-//       // Delete files and invoice
-//       if (order.invoice?.pdf) {
-//         await deleteFile(order.invoice.pdf);
-//         await prisma.invoice.delete({ where: { id: order.invoice.id } });
-//       }
-
-//       if (order.receipt) await deleteFile(order.receipt);
-//       if (order.licenseCertificate) await deleteFile(order.licenseCertificate);
-//       if (order.bankSlip) await deleteFile(order.bankSlip);
-
-//       await prisma.order.delete({ where: { id: order.id } });
-//     }
-
-//     // Process user products
-//     if (user.products && user.products?.length > 0) {
-//       for (const product of user.products) {
-//         // Delete product images from storage
-//         for (const image of product.images) {
-//           await deleteFile(image.url);
-//         }
-
-//         // Release GTIN if exists
-//         if (product?.gtin) {
-//           // Add a check if GTIN exists in the database
-//           const existingGtin = await prisma.gTIN?.findUnique({
-//             where: { gtin: product.gtin },
-//           });
-
-//           if (existingGtin) {
-//             await prisma.gTIN?.update({
-//               where: { gtin: product.gtin },
-//               data: {
-//                 status: "Available",
-//               },
-//             });
-//           }
-//         }
-//       }
-//     }
-
-//     // Delete all product images
-//     await prisma.productImage.deleteMany({
-//       where: {
-//         product: {
-//           userId: userId,
-//         },
-//       },
-//     });
-
-//     // Delete all user products
-//     await prisma.userProduct.deleteMany({
-//       where: { userId },
-//     });
-
-//     // Delete cart
-//     if (user.cart) {
-//       await prisma.cart.delete({ where: { id: user.cart.id } });
-//     }
-
-//     // delete user docs
-//     if (user.docs && user.docs?.length > 0) {
-//       for (const doc of user.docs) {
-//         await deleteFile(doc.doc);
-//         await prisma.userDoc.delete({ where: { id: doc.id } });
-//       }
-//     }
-
-//     // delete user brands
-//     if (user.brands && user.brands?.length > 0) {
-//       for (const brand of user.brands) {
-//         await deleteFile(brand.document);
-//         await prisma.brand.delete({ where: { id: brand.id } });
-//       }
-//     }
-
-//     // delete user help tickets
-//     if (user.helpTickets && user.helpTickets?.length > 0) {
-//       for (const ticket of user.helpTickets) {
-//         if (ticket.doc) await deleteFile(ticket.doc);
-//         await prisma.helpTicket.delete({ where: { id: ticket.id } });
-//       }
-//     }
-
-//     // Finally delete user
-//     await prisma.user.delete({ where: { id: userId } });
-//   });
-
-//   return { success: true };
-// };
 
 const processUserDeletion = async (job) => {
   const { userId } = job.data;
 
-  try {
-    await prisma.$transaction(async (prisma) => {
-      // First get the user and related data
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
+  // Fetch user with all related data
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      cart: {
         include: {
-          orders: {
+          items: {
             include: {
-              invoice: true,
-              orderItems: true,
-              assignedGtins: true,
+              addonItems: true,
             },
           },
-          products: true,
-          docs: true,
-          brands: true,
-          helpTickets: true,
-          digitalLinks: true,
+        },
+      },
+      orders: {
+        include: {
+          invoice: true,
+          orderItems: {
+            include: {
+              addonItems: true,
+            },
+          },
+          assignedGtins: true,
+        },
+      },
+      invoices: true,
+      products: {
+        include: {
+          images: true,
+        },
+      },
+      docs: true,
+      brands: true,
+      helpTickets: true,
+    },
+  });
+
+  console.log(user);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Delete everything in a transaction
+  await prisma.$transaction(async (prisma) => {
+    // Cart deletion
+    if (user.cart) {
+      await prisma.cartItemAddon.deleteMany({
+        where: {
+          cartItemId: { in: user.cart.items.map((item) => item.id) },
         },
       });
 
-      if (!user) {
-        throw new Error("User not found");
-      }
+      await prisma.cartItem.deleteMany({
+        where: { cartId: user.cart.id },
+      });
+    }
 
-      // Delete in correct order to handle foreign key constraints
-
-      // 1. First delete invoices
-      for (const order of user.orders) {
-        if (order.invoice) {
-          await prisma.invoice.delete({
-            where: { orderId: order.id },
+    // Process orders
+    for (const order of user.orders) {
+      // release GTINs
+      if (order.assignedGtins && order.assignedGtins?.length > 0) {
+        for (const gtin of order.assignedGtins) {
+          await prisma.gTIN?.update({
+            where: { gtin: gtin.gtin },
+            data: { status: "Available" },
           });
         }
       }
 
-      // 2. Delete order related items
-      for (const order of user.orders) {
-        // Delete assigned GTINs
-        await prisma.assignedGtin.deleteMany({
-          where: { orderId: order.id },
-        });
+      // Delete GTINs first
+      await prisma.assignedGtin.deleteMany({
+        where: { orderId: order.id },
+      });
 
-        // Delete order items
-        await prisma.orderItem.deleteMany({
-          where: { orderId: order.id },
-        });
+      // Delete order items and addons
+      await prisma.orderItemAddon.deleteMany({
+        where: {
+          orderItemId: { in: order.orderItems.map((item) => item.id) },
+        },
+      });
+
+      await prisma.orderItem.deleteMany({
+        where: { orderId: order.id },
+      });
+
+      // Delete files and invoice
+      if (order.invoice?.pdf) {
+        await deleteFile(order.invoice.pdf);
+        await prisma.invoice.delete({ where: { id: order.invoice.id } });
       }
 
-      // 3. Now delete orders
-      await prisma.order.deleteMany({
-        where: { userId },
-      });
+      if (order.receipt) await deleteFile(order.receipt);
+      if (order.licenseCertificate) await deleteFile(order.licenseCertificate);
+      if (order.bankSlip) await deleteFile(order.bankSlip);
 
-      // 4. Delete other related data
-      await Promise.all([
-        prisma.product.deleteMany({
-          where: { userId },
-        }),
-        prisma.doc.deleteMany({
-          where: { userId },
-        }),
-        prisma.brand.deleteMany({
-          where: { userId },
-        }),
-        prisma.helpTicket.deleteMany({
-          where: { userId },
-        }),
-        prisma.digitalLink.deleteMany({
-          where: { userId },
-        }),
-      ]);
+      await prisma.order.delete({ where: { id: order.id } });
+    }
 
-      // 5. Finally delete the user
-      await prisma.user.delete({
-        where: { id: userId },
-      });
+    // Process user products
+    if (user.products && user.products?.length > 0) {
+      for (const product of user.products) {
+        // Delete product images from storage
+        for (const image of product.images) {
+          await deleteFile(image.url);
+        }
+
+        // Release GTIN if exists
+        if (product?.gtin) {
+          // Add a check if GTIN exists in the database
+          const existingGtin = await prisma.gTIN?.findUnique({
+            where: { gtin: product.gtin },
+          });
+
+          if (existingGtin) {
+            await prisma.gTIN?.update({
+              where: { gtin: product.gtin },
+              data: {
+                status: "Available",
+              },
+            });
+          }
+        }
+      }
+    }
+
+    // Delete all product images
+    await prisma.productImage.deleteMany({
+      where: {
+        product: {
+          userId: userId,
+        },
+      },
     });
 
-    return { success: true };
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    throw error;
-  }
+    // Delete all user products
+    await prisma.userProduct.deleteMany({
+      where: { userId },
+    });
+
+    // Delete cart
+    if (user.cart) {
+      await prisma.cart.delete({ where: { id: user.cart.id } });
+    }
+
+    // delete user docs
+    if (user.docs && user.docs?.length > 0) {
+      for (const doc of user.docs) {
+        await deleteFile(doc.doc);
+        await prisma.userDoc.delete({ where: { id: doc.id } });
+      }
+    }
+
+    // delete user brands
+    if (user.brands && user.brands?.length > 0) {
+      for (const brand of user.brands) {
+        await deleteFile(brand.document);
+        await prisma.brand.delete({ where: { id: brand.id } });
+      }
+    }
+
+    // delete user help tickets
+    if (user.helpTickets && user.helpTickets?.length > 0) {
+      for (const ticket of user.helpTickets) {
+        if (ticket.doc) await deleteFile(ticket.doc);
+        await prisma.helpTicket.delete({ where: { id: ticket.id } });
+      }
+    }
+
+    // Finally delete user
+    await prisma.user.delete({ where: { id: userId } });
+  });
+
+  return { success: true };
 };
 
 const worker = new Worker("user-deletion", processUserDeletion, { connection });
