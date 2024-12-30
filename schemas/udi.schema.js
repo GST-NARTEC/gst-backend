@@ -20,4 +20,5 @@ export const querySchema = Joi.object({
     .valid("batchNo", "expiryDate", "createdAt")
     .default("createdAt"),
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+  qty: Joi.number().min(1).default(1),
 });

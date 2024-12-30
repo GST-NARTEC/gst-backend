@@ -22,8 +22,6 @@ const processAggregation = async (job) => {
     // update aggregation with serialNo
     const serialNo = await calculateSerialNo(gtin, batchNo, aggregation.id);
 
-    console.log("serialNo", serialNo);
-
     await prisma.aggregation.update({
       where: { id: aggregation.id },
       data: { serialNo },
@@ -31,7 +29,34 @@ const processAggregation = async (job) => {
   }
 };
 
+const processUDI = async (job) => {
+  const { gtin, batchNo, expiryDate, userId, qty } = job.data;
+
+  // create qty number of records
+  for (let i = 0; i < qty; i++) {
+    const udi = await prisma.uDI.create({
+      data: {
+        gtin,
+        batchNo,
+        expiryDate,
+        userId,
+      },
+    });
+
+    const serialNo = await calculateSerialNo(gtin, batchNo, udi.id);
+
+    await prisma.uDI.update({
+      where: { id: udi.id },
+      data: { serialNo },
+    });
+  }
+};
+
 const worker = new Worker("aggregation", processAggregation, {
+  connection,
+});
+
+const udiWorker = new Worker("udi", processUDI, {
   connection,
 });
 
@@ -43,4 +68,12 @@ worker.on("failed", (job, err) => {
   console.error(`Barcode certificate job ${job.id} failed:`, err);
 });
 
-export default worker;
+udiWorker.on("completed", (job) => {
+  console.log(`UDI job ${job.id} completed successfully`);
+});
+
+udiWorker.on("failed", (job, err) => {
+  console.error(`UDI job ${job.id} failed:`, err);
+});
+
+export default { worker, udiWorker };

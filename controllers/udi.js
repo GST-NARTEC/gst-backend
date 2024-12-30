@@ -1,3 +1,4 @@
+import { udiQueue } from "../config/queue.js";
 import {
   querySchema,
   udiSchema,
@@ -16,27 +17,20 @@ class UDIController {
         throw new MyError(error.message, 400);
       }
 
-      const { gtin, batchNo, expiryDate } = value;
+      const { gtin, batchNo, expiryDate, qty } = value;
 
-      const udi = await prisma.uDI.create({
-        data: {
-          gtin,
-          batchNo,
-          expiryDate,
-          userId: req.user.id,
-        },
-      });
-
-      const serialNo = await calculateSerialNo(gtin, batchNo, udi.id);
-
-      await prisma.uDI.update({
-        where: { id: udi.id },
-        data: { serialNo },
+      // give it to the worker
+      await udiQueue.add("udi", {
+        gtin,
+        batchNo,
+        expiryDate,
+        userId: req.user.id,
+        qty,
       });
 
       return res
         .status(201)
-        .json(response(201, true, "UDI created successfully", udi));
+        .json(response(201, true, `${qty} UDI created successfully`));
     } catch (error) {
       next(error);
     }

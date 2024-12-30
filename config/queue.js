@@ -78,3 +78,8 @@ export const aggregationQueue = new Queue("aggregation", {
   connection,
   defaultJobOptions,
 });
+
+export const udiQueue = new Queue("udi", {
+  connection,
+  defaultJobOptions,
+});

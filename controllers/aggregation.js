@@ -24,8 +24,6 @@ class AggregationController {
         userId: req.user.id,
       };
 
-      console.log(data);
-
       // create Qty number of records using BullMQ
       await aggregationQueue.add("aggregation", data);
 
