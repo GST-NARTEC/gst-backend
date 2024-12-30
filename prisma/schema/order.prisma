@@ -29,7 +29,7 @@ model OrderItem {
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   tax        Float            @default(0)
-  order      Order            @relation(fields: [orderId], references: [id])
+  order      Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product    Product          @relation(fields: [productId], references: [id])
   addonItems OrderItemAddon[]
   addons     Addon[]          @relation("AddonToOrderItem")
@@ -44,7 +44,7 @@ model OrderItemAddon {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   addon       Addon     @relation(fields: [addonId], references: [id])
-  orderItem   OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
 }
 
 model AssignedGtin {
@@ -57,5 +57,5 @@ model AssignedGtin {
   barcodeTypeId      String?
   barcodeType        BarcodeType? @relation(fields: [barcodeTypeId], references: [id])
   gtin               GTIN         @relation(fields: [gtinId], references: [id])
-  order              Order        @relation(fields: [orderId], references: [id])
+  order              Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
