@@ -51,65 +51,6 @@ const processUserDeletion = async (job) => {
 
   // Delete everything in a transaction
   await prisma.$transaction(async (prisma) => {
-    // Get all order IDs for this user
-    const orders = await prisma.order.findMany({
-      where: { userId },
-      select: {
-        id: true,
-      },
-    });
-
-    const orderIds = orders.map((order) => order.id);
-
-    if (orderIds.length > 0) {
-      // 1. Check and delete invoices
-      const invoices = await prisma.invoice.findMany({
-        where: { orderId: { in: orderIds } },
-      });
-      if (invoices.length > 0) {
-        await prisma.invoice.deleteMany({
-          where: { orderId: { in: orderIds } },
-        });
-      }
-
-      // 2. Check and delete order item addons
-      const orderItemAddons = await prisma.orderItemAddon.findMany({
-        where: { orderItem: { orderId: { in: orderIds } } },
-      });
-      if (orderItemAddons.length > 0) {
-        await prisma.orderItemAddon.deleteMany({
-          where: { orderItem: { orderId: { in: orderIds } } },
-        });
-      }
-
-      // 3. Check and delete order items
-      const orderItems = await prisma.orderItem.findMany({
-        where: { orderId: { in: orderIds } },
-      });
-      if (orderItems.length > 0) {
-        await prisma.orderItem.deleteMany({
-          where: { orderId: { in: orderIds } },
-        });
-      }
-
-      // 4. Check and delete assigned GTINs
-      const assignedGtins = await prisma.assignedGtin.findMany({
-        where: { orderId: { in: orderIds } },
-      });
-      if (assignedGtins.length > 0) {
-        await prisma.assignedGtin.deleteMany({
-          where: { orderId: { in: orderIds } },
-        });
-      }
-
-      // 5. Finally delete orders
-      await prisma.order.deleteMany({
-        where: {
-          id: { in: orderIds },
-        },
-      });
-    }
-
     // Cart deletion
     if (user.cart) {
       await prisma.cartItemAddon.deleteMany({
@@ -154,7 +95,14 @@ const processUserDeletion = async (job) => {
       // Delete files and invoice
       if (order.invoice?.pdf) {
         await deleteFile(order.invoice.pdf);
-        await prisma.invoice.delete({ where: { id: order.invoice.id } });
+        // delete invoice, but lets check if it exists first
+        const invoice = await prisma.invoice.findUnique({
+          where: { id: order.invoice.id },
+        });
+        if (invoice) {
+          await prisma.invoice.delete({ where: { id: order.invoice.id } });
+        }
+        // await prisma.invoice.delete({ where: { id: order.invoice.id } });
       }
 
       if (order.receipt) await deleteFile(order.receipt);
