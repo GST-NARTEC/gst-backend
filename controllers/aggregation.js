@@ -21,7 +21,6 @@ class AggregationController {
         gtin: value.gtin,
         batchNo: value.batchNo,
         qty: value.qty,
-        calculateSerialNo: calculateSerialNo,
         userId: req.user.id,
       };
 

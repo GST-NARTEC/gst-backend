@@ -1,10 +1,11 @@
 import { Worker } from "bullmq";
 import { connection } from "../config/queue.js";
 
+import calculateSerialNo from "../utils/calculateSerial.js";
 import prisma from "../utils/prismaClient.js";
 
 const processAggregation = async (job) => {
-  const { gtin, batchNo, qty, calculateSerialNo, userId } = job.data;
+  const { gtin, batchNo, qty, userId } = job.data;
 
   // create qty number of records
   for (let i = 0; i < qty; i++) {
