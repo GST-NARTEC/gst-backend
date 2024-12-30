@@ -17,14 +17,18 @@ class AggregationController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      // create Qty number of records using BullMQ
-      await aggregationQueue.add("aggregation", {
+      const data = {
         gtin: value.gtin,
         batchNo: value.batchNo,
         qty: value.qty,
-        calculateSerialNo,
+        calculateSerialNo: calculateSerialNo,
         userId: req.user.id,
-      });
+      };
+
+      console.log(data);
+
+      // create Qty number of records using BullMQ
+      await aggregationQueue.add("aggregation", data);
 
       return res
         .status(201)
