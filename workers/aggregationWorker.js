@@ -33,7 +33,7 @@ const processUDI = async (job) => {
   const { gtin, batchNo, expiryDate, userId, qty } = job.data;
 
   // create qty number of records
-  for (let i = 0; i < Number(qty); i++) {
+  for (let i = 0; i < qty; i++) {
     const udi = await prisma.uDI.create({
       data: {
         gtin,

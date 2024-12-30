@@ -19,15 +19,13 @@ class UDIController {
 
       const { gtin, batchNo, expiryDate, qty } = value;
 
-      console.log(gtin, batchNo, expiryDate, qty);
-
       // give it to the worker
       await udiQueue.add("udi", {
         gtin,
         batchNo,
         expiryDate,
         userId: req.user.id,
-        qty,
+        qty: qty ? Number(qty) : 1,
       });
 
       return res
