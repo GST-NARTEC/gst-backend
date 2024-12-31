@@ -502,6 +502,8 @@ class UserProductsController {
 
   static async exportExcelProducts(req, res, next) {
     try {
+      console.log("[Excel Export] Starting export process");
+
       // Fetch all products for the user
       const products = await prisma.userProduct.findMany({
         where: {
@@ -527,7 +529,7 @@ class UserProductsController {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Products");
 
-      // Define columns
+      // Define columns with safe access
       worksheet.columns = [
         { header: "Title", key: "title", width: 30 },
         { header: "SKU", key: "sku", width: 15 },
@@ -544,7 +546,6 @@ class UserProductsController {
         { header: "Product Type", key: "productType", width: 15 },
         { header: "Created At", key: "createdAt", width: 20 },
         { header: "Images", key: "images", width: 50 },
-        {},
       ];
 
       // Style the header row
@@ -555,33 +556,38 @@ class UserProductsController {
         fgColor: { argb: "FFE0E0E0" },
       };
 
-      // Add products data
+      // Add products data with safe value checking
       products.forEach((product, index) => {
         try {
+          // Safely get values with fallbacks
           const rowData = {
-            title: product.title || "",
-            sku: product.sku || "",
-            gtin: product.gtin || "",
-            status: product.status || "",
-            brandName: product.brandName || "",
-            description: product.description || "",
-            gpc: product.gpc || "",
-            hsCode: product.hsCode || "",
-            packagingType: product.packagingType || "",
-            unitOfMeasure: product.unitOfMeasure || "",
-            countryOfOrigin: product.countryOfOrigin || "",
-            countryOfSale: product.countryOfSale || "",
-            productType: product.productType || "",
-            createdAt: product.createdAt
+            title: product?.title || "",
+            sku: product?.sku || "",
+            gtin: product?.gtin || "",
+            status: product?.status || "",
+            brandName: product?.brandName || "",
+            description: product?.description || "",
+            gpc: product?.gpc || "",
+            hsCode: product?.hsCode || "",
+            packagingType: product?.packagingType || "",
+            unitOfMeasure: product?.unitOfMeasure || "",
+            countryOfOrigin: product?.countryOfOrigin || "",
+            countryOfSale: product?.countryOfSale || "",
+            productType: product?.productType || "",
+            createdAt: product?.createdAt
               ? new Date(product.createdAt).toLocaleDateString()
               : "",
-            images: product.images?.map((img) => img.url).join(", ") || "",
+            images: Array.isArray(product?.images)
+              ? product.images
+                  .map((img) => img?.url || "")
+                  .filter(Boolean)
+                  .join(", ")
+              : "",
           };
 
-          worksheet.addRow(rowData);
+          const row = worksheet.addRow(rowData);
 
           // Add border to cells
-          const row = worksheet.getRow(index + 2); // +2 because index starts at 0 and we have header row
           row.eachCell({ includeEmpty: true }, (cell) => {
             cell.border = {
               top: { style: "thin" },
@@ -591,21 +597,33 @@ class UserProductsController {
             };
           });
         } catch (err) {
-          console.error(`Error adding row for product ${product.id}:`, err);
+          console.error(
+            `Error adding row for product ${product?.id || "unknown"}:`,
+            err
+          );
         }
       });
 
-      // Auto-fit columns
+      // Auto-fit columns with error handling
       worksheet.columns.forEach((column) => {
-        column.width = Math.min(
-          Math.max(
-            column.width || 10,
-            ...worksheet
-              .getColumn(column.key)
-              ?.values?.map((v) => (v ? v.toString().length : 0))
-          ),
-          50 // Maximum width
-        );
+        if (column.key) {
+          // Only process if column has a key
+          try {
+            const values = worksheet.getColumn(column.key).values;
+            const maxLength = values
+              ? Math.max(
+                  ...values
+                    .map((v) => (v ? String(v).length : 0))
+                    .filter(Boolean)
+                )
+              : 10;
+
+            column.width = Math.min(Math.max(maxLength, 10), 50);
+          } catch (err) {
+            console.error(`Error auto-fitting column ${column.key}:`, err);
+            column.width = 15; // fallback width
+          }
+        }
       });
 
       // Set response headers
@@ -618,13 +636,17 @@ class UserProductsController {
         'attachment; filename="products.xlsx"'
       );
 
+      console.log("[Excel Export] Writing workbook to response");
+
       // Write to response
       await workbook.xlsx.write(res);
+
+      console.log("[Excel Export] Export completed successfully");
 
       // End the response
       res.end();
     } catch (error) {
-      console.error("Excel export error:", error); // Debug log
+      console.error("[Excel Export Error]", error);
       next(error);
     }
   }

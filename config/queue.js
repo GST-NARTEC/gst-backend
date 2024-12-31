@@ -62,6 +62,11 @@ export const helpTicketUserQueue = new Queue("help-ticket-user", {
   connection,
 });
 
+export const resetPasswordQueue = new Queue("reset-password", {
+  connection,
+  defaultJobOptions,
+});
+
 // User product queues
 export const userProductQueue = new Queue("user-product", {
   connection,

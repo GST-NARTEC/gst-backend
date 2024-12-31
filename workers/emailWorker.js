@@ -43,6 +43,11 @@ const processHelpTicketUserNotification = async (job) => {
   await EmailService.sendHelpTicketUserNotification(ticket);
 };
 
+const processResetPassword = async (job) => {
+  const { user, newPassword } = job.data;
+  await EmailService.sendResetPasswordEmail(user, newPassword);
+};
+
 // Workers
 const welcomeEmailWorker = new Worker("welcome-email", processWelcomeEmail, {
   connection,
@@ -79,6 +84,10 @@ const helpTicketUserNotificationWorker = new Worker(
     connection,
   }
 );
+
+const resetPasswordWorker = new Worker("reset-password", processResetPassword, {
+  connection,
+});
 
 welcomeEmailWorker.on("completed", (job) => {
   console.log(`Job ${job.id} completed successfully`);
@@ -120,11 +129,20 @@ helpTicketUserNotificationWorker.on("failed", (job, err) => {
   console.error(`Job ${job.id} failed with error: ${err.message}`);
 });
 
+resetPasswordWorker.on("failed", (job, err) => {
+  console.error(`Job ${job.id} failed with error: ${err.message}`);
+});
+
+resetPasswordWorker.on("completed", (job) => {
+  console.log(`Job ${job.id} completed successfully`);
+});
+
 // export workers
 export {
   accountAdminNotificationWorker,
   bankSlipNotificationWorker,
   helpTicketAdminNotificationWorker,
   helpTicketUserNotificationWorker,
+  resetPasswordWorker,
   welcomeEmailWorker,
 };

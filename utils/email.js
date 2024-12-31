@@ -312,6 +312,33 @@ class EmailService {
       return false;
     }
   }
+
+  async sendResetPasswordEmail(user, newPassword) {
+    try {
+      const templatePath = path.join(__dirname, "../view/resetPassword.ejs");
+
+      const data = {
+        user,
+        newPassword,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: user.email,
+        subject: "Password Reset - GST Saudi Arabia",
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending reset password email:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();
