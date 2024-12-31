@@ -111,16 +111,16 @@ class UserGuideController {
           orderBy: {
             [sortBy]: sortOrder.toLowerCase(),
           },
-          select: {
-            id: true,
-            titleEn: true,
-            titleAr: true,
-            descriptionEn: true,
-            descriptionAr: true,
-            link: true,
-            createdAt: true,
-            updatedAt: true,
-          },
+          //   select: {
+          //     id: true,
+          //     titleEn: true,
+          //     titleAr: true,
+          //     descriptionEn: true,
+          //     descriptionAr: true,
+          //     link: true,
+          //     createdAt: true,
+          //     updatedAt: true,
+          //   },
         }),
         prisma.userGuide.count({
           where: {
@@ -145,7 +145,7 @@ class UserGuideController {
 
       return res.json(
         response(200, true, "User guides retrieved", {
-          guides: formattedGuides,
+          guides: userGuides,
           pagination: {
             total,
             page: Number(page),
