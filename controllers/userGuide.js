@@ -122,7 +122,12 @@ class UserGuideController {
             updatedAt: true,
           },
         }),
-        prisma.userGuide.count({ where: whereClause }),
+        prisma.userGuide.count({
+          where: {
+            ...whereClause,
+            type: type,
+          },
+        }),
       ]);
 
       // Format response based on language preference
