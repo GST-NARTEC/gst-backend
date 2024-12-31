@@ -11,6 +11,7 @@ import checkoutRoutes from "./checkout.js";
 import coreSolutionRoutes from "./coreSolution.js";
 import countryOfOriginSaleRoutes from "./countryOfOriginSale.js";
 import currencyRoutes from "./currency.js";
+import dashboardRoutes from "./dashboard.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
@@ -86,6 +87,8 @@ router.use("/v1/payment", paymentRoutes);
 router.use("/v1/localizations", localizationRoutes);
 router.use("/v1/aggregations", aggregationRoutes);
 router.use("/v1/udis", udiRoutes);
+router.use("/v1/dashboard", dashboardRoutes);
+
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
