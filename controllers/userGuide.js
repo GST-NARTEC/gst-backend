@@ -249,12 +249,16 @@ class UserGuideController {
     try {
       console.log("[Upload Started] Initializing file upload process");
 
+      // Configure Busboy with higher limits and better streaming
       const busboy = Busboy({
         headers: req.headers,
         limits: {
           fileSize: 500 * 1024 * 1024, // 500MB
           files: 1,
         },
+        highWaterMark: 2 * 1024 * 1024, // 2MB chunks
+        preservePath: true,
+        defParamCharset: "utf8",
       });
 
       let fileId = uuidv4();
@@ -279,16 +283,36 @@ class UserGuideController {
         let totalBytes = 0;
         const startTime = Date.now();
 
-        const writeStream = fs.createWriteStream(filePath);
+        // Create write stream with higher buffer size
+        const writeStream = fs.createWriteStream(filePath, {
+          flags: "w",
+          encoding: "binary",
+          highWaterMark: 2 * 1024 * 1024, // 2MB buffer
+        });
 
-        // Add progress tracking
+        // Handle backpressure
         file.on("data", (data) => {
+          const canContinue = writeStream.write(data);
+          if (!canContinue) {
+            file.pause();
+            console.log("[Upload Paused] Handling backpressure");
+          }
+
           totalBytes += data.length;
           const uploadedMB = (totalBytes / (1024 * 1024)).toFixed(2);
           console.log(`[Upload Progress] ${uploadedMB}MB uploaded`);
         });
 
-        file.pipe(writeStream);
+        writeStream.on("drain", () => {
+          file.resume();
+          console.log("[Upload Resumed] Backpressure handled");
+        });
+
+        // Handle file completion
+        file.on("end", () => {
+          writeStream.end();
+          console.log("[File Transfer] Complete");
+        });
 
         writeStream.on("finish", () => {
           const endTime = Date.now();
@@ -306,6 +330,9 @@ class UserGuideController {
             filePath,
             fileId,
           });
+          // Close streams on error
+          writeStream.end();
+          file.resume();
         });
       });
 
@@ -384,7 +411,35 @@ class UserGuideController {
         next(new MyError(error.message, 400));
       });
 
-      req.pipe(busboy);
+      // Handle request errors
+      req.on("error", async (error) => {
+        console.error("[Request Error]", error);
+        if (filePath) {
+          await fs.promises.unlink(filePath).catch(console.error);
+        }
+        next(new MyError("Upload interrupted", 500));
+      });
+
+      // Handle response errors
+      res.on("error", async (error) => {
+        console.error("[Response Error]", error);
+        if (filePath) {
+          await fs.promises.unlink(filePath).catch(console.error);
+        }
+      });
+
+      // Set appropriate headers
+      res.setHeader("Connection", "keep-alive");
+      res.setHeader("Transfer-Encoding", "chunked");
+
+      // Pipe the request to busboy with error handling
+      req.pipe(busboy).on("error", async (error) => {
+        console.error("[Pipe Error]", error);
+        if (filePath) {
+          await fs.promises.unlink(filePath).catch(console.error);
+        }
+        next(new MyError("Upload failed", 500));
+      });
     } catch (error) {
       console.error("[Global Error Handler]", {
         error: error.message,
@@ -392,8 +447,7 @@ class UserGuideController {
         fileId: fileId || "Not Generated",
       });
       if (filePath) {
-        console.log(`[Cleanup] Removing file after global error: ${filePath}`);
-        await fs.promises.unlink(filePath);
+        await fs.promises.unlink(filePath).catch(console.error);
       }
       next(error);
     }
