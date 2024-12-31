@@ -1,5 +1,9 @@
-// controllers/userGuide.js
+import Busboy from "busboy";
+import fs from "fs";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 import { userGuideSchema } from "../schemas/userGuide.schema.js";
+import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -229,6 +233,95 @@ class UserGuideController {
 
       return res.json(response(200, true, "User guide deleted"));
     } catch (error) {
+      next(error);
+    }
+  }
+
+  async uploadLargeFile(req, res, next) {
+    let metadata = {};
+    let filePath = null;
+    let fileError = null;
+    try {
+      const busboy = Busboy({
+        headers: req.headers,
+        limits: {
+          fileSize: 500 * 1024 * 1024, // 500MB
+          files: 1,
+        },
+      });
+
+      let fileId = uuidv4();
+
+      busboy.on("field", (fieldname, value) => {
+        metadata[fieldname] = value;
+      });
+
+      busboy.on("file", async (fieldname, file, { filename }) => {
+        const uploadDir = "uploads/user-guide";
+        await fs.promises.mkdir(uploadDir, { recursive: true });
+
+        const extension = path.extname(filename);
+        filePath = path.join(uploadDir, `${fileId}${extension}`);
+
+        const writeStream = fs.createWriteStream(filePath);
+        file.pipe(writeStream);
+
+        writeStream.on("finish", () => {
+          console.log("File upload completed");
+        });
+
+        writeStream.on("error", (error) => {
+          fileError = error;
+          console.error("File write error:", error);
+        });
+      });
+
+      busboy.on("finish", async () => {
+        try {
+          if (fileError) {
+            throw new MyError("File upload failed: " + fileError.message, 400);
+          }
+
+          const { error, value } = userGuideSchema.validate(metadata);
+          if (error) {
+            if (filePath) await fs.promises.unlink(filePath);
+            throw new MyError(error.message, 400);
+          }
+
+          console.log(filePath);
+
+          const userGuide = await prisma.userGuide.create({
+            data: {
+              id: fileId,
+              titleEn: value.titleEn,
+              titleAr: value.titleAr,
+              descriptionEn: value.descriptionEn,
+              descriptionAr: value.descriptionAr,
+              type: value.type,
+              link: addDomain(filePath),
+            },
+          });
+
+          res.json(
+            response(201, true, "User guide created successfully", userGuide)
+          );
+        } catch (error) {
+          // remove file
+          if (filePath) await fs.promises.unlink(filePath);
+          next(error);
+        }
+      });
+
+      busboy.on("error", async (error) => {
+        // remove file
+        if (filePath) await fs.promises.unlink(filePath);
+        next(new MyError(error.message, 400));
+      });
+
+      req.pipe(busboy);
+    } catch (error) {
+      // remove file
+      if (filePath) await fs.promises.unlink(filePath);
       next(error);
     }
   }

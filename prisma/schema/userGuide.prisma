@@ -9,3 +9,12 @@ model UserGuide {
   updatedAt     DateTime @updatedAt
   type          String?
 }
+model FileChunk {
+  id          String   @id @default(cuid())
+  fileId      String
+  chunkNumber Int
+  chunkPath   String
+  totalChunks Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

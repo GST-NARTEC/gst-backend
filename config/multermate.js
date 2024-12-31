@@ -209,3 +209,28 @@ export const deleteFile = async (filePath) => {
  * Export allowed file types
  */
 export const ALLOWED_FILE_TYPES = Object.keys(ALLOWED_MIME_TYPES);
+
+// Add chunk handling configuration
+const chunkConfig = {
+  filename: "file",
+  destination: "uploads/chunks",
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB per chunk
+  },
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIME_TYPES[file.mimetype]) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type"), false);
+    }
+  },
+};
+
+export const uploadChunk = () => {
+  return uploadSingle({
+    destination: "uploads/chunks",
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB per chunk
+    },
+  });
+};

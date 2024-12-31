@@ -33,5 +33,6 @@ router.get("/", userGuideController.getAll);
 router.get("/:id", userGuideController.getOne);
 router.put("/:id", upload, userGuideController.update);
 router.delete("/:id", userGuideController.delete);
+router.post("/upload-large", userGuideController.uploadLargeFile);
 
 export default router;
