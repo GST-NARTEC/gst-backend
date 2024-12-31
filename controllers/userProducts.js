@@ -602,7 +602,7 @@ class UserProductsController {
             column.width || 10,
             ...worksheet
               .getColumn(column.key)
-              .values.map((v) => (v ? v.toString().length : 0))
+              ?.values?.map((v) => (v ? v.toString().length : 0))
           ),
           50 // Maximum width
         );
