@@ -247,6 +247,8 @@ class UserGuideController {
     let filePath = null;
     let fileError = null;
     try {
+      console.log("[Upload Started] Initializing file upload process");
+
       const busboy = Busboy({
         headers: req.headers,
         limits: {
@@ -256,45 +258,83 @@ class UserGuideController {
       });
 
       let fileId = uuidv4();
+      console.log(`[File ID Generated] ${fileId}`);
 
       busboy.on("field", (fieldname, value) => {
         metadata[fieldname] = value;
+        console.log(`[Metadata Received] Field: ${fieldname}, Value: ${value}`);
       });
 
       busboy.on("file", async (fieldname, file, { filename }) => {
+        console.log(`[File Processing Started] Filename: ${filename}`);
+
         const uploadDir = "uploads/user-guide";
         await fs.promises.mkdir(uploadDir, { recursive: true });
+        console.log(`[Directory Created/Verified] ${uploadDir}`);
 
         const extension = path.extname(filename);
         filePath = path.join(uploadDir, `${fileId}${extension}`);
+        console.log(`[File Path Generated] ${filePath}`);
+
+        let totalBytes = 0;
+        const startTime = Date.now();
 
         const writeStream = fs.createWriteStream(filePath);
+
+        // Add progress tracking
+        file.on("data", (data) => {
+          totalBytes += data.length;
+          const uploadedMB = (totalBytes / (1024 * 1024)).toFixed(2);
+          console.log(`[Upload Progress] ${uploadedMB}MB uploaded`);
+        });
+
         file.pipe(writeStream);
 
         writeStream.on("finish", () => {
-          console.log("File upload completed");
+          const endTime = Date.now();
+          const duration = ((endTime - startTime) / 1000).toFixed(2);
+          const finalSizeMB = (totalBytes / (1024 * 1024)).toFixed(2);
+          console.log(
+            `[File Upload Completed] Size: ${finalSizeMB}MB, Duration: ${duration}s`
+          );
         });
 
         writeStream.on("error", (error) => {
           fileError = error;
-          console.error("File write error:", error);
+          console.error("[Write Stream Error]", {
+            error: error.message,
+            filePath,
+            fileId,
+          });
         });
       });
 
       busboy.on("finish", async () => {
         try {
+          console.log("[Busboy Finished] Starting post-processing");
+
           if (fileError) {
+            console.error(
+              "[Validation Error] File upload failed:",
+              fileError.message
+            );
             throw new MyError("File upload failed: " + fileError.message, 400);
           }
 
           const { error, value } = userGuideSchema.validate(metadata);
           if (error) {
-            if (filePath) await fs.promises.unlink(filePath);
+            console.error(
+              "[Validation Error] Schema validation failed:",
+              error.message
+            );
+            if (filePath) {
+              console.log(`[Cleanup] Removing invalid file: ${filePath}`);
+              await fs.promises.unlink(filePath);
+            }
             throw new MyError(error.message, 400);
           }
 
-          console.log(filePath);
-
+          console.log("[Database Operation] Creating user guide record");
           const userGuide = await prisma.userGuide.create({
             data: {
               id: fileId,
@@ -306,27 +346,55 @@ class UserGuideController {
               link: addDomain(filePath),
             },
           });
+          console.log(
+            "[Database Operation Completed] User guide created:",
+            fileId
+          );
 
           res.json(
             response(201, true, "User guide created successfully", userGuide)
           );
+          console.log("[Request Completed] Response sent to client");
         } catch (error) {
-          // remove file
-          if (filePath) await fs.promises.unlink(filePath);
+          console.error("[Error in finish event]", {
+            error: error.message,
+            filePath,
+            fileId,
+          });
+          if (filePath) {
+            console.log(`[Cleanup] Removing file after error: ${filePath}`);
+            await fs.promises.unlink(filePath);
+          }
           next(error);
         }
       });
 
       busboy.on("error", async (error) => {
-        // remove file
-        if (filePath) await fs.promises.unlink(filePath);
+        console.error("[Busboy Error]", {
+          error: error.message,
+          filePath,
+          fileId,
+        });
+        if (filePath) {
+          console.log(
+            `[Cleanup] Removing file after busboy error: ${filePath}`
+          );
+          await fs.promises.unlink(filePath);
+        }
         next(new MyError(error.message, 400));
       });
 
       req.pipe(busboy);
     } catch (error) {
-      // remove file
-      if (filePath) await fs.promises.unlink(filePath);
+      console.error("[Global Error Handler]", {
+        error: error.message,
+        filePath,
+        fileId: fileId || "Not Generated",
+      });
+      if (filePath) {
+        console.log(`[Cleanup] Removing file after global error: ${filePath}`);
+        await fs.promises.unlink(filePath);
+      }
       next(error);
     }
   }
