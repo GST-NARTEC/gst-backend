@@ -18,7 +18,6 @@ import {
 } from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
-import { generatePassword } from "../utils/generatePassword.js";
 import { generateToken } from "../utils/generateToken.js";
 import { generateOrderId, generateUserId } from "../utils/generateUniqueId.js";
 import JWT from "../utils/jwt.js";
@@ -1176,7 +1175,7 @@ class UserController {
   // reset user password
   static async resetUserPassword(req, res, next) {
     try {
-      const { email } = req.body;
+      const { email, password } = req.body;
 
       const user = await prisma.user.findFirst({ where: { email } });
 
@@ -1184,7 +1183,10 @@ class UserController {
         throw new MyError("User not found", 404);
       }
 
-      const newPassword = generatePassword();
+      const newPassword = password;
+
+      // hash the password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
 
       // send new password to user email using bullMQ
       await resetPasswordQueue.add("reset-password", {
@@ -1194,7 +1196,7 @@ class UserController {
 
       await prisma.user.update({
         where: { id: user.id },
-        data: { password: newPassword },
+        data: { password: hashedPassword },
       });
 
       res.status(200).json(response(200, true, "Password reset successfully"));
