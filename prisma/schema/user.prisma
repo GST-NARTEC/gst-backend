@@ -32,4 +32,5 @@ model User {
   secs             SEC[]
   docs             UserDoc[]
   products         UserProduct[]
+  glns             GLN[]
 }

@@ -15,6 +15,7 @@ import dashboardRoutes from "./dashboard.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
 import frontend from "./frontend.js";
+import glnRoutes from "./gln.js";
 import gtinRoutes from "./gtin.js";
 import helpTicketRoutes from "./helpTicket.js";
 import licenseRoutes from "./license.js";
@@ -88,7 +89,7 @@ router.use("/v1/localizations", localizationRoutes);
 router.use("/v1/aggregations", aggregationRoutes);
 router.use("/v1/udis", udiRoutes);
 router.use("/v1/dashboard", dashboardRoutes);
-
+router.use("/v1/glns", glnRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
