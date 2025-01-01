@@ -1,20 +1,20 @@
 model GLN {
-    id                  String         @id @default(uuid())
-    identifier          String?
-    physicalLocation    String?
-    locationNameEn      String?
-    locationNameAr      String?
-    addressEn           String?
-    addressAr           String?
-    poBox               String?
-    postalCode          String?
-    latitude            Float?
-    longitude           Float?
-    isActive            Boolean?       @default(true)
-    image               String?
-    gtin                String?
-    userId              String         @db.UniqueIdentifier
-    user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt           DateTime       @default(now())
-    updatedAt           DateTime       @updatedAt    
+    id               String   @id @default(uuid())
+    identifier       String?
+    physicalLocation String?
+    locationNameEn   String?
+    locationNameAr   String?
+    addressEn        String?
+    addressAr        String?
+    poBox            String?
+    postalCode       String?
+    latitude         Float?
+    longitude        Float?
+    isActive         Boolean? @default(true)
+    image            String?
+    gtin             String?
+    userId           String   @db.UniqueIdentifier
+    user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
 }

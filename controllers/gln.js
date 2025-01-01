@@ -77,12 +77,11 @@ class GLNController {
       // Create product using transaction to ensure data consistency
       const gln = await prisma.$transaction(async (prisma) => {
         // Create the product with single GTIN
-        const newGLN = await prisma.gln.create({
+        const newGLN = await prisma.gLN.create({
           data: {
             ...glnData,
             gtin: availableGtin.gtin.gtin,
             userId: req.user.id,
-            barcodeType: barcodeTypeRecord.id,
           },
         });
 
@@ -280,14 +279,14 @@ class GLNController {
 
       // First get the products
       const [glns, total] = await Promise.all([
-        prisma.gln.findMany({
+        prisma.gLN.findMany({
           where: whereClause,
 
           skip,
           take: Number(limit),
           orderBy: { createdAt: "desc" },
         }),
-        prisma.gln.count({ where: whereClause }),
+        prisma.gLN.count({ where: whereClause }),
       ]);
 
       // Get barcodeType information for each product
