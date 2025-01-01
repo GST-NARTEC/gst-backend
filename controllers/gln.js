@@ -122,7 +122,7 @@ class GLNController {
       }
 
       // Remove gtin from the update data
-      const { gtin: _, ...updateData } = value;
+      const { gtin: _, barcodeType, ...updateData } = value;
 
       // Check if product exists and belongs to user
       const existingGLN = await prisma.gLN.findFirst({
