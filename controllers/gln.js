@@ -125,7 +125,7 @@ class GLNController {
       const { gtin: _, ...updateData } = value;
 
       // Check if product exists and belongs to user
-      const existingGLN = await prisma.gln.findFirst({
+      const existingGLN = await prisma.gLN.findFirst({
         where: {
           id,
           userId: req.user.id,
@@ -143,7 +143,7 @@ class GLNController {
       }
 
       // Update GLN
-      const updatedGLN = await prisma.gln.update({
+      const updatedGLN = await prisma.gLN.update({
         where: { id },
         data: {
           ...updateData,
@@ -167,7 +167,7 @@ class GLNController {
       const { id } = req.params;
 
       // Find product with user verification and include necessary relations
-      const gln = await prisma.gln.findFirst({
+      const gln = await prisma.gLN.findFirst({
         where: {
           id,
           userId: req.user.id,
@@ -216,7 +216,7 @@ class GLNController {
         }
 
         // Finally delete the product
-        await prisma.gln.delete({
+        await prisma.gLN.delete({
           where: { id },
         });
       });
@@ -233,7 +233,7 @@ class GLNController {
     try {
       const { id } = req.params;
 
-      const gln = await prisma.gln.findFirst({
+      const gln = await prisma.gLN.findFirst({
         where: {
           id,
           userId: req.user.id,
@@ -331,7 +331,7 @@ class GLNController {
   static async searchProducts(req, res, next) {
     try {
       const { gtin } = req.query;
-      const gln = await prisma.gln.findFirst({
+      const gln = await prisma.gLN.findFirst({
         where: {
           gtin: {
             contains: gtin,
@@ -369,7 +369,7 @@ class GLNController {
       console.log("[Excel Export] Starting export process");
 
       // Fetch all GLNs for the user
-      const glns = await prisma.gln.findMany({
+      const glns = await prisma.gLN.findMany({
         where: {
           userId: req.user.id,
         },
@@ -508,7 +508,7 @@ class GLNController {
     try {
       // Fetch all GLNs for the user with user information
       const [glns, user] = await Promise.all([
-        prisma.gln.findMany({
+        prisma.gLN.findMany({
           where: {
             userId: req.user.id,
           },
