@@ -21,6 +21,7 @@ class DashboardController {
       const orderStats = {
         activated: 0,
         pending: 0,
+        total: 0,
       };
 
       orderCounts.forEach((count) => {
@@ -30,6 +31,7 @@ class DashboardController {
           orderStats.pending += count._count.id;
         }
       });
+      orderStats.total = orderStats.activated + orderStats.pending;
 
       // use order to get assigned gtins of specific user
       const order = await prisma.order.findFirst({
@@ -54,6 +56,7 @@ class DashboardController {
         available: 0,
         sold: 0,
         used: 0,
+        total: 0,
       };
 
       order.assignedGtins.forEach((assignedGtin) => {
@@ -69,6 +72,8 @@ class DashboardController {
             break;
         }
       });
+      gtinCounts.total =
+        gtinCounts.available + gtinCounts.sold + gtinCounts.used;
 
       return res.json(
         response(200, true, "Dashboard stats retrieved successfully", {
