@@ -93,7 +93,7 @@ class GLNController {
             ...glnData,
             gtin: availableGtin.gtin.gtin,
             userId: req.user.id,
-            certificate: certificatePath,
+            certificate: addDomain(certificatePath.relativePath),
           },
         });
 
