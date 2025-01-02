@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { glnSchema } from "../schemas/gln.schema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
+import PDFGenerator from "../utils/pdfGenerator.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
@@ -76,12 +77,23 @@ class GLNController {
 
       // Create product using transaction to ensure data consistency
       const gln = await prisma.$transaction(async (prisma) => {
+        // Generate certificate
+        const certificatePath = await PDFGenerator.generateBarcodeCertificate({
+          licensedTo: user.companyNameEn,
+          gtin: availableGtin.gtin.gtin,
+          issueDate: new Date(availableGtin.createdAt).toLocaleDateString(),
+          memberId: user.userId,
+          email: user.email,
+          phone: user.phone,
+          barcodeType: barcodeType,
+        });
         // Create the product with single GTIN
         const newGLN = await prisma.gLN.create({
           data: {
             ...glnData,
             gtin: availableGtin.gtin.gtin,
             userId: req.user.id,
+            certificate: certificatePath,
           },
         });
 

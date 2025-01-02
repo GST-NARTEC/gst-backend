@@ -13,6 +13,7 @@ model GLN {
     isActive         Boolean? @default(true)
     image            String?
     gtin             String?
+    certificate      String?
     userId           String   @db.UniqueIdentifier
     user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     createdAt        DateTime @default(now())

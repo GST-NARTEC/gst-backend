@@ -149,7 +149,9 @@
           alt="GST Logo"
           class="logo"
         />
-        <h1 class="title">Barcode Certificate</h1>
+        <h1 class="title">
+          <%= barcodeType === "GLN" ? "GLN Certificate" : "Barcode Certificate" %>
+        </h1>
       </div>
 
       <div class="content">
@@ -170,13 +172,13 @@
 
         <div class="barcode-info">
           <div>Barcode Information</div>
-          <div>• GTIN Number: <%= gtin %></div>
+          <div>• <%= barcodeType === "GLN" ? "GLN Number" : "GTIN Number" %>: <%= gtin %></div>
           <div>• Type: UPC/EAN</div>
           <div>• Status: Active</div>
         </div>
 
         <p>
-          This certifies that the above GTIN (Global Trade Item Number) has been
+          This certifies that the above <%= barcodeType === "GLN" ? "GLN (Global Location Number)" : "GTIN (Global Trade Item Number)" %> has been
           officially registered and assigned to <%= licensedTo %>. This barcode
           is globally unique and can be used for product identification in
           accordance with GS1 standards.

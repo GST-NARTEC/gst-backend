@@ -250,6 +250,7 @@ class PDFGenerator {
         memberId: data.memberId,
         email: data.email,
         phone: data.phone,
+        barcodeType: data.barcodeType,
         logo: LOGO_URL,
       });
 
