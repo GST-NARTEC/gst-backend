@@ -313,6 +313,29 @@ class EmailService {
     }
   }
 
+  async sendResetPasswordOTP(email, otp) {
+    try {
+      const templatePath = path.join(__dirname, "../view/resetPasswordOtp.ejs");
+      const html = await ejs.renderFile(templatePath, {
+        otp,
+        logo: LOGO_URL,
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: "Password Reset Code - GST Saudi Arabia",
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending reset password OTP email:", error);
+      return false;
+    }
+  }
+
   async sendResetPasswordEmail(user, newPassword) {
     try {
       const templatePath = path.join(__dirname, "../view/resetPassword.ejs");

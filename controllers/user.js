@@ -1172,34 +1172,139 @@ class UserController {
     }
   }
 
-  // reset user password
-  static async resetUserPassword(req, res, next) {
+  // // reset user password
+  // static async resetUserPassword(req, res, next) {
+  //   try {
+  //     const { email, password } = req.body;
+
+  //     const user = await prisma.user.findFirst({ where: { email } });
+
+  //     if (!user) {
+  //       throw new MyError("User not found", 404);
+  //     }
+
+  //     const newPassword = password;
+
+  //     // hash the password
+  //     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  //     // send new password to user email using bullMQ
+  //     await resetPasswordQueue.add("reset-password", {
+  //       user: user,
+  //       newPassword: newPassword,
+  //     });
+
+  //     await prisma.user.update({
+  //       where: { id: user.id },
+  //       data: { password: hashedPassword },
+  //     });
+
+  //     res.status(200).json(response(200, true, "Password reset successfully"));
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+  static async initiatePasswordReset(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email } = req.body;
 
-      const user = await prisma.user.findFirst({ where: { email } });
-
-      if (!user) {
-        throw new MyError("User not found", 404);
+      if (!email) {
+        throw new MyError("Email is required", 400);
       }
 
-      const newPassword = password;
-
-      // hash the password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-      // send new password to user email using bullMQ
-      await resetPasswordQueue.add("reset-password", {
-        user: user,
-        newPassword: newPassword,
+      // Check if user exists
+      const user = await prisma.user.findUnique({
+        where: { email },
       });
 
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { password: hashedPassword },
-      });
+      if (!user) {
+        throw new MyError("No account found with this email", 404);
+      }
 
-      res.status(200).json(response(200, true, "Password reset successfully"));
+      // Generate OTP and token
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      const token = generateToken({ email, otp });
+
+      console.log(`Reset Password OTP for ${email}: ${otp}`);
+
+      const emailSent = await EmailService.sendResetPasswordOTP(email, otp);
+      if (!emailSent) {
+        throw new MyError("Failed to send reset password OTP", 500);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Reset password OTP sent successfully",
+        token,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async verifyResetPasswordOTP(req, res, next) {
+    try {
+      const { otp, token } = req.body;
+
+      if (!token) {
+        throw new MyError("Token is required", 400);
+      }
+
+      try {
+        const decoded = JWT.verifyToken(token);
+        if (decoded.otp !== otp) {
+          throw new MyError("Invalid OTP", 400);
+        }
+
+        // Generate a new token for password reset
+        const resetToken = generateToken({ email: decoded.email });
+
+        res.status(200).json(
+          response(200, true, "OTP verified successfully", {
+            token: resetToken,
+          })
+        );
+      } catch (err) {
+        throw new MyError("Invalid or expired OTP", 400);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async resetPassword(req, res, next) {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        throw new MyError("Token and new password are required", 400);
+      }
+
+      try {
+        const decoded = JWT.verifyToken(token);
+        const email = decoded.email;
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update user's password
+        const user = await prisma.user.update({
+          where: { email },
+          data: { password: hashedPassword },
+        });
+
+        // Send confirmation email using queue
+        await resetPasswordQueue.add("reset-password", {
+          user,
+          newPassword,
+        });
+        res
+          .status(200)
+          .json(response(200, true, "Password reset successfully", null));
+      } catch (err) {
+        throw new MyError("Invalid or expired token", 400);
+      }
     } catch (error) {
       next(error);
     }

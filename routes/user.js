@@ -22,6 +22,8 @@ router.delete("/:id", controller.deleteUser);
 router.post("/refresh-token", verifyRefreshToken, controller.refreshToken);
 router.patch("/:id/status", controller.updateUserStatus);
 router.get("/:id/gtins", verifyAccessToken, controller.getUserGtins);
-router.post("/reset-password", controller.resetUserPassword);
+router.post("/initiate-password-reset", controller.initiatePasswordReset);
+router.post("/verify-reset-password-otp", controller.verifyResetPasswordOTP);
+router.post("/reset-password", controller.resetPassword);
 
 export default router;
