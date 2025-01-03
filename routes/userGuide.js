@@ -41,16 +41,6 @@ router.get("/", controller.getAll);
 router.get("/:id", controller.getOne);
 router.put("/:id", verifyAccessToken, upload, controller.update);
 router.delete("/:id", verifyAccessToken, controller.delete);
-router.post(
-  "/upload-large",
-  verifyAccessToken,
-  (req, res, next) => {
-    // Set appropriate headers
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("Transfer-Encoding", "chunked");
-    next();
-  },
-  controller.uploadLargeFile
-);
+router.post("/upload-large", verifyAccessToken, controller.uploadLargeFile);
 
 export default router;
