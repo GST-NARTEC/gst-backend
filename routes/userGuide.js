@@ -1,5 +1,6 @@
 // routes/userGuide.js
 import express from "express";
+import fileUpload from "express-fileupload";
 import { uploadMultiple } from "../config/multermate.js";
 
 import UserGuideController from "../controllers/userGuide.js";
@@ -27,14 +28,17 @@ const upload = uploadMultiple({
   },
 });
 
-// Add specific route configuration for large files
-router.use("/upload-large", (req, res, next) => {
-  // Disable default body parser for this route
-  express.raw({
-    limit: "500mb",
-    type: "*/*",
-  })(req, res, next);
-});
+router.use(
+  fileUpload({
+    limits: {
+      fileSize: 500 * 1024 * 1024, // 500MB max file size
+    },
+    abortOnLimit: true,
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+    debug: true,
+  })
+);
 
 router.post("/", verifyAccessToken, upload, controller.create);
 router.get("/", controller.getAll);

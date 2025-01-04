@@ -1,4 +1,3 @@
-import Busboy from "busboy";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -243,160 +242,73 @@ class UserGuideController {
   }
 
   async uploadLargeFile(req, res, next) {
-    let metadata = {};
     let filePath = null;
-    let fileError = null;
+
     try {
-      console.log("[Upload Started] Initializing file upload process");
+      console.log("[Upload Started] Request received", req.files);
 
-      // Configure Busboy with higher limits and better streaming
-      const busboy = Busboy({
-        headers: req.headers,
-        limits: {
-          fileSize: 500 * 1024 * 1024, // 500MB
-          files: 1,
-          fields: 10, // Increase if you need more fields
-        },
-        highWaterMark: 2 * 1024 * 1024, // 2MB chunks
-        preservePath: true,
-        defParamCharset: "utf8",
-      });
-
-      let fileId = uuidv4();
-      console.log(`[File ID Generated] ${fileId}`);
-
-      // Add timeout handling
-      const uploadTimeout = setTimeout(() => {
-        fileError = new Error("Upload timeout - took too long to complete");
-        busboy.emit("error", fileError);
-      }, 30 * 60 * 1000); // 30 minutes timeout
-
-      busboy.on("field", (fieldname, value) => {
-        try {
-          metadata[fieldname] = value;
-          console.log(
-            `[Metadata Received] Field: ${fieldname}, Value: ${value}`
-          );
-        } catch (error) {
-          console.error("[Field Processing Error]", error);
-          fileError = error;
-        }
-      });
-
-      // Handle file processing
-      busboy.on("file", async (fieldname, file, { filename }) => {
-        try {
-          console.log(`[File Processing Started] Filename: ${filename}`);
-
-          if (!filename) {
-            throw new Error("No file provided");
-          }
-
-          // Validate file type if needed
-          const allowedExtensions = [".pdf", ".doc", ".docx"];
-          const ext = path.extname(filename).toLowerCase();
-          if (!allowedExtensions.includes(ext)) {
-            throw new Error("Invalid file type");
-          }
-
-          const uploadDir = "uploads/user-guide";
-          await fs.promises.mkdir(uploadDir, { recursive: true });
-
-          filePath = path.join(uploadDir, `${fileId}${ext}`);
-          console.log(`[File Path Generated] ${filePath}`);
-
-          const writeStream = fs.createWriteStream(filePath, {
-            flags: "w",
-            encoding: "binary",
-            highWaterMark: 2 * 1024 * 1024, // 2MB buffer
-          });
-
-          // Add error handler for the write stream
-          writeStream.on("error", (error) => {
-            console.error("[Write Stream Error]", error);
-            fileError = error;
-            file.resume();
-          });
-
-          // Pipe with error handling
-          file.pipe(writeStream).on("error", (error) => {
-            console.error("[Pipe Error]", error);
-            fileError = error;
-            file.resume();
-          });
-
-          // Handle file completion
-          file.on("end", () => {
-            writeStream.end();
-            console.log("[File Transfer] Complete");
-          });
-        } catch (error) {
-          console.error("[File Processing Error]", error);
-          fileError = error;
-          file.resume();
-        }
-      });
-
-      // Handle completion
-      busboy.on("finish", async () => {
-        clearTimeout(uploadTimeout);
-        try {
-          if (fileError) {
-            throw fileError;
-          }
-
-          if (!filePath) {
-            throw new Error("No file was processed");
-          }
-
-          // Process metadata and create database record
-          const userGuide = await prisma.userGuide.create({
-            data: {
-              id: fileId,
-              titleEn: metadata.titleEn,
-              titleAr: metadata.titleAr,
-              descriptionEn: metadata.descriptionEn,
-              descriptionAr: metadata.descriptionAr,
-              type: metadata.type,
-              link: addDomain(filePath),
-            },
-          });
-
-          res.json(
-            response(201, true, "User guide created successfully", userGuide)
-          );
-        } catch (error) {
-          if (filePath) {
-            await fs.promises.unlink(filePath).catch(console.error);
-          }
-          next(error);
-        }
-      });
-
-      // Error handling for busboy
-      busboy.on("error", async (error) => {
-        clearTimeout(uploadTimeout);
-        console.error("[Busboy Error]", error);
-        if (filePath) {
-          await fs.promises.unlink(filePath).catch(console.error);
-        }
-        next(new MyError(error.message || "Upload failed", 400));
-      });
-
-      // Pipe request to busboy with error handling
-      req.pipe(busboy).on("error", async (error) => {
-        clearTimeout(uploadTimeout);
-        console.error("[Pipe Error]", error);
-        if (filePath) {
-          await fs.promises.unlink(filePath).catch(console.error);
-        }
-        next(new MyError("Upload failed", 500));
-      });
-    } catch (error) {
-      console.error("[Global Error]", error);
-      if (filePath) {
-        await fs.promises.unlink(filePath).catch(console.error);
+      if (!req.files || Object.keys(req.files).length === 0) {
+        throw new MyError("No file was uploaded.");
       }
+
+      const file = req.files.file;
+      console.log("[File Info]", {
+        name: file.name,
+        size: file.size,
+        mimetype: file.mimetype,
+      });
+
+      // Generate unique ID for the file
+      const fileId = uuidv4();
+      const fileExt = path.extname(file.name);
+      const uploadDir = "uploads/user-guide";
+
+      // Create upload directory if it doesn't exist
+      fs.mkdirSync(uploadDir, { recursive: true });
+
+      // Set the file path
+      filePath = path.join(uploadDir, `${fileId}${fileExt}`);
+      console.log(`[Saving to] ${filePath}`);
+
+      // Move the file
+      await file.mv(filePath);
+      console.log("[File Saved] Successfully saved file");
+
+      // Extract metadata from request body
+      const metadata = {
+        titleEn: req.body.titleEn || "",
+        titleAr: req.body.titleAr || "",
+        descriptionEn: req.body.descriptionEn || "",
+        descriptionAr: req.body.descriptionAr || "",
+        type: req.body.type || "video",
+      };
+
+      console.log("[Creating Database Record]", metadata);
+
+      // Create database record
+      const userGuide = await prisma.userGuide.create({
+        data: {
+          id: fileId,
+          ...metadata,
+          link: addDomain(filePath),
+        },
+      });
+
+      console.log("[Database Record Created]", userGuide);
+
+      return res
+        .status(201)
+        .json(
+          response(201, true, "User guide created successfully", userGuide)
+        );
+    } catch (error) {
+      console.error("[Upload Error]", error);
+
+      // Cleanup on error
+      if (filePath && fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
       next(error);
     }
   }
