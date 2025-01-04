@@ -2,6 +2,7 @@ import express from "express";
 
 import addonRoutes from "./addon.js";
 import aggregationRoutes from "./aggregation.js";
+import amazonPayRoutes from "./amazonPay.js";
 import barcodeLookupRoutes from "./barcodeLookup.js";
 import barcodeTypeRoutes from "./barcodeType.js";
 import brandRoutes from "./brand.js";
@@ -90,6 +91,8 @@ router.use("/v1/aggregations", aggregationRoutes);
 router.use("/v1/udis", udiRoutes);
 router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
+router.use("/v1/amazon-pay", amazonPayRoutes);
+
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

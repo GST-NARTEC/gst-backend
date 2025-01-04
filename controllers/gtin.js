@@ -1,5 +1,6 @@
 import { gtinQueue } from "../config/queue.js";
 import { gtinArraySchema, gtinQuerySchema } from "../schemas/gtin.schema.js";
+import cache from "../utils/cache.js";
 import MyError from "../utils/error.js";
 import { parseTxtFile } from "../utils/fileParser.js";
 import prisma from "../utils/prismaClient.js";
@@ -28,6 +29,9 @@ class GTINController {
         gtins,
       });
 
+      // Invalidate cache after upload
+      await cache.delByPattern("gtin:*");
+
       return res.status(202).json(
         response(202, true, "GTIN processing started", {
           message: "File is being processed",
@@ -52,6 +56,9 @@ class GTINController {
         gtins,
       });
 
+      // Invalidate cache after adding new GTINs
+      await cache.delByPattern("gtin:*");
+
       return res.status(202).json(
         response(202, true, "GTIN processing started", {
           message: "GTINs are being processed",
@@ -68,8 +75,18 @@ class GTINController {
       if (error) throw new MyError(error.message, 400);
 
       const { page, limit, search, status, sortBy, sortOrder } = value;
-      const skip = (page - 1) * limit;
 
+      // Create cache key based on query parameters
+      const cacheKey = `gtin:list:${page}:${limit}:${search}:${status}:${sortBy}:${sortOrder}`;
+
+      // Try to get from cache first
+      const cachedData = await cache.get(cacheKey);
+
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+
+      const skip = (page - 1) * limit;
       const where = {};
       if (search) {
         where.gtin = { contains: search };
@@ -91,17 +108,20 @@ class GTINController {
         prisma.gTIN.count({ where }),
       ]);
 
-      return res.json(
-        response(200, true, "GTINs retrieved successfully", {
-          gtins,
-          pagination: {
-            page,
-            limit,
-            total,
-            pages: Math.ceil(total / limit),
-          },
-        })
-      );
+      const responseData = response(200, true, "GTINs retrieved successfully", {
+        gtins,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
+        },
+      });
+
+      // Cache the response
+      await cache.set(cacheKey, responseData);
+
+      return res.json(responseData);
     } catch (error) {
       next(error);
     }
@@ -109,6 +129,13 @@ class GTINController {
 
   static async getGTINStats(req, res, next) {
     try {
+      // Try to get from cache first
+      const cacheKey = "gtin:stats";
+      const cachedData = await cache.get(cacheKey);
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+
       const stats = await prisma.gTIN.groupBy({
         by: ["status"],
         _count: {
@@ -126,14 +153,17 @@ class GTINController {
         formattedStats[stat.status] = stat._count.status;
       });
 
-      return res.json(
-        response(
-          200,
-          true,
-          "GTIN statistics retrieved successfully",
-          formattedStats
-        )
+      const responseData = response(
+        200,
+        true,
+        "GTIN statistics retrieved successfully",
+        formattedStats
       );
+
+      // Cache the response
+      await cache.set(cacheKey, responseData);
+
+      return res.json(responseData);
     } catch (error) {
       next(error);
     }

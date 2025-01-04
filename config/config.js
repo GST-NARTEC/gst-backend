@@ -13,6 +13,12 @@ const config = {
   DOMAIN: process.env.DOMAIN || "https://api.gstsa1.org",
   MAX_FILE_SIZE: process.env.MAX_FILE_SIZE || 100 * 1024 * 1024,
   UPLOAD_TIMEOUT: process.env.UPLOAD_TIMEOUT || 600000,
+  redis: {
+    url: `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD,
+  },
 };
 
 export default config;
