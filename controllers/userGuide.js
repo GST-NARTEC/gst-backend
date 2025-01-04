@@ -227,7 +227,7 @@ class UserGuideController {
       const userGuide = await prisma.userGuide.findUnique({
         where: { id: req.params.id },
       });
-      if (!userGuide) return next(new Error("User guide not found"));
+      if (!userGuide) throw new MyError("User guide not found");
 
       await deleteFile(userGuide.link);
 
@@ -248,10 +248,16 @@ class UserGuideController {
       console.log("[Upload Started] Request received", req.files);
 
       if (!req.files || Object.keys(req.files).length === 0) {
-        throw new MyError("No file was uploaded.");
+        throw new Error("No file was uploaded.");
       }
 
-      const file = req.files.file;
+      // Check for either 'file' or 'video' field
+      const file = req.files.file || req.files.video;
+
+      if (!file) {
+        throw new Error("No file or video field found in the request");
+      }
+
       console.log("[File Info]", {
         name: file.name,
         size: file.size,
@@ -270,9 +276,23 @@ class UserGuideController {
       filePath = path.join(uploadDir, `${fileId}${fileExt}`);
       console.log(`[Saving to] ${filePath}`);
 
-      // Move the file
-      await file.mv(filePath);
-      console.log("[File Saved] Successfully saved file");
+      // Ensure the directory exists and is writable
+      try {
+        await fs.promises.access(uploadDir, fs.constants.W_OK);
+      } catch (error) {
+        console.log("[Directory Access Error]", error);
+        // Try to create directory with explicit permissions
+        await fs.promises.mkdir(uploadDir, { recursive: true, mode: 0o777 });
+      }
+
+      // Move the file with explicit error handling
+      try {
+        await file.mv(filePath);
+        console.log("[File Saved] Successfully saved file");
+      } catch (moveError) {
+        console.error("[File Move Error]", moveError);
+        throw new Error(`Failed to save file: ${moveError.message}`);
+      }
 
       // Extract metadata from request body
       const metadata = {
@@ -306,7 +326,11 @@ class UserGuideController {
 
       // Cleanup on error
       if (filePath && fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        try {
+          fs.unlinkSync(filePath);
+        } catch (cleanupError) {
+          console.error("[Cleanup Error]", cleanupError);
+        }
       }
 
       next(error);
