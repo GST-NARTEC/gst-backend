@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { userGuideSchema } from "../schemas/userGuide.schema.js";
-import cache from "../utils/cache.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -56,9 +55,6 @@ class UserGuideController {
         data: prismaData,
       });
 
-      // Invalidate cache after creating new guide
-      await cache.delByPattern("user-guide:*");
-
       return res
         .status(201)
         .json(response(201, true, "User guide created", userGuide));
@@ -84,18 +80,9 @@ class UserGuideController {
         search,
         sortBy = "createdAt",
         sortOrder = "desc",
-        language = "en",
-        type,
+        language = "en", // 'en' or 'ar'
+        type, // pdf or video
       } = req.query;
-
-      // Cache key based on query parameters
-      const cacheKey = `user-guide:all:${page}:${limit}:${search}:${sortBy}:${sortOrder}:${language}:${type}`;
-
-      // Try to get from cache first
-      const cachedData = await cache.get(cacheKey);
-      if (cachedData) {
-        return res.json(cachedData);
-      }
 
       const skip = (Number(page) - 1) * Number(limit);
 
@@ -155,21 +142,18 @@ class UserGuideController {
 
       const totalPages = Math.ceil(total / Number(limit));
 
-      const responseData = response(200, true, "User guides retrieved", {
-        guides: userGuides,
-        pagination: {
-          total,
-          page: Number(page),
-          totalPages,
-          limit: Number(limit),
-          hasMore: page < totalPages,
-        },
-      });
-
-      // Cache the response
-      await cache.set(cacheKey, responseData);
-
-      return res.json(responseData);
+      return res.json(
+        response(200, true, "User guides retrieved", {
+          guides: userGuides,
+          pagination: {
+            total,
+            page: Number(page),
+            totalPages,
+            limit: Number(limit),
+            hasMore: page < totalPages,
+          },
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -177,32 +161,11 @@ class UserGuideController {
 
   async getOne(req, res, next) {
     try {
-      const { id } = req.params;
-
-      // Try to get from cache first
-      const cacheKey = `user-guide:${id}`;
-      const cachedData = await cache.get(cacheKey);
-      if (cachedData) {
-        return res.json(cachedData);
-      }
-
       const userGuide = await prisma.userGuide.findUnique({
-        where: { id },
+        where: { id: req.params.id },
       });
-
       if (!userGuide) throw new MyError("User guide not found");
-
-      const responseData = response(
-        200,
-        true,
-        "User guide retrieved",
-        userGuide
-      );
-
-      // Cache the response
-      await cache.set(cacheKey, responseData);
-
-      return res.json(responseData);
+      return res.json(response(200, true, "User guide retrieved", userGuide));
     } catch (error) {
       next(error);
     }
@@ -244,9 +207,6 @@ class UserGuideController {
         data: updateData,
       });
 
-      // Invalidate cache after update
-      await cache.delByPattern("user-guide:*");
-
       return res.json(response(200, true, "User guide updated", userGuide));
     } catch (error) {
       // Clean up uploaded files in case of error
@@ -274,9 +234,6 @@ class UserGuideController {
       await prisma.userGuide.delete({
         where: { id: req.params.id },
       });
-
-      // Invalidate cache after deletion
-      await cache.delByPattern("user-guide:*");
 
       return res.json(response(200, true, "User guide deleted"));
     } catch (error) {
@@ -356,9 +313,6 @@ class UserGuideController {
           link: addDomain(filePath),
         },
       });
-
-      // Invalidate cache after large file upload
-      await cache.delByPattern("user-guide:*");
 
       console.log("[Database Record Created]", userGuide);
 

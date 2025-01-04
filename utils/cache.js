@@ -4,13 +4,12 @@ import config from "../config/config.js";
 class CacheService {
   constructor() {
     this.client = createClient({
-      url: `redis://${config.redis.host}:${config.redis.port}`,
+      url: config.redis.url,
       socket: {
-        reconnectStrategy: (retries) => {
-          // Maximum retry delay of 3 seconds
-          return Math.min(retries * 100, 3000);
-        },
+        reconnectStrategy: (retries) => Math.min(retries * 100, 3000),
+        tls: process.env.NODE_ENV === "production" ? false : undefined,
       },
+      legacyMode: false,
     });
 
     this.client.on("error", (err) => {

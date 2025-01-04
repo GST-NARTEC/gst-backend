@@ -1,4 +1,3 @@
-import cache from "../utils/cache.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
 import prisma from "../utils/prismaClient.js";
@@ -20,9 +19,6 @@ class BrandController {
           userId,
         },
       });
-
-      // Invalidate cache
-      await cache.delByPattern("brands:*");
 
       return res.status(201).json(
         response(201, true, "Brand created successfully", {
@@ -208,9 +204,6 @@ class BrandController {
         },
       });
 
-      // Invalidate cache
-      await cache.delByPattern("brands:*");
-
       return res.status(200).json(
         response(200, true, "Brand updated successfully", {
           brand: updatedBrand,
@@ -247,9 +240,6 @@ class BrandController {
       await prisma.brand.delete({
         where: { id },
       });
-
-      // Invalidate cache
-      await cache.delByPattern("brands:*");
 
       return res
         .status(200)
