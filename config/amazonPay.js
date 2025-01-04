@@ -25,11 +25,3 @@ export const amazonPayConfig = {
     shaResponsePhrase: process.env.SHA_RESPONSE_PHRASE,
   },
 };
-
-// Log configuration on startup (excluding sensitive data)
-console.log("Amazon Pay Configuration:", {
-  environment: process.env.NODE_ENV,
-  isSandbox: process.env.NODE_ENV !== "production",
-  merchantIdentifier: process.env.MERCHANT_IDENTIFIER,
-  shaType: process.env.SHA_TYPE,
-});
