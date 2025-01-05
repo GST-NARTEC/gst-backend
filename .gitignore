@@ -10,3 +10,5 @@ uploads/*
 seed/*
 # Sentry Config File
 .sentryclirc
+
+.codegpt
