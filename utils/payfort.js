@@ -15,8 +15,8 @@ class PayfortService {
 
     // Set the correct API URL based on environment
     this.baseURL = this.config.sandboxMode
-      ? "https://sbpaymentservices.payfort.com/FortAPI/paymentPage"
-      : "https://paymentservices.payfort.com/FortAPI/paymentPage";
+      ? "https://sbcheckout.payfort.com/FortAPI/paymentPage"
+      : "https://checkout.payfort.com/FortAPI/paymentPage";
   }
 
   generateSignature(params, signType = "request") {
