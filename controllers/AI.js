@@ -17,7 +17,7 @@ export const runModel = async (req, res) => {
     }
 
     try {
-        console.log("Running the model...");
+       
 
         // Initialize an array to store image URLs
         const imageURLs = [];
@@ -30,13 +30,10 @@ export const runModel = async (req, res) => {
                 }
             );
 
-            // Log the full output array for debugging
-            console.log("Full output from model:", outputArray);
 
             if (Array.isArray(outputArray) && outputArray[0]) {
                 const streamURL = outputArray[0];
-                console.log(`Stream URL: ${streamURL}`);
-
+               
                 imageURLs.push(`${streamURL}`);
             } else {
                 console.error("Model output array is empty or invalid.");
@@ -47,8 +44,7 @@ export const runModel = async (req, res) => {
             }
         }
 
-        // Log final image URLs
-        console.log("Final Image URLs:", imageURLs);
+       
 
         res.status(200).json({ success: true, images: imageURLs });
 
