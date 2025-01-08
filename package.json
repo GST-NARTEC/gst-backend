@@ -41,6 +41,7 @@
     "nodemailer": "^6.9.16",
     "puppeteer": "^23.8.0",
     "qrcode": "^1.5.4",
+    "replicate": "^1.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.3"

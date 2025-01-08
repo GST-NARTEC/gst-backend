@@ -44,7 +44,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-
+import AIRoutes from "./AI.js";
 const router = express.Router();
 
 // V1 Routes
@@ -91,6 +91,8 @@ router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
 router.use("/v1/payment", paymentRoutes);
 
+router.use("/v1/amazon-pay", amazonPayRoutes);
+router.use("/v1/ai/image", AIRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);
