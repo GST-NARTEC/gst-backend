@@ -92,7 +92,6 @@ router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
 router.use("/v1/payment", paymentRoutes);
 
-router.use("/v1/amazon-pay", paymentRoutes);
 router.use("/v1/ai/image", AIRoutes);
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
