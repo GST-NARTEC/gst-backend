@@ -75,7 +75,7 @@ class PayfortService {
       currency: orderData.currency || "SAR",
       language: this.config.language,
       customer_email: orderData.email,
-      return_url: `${process.env.FRONTEND_URL}/payment/callback`,
+      return_url: `${process.env.FRONTEND_URL}/success`,
     };
 
     // Generate signature
