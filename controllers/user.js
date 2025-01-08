@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 
 import {
   checkoutQueue,
+  orderActivationQueue,
   resetPasswordQueue,
   userDeletionQueue,
 } from "../config/queue.js";
@@ -912,6 +913,7 @@ class UserController {
         userWithCartCheckout.validate({
           paymentType: req.body.paymentType,
           vat: req.body.vat,
+          orderNumber: req.body.orderNumber,
         });
 
       if (checkoutError) {
@@ -977,6 +979,11 @@ class UserController {
       if (!activeCurrency)
         throw new MyError("No active currency configuration found", 400);
 
+      // generate order number
+      checkoutInfo.orderNumber = req.body.orderNumber
+        ? req.body.orderNumber
+        : generateOrderId();
+
       // 5. Add checkout job to queue
       await checkoutQueue.add(
         "process-checkout",
@@ -987,7 +994,7 @@ class UserController {
           vat: checkoutInfo.vat,
           activeVat,
           activeCurrency,
-          orderNumber: generateOrderId(),
+          orderNumber: checkoutInfo.orderNumber,
         },
         {
           attempts: 3,
@@ -997,6 +1004,22 @@ class UserController {
           },
         }
       );
+
+      // if payment type is not bank transfer
+      if (checkoutInfo.paymentType.toLowerCase() !== "bank transfer") {
+        // Add job to queue
+        await orderActivationQueue.add(
+          "order-activation",
+          { orderNumber: checkoutInfo.orderNumber },
+          {
+            attempts: 3,
+            backoff: {
+              type: "exponential",
+              delay: 5000,
+            },
+          }
+        );
+      }
 
       res.status(201).json(
         response(201, true, "User creation and checkout initiated", {

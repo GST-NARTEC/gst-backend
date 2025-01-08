@@ -108,6 +108,7 @@ export const userWithCartCheckout = Joi.object({
   //   "Tabby"
   // )
   vat: Joi.number().min(0).default(0),
+  orderNumber: Joi.string().optional(),
 });
 
 export const userNewOrderSchema = Joi.object({
