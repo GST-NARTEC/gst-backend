@@ -2,6 +2,7 @@ import express from "express";
 
 import addonRoutes from "./addon.js";
 import aggregationRoutes from "./aggregation.js";
+import AIRoutes from "./AI.js";
 import barcodeLookupRoutes from "./barcodeLookup.js";
 import barcodeTypeRoutes from "./barcodeType.js";
 import brandRoutes from "./brand.js";
@@ -25,7 +26,10 @@ import menuRoutes from "./menu.js";
 import orderRoutes from "./order.js";
 import packagingTypeRoutes from "./packagingType.js";
 import pageRoutes from "./page.js";
-import paymentRoutes from "./payment.js";
+import {
+  default as amazonPayRoutes,
+  default as paymentRoutes,
+} from "./payment.js";
 import productRouter from "./product.js";
 import productTypeRoutes from "./productType.js";
 import proServiceRoutes from "./proService.js";
@@ -44,7 +48,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
-import AIRoutes from "./AI.js";
+
 const router = express.Router();
 
 // V1 Routes
