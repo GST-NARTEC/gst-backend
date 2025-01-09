@@ -12,6 +12,11 @@ const whitelist = [
   "http://www.gstsa1.org",
   "http://buybarcodeupc.com",
   "http://localhost:5174",
+  // PayFort URLs
+  "https://sbcheckout.payfort.com",
+  "https://checkout.payfort.com",
+  "https://sbpaymentservices.payfort.com",
+  "https://paymentservices.payfort.com",
 ].filter(Boolean);
 
 const corsOptions = {

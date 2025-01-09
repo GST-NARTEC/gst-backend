@@ -3,12 +3,11 @@ import PaymentController from "../controllers/payment.js";
 
 const router = express.Router();
 
+router.use("/success", PaymentController.handlePaymentSuccess);
 router.post(
   "/initialize",
   //   verifyAccessToken,
   PaymentController.initializePayment
 );
-
-router.use("/success", PaymentController.handlePaymentSuccess);
 
 export default router;
