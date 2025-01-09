@@ -1,4 +1,3 @@
-// utils/payfort.js
 import crypto from "crypto";
 
 class PayfortService {
