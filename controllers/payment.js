@@ -30,6 +30,7 @@ class PaymentController {
 
   static async handlePaymentSuccess(req, res, next) {
     try {
+      console.log("Payment response:", req.body);
       // redirect to my website
       return res.redirect("https://buybarcodeupc.com/success");
     } catch (error) {
