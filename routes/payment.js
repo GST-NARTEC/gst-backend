@@ -9,4 +9,6 @@ router.post(
   PaymentController.initializePayment
 );
 
+router.use("/success", PaymentController.handlePaymentSuccess);
+
 export default router;

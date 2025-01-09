@@ -27,6 +27,16 @@ class PaymentController {
       next(error);
     }
   }
+
+  static async handlePaymentSuccess(req, res, next) {
+    try {
+      // redirect to my website
+      return res.redirect("https://buybarcodeupc.com/success");
+    } catch (error) {
+      console.error("Payment response error:", error);
+      next(error);
+    }
+  }
 }
 
 export default PaymentController;
