@@ -74,7 +74,8 @@ class PayfortService {
       currency: orderData.currency || "SAR",
       language: this.config.language,
       customer_email: orderData.email,
-      return_url: `https://gstsa1.org/api/v1/payment/success`,
+      return_url: `http://buybarcodeupc.com/success`,
+      //   return_url: `https://gstsa1.org/api/v1/payment/success`,
     };
 
     // Generate signature
