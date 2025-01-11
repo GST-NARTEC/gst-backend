@@ -149,23 +149,20 @@ Access the Swagger documentation at `/api-docs` when running the server.
 ## Project Structure
 
 ```
-├── assets/            # Static assets
-├── config/           # Configuration files
-├── controllers/      # Route controllers
-├── docs/            # API documentation
-├── middlewares/     # Express middlewares
-├── prisma/          # Database schema and migrations
-├── routes/          # API routes
-├── utils/           # Utility functions
-├── view/            # Email templates
-├── workers/         # Background job workers
-└── app.js           # Application entry point
+├── assets/             # Static assets
+├── config/             # Configuration files
+├── controllers/        # Route controllers
+├── docs/               # API documentation
+├── middlewares/        # Express middlewares
+├── prisma/             # Database schema and migrations
+├── routes/             # API routes
+├── uploads/            # All uploaded files during the use
+├── utils/              # Utility functions
+├── view/               # Email templates
+├── workers/            # Background job workers
+└── app.js              # Application entry point
 ```
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-```
-
-```
