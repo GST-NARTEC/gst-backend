@@ -1,10 +1,7 @@
 // controllers/payment.js
 import PAYFORT_CONFIG from "../config/payfort.js";
-import MyError from "../utils/error.js";
 import { generateSignature } from "../utils/generatePayfortSign.js";
 import { generateOrderId } from "../utils/generateUniqueId.js";
-import PayfortService from "../utils/payfort.js";
-import response from "../utils/response.js";
 
 class PaymentController {
   static async initPayment(req, res) {
@@ -23,7 +20,7 @@ class PaymentController {
         access_code: PAYFORT_CONFIG.access_code,
         merchant_reference: merchantReference,
         language: "en",
-        amount: amount,
+        amount: amount.toString(),
         currency,
         customer_email: customerEmail,
         customer_name: customerName,
