@@ -66,7 +66,7 @@ class PaymentController {
       };
 
       // Handle different response statuses
-      let redirectUrl = "http://localhost:5173/payment/success";
+      let redirectUrl = "https://buybarcodeupc.com/payment/success";
 
       switch (req.body.status) {
         case "14": // Success
@@ -91,7 +91,9 @@ class PaymentController {
       return res.json({ status: "success" });
     } catch (error) {
       console.error("Payment callback error:", error);
-      return res.redirect(`http://localhost:5173/payment/success?status=error`);
+      return res.redirect(
+        `https://buybarcodeupc.com/payment/success?status=error`
+      );
     }
   }
 }
