@@ -33,15 +33,6 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
 
-// amazon payfort redirect
-app.all("/payment/success", (req, res) => {
-  // Redirect to the actual API endpoint
-  const queryString = req.url.includes("?")
-    ? req.url.substring(req.url.indexOf("?"))
-    : "";
-  res.redirect(`/api/v1/payment/success${queryString}`);
-});
-
 app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Error Routes
