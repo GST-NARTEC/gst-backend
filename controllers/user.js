@@ -982,7 +982,7 @@ class UserController {
       // generate order number
       checkoutInfo.orderNumber = req.body.orderNumber
         ? req.body.orderNumber
-        : generateOrderId();
+        : generateOrderId(); // ord-123123123
 
       // 5. Add checkout job to queue
       await checkoutQueue.add(

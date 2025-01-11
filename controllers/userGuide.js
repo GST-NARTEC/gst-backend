@@ -245,8 +245,6 @@ class UserGuideController {
     let filePath = null;
 
     try {
-      console.log("[Upload Started] Request received", req.files);
-
       if (!req.files || Object.keys(req.files).length === 0) {
         throw new Error("No file was uploaded.");
       }
@@ -258,11 +256,7 @@ class UserGuideController {
         throw new Error("No file or video field found in the request");
       }
 
-      console.log("[File Info]", {
-        name: file.name,
-        size: file.size,
-        mimetype: file.mimetype,
-      });
+
 
       // Generate unique ID for the file
       const fileId = uuidv4();
