@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const processOrderActivation = async (job) => {
-  const { orderNumber } = job.data;
+  const { orderNumber, onlinePayment } = job.data;
   let order;
 
   // First fetch with all necessary includes
@@ -47,7 +47,7 @@ const processOrderActivation = async (job) => {
     throw new Error("Account is already activated");
   }
 
-  if (order.status !== "Pending Account Activation") {
+  if (order.status !== "Pending Account Activation" && !onlinePayment) {
     throw new Error("Order is not in pending activation status");
   }
 

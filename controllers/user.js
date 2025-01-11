@@ -1010,7 +1010,7 @@ class UserController {
         // Add job to queue
         await orderActivationQueue.add(
           "order-activation",
-          { orderNumber: checkoutInfo.orderNumber },
+          { orderNumber: checkoutInfo.orderNumber, onlinePayment: true },
           {
             attempts: 3,
             backoff: {
