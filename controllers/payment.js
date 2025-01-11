@@ -7,41 +7,6 @@ import PayfortService from "../utils/payfort.js";
 import response from "../utils/response.js";
 
 class PaymentController {
-  static async initializePayment(req, res, next) {
-    try {
-      const { orderId, amount, email, currency = "SAR" } = req.body;
-
-      if (!orderId || !amount || !email) {
-        throw new MyError("Missing required parameters", 400);
-      }
-
-      // Prepare payment request
-      const paymentData = PayfortService.preparePaymentRequest({
-        orderId,
-        amount,
-        email,
-        currency,
-      });
-
-      // Return the form parameters and URL
-      return res.json(response(200, true, "Payment initialized", paymentData));
-    } catch (error) {
-      console.error("Payment initialization error:", error);
-      next(error);
-    }
-  }
-
-  static async handlePaymentSuccess(req, res, next) {
-    try {
-      console.log("Payment response:", req.body);
-      // redirect to my website
-      return res.redirect("https://buybarcodeupc.com/success");
-    } catch (error) {
-      console.error("Payment response error:", error);
-      next(error);
-    }
-  }
-
   static async initPayment(req, res) {
     try {
       const { amount, currency, customerEmail, customerName } = req.body;
@@ -58,11 +23,12 @@ class PaymentController {
         access_code: PAYFORT_CONFIG.access_code,
         merchant_reference: merchantReference,
         language: "en",
-        amount: (amount * 100).toString(),
+        amount: amount,
         currency,
         customer_email: customerEmail,
         customer_name: customerName,
-        return_url: "https://gstsa1.org/api/v1/payment/success",
+        // return_url: "https://gstsa1.org/api/v1/payment/success",
+        return_url: "http://localhost:3000/api/v1/payment/success",
       };
 
       requestParams.signature = generateSignature(
@@ -104,7 +70,7 @@ class PaymentController {
       };
 
       // Handle different response statuses
-      let redirectUrl = "http://localhost:5174/payment/success";
+      let redirectUrl = "http://localhost:5173/payment/success";
 
       switch (req.body.status) {
         case "14": // Success

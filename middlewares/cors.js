@@ -12,6 +12,9 @@ const whitelist = [
   "http://www.gstsa1.org",
   "http://buybarcodeupc.com",
   "http://localhost:5174",
+  "http://localhost:3000",
+  "http://localhost:3000/api",
+
   // PayFort URLs
   "https://sbcheckout.payfort.com",
   "https://checkout.payfort.com",
@@ -20,17 +23,7 @@ const whitelist = [
 ].filter(Boolean);
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new MyError("Origin not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  maxAge: 86400,
+  origin: "*",
 };
 
 export default cors(corsOptions);
