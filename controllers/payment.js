@@ -24,8 +24,7 @@ class PaymentController {
         currency,
         customer_email: customerEmail,
         customer_name: customerName,
-        // return_url: "https://gstsa1.org/api/v1/payment/success",
-        return_url: "http://localhost:3000/api/v1/payment/success",
+        return_url: `https://gstsa1.org/api/v1/payment/success`,
       };
 
       requestParams.signature = generateSignature(
