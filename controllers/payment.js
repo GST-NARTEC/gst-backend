@@ -20,7 +20,7 @@ class PaymentController {
         access_code: PAYFORT_CONFIG.access_code,
         merchant_reference: merchantReference,
         language: "en",
-        amount: amount.toString(),
+        amount: (amount * 1).toString(),
         currency,
         customer_email: customerEmail,
         customer_name: customerName,
