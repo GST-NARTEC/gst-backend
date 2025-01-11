@@ -23,7 +23,17 @@ const whitelist = [
 ].filter(Boolean);
 
 const corsOptions = {
-  origin: "*",
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new MyError("Not allowed by CORS", 403));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+  optionsSuccessStatus: 200,
 };
 
 export default cors(corsOptions);
