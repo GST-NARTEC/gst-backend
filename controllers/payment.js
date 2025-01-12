@@ -84,6 +84,7 @@ class PaymentController {
         req.headers["user-agent"] &&
         req.headers["user-agent"].includes("Mozilla")
       ) {
+        console.log("Redirecting to:", redirectUrl);
         return res.redirect(redirectUrl);
       }
 
