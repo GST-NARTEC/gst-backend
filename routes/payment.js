@@ -3,10 +3,7 @@ import PaymentController from "../controllers/payment.js";
 
 const router = express.Router();
 
-router.use("/success", (req, res, next) => {
-  console.log("Hit: /payment/success");
-  return res.redirect(`https://www.google.com`);
-});
+router.all("/success", PaymentController.successPayment);
 router.post("/initialize", PaymentController.initPayment);
 
 export default router;
