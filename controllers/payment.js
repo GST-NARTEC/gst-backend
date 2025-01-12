@@ -79,8 +79,6 @@ class PaymentController {
           redirectUrl += `?status=failed`;
       }
 
-      console.log("Redirecting to:", redirectUrl);
-
       // If it's a direct browser redirect (not a notification)
       if (
         req.headers["user-agent"] &&
@@ -90,7 +88,7 @@ class PaymentController {
       }
 
       // If it's a notification from PayFort
-      return res.redirect(redirectUrl);
+      return res.json({ status: "success" });
     } catch (error) {
       console.error("Payment callback error:", error);
       return res.redirect(
