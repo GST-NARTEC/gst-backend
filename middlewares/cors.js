@@ -22,18 +22,23 @@ const whitelist = [
   "https://paymentservices.payfort.com",
 ].filter(Boolean);
 
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new MyError("Not allowed by CORS", 403));
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };
+
+// allow all origins
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new MyError("Not allowed by CORS", 403));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  credentials: true,
-  optionsSuccessStatus: 200,
+  origin: "*",
 };
 
 export default cors(corsOptions);
