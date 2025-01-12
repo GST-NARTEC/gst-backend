@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.all("/success", (req, res, next) => {
   console.log("Hit: /payment/success");
-  return res.redirect(`https://buybarcodeupc.com/payment/success?status=error`);
+  return res.redirect(`https://www.google.com`);
 });
 router.post("/initialize", PaymentController.initPayment);
 
