@@ -79,21 +79,22 @@ class PaymentController {
           redirectUrl += `?status=failed`;
       }
 
-      // If it's a direct browser redirect (not a notification)
-      if (
+      // Check if it's a browser request or a PayFort notification
+      const isBrowserRequest =
         req.headers["user-agent"] &&
-        req.headers["user-agent"].includes("Mozilla")
-      ) {
-        return res.redirect(redirectUrl);
-      }
+        req.headers["user-agent"].includes("Mozilla");
 
-      // If it's a notification from PayFort
-      return res.json({ status: "success" });
+      if (isBrowserRequest) {
+        res.redirect(redirectUrl);
+      } else {
+        res.json({ status: "success" });
+      }
     } catch (error) {
       console.error("Payment callback error:", error);
-      return res.redirect(
-        `https://buybarcodeupc.com/payment/success?status=error`
-      );
+      // Check if headers haven't been sent before redirecting
+      if (!res.headersSent) {
+        res.redirect(`https://buybarcodeupc.com/payment/success?status=error`);
+      }
     }
   }
 }
