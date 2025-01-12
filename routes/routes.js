@@ -26,6 +26,7 @@ import menuRoutes from "./menu.js";
 import orderRoutes from "./order.js";
 import packagingTypeRoutes from "./packagingType.js";
 import pageRoutes from "./page.js";
+import paymentRoutes from "./payment.js";
 import productRouter from "./product.js";
 import productTypeRoutes from "./productType.js";
 import proServiceRoutes from "./proService.js";
@@ -89,7 +90,7 @@ router.use("/v1/aggregations", aggregationRoutes);
 router.use("/v1/udis", udiRoutes);
 router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
-// router.use("/v1/payment", paymentRoutes);
+router.use("/v1/payment", paymentRoutes);
 
 router.use("/v1/ai/image", AIRoutes);
 // V2 Routes

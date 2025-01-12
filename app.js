@@ -11,7 +11,6 @@ import config from "./config/config.js";
 import swaggerSpec from "./config/swagger.js";
 import cors from "./middlewares/cors.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.js";
-import paymentRoutes from "./routes/payment.js";
 import routes from "./routes/routes.js";
 dotenv.config();
 
@@ -34,7 +33,6 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
 
-app.use("/api/v1/payment", paymentRoutes);
 app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Error Routes
