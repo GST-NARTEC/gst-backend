@@ -116,7 +116,7 @@ class PaymentController {
 
       // save data in the database
       await prisma.payment.create({
-        data: paymentData,
+        data: { ...paymentData, amount: parseFloat(paymentData.amount) },
       });
 
       if (isBrowserRequest) {
