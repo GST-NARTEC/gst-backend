@@ -52,11 +52,17 @@ const processOrderActivation = async (job) => {
   }
 
   if (onlinePayment) {
-    // update payment order number
-    await prisma.payment.update({
+    const payment = await prisma.payment.findFirst({
       where: { merchantReference: orderNumber },
-      data: { orderId: order.id },
     });
+
+    if (payment) {
+      // update payment order number
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: { orderId: order.id },
+      });
+    }
   }
 
   // Calculate total quantity needed
