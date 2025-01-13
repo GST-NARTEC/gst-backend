@@ -24,7 +24,7 @@ class PaymentController {
         currency,
         customer_email: customerEmail,
         customer_name: customerName,
-        return_url: `https://api.gstsa1.org/payment/success`
+        return_url: `https://api.gstsa1.org/api/v1/payment/success`,
       };
 
       requestParams.signature = generateSignature(
@@ -45,7 +45,6 @@ class PaymentController {
   }
 
   static async successPayment(req, res) {
-    res.send("Payment")
     try {
       console.log("Payment callback received:", req.body);
       const responseSignature = req.body.signature;
@@ -71,15 +70,15 @@ class PaymentController {
 
       switch (req.body.status) {
         case "14": // Success
-          console.log("case 14");  
+          console.log("case 14");
           redirectUrl += `?status=success&transactionId=${req.body.fort_id}&orderNumber=${req.body.merchant_reference}`;
           break;
         case "12": // On hold
-        console.log("case 12");  
+          console.log("case 12");
           redirectUrl += `?status=pending&transactionId=${req.body.fort_id}&orderNumber=${req.body.merchant_reference}`;
           break;
         default:
-          console.log("case default");  
+          console.log("case default");
           redirectUrl += `?status=failed`;
       }
 
