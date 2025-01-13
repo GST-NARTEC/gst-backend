@@ -1,5 +1,6 @@
 // controllers/payment.js
 import PAYFORT_CONFIG from "../config/payfort.js";
+import prisma from "../utils/prismaClient.js";
 import { generateSignature } from "../utils/generatePayfortSign.js";
 import { generateOrderId } from "../utils/generateUniqueId.js";
 
