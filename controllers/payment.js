@@ -121,6 +121,16 @@ class PaymentController {
         },
       });
 
+      // Add null check for order
+      if (!order) {
+        console.error(
+          `No order found for merchant_reference: ${req.body.merchant_reference}`
+        );
+        return res.redirect(
+          `https://buybarcodeupc.com/payment/success?status=error&message=order_not_found`
+        );
+      }
+
       // save data in the database
       await prisma.payment.create({
         data: {
