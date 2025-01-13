@@ -90,7 +90,7 @@ router.use("/v1/aggregations", aggregationRoutes);
 router.use("/v1/udis", udiRoutes);
 router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
-// router.use("/v1/payment", paymentRoutes);
+router.use("/v1/payment", paymentRoutes);
 
 router.use("/v1/ai/image", AIRoutes);
 // V2 Routes

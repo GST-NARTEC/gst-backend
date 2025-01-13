@@ -13,7 +13,6 @@ import cors from "./middlewares/cors.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.js";
 import routes from "./routes/routes.js";
 dotenv.config();
-import paymentRoutes from "./routes/payment.js"
 
 const PORT = config.PORT;
 const app = express();
@@ -29,15 +28,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 // API Routes
-app.get("/test", (req, res) => {
-  res.json("success")
-})
-
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
-
-app.use("/", paymentRoutes)
 app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Error Routes
