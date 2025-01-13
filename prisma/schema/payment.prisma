@@ -1,0 +1,44 @@
+model Payment {
+  // Order identifiers
+  id                String    @id @default(cuid())
+  merchantReference String?
+  fortId           String?
+
+  // Payment details
+  amount           Float?
+  currency         String?
+
+  // Transaction status
+  responseCode     String?
+  responseMessage  String?
+  authorizationCode String?
+  status           String?
+
+  // Payment method
+  paymentOption    String?
+  cardNumber       String?
+  cardHolderName   String?
+
+  // Customer information
+  customerEmail    String?
+  customerName     String?
+  customerIp       String?
+
+  // Security and transaction type
+  eci              String?
+  command          String?
+
+  // Gateway identifiers
+  merchantIdentifier String?
+  accessCode        String?
+
+  // Timestamps
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Order
+  orderId       String? @db.UniqueIdentifier
+  order         Order? @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}

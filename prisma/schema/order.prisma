@@ -18,6 +18,7 @@ model Order {
   invoice            Invoice?
   user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderItems         OrderItem[]
+  payment            Payment[]
 }
 
 model OrderItem {

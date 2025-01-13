@@ -58,11 +58,37 @@ class PaymentController {
 
       // Store payment response data (recommended)
       const paymentData = {
-        status: req.body.status,
-        transactionId: req.body.fort_id,
-        amount: req.body.amount,
+        // Order identifiers
         merchantReference: req.body.merchant_reference,
-        // Add other relevant fields
+        fortId: req.body.fort_id,
+
+        // Payment details
+        amount: req.body.amount,
+        currency: req.body.currency,
+
+        // Transaction status
+        responseCode: req.body.response_code,
+        responseMessage: req.body.response_message,
+        authorizationCode: req.body.authorization_code,
+        status: req.body.status,
+
+        // Payment method
+        paymentOption: req.body.payment_option,
+        cardNumber: req.body.card_number,
+        cardHolderName: req.body.card_holder_name,
+
+        // Customer information
+        customerEmail: req.body.customer_email,
+        customerName: req.body.customer_name,
+        customerIp: req.body.customer_ip,
+
+        // Security and transaction type
+        eci: req.body.eci,
+        command: req.body.command,
+
+        // Gateway identifiers
+        merchantIdentifier: req.body.merchant_identifier,
+        accessCode: req.body.access_code,
       };
 
       // Handle different response statuses
@@ -87,10 +113,25 @@ class PaymentController {
         req.headers["user-agent"] &&
         req.headers["user-agent"].includes("Mozilla");
 
+      // get order by orderNumber
+      const order = await prisma.order.findFirst({
+        where: {
+          orderNumber: req.body.merchant_reference,
+        },
+      });
+
+      // save data in the database
+      await prisma.payment.create({
+        data: {
+          ...paymentData,
+          orderId: order.id,
+        },
+      });
+
       if (isBrowserRequest) {
         res.redirect(redirectUrl);
       } else {
-        res.json({ status: "success" });
+        res.redirect(redirectUrl);
       }
     } catch (error) {
       console.error("Payment callback error:", error);
