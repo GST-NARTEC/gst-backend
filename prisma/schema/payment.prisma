@@ -37,6 +37,7 @@ model Payment {
   updatedAt        DateTime  @updatedAt
 
   // Order
+  orderNumber     String?
   orderId       String? @db.UniqueIdentifier
   order         Order? @relation(fields: [orderId], references: [id], onDelete: Cascade)
 

@@ -51,6 +51,14 @@ const processOrderActivation = async (job) => {
     throw new Error("Order is not in pending activation status");
   }
 
+  if (onlinePayment) {
+    // update payment order number
+    await prisma.payment.update({
+      where: { merchantReference: orderNumber },
+      data: { orderId: order.id },
+    });
+  }
+
   // Calculate total quantity needed
   const totalQuantity = order.orderItems.reduce(
     (sum, item) => sum + item.quantity,

@@ -1,8 +1,8 @@
 // controllers/payment.js
 import PAYFORT_CONFIG from "../config/payfort.js";
-import prisma from "../utils/prismaClient.js";
 import { generateSignature } from "../utils/generatePayfortSign.js";
 import { generateOrderId } from "../utils/generateUniqueId.js";
+import prisma from "../utils/prismaClient.js";
 
 class PaymentController {
   static async initPayment(req, res) {
@@ -114,29 +114,9 @@ class PaymentController {
         req.headers["user-agent"] &&
         req.headers["user-agent"].includes("Mozilla");
 
-      // get order by orderNumber
-      const order = await prisma.order.findFirst({
-        where: {
-          orderNumber: req.body.merchant_reference,
-        },
-      });
-
-      // Add null check for order
-      if (!order) {
-        console.error(
-          `No order found for merchant_reference: ${req.body.merchant_reference}`
-        );
-        return res.redirect(
-          `https://buybarcodeupc.com/payment/success?status=error&message=order_not_found`
-        );
-      }
-
       // save data in the database
       await prisma.payment.create({
-        data: {
-          ...paymentData,
-          orderId: order.id,
-        },
+        data: paymentData,
       });
 
       if (isBrowserRequest) {
