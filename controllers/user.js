@@ -323,7 +323,6 @@ class UserController {
                     },
                   },
                   invoice: true,
-                  payment: true,
                 },
               },
             };
@@ -427,6 +426,7 @@ class UserController {
           include: {
             order: {
               include: {
+                payment: true,
                 orderItems: {
                   include: {
                     product: {
