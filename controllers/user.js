@@ -302,6 +302,7 @@ class UserController {
                 },
               },
               invoice: true,
+              payment: true,
             },
           },
         };
