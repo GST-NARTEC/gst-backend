@@ -131,4 +131,5 @@ export const userNewOrderSchema = Joi.object({
       })
     )
     .required(),
+  orderNumber: Joi.string().optional(),
 });

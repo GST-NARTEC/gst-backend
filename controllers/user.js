@@ -1042,6 +1042,11 @@ class UserController {
 
       const { userId, paymentType, vat, cartItems } = value;
 
+      // generate order number
+      value.orderNumber = req.body.orderNumber
+        ? req.body.orderNumber
+        : generateOrderId();
+
       // 1. First get user with their cart
       const user = await prisma.user.findUnique({
         where: { id: userId },
@@ -1159,7 +1164,7 @@ class UserController {
           vat: vat,
           activeVat,
           activeCurrency,
-          orderNumber: generateOrderId(),
+          orderNumber: value.orderNumber,
           isNewOrder: true,
         },
         {
@@ -1170,6 +1175,22 @@ class UserController {
           },
         }
       );
+
+      // 4. if payment type is not bank transfer
+      if (paymentType.toLowerCase() !== "bank transfer") {
+        // Add job to queue
+        await orderActivationQueue.add(
+          "order-activation",
+          { orderNumber: value.orderNumber, onlinePayment: true },
+          {
+            attempts: 3,
+            backoff: {
+              type: "exponential",
+              delay: 5000,
+            },
+          }
+        );
+      }
 
       res.status(201).json(response(201, true, "Order created successfully"));
     } catch (error) {
