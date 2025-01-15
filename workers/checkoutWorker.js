@@ -4,6 +4,7 @@ import { Worker } from "bullmq";
 import {
   accountAdminNotificationQueue,
   connection,
+  orderActivationQueue,
   welcomeEmailQueue,
 } from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
@@ -220,6 +221,7 @@ const processCheckouts = async (job) => {
     activeVat,
     activeCurrency,
     isNewOrder = false,
+    onlinePayment = false,
   } = job.data;
 
   let isSec = false;
@@ -418,6 +420,22 @@ const processCheckouts = async (job) => {
   } else {
     //TODO: send new order notification
     console.log("Inshallah new order notification will be sent");
+  }
+
+  // if payment type is not bank transfer
+  if (paymentType.toLowerCase() !== "bank transfer") {
+    // Add job to queue
+    await orderActivationQueue.add(
+      "order-activation",
+      { orderNumber: orderNumber, onlinePayment: onlinePayment },
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 5000,
+        },
+      }
+    );
   }
 
   return result;

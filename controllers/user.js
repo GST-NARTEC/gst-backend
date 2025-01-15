@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 
 import {
   checkoutQueue,
-  orderActivationQueue,
   resetPasswordQueue,
   userDeletionQueue,
 } from "../config/queue.js";
@@ -996,6 +995,8 @@ class UserController {
           activeVat,
           activeCurrency,
           orderNumber: checkoutInfo.orderNumber,
+          onlinePayment:
+            checkoutInfo.paymentType.toLowerCase() !== "bank transfer",
         },
         {
           attempts: 3,
@@ -1006,21 +1007,21 @@ class UserController {
         }
       );
 
-      // if payment type is not bank transfer
-      if (checkoutInfo.paymentType.toLowerCase() !== "bank transfer") {
-        // Add job to queue
-        await orderActivationQueue.add(
-          "order-activation",
-          { orderNumber: checkoutInfo.orderNumber, onlinePayment: true },
-          {
-            attempts: 3,
-            backoff: {
-              type: "exponential",
-              delay: 5000,
-            },
-          }
-        );
-      }
+      //   // if payment type is not bank transfer
+      //   if (checkoutInfo.paymentType.toLowerCase() !== "bank transfer") {
+      //     // Add job to queue
+      //     await orderActivationQueue.add(
+      //       "order-activation",
+      //       { orderNumber: checkoutInfo.orderNumber, onlinePayment: true },
+      //       {
+      //         attempts: 3,
+      //         backoff: {
+      //           type: "exponential",
+      //           delay: 5000,
+      //         },
+      //       }
+      //     );
+      //   }
 
       res.status(201).json(
         response(201, true, "User creation and checkout initiated", {
@@ -1166,6 +1167,7 @@ class UserController {
           activeCurrency,
           orderNumber: value.orderNumber,
           isNewOrder: true,
+          onlinePayment: paymentType.toLowerCase() !== "bank transfer",
         },
         {
           attempts: 3,
@@ -1176,21 +1178,21 @@ class UserController {
         }
       );
 
-      // 4. if payment type is not bank transfer
-      if (paymentType.toLowerCase() !== "bank transfer") {
-        // Add job to queue
-        await orderActivationQueue.add(
-          "order-activation",
-          { orderNumber: value.orderNumber, onlinePayment: true },
-          {
-            attempts: 3,
-            backoff: {
-              type: "exponential",
-              delay: 5000,
-            },
-          }
-        );
-      }
+      //    // 4. if payment type is not bank transfer
+      //   if (paymentType.toLowerCase() !== "bank transfer") {
+      //     // Add job to queue
+      //     await orderActivationQueue.add(
+      //       "order-activation",
+      //       { orderNumber: value.orderNumber, onlinePayment: true },
+      //       {
+      //         attempts: 3,
+      //         backoff: {
+      //           type: "exponential",
+      //           delay: 5000,
+      //         },
+      //       }
+      //     );
+      //   }
 
       res.status(201).json(response(201, true, "Order created successfully"));
     } catch (error) {
