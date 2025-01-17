@@ -7,11 +7,8 @@ import prisma from "../utils/prismaClient.js";
 class PaymentController {
   static async initPayment(req, res) {
     try {
-      const { amount, currency, customerEmail, customerName } = req.body;
-
-      // const merchantReference = `ORDER-${Date.now()}-${Math.random()
-      //   .toString(36)
-      //   .substring(7)}`;
+      const { amount, customerEmail, customerName, pageType, currency } =
+        req.body;
 
       const merchantReference = generateOrderId();
 
@@ -22,10 +19,12 @@ class PaymentController {
         merchant_reference: merchantReference,
         language: "en",
         amount: (amount * 100).toString(),
-        currency,
+        currency: currency,
         customer_email: customerEmail,
         customer_name: customerName,
+        merchant_extra: pageType || "default",
         return_url: `https://api.gstsa1.org/api/v1/payment/success`,
+        // return_url: `http://localhost:3000/api/v1/payment/success`,
       };
 
       requestParams.signature = generateSignature(
@@ -92,8 +91,24 @@ class PaymentController {
         accessCode: req.body.access_code,
       };
 
-      // Handle different response statuses
-      let redirectUrl = "https://buybarcodeupc.com/payment/success";
+      // Define base URLs for different page types
+      const redirectUrls = {
+        registration: "https://buybarcodeupc.com/payment/success",
+        adminPortal: "https://gstsa1.org/admin/members/payment/success",
+        memberPortal: "https://buybarcodeupc.com/member-portal/payment/success",
+        default: "https://buybarcodeupc.com/payment/success",
+      };
+
+      // const redirectUrls = {
+      //   registration: "http://localhost:5173/payment/success",
+      //   adminPortal: "http://localhost:5173/admin/members/payment/success",
+      //   memberPortal: "http://localhost:5173/member-portal/payment/success",
+      //   default: "http://localhost:5173/payment/success",
+      // };
+
+      // Get the page type from merchant_extra
+      const pageType = req.body.merchant_extra || "default";
+      let redirectUrl = redirectUrls[pageType] || redirectUrls.default;
 
       switch (req.body.status) {
         case "14": // Success
