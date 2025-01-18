@@ -163,6 +163,42 @@ class OrderController {
       next(error);
     }
   }
+
+  // Admin Dashboard
+  static async getOrdersCount(req, res, next) {
+    try {
+      const ordersCount = await prisma.order.count();
+      // active orders
+      const activeOrdersCount = await prisma.order.count({
+        where: { status: "Activated" },
+      });
+      // inactive orders, whose status is not "Active"
+      const inactiveOrdersCount = await prisma.order.count({
+        where: { status: { not: "Activated" } },
+      });
+      // Bank orders, whose payment type is "Bank Transfer"
+      const bankOrdersCount = await prisma.order.count({
+        where: { paymentType: "Bank Transfer" },
+      });
+
+      // Online orders, whose payment type is not "Bank Transfer"
+      const onlineOrdersCount = await prisma.order.count({
+        where: { paymentType: { not: "Bank Transfer" } },
+      });
+
+      res.status(200).json(
+        response(200, true, "Orders count", {
+          totalOrders: ordersCount,
+          activeOrdersCount,
+          inactiveOrdersCount,
+          bankOrdersCount,
+          onlineOrdersCount,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default OrderController;

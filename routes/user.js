@@ -14,6 +14,7 @@ router.get(
   verifyAccessToken,
   controller.getTotalSecQuantity
 );
+router.get("/users-count", controller.getUsersCount);
 router.get("/search", controller.searchUsers);
 router.get("/:id", controller.getUserDetails);
 router.get("/member/:id", verifyAccessToken, controller.getUserDetails);

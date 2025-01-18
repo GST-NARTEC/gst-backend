@@ -15,4 +15,6 @@ router.delete("/bank-slip/:orderNumber", OrderController.deleteBankSlip);
 
 router.patch("/activate/:orderNumber", OrderController.activateOrderStatus);
 
+router.get("/orders-count", OrderController.getOrdersCount);
+
 export default router;

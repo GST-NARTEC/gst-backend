@@ -1356,6 +1356,28 @@ class UserController {
       next(error);
     }
   }
+
+  // Admin Dashboard
+  static async getUsersCount(req, res, next) {
+    try {
+      const usersCount = await prisma.user.count();
+      const activeUsersCount = await prisma.user.count({
+        where: { isActive: true },
+      });
+      const inactiveUsersCount = await prisma.user.count({
+        where: { isActive: false },
+      });
+      res.status(200).json(
+        response(200, true, "Users count", {
+          totalUsers: usersCount,
+          activeUsersCount,
+          inactiveUsersCount,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default UserController;
