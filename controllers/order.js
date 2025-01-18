@@ -199,6 +199,48 @@ class OrderController {
       next(error);
     }
   }
+
+  // create an API that will get top 5 most sold products
+  // we have order items table, we need to get the product id and count the quantity
+  // also in order items table, we have a column called qty, we need to sum up the qty column
+  // and get the top 5 most sold products
+  // we need to return the product name
+  // it will be used for barchart in admin dashboard
+  // i need to count how many times the product is sold like how much this product id appears in the order items table + the quantity
+  static async getTopSoldProducts(req, res, next) {
+    try {
+      const topSoldProducts = await prisma.orderItem.groupBy({
+        by: ["productId"],
+        _sum: { quantity: true },
+        orderBy: { _sum: { quantity: "desc" } },
+        take: 5,
+      });
+
+      // get count of each product id
+      const productCounts = await prisma.orderItem.groupBy({
+        by: ["productId"],
+        _count: { quantity: true },
+        orderBy: { _count: { quantity: "desc" } },
+        take: 5,
+      });
+
+      console.log(productCounts);
+
+      // i need to know how many times the product is sold like how much this product id appears in the order items table + the quantity
+      const productNames = await prisma.product.findMany({
+        where: {
+          id: { in: topSoldProducts.map((product) => product.productId) },
+        },
+        select: { title: true, id: true },
+      });
+
+      res
+        .status(200)
+        .json(response(200, true, "Top sold products", productNames));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default OrderController;
