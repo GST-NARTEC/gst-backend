@@ -10,6 +10,7 @@ const singleConfig = uploadSingle({
 });
 
 router.get("/active", controller.getActiveProducts);
+router.get("/count", controller.getProductsCount);
 router.post("/", singleConfig, controller.createProduct);
 router.get("/", controller.getProducts);
 router.get("/:id", controller.getProduct);

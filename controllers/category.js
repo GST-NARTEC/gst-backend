@@ -199,6 +199,18 @@ class CategoryController {
       next(error);
     }
   }
+
+  // Admin Dashboard
+  static async getCategoriesCount(req, res, next) {
+    try {
+      const categoriesCount = await prisma.category.count();
+      res
+        .status(200)
+        .json(response(200, true, "Categories count", categoriesCount));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default CategoryController;

@@ -413,6 +413,28 @@ class ProductController {
       next(error);
     }
   }
+
+  // Admin Dashboard
+  static async getProductsCount(req, res, next) {
+    try {
+      const productsCount = await prisma.product.count();
+      const activeProductsCount = await prisma.product.count({
+        where: { status: "active" },
+      });
+      const inactiveProductsCount = await prisma.product.count({
+        where: { status: { not: "active" } },
+      });
+      res.status(200).json(
+        response(200, true, "Products count", {
+          totalProducts: productsCount,
+          activeProducts: activeProductsCount,
+          inactiveProducts: inactiveProductsCount,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default ProductController;
