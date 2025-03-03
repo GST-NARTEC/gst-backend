@@ -90,6 +90,12 @@ pipeline {
         }
         failure {
             echo "Deployment of ${env.BRANCH_NAME} branch failed!"
+            script {
+                echo "Environment File Path: ${env.ENV_FILE_PATH}"
+                echo "PM2 App Name: ${env.PM2_APP_NAME}"
+                echo "PM2 Worker Name: ${env.PM2_WORKER_NAME}"
+                echo "Branch Name: ${env.BRANCH_NAME}"
+            }
         }
     }
 }
