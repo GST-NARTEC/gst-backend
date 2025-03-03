@@ -42,8 +42,8 @@ pipeline {
                 echo "Generating Prisma files..."
                 bat 'npx prisma generate'
                 echo "Restarting PM2 process..."
-                bat 'pm2 start src/app.js --name gst-ksa'
-                bat 'pm2 start src/workers/index.js --name gst-ksa-workers'
+                bat 'pm2 start app.js --name gst-ksa'
+                bat 'pm2 start workers/index.js --name gst-ksa-workers'
                 echo "Restarting PM2 process... Done"
                 bat 'pm2 save'
             }
