@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                    branches: [[name: '*/david-roosen']], 
+                    branches: [[name: '*/ksa']], 
                     extensions: [], 
                     userRemoteConfigs: [[
                         credentialsId: 'Wasim-Jenkins-Credentials', 
