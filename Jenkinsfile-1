@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     environment {
-        ENV_FILE_PATH = "C:\\ProgramData\\Jenkins\\.jenkins\\jenkinsEnv\\GST\\gst"
+        ENV_FILE_PATH = "C:\\ProgramData\\Jenkins\\.jenkins\\jenkinsEnv\\GST\\gst-david-roosen"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 checkout scmGit(
-                    branches: [[name: '*/ksa']], 
+                    branches: [[name: '*/david-roosen']], 
                     extensions: [], 
                     userRemoteConfigs: [[
                         credentialsId: 'Wasim-Jenkins-Credentials', 
@@ -31,19 +31,19 @@ pipeline {
                 script {
                     echo "Stopping PM2 process if running..."
                     def processStatus = bat(script: 'pm2 list', returnStdout: true).trim()
-                    if (processStatus.contains('gst-ksa') || processStatus.contains('gst-ksa-workers')) {
-                        bat 'pm2 stop gst-ksa gst-ksa-workers || exit 0'
-                        bat 'pm2 delete gst-ksa || exit 0'
-                        bat 'pm2 delete gst-ksa-workers || exit 0'
+                    if (processStatus.contains('gst-david-roosen') || processStatus.contains('gst-david-roosen-workers')) {
+                        bat 'pm2 stop gst-david-roosen gst-david-roosen-workers || exit 0'
+                        bat 'pm2 delete gst-david-roosen || exit 0'
+                        bat 'pm2 delete gst-david-roosen-workers || exit 0'
                     }
                 }
-                echo "Installing dependencies for GST-KSA..."
+                echo "Installing dependencies for GST-DAVID-ROOSEN..."
                 bat 'npm ci'
                 echo "Generating Prisma files..."
                 bat 'npx prisma generate'
                 echo "Restarting PM2 process..."
-                bat 'pm2 start src/app.js --name gst-ksa'
-                bat 'pm2 start src/workers/index.js --name gst-ksa-workers'
+                bat 'pm2 start src/app.js --name gst-david-roosen'
+                bat 'pm2 start src/workers/index.js --name gst-david-roosen-workers'
                 echo "Restarting PM2 process... Done"
                 bat 'pm2 save'
             }
