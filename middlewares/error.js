@@ -10,8 +10,7 @@ export const notFoundHandler = (req, res, next) => {
 export const errorHandler = (error, req, res, next) => {
   console.log(error);
   let status = 500;
-  let message =
-    "An error occurred while processing your request. Please try again later.";
+  let message = "Internal Server Error !";
   let data = null;
   let success = false;
 
