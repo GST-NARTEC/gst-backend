@@ -171,9 +171,11 @@ class TemplateController {
         },
       });
 
-      res.status(200).json(
-        response(200, true, "Template updated successfully", { template })
-      );
+      res
+        .status(200)
+        .json(
+          response(200, true, "Template updated successfully", { template })
+        );
     } catch (error) {
       // Clean up uploaded images if there was an error
       for (const path of imagePaths) {
