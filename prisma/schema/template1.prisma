@@ -14,8 +14,12 @@ model Template1 {
   image1           String?
   image2           String?
   image3           String?
+
+
   pageId           String?
+  page             Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  
+  
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  page             Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }
