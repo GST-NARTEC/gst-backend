@@ -2,11 +2,11 @@ import ejs from "ejs";
 import fs from "fs-extra";
 import path, { dirname } from "path";
 import puppeteer from "puppeteer";
-import QRCode from "qrcode";
 import { fileURLToPath } from "url";
 
 import { calculatePrice } from "./priceCalculator.js";
 import prisma from "./prismaClient.js";
+import generateZatcaQrCodeForInvoice from "./zatcaQrGenerator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -103,8 +103,14 @@ class PDFGenerator {
         calculatePrice,
       };
 
-      // Generate QR code and render template (existing code)
-      const qrCodeDataUrl = await QRCode.toDataURL(invoice.invoiceNumber);
+      //   // Generate QR code and render template (existing code)
+      //   const qrCodeDataUrl = await QRCode.toDataURL(invoice.invoiceNumber);
+      //   data.qrCode = qrCodeDataUrl;
+
+      console.log("Data for PDF generation:", data);
+
+      // Generate the ZATCA QR code
+      const qrCodeDataUrl = await generateZatcaQrCodeForInvoice(invoice, user, data);
       data.qrCode = qrCodeDataUrl;
 
       const htmlContent = await ejs.render(templateContent, data, {
