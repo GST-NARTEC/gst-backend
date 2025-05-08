@@ -440,32 +440,9 @@ class UserProductsController {
 
   static async searchProducts(req, res, next) {
     try {
-      //   const { search } = req.query;
-      //   const products = await prisma.userProduct.findMany({
-      //     where: {
-      //       OR: [
-      //         { title: { contains: search } },
-      //         { description: { contains: search } },
-      //         { sku: { contains: search } },
-      //         { gtin: { contains: search } },
-      //       ],
-      //     },
-      //     include: {
-      //       images: true,
-      //       user: {
-      //         select: {
-      //           companyNameEn: true,
-      //           companyNameAr: true,
-      //         },
-      //       },
-      //     },
-      //   });
-
-      //   res
-      //     .status(200)
-      //     .json(response(200, true, "Products retrieved successfully", products));
-
       const { gtin } = req.query;
+
+      // Find product using the GTIN
       const product = await prisma.userProduct.findFirst({
         where: {
           gtin: {
@@ -483,18 +460,68 @@ class UserProductsController {
         },
       });
 
-      if (!product) {
+      // If product found, return it
+      if (product) {
+        return res
+          .status(200)
+          .json(response(200, true, "Product found successfully", { product }));
+      }
+
+      // If product not found, fetch GTIN information
+      const gtinRecord = await prisma.gTIN.findFirst({
+        where: {
+          gtin,
+        },
+      });
+
+      if (!gtinRecord) {
         throw new MyError(
           `We couldn't find the barcode ${gtin} in our database. Please verify the number and try again.`,
           404
         );
       }
 
+      // Find assignment information
+      const assignedGtin = await prisma.assignedGtin.findFirst({
+        where: {
+          gtinId: gtinRecord.id,
+        },
+        include: {
+          order: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  companyNameEn: true,
+                  companyNameAr: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          barcodeType: true,
+        },
+      });
+
+      const gtinInfo = {
+        gtin: gtinRecord.gtin,
+        status: gtinRecord.status,
+        assignedTo: assignedGtin
+          ? {
+              userId: assignedGtin.order.userId,
+              companyNameEn: assignedGtin.order.user.companyNameEn,
+              companyNameAr: assignedGtin.order.user.companyNameAr,
+              barcodeType: assignedGtin.barcodeType?.type || null,
+              orderNumber: assignedGtin.order.orderNumber || null,
+              purchaseDate: assignedGtin.createdAt,
+            }
+          : null,
+        product: null,
+      };
+
       res
         .status(200)
-        .json(
-          response(200, true, "Products retrieved successfully", { product })
-        );
+        .json(response(200, true, "GTIN information found", { gtinInfo }));
     } catch (error) {
       next(error);
     }
