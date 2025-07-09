@@ -21,8 +21,9 @@ function toTLV(tag, value) {
 export async function generateZatcaQrCodeForInvoice(invoice, user, data) {
   try {
     // 1. Extract relevant data from invoice and user objects
-    const sellerName = user.companyNameEn;
-    const vatNumber = user.vatNumber || "300456416500003"; // Default if not available
+    // const sellerName = user.companyNameEn;
+    const sellerName = "ALMYAR ALALMI FOR TECHNOLOGIES COMPANY";
+    const vatNumber = user.vatNumber || "312408381825142";
     const invoiceTimestamp = moment(invoice.createdAt).format(
       "yyyy-MM-DDTHH:mm:ssZ"
     );
