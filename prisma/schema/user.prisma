@@ -22,6 +22,7 @@ model User {
   userId           String?
   isSec            Boolean?       @default(false)
   secQuantity      Int?           @default(0)
+  isDeleted        Boolean?       @default(false)
   brands           Brand[]
   cart             Cart?
   digitalLinks     DigitalLink[]

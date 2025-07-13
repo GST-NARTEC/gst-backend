@@ -19,6 +19,7 @@ router.get("/search", controller.searchUsers);
 router.get("/:id", controller.getUserDetails);
 router.get("/member/:id", verifyAccessToken, controller.getUserDetails);
 router.put("/:id", controller.updateUser);
+router.delete("/soft/:id", controller.softDelete);
 router.delete("/:id", controller.deleteUser);
 router.post("/refresh-token", verifyRefreshToken, controller.refreshToken);
 router.patch("/:id/status", controller.updateUserStatus);

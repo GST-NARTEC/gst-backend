@@ -65,6 +65,7 @@ export const searchSchema = Joi.object({
     .valid("email", "companyNameEn", "createdAt")
     .default("createdAt"),
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+  isDeleted: Joi.boolean().optional(),
 });
 
 export const userDetailsSchema = Joi.object({
@@ -87,6 +88,7 @@ export const userUpdateSchema = Joi.object({
   latitude: Joi.number().optional(),
   longitude: Joi.number().optional(),
   isActive: Joi.boolean(),
+  isDeleted: Joi.boolean(),
 }).min(1);
 
 export const userGtinsQuerySchema = Joi.object({

@@ -189,11 +189,20 @@ class UserController {
         throw new MyError(error.details[0].message, 400);
       }
 
-      const { search, page, limit, sortBy, sortOrder } = value;
+      const {
+        search,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+        isDeleted = false,
+      } = value;
       const skip = (page - 1) * limit;
 
       const whereClause = search
         ? {
+            isActive: true,
+            isDeleted: isDeleted,
             OR: [
               { email: { contains: search } },
               { companyNameEn: { contains: search } },
@@ -201,7 +210,10 @@ class UserController {
               { companyLicenseNo: { contains: search } },
             ],
           }
-        : {};
+        : {
+            isActive: true,
+            isDeleted: isDeleted,
+          };
 
       const [users, total] = await Promise.all([
         prisma.user.findMany({
@@ -567,6 +579,35 @@ class UserController {
 
       // Add deletion job to queue
       await userDeletionQueue.add("delete-user", { userId: id });
+
+      res
+        .status(200)
+        .json(
+          response(200, true, "User deletion process has been initiated", null)
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async softDelete(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      // Check if user exists
+      const user = await prisma.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        throw new MyError("User not found", 404);
+      }
+
+      // Soft delete user by setting isDeleted flag
+      await prisma.user.update({
+        where: { id },
+        data: { isDeleted: true },
+      });
 
       res
         .status(200)
@@ -1362,10 +1403,10 @@ class UserController {
     try {
       const usersCount = await prisma.user.count();
       const activeUsersCount = await prisma.user.count({
-        where: { isActive: true },
+        where: { isActive: true, isDeleted: false },
       });
       const inactiveUsersCount = await prisma.user.count({
-        where: { isActive: false },
+        where: { isActive: false, isDeleted: false },
       });
       res.status(200).json(
         response(200, true, "Users count", {
