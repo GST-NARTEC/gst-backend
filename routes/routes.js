@@ -9,6 +9,7 @@ import brandRoutes from "./brand.js";
 import cartRoutes from "./cart.js";
 import categoryRoutes from "./category.js";
 import checkoutRoutes from "./checkout.js";
+import companyRoutes from "./company.js";
 import coreSolutionRoutes from "./coreSolution.js";
 import countryOfOriginSaleRoutes from "./countryOfOriginSale.js";
 import currencyRoutes from "./currency.js";
@@ -93,8 +94,9 @@ router.use("/v1/udis", udiRoutes);
 router.use("/v1/dashboard", dashboardRoutes);
 router.use("/v1/glns", glnRoutes);
 router.use("/v1/payment", paymentRoutes);
-
 router.use("/v1/ai/image", AIRoutes);
+router.use("/company/v1", companyRoutes);
+
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
 router.use("/user/v2", userRoutesV2);

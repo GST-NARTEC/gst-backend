@@ -1,0 +1,13 @@
+model Company {
+    id              String @id @default(cuid())
+    icon            String?
+    titleEn         String?
+    titleAr         String?
+    descriptionEn   String?
+    descriptionAr   String?
+    websiteLink     String?
+    isActive        Boolean @default(true)
+
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+}

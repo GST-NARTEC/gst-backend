@@ -1,20 +1,20 @@
 model Page {
-  id           String         @id @default(cuid())
-  nameEn       String?
-  nameAr       String?
-  slug         String?
-  template     String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id                                String         @id @default(cuid())
+  nameEn                            String?
+  nameAr                            String?
+  slug                              String?
+  template                          String?
+  createdAt                         DateTime       @default(now())
+  updatedAt                         DateTime       @updatedAt
 
-  headers      SmartSolution[]
-  coreSolution CoreSolution[]
-  proService   ProService[]
-  slider       Slider[]
-  subMenus     SubMenu[]
-  template1    Template1[]
-  template2    Template2[]
-  template3    Template3[]
-  template4    Template4[]
-  whyBarcode   WhyBarcode[]
+  headers                           SmartSolution[]
+  coreSolution                      CoreSolution[]
+  proService                        ProService[]
+  slider                            Slider[]
+  subMenus                          SubMenu[]
+  template1                         Template1[]
+  template2                         Template2[]
+  template3                         Template3[]
+  template4                         Template4[]
+  whyBarcode                        WhyBarcode[]
 }
