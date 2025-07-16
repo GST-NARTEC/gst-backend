@@ -7,7 +7,7 @@ model Page {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
-  
+  headers      SmartSolution[]
   coreSolution CoreSolution[]
   proService   ProService[]
   slider       Slider[]

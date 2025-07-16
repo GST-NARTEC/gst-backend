@@ -1,0 +1,17 @@
+model SmartSolution {
+  id            String    @id @default(uuid())
+  titleEn       String?
+  titleAr       String?
+  date          DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  captionAr     String?
+  captionEn     String?
+  descriptionAr String?
+  descriptionEn String?
+  isActive      Boolean   @default(true)
+  pageId        String?
+  externalUrl   String?
+  page          Page?     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
