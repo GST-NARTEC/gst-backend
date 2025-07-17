@@ -1,4 +1,5 @@
 /**
+ * @swagger
  * /api/v1/template/caseStudyTemplate1:
  *   post:
  *     summary: Create a new caseStudyTemplate1
