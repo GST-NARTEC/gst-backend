@@ -16,5 +16,6 @@ model Page {
   template2                         Template2[]
   template3                         Template3[]
   template4                         Template4[]
+  caseStudyTemplate1                CaseStudyTemplate1[]
   whyBarcode                        WhyBarcode[]
 }
