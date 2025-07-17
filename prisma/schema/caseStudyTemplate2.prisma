@@ -1,0 +1,29 @@
+model CaseStudyTemplate2 {
+  id                  String   @id @default(cuid())
+  nameEn              String?  @db.NVarChar(Max)
+  nameAr              String?  @db.NVarChar(Max)
+  seoDescriptionEn    String?  @db.NVarChar(Max)
+  seoDescriptionAr    String?  @db.NVarChar(Max)
+  isActive            Boolean  @default(true)
+  headingEn           String?  @db.NVarChar(Max)
+  headingAr           String?  @db.NVarChar(Max)
+  description1En      String?  @db.NVarChar(Max)
+  description1Ar      String?  @db.NVarChar(Max)
+  description2En      String?  @db.NVarChar(Max)
+  description2Ar      String?  @db.NVarChar(Max)
+  description3En      String?  @db.NVarChar(Max)
+  description3Ar      String?  @db.NVarChar(Max)
+  description4En      String?  @db.NVarChar(Max)
+  description4Ar      String?  @db.NVarChar(Max)
+  image1              String?
+  image2              String?
+  image3              String?
+  resultImpactEn      String?  @db.NVarChar(Max)
+  resultImpactAr      String?  @db.NVarChar(Max)
+  technologiesUsedEn  String?  @db.NVarChar(Max)
+  technologiesUsedAr  String?  @db.NVarChar(Max)
+  pageId              String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  page                Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
