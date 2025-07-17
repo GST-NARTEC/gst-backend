@@ -43,13 +43,11 @@ class SmartSolutionController {
 
       const smartSolution = await prisma.smartSolution.create({ data: value });
 
-      res
-        .status(201)
-        .json(
-          response(201, true, "Smart Solution created successfully", {
-            smartSolution,
-          })
-        );
+      res.status(201).json(
+        response(201, true, "Smart Solution created successfully", {
+          smartSolution,
+        })
+      );
     } catch (error) {
       if (imagePath) {
         await deleteFile(imagePath);
@@ -65,13 +63,11 @@ class SmartSolutionController {
         orderBy: { createdAt: "asc" },
       });
 
-      res
-        .status(200)
-        .json(
-          response(200, true, "Smart Solutions retrieved successfully", {
-            smartSolutions,
-          })
-        );
+      res.status(200).json(
+        response(200, true, "Smart Solutions retrieved successfully", {
+          smartSolutions,
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -87,13 +83,11 @@ class SmartSolutionController {
       if (!smartSolution) {
         throw new MyError("Smart Solution not found", 404);
       }
-      res
-        .status(200)
-        .json(
-          response(200, true, "Smart Solution retrieved successfully", {
-            smartSolution,
-          })
-        );
+      res.status(200).json(
+        response(200, true, "Smart Solution retrieved successfully", {
+          smartSolution,
+        })
+      );
     } catch (error) {
       next(error);
     }
@@ -135,13 +129,11 @@ class SmartSolutionController {
         data: value,
       });
 
-      res
-        .status(200)
-        .json(
-          response(200, true, "Smart Solution updated successfully", {
-            smartSolution,
-          })
-        );
+      res.status(200).json(
+        response(200, true, "Smart Solution updated successfully", {
+          smartSolution,
+        })
+      );
     } catch (error) {
       if (imagePath) {
         await deleteFile(imagePath);
@@ -157,13 +149,11 @@ class SmartSolutionController {
         orderBy: { createdAt: "asc" },
         include: { page: true },
       });
-      res
-        .status(200)
-        .json(
-          response(200, true, "Active Smart Solutions retrieved successfully", {
-            smartSolutions,
-          })
-        );
+      res.status(200).json(
+        response(200, true, "Active Smart Solutions retrieved successfully", {
+          smartSolutions,
+        })
+      );
     } catch (error) {
       next(error);
     }
