@@ -16,8 +16,11 @@ model Page {
   template2                         Template2[]
   template3                         Template3[]
   template4                         Template4[]
+  halalTemplate                     HalalTemplate[]
+  caseStudyMainTemplate             CaseStudyMainTemplate[]
   caseStudyTemplate1                CaseStudyTemplate1[]
   caseStudyTemplate2                CaseStudyTemplate2[]
   sunrize2027Template               Sunrize2027Template[]
   whyBarcode                        WhyBarcode[]
+  company                           Company[]
 }

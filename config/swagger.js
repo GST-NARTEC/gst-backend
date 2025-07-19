@@ -72,6 +72,8 @@ const options = {
     path.join(__dirname, "../docs/swagger/sunrize2027Template.js"),
     path.join(__dirname, "../docs/swagger/caseStudyTemplate1.js"),
     path.join(__dirname, "../docs/swagger/caseStudyTemplate2.js"),
+    path.join(__dirname, "../docs/swagger/caseStudyMainTemplate.js"),
+    path.join(__dirname, "../docs/swagger/halalTemplate.js"),
     path.join(__dirname, "../docs/swagger/company.js"),
     path.join(__dirname, "../docs/swagger/addon.js"),
     path.join(__dirname, "../docs/swagger/brand.js"),

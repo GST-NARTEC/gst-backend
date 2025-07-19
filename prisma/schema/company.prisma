@@ -8,6 +8,9 @@ model Company {
     websiteLink     String?
     isActive        Boolean @default(true)
 
+    pageId          String?
+    page            Page?  @relation(fields: [pageId], references: [id])
+
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 }

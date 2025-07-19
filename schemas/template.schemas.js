@@ -67,6 +67,22 @@ const caseStudyFields = {
   technologiesUsedAr: Joi.string().allow("", null),
 };
 
+// Add specific fields for new templates
+const caseStudyMainFields = {
+  headerEn: Joi.string().allow("", null),
+  headerAr: Joi.string().allow("", null),
+  footerEn: Joi.string().allow("", null),
+  footerAr: Joi.string().allow("", null),
+};
+
+const halalTemplateFields = {
+  headerEn: Joi.string().allow("", null),
+  headerAr: Joi.string().allow("", null),
+  descriptionEn: Joi.string().allow("", null),
+  descriptionAr: Joi.string().allow("", null),
+  image1: Joi.string().allow("", null),
+};
+
 // Template specific schemas
 const templateSchemas = {
   template1: Joi.object({
@@ -115,6 +131,16 @@ const templateSchemas = {
     ...commonOptionalFields,
     ...headingFields,
     ...caseStudyFields,
+  }).unknown(false),
+
+  caseStudyMainTemplate: Joi.object({
+    ...baseTemplateSchema,
+    ...caseStudyMainFields,
+  }).unknown(false),
+
+  halalTemplate: Joi.object({
+    ...baseTemplateSchema,
+    ...halalTemplateFields,
   }).unknown(false),
 };
 
@@ -167,6 +193,16 @@ const templateUpdateSchemas = {
     ...headingFields,
     ...caseStudyFields,
   }).unknown(false),
+
+  caseStudyMainTemplate: Joi.object({
+    ...baseUpdateSchema,
+    ...caseStudyMainFields,
+  }).unknown(false),
+
+  halalTemplate: Joi.object({
+    ...baseUpdateSchema,
+    ...halalTemplateFields,
+  }).unknown(false),
 };
 
 const templateTypeSchema = Joi.object({
@@ -179,7 +215,9 @@ const templateTypeSchema = Joi.object({
       "template4",
       "sunrize2027Template",
       "caseStudyTemplate1",
-      "caseStudyTemplate2"
+      "caseStudyTemplate2",
+      "caseStudyMainTemplate",
+      "halalTemplate"
     ),
 });
 
