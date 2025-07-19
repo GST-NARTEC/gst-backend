@@ -73,6 +73,7 @@ const caseStudyMainFields = {
   headerAr: Joi.string().allow("", null),
   footerEn: Joi.string().allow("", null),
   footerAr: Joi.string().allow("", null),
+  pageId: Joi.string().allow(null),
 };
 
 const halalTemplateFields = {
@@ -81,6 +82,7 @@ const halalTemplateFields = {
   descriptionEn: Joi.string().allow("", null),
   descriptionAr: Joi.string().allow("", null),
   image1: Joi.string().allow("", null),
+  pageId: Joi.string().allow(null),
 };
 
 // Template specific schemas
@@ -134,12 +136,10 @@ const templateSchemas = {
   }).unknown(false),
 
   caseStudyMainTemplate: Joi.object({
-    ...baseTemplateSchema,
     ...caseStudyMainFields,
   }).unknown(false),
 
   halalTemplate: Joi.object({
-    ...baseTemplateSchema,
     ...halalTemplateFields,
   }).unknown(false),
 };
@@ -195,12 +195,10 @@ const templateUpdateSchemas = {
   }).unknown(false),
 
   caseStudyMainTemplate: Joi.object({
-    ...baseUpdateSchema,
     ...caseStudyMainFields,
   }).unknown(false),
 
   halalTemplate: Joi.object({
-    ...baseUpdateSchema,
     ...halalTemplateFields,
   }).unknown(false),
 };

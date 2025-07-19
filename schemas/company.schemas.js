@@ -8,6 +8,7 @@ const companySchema = Joi.object({
   descriptionAr: Joi.string().allow("", null),
   websiteLink: Joi.string().uri().allow("", null),
   isActive: Joi.boolean().default(true),
-});
+  pageId: Joi.string().allow(null),
+}).unknown(false);
 
 export default companySchema;
