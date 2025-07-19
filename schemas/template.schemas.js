@@ -41,7 +41,7 @@ const buttonFieldsTemplate2 = {
   buttonNavigationAr: Joi.string().allow("", null),
 };
 
-// Button fields for template 3 & 4
+// Button fields for template 3, 4 & sunrize2027Template
 const buttonFieldsExtended = {
   buttonText1En: Joi.string().allow("", null),
   buttonText1Ar: Joi.string().allow("", null),
@@ -57,6 +57,14 @@ const buttonFieldsExtended = {
 const headingFields = {
   headingEn: Joi.string().allow("", null),
   headingAr: Joi.string().allow("", null),
+};
+
+// Case study specific fields
+const caseStudyFields = {
+  resultImpactEn: Joi.string().allow("", null),
+  resultImpactAr: Joi.string().allow("", null),
+  technologiesUsedEn: Joi.string().allow("", null),
+  technologiesUsedAr: Joi.string().allow("", null),
 };
 
 // Template specific schemas
@@ -84,8 +92,29 @@ const templateSchemas = {
     ...baseTemplateSchema,
     ...commonOptionalFields,
     ...buttonFieldsExtended,
-    description4En: Joi.string().allow("", null),
-    description4Ar: Joi.string().allow("", null),
+    // description4En: Joi.string().allow("", null),
+    // description4Ar: Joi.string().allow("", null),
+  }).unknown(false),
+
+  sunrize2027Template: Joi.object({
+    ...baseTemplateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...buttonFieldsExtended,
+  }).unknown(false),
+
+  caseStudyTemplate1: Joi.object({
+    ...baseTemplateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...caseStudyFields,
+  }).unknown(false),
+
+  caseStudyTemplate2: Joi.object({
+    ...baseTemplateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...caseStudyFields,
   }).unknown(false),
 };
 
@@ -114,8 +143,29 @@ const templateUpdateSchemas = {
     ...baseUpdateSchema,
     ...commonOptionalFields,
     ...buttonFieldsExtended,
-    description4En: Joi.string().allow("", null),
-    description4Ar: Joi.string().allow("", null),
+    // description4En: Joi.string().allow("", null),
+    // description4Ar: Joi.string().allow("", null),
+  }).unknown(false),
+
+  sunrize2027Template: Joi.object({
+    ...baseUpdateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...buttonFieldsExtended,
+  }).unknown(false),
+
+  caseStudyTemplate1: Joi.object({
+    ...baseUpdateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...caseStudyFields,
+  }).unknown(false),
+
+  caseStudyTemplate2: Joi.object({
+    ...baseUpdateSchema,
+    ...commonOptionalFields,
+    ...headingFields,
+    ...caseStudyFields,
   }).unknown(false),
 };
 
@@ -127,9 +177,9 @@ const templateTypeSchema = Joi.object({
       "template2",
       "template3",
       "template4",
-      "template5",
-      "template6",
-      "template7"
+      "sunrize2027Template",
+      "caseStudyTemplate1",
+      "caseStudyTemplate2"
     ),
 });
 

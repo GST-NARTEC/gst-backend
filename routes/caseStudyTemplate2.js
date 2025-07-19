@@ -1,19 +1,19 @@
-import express from "express";
-import { uploadMultiple } from "multermate-es";
-import controller from "../controllers/caseStudyTemplate2.js";
-const router = express.Router();
-const templateUpload = uploadMultiple({
-  destination: "uploads/images",
-  fields: [
-    { name: "image1", maxCount: 1, fileTypes: ["images"] },
-    { name: "image2", maxCount: 1, fileTypes: ["images"] },
-    { name: "image3", maxCount: 1, fileTypes: ["images"] },
-  ],
-  fileSizeLimit: 5 * 1024 * 1024,
-});
-router.post("/", templateUpload, controller.createCaseStudyTemplate2);
-router.get("/", controller.getCaseStudyTemplate2ByPageId);
-router.get("/list", controller.getCaseStudyTemplate2List);
-router.put("/:id", templateUpload, controller.updateCaseStudyTemplate2);
-router.delete("/:id", controller.deleteCaseStudyTemplate2);
-export default router;
+// import express from "express";
+// import { uploadMultiple } from "multermate-es";
+// import controller from "../controllers/caseStudyTemplate2.js";
+// const router = express.Router();
+// const templateUpload = uploadMultiple({
+//   destination: "uploads/images",
+//   fields: [
+//     { name: "image1", maxCount: 1, fileTypes: ["images"] },
+//     { name: "image2", maxCount: 1, fileTypes: ["images"] },
+//     { name: "image3", maxCount: 1, fileTypes: ["images"] },
+//   ],
+//   fileSizeLimit: 5 * 1024 * 1024,
+// });
+// router.post("/", templateUpload, controller.createCaseStudyTemplate2);
+// router.get("/", controller.getCaseStudyTemplate2ByPageId);
+// router.get("/list", controller.getCaseStudyTemplate2List);
+// router.put("/:id", templateUpload, controller.updateCaseStudyTemplate2);
+// router.delete("/:id", controller.deleteCaseStudyTemplate2);
+// export default router;
