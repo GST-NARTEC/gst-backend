@@ -1,29 +1,54 @@
 model CaseStudyTemplate1 {
-  id                  String   @id @default(cuid())
-  nameEn              String?  @db.NVarChar(Max)
-  nameAr              String?  @db.NVarChar(Max)
-  seoDescriptionEn    String?  @db.NVarChar(Max)
-  seoDescriptionAr    String?  @db.NVarChar(Max)
-  isActive            Boolean  @default(true)
-  headingEn           String?  @db.NVarChar(Max)
-  headingAr           String?  @db.NVarChar(Max)
-  description1En      String?  @db.NVarChar(Max)
-  description1Ar      String?  @db.NVarChar(Max)
-  description2En      String?  @db.NVarChar(Max)
-  description2Ar      String?  @db.NVarChar(Max)
-  description3En      String?  @db.NVarChar(Max)
-  description3Ar      String?  @db.NVarChar(Max)
-  description4En      String?  @db.NVarChar(Max)
-  description4Ar      String?  @db.NVarChar(Max)
-  image1              String?
-  image2              String?
-  image3              String?
-  resultImpactEn      String?  @db.NVarChar(Max)
-  resultImpactAr      String?  @db.NVarChar(Max)
-  technologiesUsedEn  String?  @db.NVarChar(Max)
-  technologiesUsedAr  String?  @db.NVarChar(Max)
-  pageId              String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  page                Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  id               String  @id @default(cuid())
+  nameEn           String? @db.NVarChar(Max)
+  nameAr           String? @db.NVarChar(Max)
+  pageId           String?
+  isActive         Boolean @default(true)
+  seoDescriptionEn String? @db.NVarChar(Max)
+  seoDescriptionAr String? @db.NVarChar(Max)
+
+  // Hero Section
+  headingEn String? @db.NVarChar(Max)
+  headingAr String? @db.NVarChar(Max)
+  image1    String?
+
+  // Overview Section
+  description1En       String? @db.NVarChar(Max)
+  description1Ar       String? @db.NVarChar(Max)
+  descriptionQuote1En  String? @db.NVarChar(Max)
+  descriptionQuote1Ar  String? @db.NVarChar(Max)
+  descriptionAuthor1En String? @db.NVarChar(Max)
+  descriptionAuthor1Ar String? @db.NVarChar(Max)
+
+  // Solution Section
+  description2En String? @db.NVarChar(Max)
+  description2Ar String? @db.NVarChar(Max)
+  description3En String? @db.NVarChar(Max)
+  description3Ar String? @db.NVarChar(Max)
+  image2         String?
+  description4En String? @db.NVarChar(Max)
+  description4Ar String? @db.NVarChar(Max)
+  description5En String? @db.NVarChar(Max)
+  description5Ar String? @db.NVarChar(Max)
+
+  // Results Section
+  description6En       String? @db.NVarChar(Max)
+  description6Ar       String? @db.NVarChar(Max)
+  image3               String?
+  description7En       String? @db.NVarChar(Max)
+  description7Ar       String? @db.NVarChar(Max)
+  descriptionQuote2En  String? @db.NVarChar(Max)
+  descriptionQuote2Ar  String? @db.NVarChar(Max)
+  descriptionAuthor2En String? @db.NVarChar(Max)
+  descriptionAuthor2Ar String? @db.NVarChar(Max)
+
+  // Final Section
+  image4         String?
+  description8En String? @db.NVarChar(Max)
+  description8Ar String? @db.NVarChar(Max)
+
+  // System fields
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  page      Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }

@@ -59,12 +59,53 @@ const headingFields = {
   headingAr: Joi.string().allow("", null),
 };
 
-// Case study specific fields
-const caseStudyFields = {
-  resultImpactEn: Joi.string().allow("", null),
-  resultImpactAr: Joi.string().allow("", null),
-  technologiesUsedEn: Joi.string().allow("", null),
-  technologiesUsedAr: Joi.string().allow("", null),
+// Case study specific fields for template 2
+const caseStudyTemplate2Fields = {
+  nameEn: Joi.string().allow("", null),
+  nameAr: Joi.string().allow("", null),
+  pageId: Joi.string().allow(null),
+  isActive: Joi.boolean().default(true),
+  seoDescriptionEn: Joi.string().allow("", null),
+  seoDescriptionAr: Joi.string().allow("", null),
+
+  // Hero Section
+  headingEn: Joi.string().allow("", null),
+  headingAr: Joi.string().allow("", null),
+  image1: Joi.string().allow("", null),
+
+  // About The Client Section (description1)
+  description1En: Joi.string().allow("", null),
+  description1Ar: Joi.string().allow("", null),
+  image2: Joi.string().allow("", null),
+
+  // The Challenges Section (description2)
+  description2En: Joi.string().allow("", null),
+  description2Ar: Joi.string().allow("", null),
+  image3: Joi.string().allow("", null),
+
+  // The Solution Section (description3)
+  description3En: Joi.string().allow("", null),
+  description3Ar: Joi.string().allow("", null),
+
+  // Workflow Highlights Section (description4)
+  description4En: Joi.string().allow("", null),
+  description4Ar: Joi.string().allow("", null),
+
+  // Results & Key Benefits Section (description5)
+  description5En: Joi.string().allow("", null),
+  description5Ar: Joi.string().allow("", null),
+
+  // Key Learnings Section (description6)
+  description6En: Joi.string().allow("", null),
+  description6Ar: Joi.string().allow("", null),
+
+  // The Technology Section (description7)
+  description7En: Joi.string().allow("", null),
+  description7Ar: Joi.string().allow("", null),
+
+  // Partner Highlights Section (description8)
+  description8En: Joi.string().allow("", null),
+  description8Ar: Joi.string().allow("", null),
 };
 
 // Add specific fields for new templates
@@ -83,6 +124,56 @@ const halalTemplateFields = {
   descriptionAr: Joi.string().allow("", null),
   image1: Joi.string().allow("", null),
   pageId: Joi.string().allow(null),
+};
+
+// CaseStudyTemplate1 specific fields
+const caseStudyTemplate1Fields = {
+  nameEn: Joi.string().allow("", null),
+  nameAr: Joi.string().allow("", null),
+  pageId: Joi.string().allow(null),
+  isActive: Joi.boolean().default(true),
+  seoDescriptionEn: Joi.string().allow("", null),
+  seoDescriptionAr: Joi.string().allow("", null),
+
+  // Hero Section
+  headingEn: Joi.string().allow("", null),
+  headingAr: Joi.string().allow("", null),
+  image1: Joi.string().allow("", null),
+
+  // Overview Section
+  description1En: Joi.string().allow("", null),
+  description1Ar: Joi.string().allow("", null),
+  descriptionQuote1En: Joi.string().allow("", null),
+  descriptionQuote1Ar: Joi.string().allow("", null),
+  descriptionAuthor1En: Joi.string().allow("", null),
+  descriptionAuthor1Ar: Joi.string().allow("", null),
+
+  // Solution Section
+  description2En: Joi.string().allow("", null),
+  description2Ar: Joi.string().allow("", null),
+  description3En: Joi.string().allow("", null),
+  description3Ar: Joi.string().allow("", null),
+  image2: Joi.string().allow("", null),
+  description4En: Joi.string().allow("", null),
+  description4Ar: Joi.string().allow("", null),
+  description5En: Joi.string().allow("", null),
+  description5Ar: Joi.string().allow("", null),
+
+  // Results Section
+  description6En: Joi.string().allow("", null),
+  description6Ar: Joi.string().allow("", null),
+  image3: Joi.string().allow("", null),
+  description7En: Joi.string().allow("", null),
+  description7Ar: Joi.string().allow("", null),
+  descriptionQuote2En: Joi.string().allow("", null),
+  descriptionQuote2Ar: Joi.string().allow("", null),
+  descriptionAuthor2En: Joi.string().allow("", null),
+  descriptionAuthor2Ar: Joi.string().allow("", null),
+
+  // Final Section
+  image4: Joi.string().allow("", null),
+  description8En: Joi.string().allow("", null),
+  description8Ar: Joi.string().allow("", null),
 };
 
 // Template specific schemas
@@ -122,17 +213,11 @@ const templateSchemas = {
   }).unknown(false),
 
   caseStudyTemplate1: Joi.object({
-    ...baseTemplateSchema,
-    ...commonOptionalFields,
-    ...headingFields,
-    ...caseStudyFields,
+    ...caseStudyTemplate1Fields,
   }).unknown(false),
 
   caseStudyTemplate2: Joi.object({
-    ...baseTemplateSchema,
-    ...commonOptionalFields,
-    ...headingFields,
-    ...caseStudyFields,
+    ...caseStudyTemplate2Fields,
   }).unknown(false),
 
   caseStudyMainTemplate: Joi.object({
@@ -181,17 +266,11 @@ const templateUpdateSchemas = {
   }).unknown(false),
 
   caseStudyTemplate1: Joi.object({
-    ...baseUpdateSchema,
-    ...commonOptionalFields,
-    ...headingFields,
-    ...caseStudyFields,
+    ...caseStudyTemplate1Fields,
   }).unknown(false),
 
   caseStudyTemplate2: Joi.object({
-    ...baseUpdateSchema,
-    ...commonOptionalFields,
-    ...headingFields,
-    ...caseStudyFields,
+    ...caseStudyTemplate2Fields,
   }).unknown(false),
 
   caseStudyMainTemplate: Joi.object({
