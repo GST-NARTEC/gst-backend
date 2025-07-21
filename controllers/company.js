@@ -30,6 +30,9 @@ class CompanyController {
     try {
       const companies = await prisma.company.findMany({
         orderBy: { createdAt: "asc" },
+        include: {
+          page: true,
+        },
       });
       res
         .status(200)

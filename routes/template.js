@@ -10,6 +10,13 @@ const templateUpload = uploadMultiple({
     { name: "image1", maxCount: 1, fileTypes: ["images"] },
     { name: "image2", maxCount: 1, fileTypes: ["images"] },
     { name: "image3", maxCount: 1, fileTypes: ["images"] },
+    { name: "image4", maxCount: 1, fileTypes: ["images"] },
+    { name: "image5", maxCount: 1, fileTypes: ["images"] },
+    { name: "image6", maxCount: 1, fileTypes: ["images"] },
+    { name: "image7", maxCount: 1, fileTypes: ["images"] },
+    { name: "image8", maxCount: 1, fileTypes: ["images"] },
+    { name: "image9", maxCount: 1, fileTypes: ["images"] },
+    { name: "image10", maxCount: 1, fileTypes: ["images"] },
   ],
   fileSizeLimit: 5 * 1024 * 1024, // 5MB per file
 });
