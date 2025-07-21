@@ -47,16 +47,34 @@ const buttonFieldsExtended = {
   buttonText1Ar: Joi.string().allow("", null),
   buttonText2En: Joi.string().allow("", null),
   buttonText2Ar: Joi.string().allow("", null),
-  buttonNavigation1En: Joi.string().allow("", null),
-  buttonNavigation1Ar: Joi.string().allow("", null),
-  buttonNavigation2En: Joi.string().allow("", null),
-  buttonNavigation2Ar: Joi.string().allow("", null),
+  buttonLink1: Joi.string().allow("", null),
+  buttonLink2: Joi.string().allow("", null),
 };
 
 // Heading fields
 const headingFields = {
   headingEn: Joi.string().allow("", null),
   headingAr: Joi.string().allow("", null),
+};
+
+// Sunrize2027Template specific fields
+const sunrize2027TemplateFields = {
+  industriesTitleEn: Joi.string().allow("", null),
+  industriesTitleAr: Joi.string().allow("", null),
+  retailContentEn: Joi.string().allow("", null),
+  retailContentAr: Joi.string().allow("", null),
+  logisticsContentEn: Joi.string().allow("", null),
+  logisticsContentAr: Joi.string().allow("", null),
+  manufacturingContentEn: Joi.string().allow("", null),
+  manufacturingContentAr: Joi.string().allow("", null),
+  healthcareContentEn: Joi.string().allow("", null),
+  healthcareContentAr: Joi.string().allow("", null),
+  description5En: Joi.string().allow("", null),
+  description5Ar: Joi.string().allow("", null),
+  image4: Joi.string().allow("", null),
+  image5: Joi.string().allow("", null),
+  image6: Joi.string().allow("", null),
+  image7: Joi.string().allow("", null),
 };
 
 // Case study specific fields for template 2
@@ -210,6 +228,7 @@ const templateSchemas = {
     ...commonOptionalFields,
     ...headingFields,
     ...buttonFieldsExtended,
+    ...sunrize2027TemplateFields,
   }).unknown(false),
 
   caseStudyTemplate1: Joi.object({
@@ -263,6 +282,7 @@ const templateUpdateSchemas = {
     ...commonOptionalFields,
     ...headingFields,
     ...buttonFieldsExtended,
+    ...sunrize2027TemplateFields,
   }).unknown(false),
 
   caseStudyTemplate1: Joi.object({

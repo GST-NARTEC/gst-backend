@@ -5,29 +5,68 @@ model Sunrize2027Template {
   seoDescriptionEn    String?  @db.NVarChar(Max)
   seoDescriptionAr    String?  @db.NVarChar(Max)
   isActive            Boolean  @default(true)
+  
+  // Hero Section
   headingEn           String?  @db.NVarChar(Max)
   headingAr           String?  @db.NVarChar(Max)
+  image1              String?  // Hero background image
+  
+  // What is GST Sunrise 2027?
   description1En      String?  @db.NVarChar(Max)
   description1Ar      String?  @db.NVarChar(Max)
+  image2              String?  // GST Sunrise image
+  
+  // Transition to 2D Barcodes
   description2En      String?  @db.NVarChar(Max)
   description2Ar      String?  @db.NVarChar(Max)
+  
+  // Industries Empowered
+  industriesTitleEn   String?  @db.NVarChar(Max)
+  industriesTitleAr   String?  @db.NVarChar(Max)
+  
+  // Industry content
+  image3              String?  // Retail image
+  retailContentEn     String?  @db.NVarChar(Max)
+  retailContentAr     String?  @db.NVarChar(Max)
+  
+  image4              String?  // Logistics image
+  logisticsContentEn  String?  @db.NVarChar(Max)
+  logisticsContentAr  String?  @db.NVarChar(Max)
+  
+  image5              String?  // Manufacturing image
+  manufacturingContentEn String?  @db.NVarChar(Max)
+  manufacturingContentAr String?  @db.NVarChar(Max)
+  
+  image6              String?  // Healthcare image
+  healthcareContentEn String?  @db.NVarChar(Max)
+  healthcareContentAr String?  @db.NVarChar(Max)
+  
+  // GS1 Digital Link
   description3En      String?  @db.NVarChar(Max)
   description3Ar      String?  @db.NVarChar(Max)
-  image1              String?
-  image2              String?
-  image3              String?
+  image7              String?  // GS1 Digital Link image
+  
+  // Support 2D Barcodes
+  description4En      String?  @db.NVarChar(Max)
+  description4Ar      String?  @db.NVarChar(Max)
+  
+  // CTA Section
+  description5En      String?  @db.NVarChar(Max)
+  description5Ar      String?  @db.NVarChar(Max)
+  
+  // Button fields
   buttonText1En       String?  @db.NVarChar(Max)
   buttonText1Ar       String?  @db.NVarChar(Max)
   buttonText2En       String?  @db.NVarChar(Max)
   buttonText2Ar       String?  @db.NVarChar(Max)
-  buttonNavigation1En String?  @db.NVarChar(Max)
-  buttonNavigation1Ar String?  @db.NVarChar(Max)
-  buttonNavigation2En String?  @db.NVarChar(Max)
-  buttonNavigation2Ar String?  @db.NVarChar(Max)
-  pageId              String?
+  buttonLink1         String?  @db.NVarChar(Max)
+  buttonLink2         String?  @db.NVarChar(Max)
+  
+  // Common fields
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  description4Ar      String?  @db.NVarChar(Max)
-  description4En      String?  @db.NVarChar(Max)
+
+  // relations
+  pageId              String?
   page                Page?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
 }
