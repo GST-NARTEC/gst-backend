@@ -50,7 +50,7 @@ class TemplateController {
 
       // Handle image uploads
       if (req.files) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 10; i++) {
           if (req.files[`image${i}`]) {
             const imagePath = addDomain(req.files[`image${i}`][0].path);
             value[`image${i}`] = imagePath;
@@ -136,7 +136,7 @@ class TemplateController {
 
       // Handle image uploads
       if (req.files) {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 10; i++) {
           if (req.files[`image${i}`]) {
             const imagePath = addDomain(req.files[`image${i}`][0].path);
             if (existingTemplate[`image${i}`]) {
@@ -202,7 +202,7 @@ class TemplateController {
       }
 
       // Delete associated images
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 10; i++) {
         if (template[`image${i}`]) {
           await deleteFile(template[`image${i}`]);
         }
