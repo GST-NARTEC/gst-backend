@@ -4,6 +4,7 @@ model CaseStudyTemplate1 {
   nameAr           String? @db.NVarChar(Max)
   pageId           String?
   isActive         Boolean @default(true)
+  
   seoDescriptionEn String? @db.NVarChar(Max)
   seoDescriptionAr String? @db.NVarChar(Max)
 
