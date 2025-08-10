@@ -1,0 +1,13 @@
+model ContactUs {
+  id           String   @id @default(cuid())
+
+  name         String?
+  email        String?
+  mobile       String?
+  companyName  String?
+  subject      String?
+  message      String?
+  
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
+}
