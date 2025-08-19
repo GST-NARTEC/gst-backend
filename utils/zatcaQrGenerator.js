@@ -23,7 +23,7 @@ export async function generateZatcaQrCodeForInvoice(invoice, user, data) {
     // 1. Extract relevant data from invoice and user objects
     // const sellerName = user.companyNameEn;
     const sellerName = "ALMYAR ALALMI FOR TECHNOLOGIES COMPANY";
-    const vatNumber = user.vatNumber || "312408381800003";
+    const vatNumber = "312408381800003";
     const invoiceTimestamp = moment(invoice.createdAt).format(
       "yyyy-MM-DDTHH:mm:ssZ"
     );
