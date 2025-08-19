@@ -97,7 +97,7 @@ class PDFGenerator {
           type: activeVat.type,
           value: activeVat.value,
           computed: invoice.vat.toFixed(2),
-          id: activeVat.taxId,
+          id: "312408381800003" ?? activeVat.taxId,
           name: activeVat.name,
         },
         calculatePrice,
@@ -110,7 +110,11 @@ class PDFGenerator {
       console.log("Data for PDF generation:", data);
 
       // Generate the ZATCA QR code
-      const qrCodeDataUrl = await generateZatcaQrCodeForInvoice(invoice, user, data);
+      const qrCodeDataUrl = await generateZatcaQrCodeForInvoice(
+        invoice,
+        user,
+        data
+      );
       data.qrCode = qrCodeDataUrl;
 
       const htmlContent = await ejs.render(templateContent, data, {
