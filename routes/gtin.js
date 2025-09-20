@@ -12,6 +12,7 @@ const uploadFile = uploadSingle({
 
 router.post("/upload", uploadFile, GTINController.uploadGTINFile);
 router.post("/bulk", GTINController.addGTINList);
+router.post("/sell", GTINController.sellGtins);
 router.get("/", GTINController.getGTINs);
 router.get("/stats", GTINController.getGTINStats);
 

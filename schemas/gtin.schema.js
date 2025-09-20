@@ -14,3 +14,8 @@ export const gtinQuerySchema = Joi.object({
 export const gtinArraySchema = Joi.object({
   gtins: Joi.array().items(Joi.string()).min(1).required(),
 });
+
+export const sellGtinSchema = Joi.object({
+  //   secret: Joi.string().required(),
+  totalGtins: Joi.number().min(1).required(),
+});

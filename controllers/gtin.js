@@ -1,5 +1,9 @@
 import { gtinQueue } from "../config/queue.js";
-import { gtinArraySchema, gtinQuerySchema } from "../schemas/gtin.schema.js";
+import {
+  gtinArraySchema,
+  gtinQuerySchema,
+  sellGtinSchema,
+} from "../schemas/gtin.schema.js";
 import MyError from "../utils/error.js";
 import { parseTxtFile } from "../utils/fileParser.js";
 import prisma from "../utils/prismaClient.js";
@@ -100,6 +104,42 @@ class GTINController {
             total,
             pages: Math.ceil(total / limit),
           },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async sellGtins(req, res, next) {
+    try {
+      const { error, value } = sellGtinSchema.validate(req.body);
+      if (error) throw new MyError(error.details[0].message, 400);
+
+      const { totalGtins } = value;
+
+      const randomGtins = await prisma.gTIN.findMany({
+        where: { status: "Available" },
+        take: totalGtins,
+      });
+
+      if (randomGtins.length < totalGtins) {
+        throw new MyError(
+          "Not enough available GTINs to fulfill the request",
+          400
+        );
+      }
+
+      // Update status of selected GTINs to "Sold"
+      //   const gtinIds = randomGtins.map((gtin) => gtin.id);
+      //   await prisma.gTIN.updateMany({
+      //     where: { id: { in: gtinIds } },
+      //     data: { status: "Sold" },
+      //   });
+
+      return res.json(
+        response(200, true, "GTINs sold successfully", {
+          soldGtins: randomGtins,
         })
       );
     } catch (error) {
