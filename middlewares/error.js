@@ -1,5 +1,6 @@
 import { MulterError } from "multer";
 import MyError from "../utils/error.js";
+import logger from "../utils/logger.js";
 import response from "../utils/response.js";
 
 export const notFoundHandler = (req, res, next) => {
@@ -19,6 +20,14 @@ export const errorHandler = (error, req, res, next) => {
     message = error.message || message;
     data = error.data || null;
   }
+
+  // Log error with detailed information
+  logger.error({
+    message: `[${status}] ${message}`,
+    stack: error.stack,
+    url: req.originalUrl,
+    method: req.method,
+  });
 
   res.status(status).json(response(status, success, message, data));
 };
