@@ -21,26 +21,83 @@ const getLogFilePath = () => {
   return path.join(logsDir, `errors-${getTodayDate()}.log`);
 };
 
-// Custom format for logs
+// Clean up old log files (keep only today's file)
+const cleanOldLogs = () => {
+  try {
+    const files = fs.readdirSync(logsDir);
+    const today = getTodayDate();
+
+    files.forEach((file) => {
+      if (file.startsWith("errors-") && !file.includes(today)) {
+        fs.removeSync(path.join(logsDir, file));
+        console.log(`Removed old log file: ${file}`);
+      }
+    });
+  } catch (error) {
+    console.error("Error cleaning old logs:", error);
+  }
+};
+
+// Clean old logs on startup
+cleanOldLogs();
+
+// Custom format for logs with better formatting
 const customFormat = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
-  winston.format.printf(({ timestamp, level, message, stack }) => {
-    return `[${timestamp}] ${level.toUpperCase()}: ${message}${
-      stack ? "\n" + stack : ""
-    }`;
+  winston.format.printf((info) => {
+    const { timestamp, level, message, stack, ...meta } = info;
+
+    let log = `\n${"=".repeat(80)}\n`;
+    log += `[${timestamp}] ${level.toUpperCase()}: ${message}\n`;
+
+    // Add metadata if present
+    if (Object.keys(meta).length > 0) {
+      log += `\nMetadata:\n${JSON.stringify(meta, null, 2)}\n`;
+    }
+
+    // Add stack trace if present
+    if (stack) {
+      log += `\nStack Trace:\n${stack}\n`;
+    }
+
+    log += `${"=".repeat(80)}\n`;
+
+    return log;
   })
 );
+
+// Create a dynamic transport that updates the filename daily
+class DynamicFileTransport extends winston.transports.File {
+  constructor(options) {
+    super(options);
+    this._currentDate = getTodayDate();
+    this._checkDateChange();
+  }
+
+  _checkDateChange() {
+    setInterval(() => {
+      const newDate = getTodayDate();
+      if (newDate !== this._currentDate) {
+        this._currentDate = newDate;
+        this.filename = getLogFilePath();
+
+        // Clean old logs when date changes
+        cleanOldLogs();
+      }
+    }, 60000); // Check every minute
+  }
+}
 
 // Create logger
 const logger = winston.createLogger({
   level: "error",
   format: customFormat,
   transports: [
-    new winston.transports.File({
+    new DynamicFileTransport({
       filename: getLogFilePath(),
-      maxsize: 5242880, // 5MB
+      maxsize: 10485760, // 10MB
       maxFiles: 1,
     }),
   ],

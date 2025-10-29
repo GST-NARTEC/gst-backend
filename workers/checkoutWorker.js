@@ -9,6 +9,7 @@ import {
 } from "../config/queue.js";
 import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
+import logger from "../utils/logger.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import { calculatePrice } from "../utils/priceCalculator.js";
 import prisma from "../utils/prismaClient.js";
@@ -358,19 +359,33 @@ const processCheckouts = async (job) => {
   });
 
   // Generate PDF
-  const pdfResult = await PDFGenerator.generateInvoice(
-    result.order,
-    user,
-    result.invoice
-  );
+  let pdfResult;
+  try {
+    pdfResult = await PDFGenerator.generateInvoice(
+      result.order,
+      user,
+      result.invoice
+    );
 
-  // Update invoice with PDF
-  await prisma.invoice.update({
-    where: { id: result.invoice.id },
-    data: {
-      pdf: addDomain(pdfResult.relativePath),
-    },
-  });
+    // Update invoice with PDF
+    await prisma.invoice.update({
+      where: { id: result.invoice.id },
+      data: {
+        pdf: addDomain(pdfResult.relativePath),
+      },
+    });
+  } catch (pdfError) {
+    logger.error({
+      message: `PDF Generation Failed for Order ${orderNumber}`,
+      stack: pdfError.stack,
+      error: pdfError,
+      orderNumber,
+      userId: user.id,
+    });
+
+    // Continue with the process even if PDF generation fails
+    console.error("PDF generation failed, continuing without PDF:", pdfError);
+  }
 
   if (!isNewOrder) {
     // Send account admin notification as well as send welcome email throw new queue job
@@ -402,12 +417,14 @@ const processCheckouts = async (job) => {
           type: activeVat.type,
           computed: vatAmount,
         },
-        attachments: [
-          {
-            filename: "invoice.pdf",
-            path: pdfResult.absolutePath,
-          },
-        ],
+        attachments: pdfResult
+          ? [
+              {
+                filename: "invoice.pdf",
+                path: pdfResult.absolutePath,
+              },
+            ]
+          : [],
       },
       {
         attempts: 3,
@@ -450,6 +467,14 @@ worker.on("completed", (job) => {
 
 worker.on("failed", (job, err) => {
   console.error(`Job ${job.id} failed with error: ${err.message}`);
+
+  // Log detailed error information
+  logger.error({
+    message: `Checkout Worker Job ${job.id} Failed: ${err.message}`,
+    stack: err.stack,
+    jobData: job.data,
+    error: err,
+  });
 });
 
 export default worker;
