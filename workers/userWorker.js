@@ -102,18 +102,58 @@ const processUserDeletion = async (job) => {
         where: { orderId: order.id },
       });
 
-      // Delete files and invoice
-      if (order.invoice?.pdf) {
-        await deleteFile(order.invoice.pdf);
+      // Delete invoice BEFORE deleting files and order
+      if (order.invoice) {
+        // Delete invoice file if exists
+        if (order.invoice.pdf) {
+          try {
+            await deleteFile(order.invoice.pdf);
+          } catch (error) {
+            console.error(
+              `Failed to delete invoice PDF: ${order.invoice.pdf}`,
+              error
+            );
+          }
+        }
+
+        // Delete invoice record from database
         await prisma.invoice.delete({
           where: { id: order.invoice.id },
         });
       }
 
-      if (order.receipt) await deleteFile(order.receipt);
-      if (order.licenseCertificate) await deleteFile(order.licenseCertificate);
-      if (order.bankSlip) await deleteFile(order.bankSlip);
+      // Delete other order files
+      if (order.receipt) {
+        try {
+          await deleteFile(order.receipt);
+        } catch (error) {
+          console.error(`Failed to delete receipt: ${order.receipt}`, error);
+        }
+      }
+      if (order.licenseCertificate) {
+        try {
+          await deleteFile(order.licenseCertificate);
+        } catch (error) {
+          console.error(
+            `Failed to delete license certificate: ${order.licenseCertificate}`,
+            error
+          );
+        }
+      }
+      if (order.bankSlip) {
+        try {
+          await deleteFile(order.bankSlip);
+        } catch (error) {
+          console.error(`Failed to delete bank slip: ${order.bankSlip}`, error);
+        }
+      }
 
+      // Delete payments
+      await prisma.payment.deleteMany({
+        where: { orderId: order.id },
+      });
+
+      // Finally delete the order
       await prisma.order.delete({ where: { id: order.id } });
     }
 
