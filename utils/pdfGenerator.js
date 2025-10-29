@@ -16,6 +16,21 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
+// Base Puppeteer launch options
+const getPuppeteerLaunchOptions = (userDataDir) => ({
+  headless: "new",
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-web-security",
+    "--disable-features=IsolateOrigins,site-per-process",
+  ],
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+  userDataDir,
+});
+
 class PDFGenerator {
   static async generateDocument(order, user, invoice, type = "invoice") {
     try {
@@ -130,16 +145,13 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
-      const browser = await puppeteer.launch({
-        headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      });
+      // Create a temporary directory for Puppeteer user data
+      const tempDir = path.join(__dirname, "../uploads/temp/puppeteer-profile");
+      await fs.ensureDir(tempDir);
+
+      const browser = await puppeteer.launch(
+        getPuppeteerLaunchOptions(tempDir)
+      );
       const page = await browser.newPage();
       await page.setContent(htmlContent, {
         waitUntil: "networkidle0",
@@ -199,17 +211,17 @@ class PDFGenerator {
         calculatePrice,
       });
 
+      // Create a temporary directory for Puppeteer user data
+      const tempDir = path.join(
+        __dirname,
+        "../uploads/temp/puppeteer-profile-license"
+      );
+      await fs.ensureDir(tempDir);
+
       // Generate PDF
-      const browser = await puppeteer.launch({
-        headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      });
+      const browser = await puppeteer.launch(
+        getPuppeteerLaunchOptions(tempDir)
+      );
       const page = await browser.newPage();
       await page.setContent(html);
 
@@ -277,17 +289,17 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
+      // Create a temporary directory for Puppeteer user data
+      const tempDir = path.join(
+        __dirname,
+        "../uploads/temp/puppeteer-profile-barcode"
+      );
+      await fs.ensureDir(tempDir);
+
       // Generate PDF
-      const browser = await puppeteer.launch({
-        headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      });
+      const browser = await puppeteer.launch(
+        getPuppeteerLaunchOptions(tempDir)
+      );
       const page = await browser.newPage();
       await page.setContent(html);
 
