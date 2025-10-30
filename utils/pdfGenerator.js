@@ -16,55 +16,38 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
-// Base Puppeteer launch options with improved stability for Windows/Unix
-const getPuppeteerLaunchOptions = (userDataDir) => {
-  const isWindows = process.platform === "win32";
-
-  return {
-    headless: "new",
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--disable-web-security",
-      "--disable-features=IsolateOrigins,site-per-process",
-      ...(isWindows ? [] : ["--single-process"]), // Skip on Windows - causes issues
-      "--disable-accelerated-2d-canvas",
-      "--disable-background-timer-throttling",
-      "--disable-backgrounding-occluded-windows",
-      "--disable-breakpad",
-      "--disable-component-extensions-with-background-pages",
-      "--disable-extensions",
-      "--disable-features=TranslateUI,BlinkGenPropertyTrees",
-      "--disable-ipc-flooding-protection",
-      "--disable-renderer-backgrounding",
-      "--enable-features=NetworkService,NetworkServiceInProcess",
-      "--force-color-profile=srgb",
-      "--hide-scrollbars",
-      "--metrics-recording-only",
-      "--mute-audio",
-      // Windows-specific stability improvements
-      ...(isWindows
-        ? [
-            "--disable-software-rasterizer",
-            "--disable-dev-tools",
-            "--no-first-run",
-            "--no-default-browser-check",
-            "--disable-blink-features=AutomationControlled",
-          ]
-        : []),
-    ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-    userDataDir,
-    // Increased timeout for Windows servers
-    protocolTimeout: 180000, // 3 minutes for Windows stability
-    dumpio: false, // Disable IO dumping to prevent crashes
-    handleSIGINT: false,
-    handleSIGTERM: false,
-    handleSIGHUP: false,
-  };
-};
+// Base Puppeteer launch options with improved stability
+const getPuppeteerLaunchOptions = (userDataDir) => ({
+  headless: "new",
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-web-security",
+    "--disable-features=IsolateOrigins,site-per-process",
+    "--single-process", // Helps prevent IO.read errors
+    "--no-zygote", // Reduces memory overhead
+    "--disable-accelerated-2d-canvas",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-breakpad",
+    "--disable-component-extensions-with-background-pages",
+    "--disable-extensions",
+    "--disable-features=TranslateUI,BlinkGenPropertyTrees",
+    "--disable-ipc-flooding-protection",
+    "--disable-renderer-backgrounding",
+    "--enable-features=NetworkService,NetworkServiceInProcess",
+    "--force-color-profile=srgb",
+    "--hide-scrollbars",
+    "--metrics-recording-only",
+    "--mute-audio",
+  ],
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+  userDataDir,
+  // Add timeout and protocol timeout to prevent hanging
+  protocolTimeout: 120000, // 2 minutes
+});
 
 class PDFGenerator {
   static async generateDocument(order, user, invoice, type = "invoice") {
@@ -186,106 +169,57 @@ class PDFGenerator {
 
       let browser = null;
       let page = null;
-      const maxRetries = 3;
-      let lastError = null;
 
-      // Retry logic for Windows stability
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+
+        page = await browser.newPage();
+
+        // Set a shorter timeout for content loading
+        await page.setDefaultNavigationTimeout(60000); // 1 minute
+        await page.setDefaultTimeout(60000);
+
+        // Set content with a more reliable wait strategy
+        await page.setContent(htmlContent, {
+          waitUntil: "networkidle0",
+          timeout: 60000,
+        });
+
+        // Generate PDF with timeout
+        await page.pdf({
+          path: pdfPath,
+          format: "A4",
+          margin: {
+            top: "20px",
+            right: "20px",
+            bottom: "20px",
+            left: "20px",
+          },
+          printBackground: true,
+          timeout: 60000, // 1 minute timeout for PDF generation
+        });
+
+        return {
+          absolutePath: pdfPath,
+          relativePath: relativePath,
+        };
+      } finally {
+        // Ensure cleanup happens even if there's an error
         try {
-          console.log(`PDF generation attempt ${attempt}/${maxRetries}`);
-
-          browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
-
-          page = await browser.newPage();
-
-          // Set timeouts - longer for Windows
-          await page.setDefaultNavigationTimeout(90000);
-          await page.setDefaultTimeout(90000);
-
-          // Set content with a more reliable wait strategy
-          await page.setContent(htmlContent, {
-            waitUntil: "domcontentloaded", // Less strict than networkidle0 for Windows
-            timeout: 90000,
-          });
-
-          // Add a small delay to ensure rendering is complete
-          await page.evaluate(
-            () => new Promise((resolve) => setTimeout(resolve, 500))
-          );
-
-          // Generate PDF with extended timeout
-          await page.pdf({
-            path: pdfPath,
-            format: "A4",
-            margin: {
-              top: "20px",
-              right: "20px",
-              bottom: "20px",
-              left: "20px",
-            },
-            printBackground: true,
-            timeout: 90000,
-            preferCSSPageSize: false,
-          });
-
-          console.log(`PDF generated successfully on attempt ${attempt}`);
-
-          return {
-            absolutePath: pdfPath,
-            relativePath: relativePath,
-          };
-        } catch (error) {
-          lastError = error;
-          console.error(
-            `PDF generation attempt ${attempt} failed:`,
-            error.message
-          );
-
-          // Clean up before retry
-          try {
-            if (page && !page.isClosed()) {
-              await page.close().catch(() => {});
-            }
-            if (browser && browser.process()) {
-              await browser.close().catch(() => {});
-            }
-          } catch (cleanupError) {
-            console.error("Cleanup error during retry:", cleanupError.message);
+          if (page) {
+            await page
+              .close()
+              .catch((e) => console.error("Error closing page:", e));
           }
-
-          // Wait before retry (exponential backoff)
-          if (attempt < maxRetries) {
-            const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-            console.log(`Waiting ${delay}ms before retry...`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
+          if (browser) {
+            await browser
+              .close()
+              .catch((e) => console.error("Error closing browser:", e));
           }
-        } finally {
-          // Ensure cleanup after each attempt
-          try {
-            if (page && !page.isClosed()) {
-              await page
-                .close()
-                .catch((e) => console.error("Error closing page:", e.message));
-            }
-            if (browser && browser.process()) {
-              await browser
-                .close()
-                .catch((e) =>
-                  console.error("Error closing browser:", e.message)
-                );
-            }
-          } catch (cleanupError) {
-            console.error("Error during final cleanup:", cleanupError.message);
-          }
-
-          // Set to null for next iteration
-          page = null;
-          browser = null;
+        } catch (cleanupError) {
+          console.error("Error during cleanup:", cleanupError);
         }
       }
-
-      // If all retries failed, throw the last error
-      throw lastError;
     } catch (error) {
       console.error(`Error generating ${type}:`, error);
       throw error;
@@ -340,101 +274,53 @@ class PDFGenerator {
 
       let browser = null;
       let page = null;
-      const maxRetries = 3;
-      let lastError = null;
 
-      // Retry logic for Windows stability
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // Generate PDF
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+        page = await browser.newPage();
+
+        await page.setDefaultNavigationTimeout(60000);
+        await page.setDefaultTimeout(60000);
+
+        await page.setContent(html, {
+          waitUntil: "networkidle0",
+          timeout: 60000,
+        });
+
+        // Generate PDF
+        await page.pdf({
+          path: absolutePath,
+          format: "A4",
+          printBackground: true,
+          margin: {
+            top: "20px",
+            right: "20px",
+            bottom: "20px",
+            left: "20px",
+          },
+          timeout: 60000,
+        });
+
+        return {
+          absolutePath,
+          relativePath,
+        };
+      } finally {
+        // Ensure cleanup
         try {
-          console.log(
-            `License PDF generation attempt ${attempt}/${maxRetries}`
-          );
-
-          browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
-          page = await browser.newPage();
-
-          await page.setDefaultNavigationTimeout(90000);
-          await page.setDefaultTimeout(90000);
-
-          await page.setContent(html, {
-            waitUntil: "domcontentloaded",
-            timeout: 90000,
-          });
-
-          // Add delay for rendering
-          await page.evaluate(
-            () => new Promise((resolve) => setTimeout(resolve, 500))
-          );
-
-          // Generate PDF
-          await page.pdf({
-            path: absolutePath,
-            format: "A4",
-            printBackground: true,
-            margin: {
-              top: "20px",
-              right: "20px",
-              bottom: "20px",
-              left: "20px",
-            },
-            timeout: 90000,
-            preferCSSPageSize: false,
-          });
-
-          console.log(
-            `License PDF generated successfully on attempt ${attempt}`
-          );
-
-          return {
-            absolutePath,
-            relativePath,
-          };
-        } catch (error) {
-          lastError = error;
-          console.error(
-            `License PDF attempt ${attempt} failed:`,
-            error.message
-          );
-
-          // Clean up before retry
-          try {
-            if (page && !page.isClosed()) {
-              await page.close().catch(() => {});
-            }
-            if (browser && browser.process()) {
-              await browser.close().catch(() => {});
-            }
-          } catch (cleanupError) {
-            console.error("Cleanup error during retry:", cleanupError.message);
-          }
-
-          if (attempt < maxRetries) {
-            const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-            console.log(`Waiting ${delay}ms before retry...`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
-          }
-        } finally {
-          try {
-            if (page && !page.isClosed())
-              await page
-                .close()
-                .catch((e) => console.error("Error closing page:", e.message));
-            if (browser && browser.process())
-              await browser
-                .close()
-                .catch((e) =>
-                  console.error("Error closing browser:", e.message)
-                );
-          } catch (cleanupError) {
-            console.error("Error during final cleanup:", cleanupError.message);
-          }
-
-          page = null;
-          browser = null;
+          if (page)
+            await page
+              .close()
+              .catch((e) => console.error("Error closing page:", e));
+          if (browser)
+            await browser
+              .close()
+              .catch((e) => console.error("Error closing browser:", e));
+        } catch (cleanupError) {
+          console.error("Error during cleanup:", cleanupError);
         }
       }
-
-      throw lastError;
     } catch (error) {
       console.error("Error generating license certificate:", error);
       throw error;
@@ -489,101 +375,53 @@ class PDFGenerator {
 
       let browser = null;
       let page = null;
-      const maxRetries = 3;
-      let lastError = null;
 
-      // Retry logic for Windows stability
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // Generate PDF
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+        page = await browser.newPage();
+
+        await page.setDefaultNavigationTimeout(60000);
+        await page.setDefaultTimeout(60000);
+
+        await page.setContent(html, {
+          waitUntil: "networkidle0",
+          timeout: 60000,
+        });
+
+        // Generate PDF
+        await page.pdf({
+          path: absolutePath,
+          format: "A4",
+          printBackground: true,
+          margin: {
+            top: "20px",
+            right: "20px",
+            bottom: "20px",
+            left: "20px",
+          },
+          timeout: 60000,
+        });
+
+        return {
+          absolutePath,
+          relativePath,
+        };
+      } finally {
+        // Ensure cleanup
         try {
-          console.log(
-            `Barcode PDF generation attempt ${attempt}/${maxRetries}`
-          );
-
-          browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
-          page = await browser.newPage();
-
-          await page.setDefaultNavigationTimeout(90000);
-          await page.setDefaultTimeout(90000);
-
-          await page.setContent(html, {
-            waitUntil: "domcontentloaded",
-            timeout: 90000,
-          });
-
-          // Add delay for rendering
-          await page.evaluate(
-            () => new Promise((resolve) => setTimeout(resolve, 500))
-          );
-
-          // Generate PDF
-          await page.pdf({
-            path: absolutePath,
-            format: "A4",
-            printBackground: true,
-            margin: {
-              top: "20px",
-              right: "20px",
-              bottom: "20px",
-              left: "20px",
-            },
-            timeout: 90000,
-            preferCSSPageSize: false,
-          });
-
-          console.log(
-            `Barcode PDF generated successfully on attempt ${attempt}`
-          );
-
-          return {
-            absolutePath,
-            relativePath,
-          };
-        } catch (error) {
-          lastError = error;
-          console.error(
-            `Barcode PDF attempt ${attempt} failed:`,
-            error.message
-          );
-
-          // Clean up before retry
-          try {
-            if (page && !page.isClosed()) {
-              await page.close().catch(() => {});
-            }
-            if (browser && browser.process()) {
-              await browser.close().catch(() => {});
-            }
-          } catch (cleanupError) {
-            console.error("Cleanup error during retry:", cleanupError.message);
-          }
-
-          if (attempt < maxRetries) {
-            const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
-            console.log(`Waiting ${delay}ms before retry...`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
-          }
-        } finally {
-          try {
-            if (page && !page.isClosed())
-              await page
-                .close()
-                .catch((e) => console.error("Error closing page:", e.message));
-            if (browser && browser.process())
-              await browser
-                .close()
-                .catch((e) =>
-                  console.error("Error closing browser:", e.message)
-                );
-          } catch (cleanupError) {
-            console.error("Error during final cleanup:", cleanupError.message);
-          }
-
-          page = null;
-          browser = null;
+          if (page)
+            await page
+              .close()
+              .catch((e) => console.error("Error closing page:", e));
+          if (browser)
+            await browser
+              .close()
+              .catch((e) => console.error("Error closing browser:", e));
+        } catch (cleanupError) {
+          console.error("Error during cleanup:", cleanupError);
         }
       }
-
-      throw lastError;
     } catch (error) {
       console.error("Error generating barcode certificate:", error);
       throw error;
