@@ -8,6 +8,7 @@
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
     "workers:start": "node workers/index.js --env-file=./.env",
+    "playwright:install": "npx playwright install chromium",
     "prisma-push": "npx prisma db push",
     "test": "jest",
     "test:pdf": "node test-pdf-generation.js",

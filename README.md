@@ -78,7 +78,7 @@ A Node.js backend service for GST (Global Standards Trading) management system w
 ### File Processing
 
 - Multermate for File Upload
-- Puppeteer for PDF Generation
+- Playwright for PDF Generation (compatible with Windows/IIS servers)
 - QR Code Generation
 
 ### Email & Templates
@@ -109,11 +109,21 @@ git clone https://github.com/your-repo/gst-backend.git
 
 pnpm install
 
-3. Configure environment variables:
+3. Install Playwright browsers (required for PDF generation):
+
+pnpm run playwright:install
+
+**Important for Windows/IIS Deployments:**
+
+- Playwright requires Chromium browser to be installed
+- Run `npx playwright install chromium` on the server after deployment
+- Alternatively, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` environment variable to point to an existing Chrome/Chromium installation
+
+4. Configure environment variables:
 
 cp .env.example .env
 
-4. Update the `.env` file with your configurations:
+5. Update the `.env` file with your configurations:
 
 ```env
 # Server
@@ -136,9 +146,12 @@ JWT_REFRESH_SECRET="your-refresh-secret"
 # Email
 EMAIL_FROM="your-email@domain.com"
 EMAIL_APP_PASSWORD="your-app-password"
+
+# Playwright (Optional - for custom Chrome/Chromium path)
+# PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 ```
 
-5. Start the development server:
+6. Start the development server:
 
 pnpm dev
 

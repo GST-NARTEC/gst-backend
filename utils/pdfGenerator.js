@@ -16,36 +16,49 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
-// Base Playwright launch options with improved stability
-const getPlaywrightLaunchOptions = () => ({
-  headless: true,
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--disable-web-security",
-    "--disable-features=IsolateOrigins,site-per-process",
-    "--single-process",
-    "--no-zygote",
-    "--disable-accelerated-2d-canvas",
-    "--disable-background-timer-throttling",
-    "--disable-backgrounding-occluded-windows",
-    "--disable-breakpad",
-    "--disable-component-extensions-with-background-pages",
-    "--disable-extensions",
-    "--disable-features=TranslateUI,BlinkGenPropertyTrees",
-    "--disable-ipc-flooding-protection",
-    "--disable-renderer-backgrounding",
-    "--enable-features=NetworkService,NetworkServiceInProcess",
-    "--force-color-profile=srgb",
-    "--hide-scrollbars",
-    "--metrics-recording-only",
-    "--mute-audio",
-  ],
-  executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
-  timeout: 120000, // 2 minutes
-});
+// Base Playwright launch options with improved stability for Windows/IIS
+const getPlaywrightLaunchOptions = (userDataDir) => {
+  const options = {
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+      "--disable-web-security",
+      "--disable-features=IsolateOrigins,site-per-process",
+      "--single-process",
+      "--no-zygote",
+      "--disable-accelerated-2d-canvas",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-breakpad",
+      "--disable-component-extensions-with-background-pages",
+      "--disable-extensions",
+      "--disable-features=TranslateUI,BlinkGenPropertyTrees",
+      "--disable-ipc-flooding-protection",
+      "--disable-renderer-backgrounding",
+      "--enable-features=NetworkService,NetworkServiceInProcess",
+      "--force-color-profile=srgb",
+      "--hide-scrollbars",
+      "--metrics-recording-only",
+      "--mute-audio",
+    ],
+    timeout: 120000, // 2 minutes
+  };
+
+  // Set user data directory if provided
+  if (userDataDir) {
+    options.args.push(`--user-data-dir=${userDataDir}`);
+  }
+
+  // Set custom executable path if provided (useful for Windows/IIS deployments)
+  if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
+    options.executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+  }
+
+  return options;
+};
 
 class PDFGenerator {
   static async generateDocument(order, user, invoice, type = "invoice") {
@@ -161,11 +174,18 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
+      // Create a temporary directory for Playwright user data (Windows compatible)
+      const tempDir = path.join(
+        __dirname,
+        "../uploads/temp/playwright-profile"
+      );
+      await fs.ensureDir(tempDir);
+
       let browser = null;
       let page = null;
 
       try {
-        browser = await chromium.launch(getPlaywrightLaunchOptions());
+        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
 
         page = await browser.newPage();
 
@@ -249,6 +269,13 @@ class PDFGenerator {
         calculatePrice,
       });
 
+      // Create a temporary directory for Playwright user data (Windows compatible)
+      const tempDir = path.join(
+        __dirname,
+        "../uploads/temp/playwright-profile-license"
+      );
+      await fs.ensureDir(tempDir);
+
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/certificates");
       await fs.mkdir(dir, { recursive: true });
@@ -263,7 +290,7 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await chromium.launch(getPlaywrightLaunchOptions());
+        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
         page = await browser.newPage();
 
         page.setDefaultNavigationTimeout(60000);
@@ -342,6 +369,13 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
+      // Create a temporary directory for Playwright user data (Windows compatible)
+      const tempDir = path.join(
+        __dirname,
+        "../uploads/temp/playwright-profile-barcode"
+      );
+      await fs.ensureDir(tempDir);
+
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/barcodes");
       await fs.mkdir(dir, { recursive: true });
@@ -356,7 +390,7 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await chromium.launch(getPlaywrightLaunchOptions());
+        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
         page = await browser.newPage();
 
         page.setDefaultNavigationTimeout(60000);
