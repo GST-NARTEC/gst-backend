@@ -46,6 +46,7 @@
     "nanoid": "^5.0.9",
     "nodemailer": "^6.9.16",
     "playwright": "^1.56.1",
+    "puppeteer": "^24.27.0",
     "qrcode": "^1.5.4",
     "replicate": "^1.0.1",
     "swagger-jsdoc": "^6.2.8",
