@@ -2,7 +2,7 @@ import ejs from "ejs";
 import ExcelJS from "exceljs";
 import fs from "fs/promises";
 import path from "path";
-import { chromium } from "playwright";
+import puppeteer from "puppeteer";
 import { fileURLToPath } from "url";
 import { glnSchema } from "../schemas/gln.schema.js";
 import MyError from "../utils/error.js";
@@ -561,24 +561,25 @@ class GLNController {
       const templatePath = path.join(__dirname, "../view/glnList.ejs");
       const html = await ejs.renderFile(templatePath, { glns, user });
 
-      // Launch Playwright with specific configurations
-      const browser = await chromium.launch({
-        headless: true,
+      // Launch puppeteer with specific configurations
+      const browser = await puppeteer.launch({
+        headless: "new",
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
           "--disable-accelerated-2d-canvas",
           "--disable-gpu",
+          "--window-size=1920x1080",
         ],
       });
 
       const page = await browser.newPage();
-      await page.setViewportSize({ width: 1920, height: 1080 });
+      await page.setViewport({ width: 1920, height: 1080 });
 
       // Set content and wait for images to load
       await page.setContent(html, {
-        waitUntil: "networkidle",
+        waitUntil: ["networkidle0", "domcontentloaded"],
         timeout: 30000,
       });
 

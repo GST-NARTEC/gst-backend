@@ -1,7 +1,7 @@
 import ejs from "ejs";
 import fs from "fs-extra";
 import path, { dirname } from "path";
-import { chromium } from "playwright";
+import puppeteer from "puppeteer";
 import { fileURLToPath } from "url";
 
 import { calculatePrice } from "./priceCalculator.js";
@@ -16,49 +16,38 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
-// Base Playwright launch options with improved stability for Windows/IIS
-const getPlaywrightLaunchOptions = (userDataDir) => {
-  const options = {
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--disable-web-security",
-      "--disable-features=IsolateOrigins,site-per-process",
-      "--single-process",
-      "--no-zygote",
-      "--disable-accelerated-2d-canvas",
-      "--disable-background-timer-throttling",
-      "--disable-backgrounding-occluded-windows",
-      "--disable-breakpad",
-      "--disable-component-extensions-with-background-pages",
-      "--disable-extensions",
-      "--disable-features=TranslateUI,BlinkGenPropertyTrees",
-      "--disable-ipc-flooding-protection",
-      "--disable-renderer-backgrounding",
-      "--enable-features=NetworkService,NetworkServiceInProcess",
-      "--force-color-profile=srgb",
-      "--hide-scrollbars",
-      "--metrics-recording-only",
-      "--mute-audio",
-    ],
-    timeout: 120000, // 2 minutes
-  };
-
-  // Set user data directory if provided
-  if (userDataDir) {
-    options.args.push(`--user-data-dir=${userDataDir}`);
-  }
-
-  // Set custom executable path if provided (useful for Windows/IIS deployments)
-  if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
-    options.executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
-  }
-
-  return options;
-};
+// Base Puppeteer launch options with improved stability
+const getPuppeteerLaunchOptions = (userDataDir) => ({
+  headless: "new",
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-web-security",
+    "--disable-features=IsolateOrigins,site-per-process",
+    "--single-process", // Helps prevent IO.read errors
+    "--no-zygote", // Reduces memory overhead
+    "--disable-accelerated-2d-canvas",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-breakpad",
+    "--disable-component-extensions-with-background-pages",
+    "--disable-extensions",
+    "--disable-features=TranslateUI,BlinkGenPropertyTrees",
+    "--disable-ipc-flooding-protection",
+    "--disable-renderer-backgrounding",
+    "--enable-features=NetworkService,NetworkServiceInProcess",
+    "--force-color-profile=srgb",
+    "--hide-scrollbars",
+    "--metrics-recording-only",
+    "--mute-audio",
+  ],
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+  userDataDir,
+  // Add timeout and protocol timeout to prevent hanging
+  protocolTimeout: 120000, // 2 minutes
+});
 
 class PDFGenerator {
   static async generateDocument(order, user, invoice, type = "invoice") {
@@ -174,28 +163,25 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
-      // Create a temporary directory for Playwright user data (Windows compatible)
-      const tempDir = path.join(
-        __dirname,
-        "../uploads/temp/playwright-profile"
-      );
+      // Create a temporary directory for Puppeteer user data
+      const tempDir = path.join(__dirname, "../uploads/temp/puppeteer-profile");
       await fs.ensureDir(tempDir);
 
       let browser = null;
       let page = null;
 
       try {
-        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
 
         page = await browser.newPage();
 
         // Set a shorter timeout for content loading
-        page.setDefaultNavigationTimeout(60000); // 1 minute
-        page.setDefaultTimeout(60000);
+        await page.setDefaultNavigationTimeout(60000); // 1 minute
+        await page.setDefaultTimeout(60000);
 
         // Set content with a more reliable wait strategy
         await page.setContent(htmlContent, {
-          waitUntil: "networkidle",
+          waitUntil: "networkidle0",
           timeout: 60000,
         });
 
@@ -210,6 +196,7 @@ class PDFGenerator {
             left: "20px",
           },
           printBackground: true,
+          timeout: 60000, // 1 minute timeout for PDF generation
         });
 
         return {
@@ -269,10 +256,10 @@ class PDFGenerator {
         calculatePrice,
       });
 
-      // Create a temporary directory for Playwright user data (Windows compatible)
+      // Create a temporary directory for Puppeteer user data
       const tempDir = path.join(
         __dirname,
-        "../uploads/temp/playwright-profile-license"
+        "../uploads/temp/puppeteer-profile-license"
       );
       await fs.ensureDir(tempDir);
 
@@ -290,14 +277,14 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
         page = await browser.newPage();
 
-        page.setDefaultNavigationTimeout(60000);
-        page.setDefaultTimeout(60000);
+        await page.setDefaultNavigationTimeout(60000);
+        await page.setDefaultTimeout(60000);
 
         await page.setContent(html, {
-          waitUntil: "networkidle",
+          waitUntil: "networkidle0",
           timeout: 60000,
         });
 
@@ -312,6 +299,7 @@ class PDFGenerator {
             bottom: "20px",
             left: "20px",
           },
+          timeout: 60000,
         });
 
         return {
@@ -369,10 +357,10 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
-      // Create a temporary directory for Playwright user data (Windows compatible)
+      // Create a temporary directory for Puppeteer user data
       const tempDir = path.join(
         __dirname,
-        "../uploads/temp/playwright-profile-barcode"
+        "../uploads/temp/puppeteer-profile-barcode"
       );
       await fs.ensureDir(tempDir);
 
@@ -390,14 +378,14 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await chromium.launch(getPlaywrightLaunchOptions(tempDir));
+        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
         page = await browser.newPage();
 
-        page.setDefaultNavigationTimeout(60000);
-        page.setDefaultTimeout(60000);
+        await page.setDefaultNavigationTimeout(60000);
+        await page.setDefaultTimeout(60000);
 
         await page.setContent(html, {
-          waitUntil: "networkidle",
+          waitUntil: "networkidle0",
           timeout: 60000,
         });
 
@@ -412,6 +400,7 @@ class PDFGenerator {
             bottom: "20px",
             left: "20px",
           },
+          timeout: 60000,
         });
 
         return {
