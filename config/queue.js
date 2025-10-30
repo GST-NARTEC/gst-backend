@@ -1,5 +1,8 @@
 import { Queue } from "bullmq";
+import dotenv from "dotenv";
 import IORedis from "ioredis";
+
+dotenv.config();
 
 export const connection = new IORedis({
   host: process.env.REDIS_HOST || "localhost",

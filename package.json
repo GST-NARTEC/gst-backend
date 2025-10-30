@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
-    "workers:start": "node workers/index.js",
+    "workers:start": "node workers/index.js --env-file=./.env",
     "prisma-push": "npx prisma db push",
     "test": "jest",
     "test:pdf": "node test-pdf-generation.js",
