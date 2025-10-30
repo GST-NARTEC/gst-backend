@@ -97,7 +97,7 @@ class PDFGenerator {
           type: activeVat.type,
           value: activeVat.value,
           computed: invoice.vat.toFixed(2),
-          id: "312408381800003" ?? activeVat.taxId,
+          id: activeVat.taxId,
           name: activeVat.name,
         },
         calculatePrice,
@@ -132,13 +132,6 @@ class PDFGenerator {
 
       const browser = await puppeteer.launch({
         headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       });
       const page = await browser.newPage();
       await page.setContent(htmlContent, {
@@ -202,13 +195,7 @@ class PDFGenerator {
       // Generate PDF
       const browser = await puppeteer.launch({
         headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+        args: ["--no-sandbox"],
       });
       const page = await browser.newPage();
       await page.setContent(html);
@@ -280,13 +267,7 @@ class PDFGenerator {
       // Generate PDF
       const browser = await puppeteer.launch({
         headless: "new",
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+        args: ["--no-sandbox"],
       });
       const page = await browser.newPage();
       await page.setContent(html);
