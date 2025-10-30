@@ -10,6 +10,8 @@
     "workers:start": "node workers/index.js",
     "prisma-push": "npx prisma db push",
     "test": "jest",
+    "test:pdf": "node test-pdf-generation.js",
+    "test:pdf:quick": "node quick-pdf-test.js",
     "seed": "node seed/index.js",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org gst-sz --project gst-api ./ && sentry-cli sourcemaps upload --org gst-sz --project gst-api ./"
   },
