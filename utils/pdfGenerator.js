@@ -16,39 +16,6 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
-// Base Puppeteer launch options with improved stability
-const getPuppeteerLaunchOptions = (userDataDir) => ({
-  headless: "new",
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--disable-web-security",
-    "--disable-features=IsolateOrigins,site-per-process",
-    "--single-process", // Helps prevent IO.read errors
-    "--no-zygote", // Reduces memory overhead
-    "--disable-accelerated-2d-canvas",
-    "--disable-background-timer-throttling",
-    "--disable-backgrounding-occluded-windows",
-    "--disable-breakpad",
-    "--disable-component-extensions-with-background-pages",
-    "--disable-extensions",
-    "--disable-features=TranslateUI,BlinkGenPropertyTrees",
-    "--disable-ipc-flooding-protection",
-    "--disable-renderer-backgrounding",
-    "--enable-features=NetworkService,NetworkServiceInProcess",
-    "--force-color-profile=srgb",
-    "--hide-scrollbars",
-    "--metrics-recording-only",
-    "--mute-audio",
-  ],
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-  userDataDir,
-  // Add timeout and protocol timeout to prevent hanging
-  protocolTimeout: 120000, // 2 minutes
-});
-
 class PDFGenerator {
   static async generateDocument(order, user, invoice, type = "invoice") {
     try {
@@ -163,63 +130,39 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(__dirname, "../uploads/temp/puppeteer-profile");
-      await fs.ensureDir(tempDir);
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      });
+      const page = await browser.newPage();
+      await page.setContent(htmlContent, {
+        waitUntil: "networkidle0",
+      });
 
-      let browser = null;
-      let page = null;
+      await page.pdf({
+        path: pdfPath,
+        format: "A4",
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+        printBackground: true,
+      });
 
-      try {
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+      await browser.close();
 
-        page = await browser.newPage();
-
-        // Set a shorter timeout for content loading
-        await page.setDefaultNavigationTimeout(60000); // 1 minute
-        await page.setDefaultTimeout(60000);
-
-        // Set content with a more reliable wait strategy
-        await page.setContent(htmlContent, {
-          waitUntil: "networkidle0",
-          timeout: 60000,
-        });
-
-        // Generate PDF with timeout
-        await page.pdf({
-          path: pdfPath,
-          format: "A4",
-          margin: {
-            top: "20px",
-            right: "20px",
-            bottom: "20px",
-            left: "20px",
-          },
-          printBackground: true,
-          timeout: 60000, // 1 minute timeout for PDF generation
-        });
-
-        return {
-          absolutePath: pdfPath,
-          relativePath: relativePath,
-        };
-      } finally {
-        // Ensure cleanup happens even if there's an error
-        try {
-          if (page) {
-            await page
-              .close()
-              .catch((e) => console.error("Error closing page:", e));
-          }
-          if (browser) {
-            await browser
-              .close()
-              .catch((e) => console.error("Error closing browser:", e));
-          }
-        } catch (cleanupError) {
-          console.error("Error during cleanup:", cleanupError);
-        }
-      }
+      return {
+        absolutePath: pdfPath,
+        relativePath: relativePath,
+      };
     } catch (error) {
       console.error(`Error generating ${type}:`, error);
       throw error;
@@ -256,12 +199,19 @@ class PDFGenerator {
         calculatePrice,
       });
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(
-        __dirname,
-        "../uploads/temp/puppeteer-profile-license"
-      );
-      await fs.ensureDir(tempDir);
+      // Generate PDF
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      });
+      const page = await browser.newPage();
+      await page.setContent(html);
 
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/certificates");
@@ -272,55 +222,25 @@ class PDFGenerator {
       const absolutePath = path.join(dir, filename);
       const relativePath = `uploads/certificates/${filename}`;
 
-      let browser = null;
-      let page = null;
+      // Generate PDF
+      await page.pdf({
+        path: absolutePath,
+        format: "A4",
+        printBackground: true,
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+      });
 
-      try {
-        // Generate PDF
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
-        page = await browser.newPage();
+      await browser.close();
 
-        await page.setDefaultNavigationTimeout(60000);
-        await page.setDefaultTimeout(60000);
-
-        await page.setContent(html, {
-          waitUntil: "networkidle0",
-          timeout: 60000,
-        });
-
-        // Generate PDF
-        await page.pdf({
-          path: absolutePath,
-          format: "A4",
-          printBackground: true,
-          margin: {
-            top: "20px",
-            right: "20px",
-            bottom: "20px",
-            left: "20px",
-          },
-          timeout: 60000,
-        });
-
-        return {
-          absolutePath,
-          relativePath,
-        };
-      } finally {
-        // Ensure cleanup
-        try {
-          if (page)
-            await page
-              .close()
-              .catch((e) => console.error("Error closing page:", e));
-          if (browser)
-            await browser
-              .close()
-              .catch((e) => console.error("Error closing browser:", e));
-        } catch (cleanupError) {
-          console.error("Error during cleanup:", cleanupError);
-        }
-      }
+      return {
+        absolutePath,
+        relativePath,
+      };
     } catch (error) {
       console.error("Error generating license certificate:", error);
       throw error;
@@ -357,12 +277,19 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(
-        __dirname,
-        "../uploads/temp/puppeteer-profile-barcode"
-      );
-      await fs.ensureDir(tempDir);
+      // Generate PDF
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      });
+      const page = await browser.newPage();
+      await page.setContent(html);
 
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/barcodes");
@@ -373,55 +300,25 @@ class PDFGenerator {
       const absolutePath = path.join(dir, filename);
       const relativePath = `uploads/barcodes/${filename}`;
 
-      let browser = null;
-      let page = null;
+      // Generate PDF
+      await page.pdf({
+        path: absolutePath,
+        format: "A4",
+        printBackground: true,
+        margin: {
+          top: "20px",
+          right: "20px",
+          bottom: "20px",
+          left: "20px",
+        },
+      });
 
-      try {
-        // Generate PDF
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
-        page = await browser.newPage();
+      await browser.close();
 
-        await page.setDefaultNavigationTimeout(60000);
-        await page.setDefaultTimeout(60000);
-
-        await page.setContent(html, {
-          waitUntil: "networkidle0",
-          timeout: 60000,
-        });
-
-        // Generate PDF
-        await page.pdf({
-          path: absolutePath,
-          format: "A4",
-          printBackground: true,
-          margin: {
-            top: "20px",
-            right: "20px",
-            bottom: "20px",
-            left: "20px",
-          },
-          timeout: 60000,
-        });
-
-        return {
-          absolutePath,
-          relativePath,
-        };
-      } finally {
-        // Ensure cleanup
-        try {
-          if (page)
-            await page
-              .close()
-              .catch((e) => console.error("Error closing page:", e));
-          if (browser)
-            await browser
-              .close()
-              .catch((e) => console.error("Error closing browser:", e));
-        } catch (cleanupError) {
-          console.error("Error during cleanup:", cleanupError);
-        }
-      }
+      return {
+        absolutePath,
+        relativePath,
+      };
     } catch (error) {
       console.error("Error generating barcode certificate:", error);
       throw error;
