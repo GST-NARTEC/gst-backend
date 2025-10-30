@@ -1,7 +1,7 @@
 import ejs from "ejs";
 import fs from "fs-extra";
 import path, { dirname } from "path";
-import puppeteer from "puppeteer";
+import { chromium } from "playwright";
 import { fileURLToPath } from "url";
 
 import { calculatePrice } from "./priceCalculator.js";
@@ -16,9 +16,9 @@ const LOGO_PATH = "/assets/images/gst-logo.png";
 const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
 const LOGO_URL = `${DOMAIN}${LOGO_PATH}`;
 
-// Base Puppeteer launch options with improved stability
-const getPuppeteerLaunchOptions = (userDataDir) => ({
-  headless: "new",
+// Base Playwright launch options with improved stability
+const getPlaywrightLaunchOptions = () => ({
+  headless: true,
   args: [
     "--no-sandbox",
     "--disable-setuid-sandbox",
@@ -26,8 +26,8 @@ const getPuppeteerLaunchOptions = (userDataDir) => ({
     "--disable-gpu",
     "--disable-web-security",
     "--disable-features=IsolateOrigins,site-per-process",
-    "--single-process", // Helps prevent IO.read errors
-    "--no-zygote", // Reduces memory overhead
+    "--single-process",
+    "--no-zygote",
     "--disable-accelerated-2d-canvas",
     "--disable-background-timer-throttling",
     "--disable-backgrounding-occluded-windows",
@@ -43,10 +43,8 @@ const getPuppeteerLaunchOptions = (userDataDir) => ({
     "--metrics-recording-only",
     "--mute-audio",
   ],
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-  userDataDir,
-  // Add timeout and protocol timeout to prevent hanging
-  protocolTimeout: 120000, // 2 minutes
+  executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
+  timeout: 120000, // 2 minutes
 });
 
 class PDFGenerator {
@@ -163,25 +161,21 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(__dirname, "../uploads/temp/puppeteer-profile");
-      await fs.ensureDir(tempDir);
-
       let browser = null;
       let page = null;
 
       try {
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+        browser = await chromium.launch(getPlaywrightLaunchOptions());
 
         page = await browser.newPage();
 
         // Set a shorter timeout for content loading
-        await page.setDefaultNavigationTimeout(60000); // 1 minute
-        await page.setDefaultTimeout(60000);
+        page.setDefaultNavigationTimeout(60000); // 1 minute
+        page.setDefaultTimeout(60000);
 
         // Set content with a more reliable wait strategy
         await page.setContent(htmlContent, {
-          waitUntil: "networkidle0",
+          waitUntil: "networkidle",
           timeout: 60000,
         });
 
@@ -196,7 +190,6 @@ class PDFGenerator {
             left: "20px",
           },
           printBackground: true,
-          timeout: 60000, // 1 minute timeout for PDF generation
         });
 
         return {
@@ -256,13 +249,6 @@ class PDFGenerator {
         calculatePrice,
       });
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(
-        __dirname,
-        "../uploads/temp/puppeteer-profile-license"
-      );
-      await fs.ensureDir(tempDir);
-
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/certificates");
       await fs.mkdir(dir, { recursive: true });
@@ -277,14 +263,14 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+        browser = await chromium.launch(getPlaywrightLaunchOptions());
         page = await browser.newPage();
 
-        await page.setDefaultNavigationTimeout(60000);
-        await page.setDefaultTimeout(60000);
+        page.setDefaultNavigationTimeout(60000);
+        page.setDefaultTimeout(60000);
 
         await page.setContent(html, {
-          waitUntil: "networkidle0",
+          waitUntil: "networkidle",
           timeout: 60000,
         });
 
@@ -299,7 +285,6 @@ class PDFGenerator {
             bottom: "20px",
             left: "20px",
           },
-          timeout: 60000,
         });
 
         return {
@@ -357,13 +342,6 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
-      // Create a temporary directory for Puppeteer user data
-      const tempDir = path.join(
-        __dirname,
-        "../uploads/temp/puppeteer-profile-barcode"
-      );
-      await fs.ensureDir(tempDir);
-
       // Create directory if it doesn't exist
       const dir = path.join(__dirname, "../uploads/barcodes");
       await fs.mkdir(dir, { recursive: true });
@@ -378,14 +356,14 @@ class PDFGenerator {
 
       try {
         // Generate PDF
-        browser = await puppeteer.launch(getPuppeteerLaunchOptions(tempDir));
+        browser = await chromium.launch(getPlaywrightLaunchOptions());
         page = await browser.newPage();
 
-        await page.setDefaultNavigationTimeout(60000);
-        await page.setDefaultTimeout(60000);
+        page.setDefaultNavigationTimeout(60000);
+        page.setDefaultTimeout(60000);
 
         await page.setContent(html, {
-          waitUntil: "networkidle0",
+          waitUntil: "networkidle",
           timeout: 60000,
         });
 
@@ -400,7 +378,6 @@ class PDFGenerator {
             bottom: "20px",
             left: "20px",
           },
-          timeout: 60000,
         });
 
         return {

@@ -44,7 +44,7 @@
     "multermate-es": "^1.0.1",
     "nanoid": "^5.0.9",
     "nodemailer": "^6.9.16",
-    "puppeteer": "^23.8.0",
+    "playwright": "^1.48.0",
     "qrcode": "^1.5.4",
     "replicate": "^1.0.1",
     "swagger-jsdoc": "^6.2.8",
