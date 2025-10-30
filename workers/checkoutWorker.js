@@ -7,12 +7,16 @@ import {
   orderActivationQueue,
   welcomeEmailQueue,
 } from "../config/queue.js";
+import { startPeriodicCleanup } from "../utils/cleanupPuppeteerTemp.js";
 import { addDomain } from "../utils/file.js";
 import { generatePassword } from "../utils/generatePassword.js";
 import logger from "../utils/logger.js";
 import PDFGenerator from "../utils/pdfGenerator.js";
 import { calculatePrice } from "../utils/priceCalculator.js";
 import prisma from "../utils/prismaClient.js";
+
+// Start periodic cleanup of Puppeteer temp files (important for Windows IIS)
+startPeriodicCleanup();
 
 const processCheckout = async (job) => {
   const { cart, user, paymentType, vat, activeVat, activeCurrency } = job.data;
