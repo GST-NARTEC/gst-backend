@@ -3,13 +3,24 @@ import fs from "fs-extra";
 import path, { dirname } from "path";
 import puppeteer from "puppeteer";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
 import { calculatePrice } from "./priceCalculator.js";
 import prisma from "./prismaClient.js";
 import generateZatcaQrCodeForInvoice from "./zatcaQrGenerator.js";
 
+dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// ========== FIX FOR IIS/WINDOWS PUPPETEER TEMP DIRECTORY ERROR ==========
+const customTempDir = path.join(process.cwd(), "temp");
+if (!fs.existsSync(customTempDir)) {
+  fs.mkdirSync(customTempDir, { recursive: true });
+}
+process.env.TEMP = customTempDir;
+process.env.TMP = customTempDir;
+// =========================================================================
 
 // Add logo path configuration
 const LOGO_PATH = "/assets/images/gst-logo.png";
@@ -132,6 +143,12 @@ class PDFGenerator {
 
       const browser = await puppeteer.launch({
         headless: "new",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
+        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
       });
       const page = await browser.newPage();
       await page.setContent(htmlContent, {
@@ -195,7 +212,12 @@ class PDFGenerator {
       // Generate PDF
       const browser = await puppeteer.launch({
         headless: "new",
-        args: ["--no-sandbox"],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
+        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
       });
       const page = await browser.newPage();
       await page.setContent(html);
@@ -267,7 +289,12 @@ class PDFGenerator {
       // Generate PDF
       const browser = await puppeteer.launch({
         headless: "new",
-        args: ["--no-sandbox"],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
+        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
       });
       const page = await browser.newPage();
       await page.setContent(html);
