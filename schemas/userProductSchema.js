@@ -17,3 +17,16 @@ export const userProductSchema = Joi.object({
   isSec: Joi.boolean().default(false),
   barcodeType: Joi.string().allow(null, ""),
 }).unknown(true);
+
+export const bulkImportSchema = Joi.object({
+  products: Joi.array()
+    .items(userProductSchema)
+    .min(1)
+    .max(1000)
+    .required()
+    .messages({
+      "array.min": "At least one product is required",
+      "array.max": "Maximum 1000 products allowed per import",
+      "any.required": "Products array is required",
+    }),
+});

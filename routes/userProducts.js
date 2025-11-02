@@ -18,6 +18,7 @@ router.use(verifyAccessToken);
 
 router.get("/export-excel", controller.exportExcelProducts);
 router.get("/export-pdf", controller.exportPdfProducts);
+router.post("/bulk-import", controller.bulkImportProducts);
 router.post("/", productUpload, controller.createProduct);
 router.get("/", controller.listProducts);
 router.get("/:id", controller.getProduct);

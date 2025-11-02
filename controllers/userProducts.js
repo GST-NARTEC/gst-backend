@@ -792,6 +792,202 @@ class UserProductsController {
       next(error);
     }
   }
+
+  static async bulkImportProducts(req, res, next) {
+    try {
+      const { products } = req.body;
+
+      // Validate that products array exists and is not empty
+      if (!products || !Array.isArray(products) || products.length === 0) {
+        throw new MyError(
+          "Products array is required and must not be empty",
+          400
+        );
+      }
+
+      // Limit bulk import to reasonable size (e.g., 1000 products)
+      if (products.length > 1000) {
+        throw new MyError(
+          "Bulk import limited to 1000 products per request",
+          400
+        );
+      }
+
+      // Verify user exists and get available GTINs count
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+      });
+
+      if (!user) {
+        throw new MyError("You are not authorized to create products", 401);
+      }
+
+      // Prepare results tracking
+      const results = {
+        successful: [],
+        failed: [],
+        summary: {
+          total: products.length,
+          succeeded: 0,
+          failed: 0,
+        },
+      };
+
+      // Process each product
+      for (let i = 0; i < products.length; i++) {
+        const productData = products[i];
+        const rowNumber = i + 1;
+
+        try {
+          // Validate product data
+          const { error, value } = userProductSchema.validate(productData);
+          if (error) {
+            throw new Error(error.details[0].message);
+          }
+
+          const { gtin: _, barcodeType, ...validatedData } = value;
+
+          // Validate barcode type if provided
+          let barcodeTypeRecord = null;
+          if (barcodeType) {
+            barcodeTypeRecord = await prisma.barcodeType.findFirst({
+              where: { type: barcodeType },
+            });
+
+            if (!barcodeTypeRecord) {
+              throw new Error(`Invalid barcode type: ${barcodeType}`);
+            }
+          }
+
+          // Find available GTIN for this barcode type
+          const availableGtin = await prisma.assignedGtin.findFirst({
+            where: {
+              order: {
+                userId: req.user.id,
+                status: "Activated",
+              },
+              ...(barcodeTypeRecord && {
+                barcodeTypeId: barcodeTypeRecord.id,
+              }),
+              gtin: {
+                status: "Sold",
+              },
+            },
+            include: {
+              gtin: true,
+              order: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+          });
+
+          if (!availableGtin) {
+            throw new Error(
+              `No available GTINs found${
+                barcodeType ? ` for barcode type: ${barcodeType}` : ""
+              }`
+            );
+          }
+
+          // Check for duplicate SKU if provided
+          if (validatedData.sku) {
+            const existingProduct = await prisma.userProduct.findFirst({
+              where: { sku: validatedData.sku },
+            });
+
+            if (existingProduct) {
+              throw new Error(
+                `Product with SKU "${validatedData.sku}" already exists`
+              );
+            }
+          }
+
+          // Create product in transaction
+          const product = await prisma.$transaction(async (prisma) => {
+            // Create the product
+            const newProduct = await prisma.userProduct.create({
+              data: {
+                ...validatedData,
+                gtin: availableGtin.gtin.gtin,
+                userId: req.user.id,
+                isSec: validatedData.isSec || false,
+              },
+            });
+
+            // Update GTIN status to Used
+            await prisma.gTIN.update({
+              where: {
+                id: availableGtin.gtinId,
+                gtin: newProduct.gtin,
+              },
+              data: {
+                status: "Used",
+              },
+            });
+
+            // Update user's SEC quantity if applicable
+            if (validatedData.isSec) {
+              await prisma.user.update({
+                where: { id: req.user.id },
+                data: {
+                  secQuantity: {
+                    decrement: 1,
+                  },
+                },
+              });
+            }
+
+            return newProduct;
+          });
+
+          // Add to successful results
+          results.successful.push({
+            row: rowNumber,
+            productId: product.id,
+            title: product.title,
+            sku: product.sku,
+            gtin: product.gtin,
+            message: "Product created successfully",
+          });
+          results.summary.succeeded++;
+        } catch (error) {
+          // Add to failed results
+          results.failed.push({
+            row: rowNumber,
+            title: productData.title || "N/A",
+            sku: productData.sku || "N/A",
+            error: error.message,
+          });
+          results.summary.failed++;
+        }
+      }
+
+      // Determine response status
+      const statusCode =
+        results.summary.failed === 0
+          ? 201
+          : results.summary.succeeded === 0
+          ? 400
+          : 207; // Multi-Status
+
+      const message =
+        results.summary.failed === 0
+          ? "All products imported successfully"
+          : results.summary.succeeded === 0
+          ? "All products failed to import"
+          : "Bulk import completed with some failures";
+
+      res
+        .status(statusCode)
+        .json(
+          response(statusCode, results.summary.failed === 0, message, results)
+        );
+    } catch (error) {
+      console.error("Bulk import error:", error);
+      next(error);
+    }
+  }
 }
 
 export default UserProductsController;
