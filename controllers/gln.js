@@ -561,7 +561,14 @@ class GLNController {
       const templatePath = path.join(__dirname, "../view/glnList.ejs");
       const html = await ejs.renderFile(templatePath, { glns, user });
 
-      // Launch puppeteer with specific configurations
+      // Launch puppeteer with unique userDataDir to avoid conflicts
+      const uniqueUserDataDir = path.join(
+        process.cwd(),
+        "temp",
+        `puppeteer_profile_${Date.now()}_${Math.random()
+          .toString(36)
+          .substring(7)}`
+      );
       const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -572,6 +579,7 @@ class GLNController {
           "--disable-gpu",
           "--window-size=1920x1080",
         ],
+        userDataDir: uniqueUserDataDir,
       });
 
       const page = await browser.newPage();
@@ -598,6 +606,13 @@ class GLNController {
       });
 
       await browser.close();
+
+      // Clean up temporary userDataDir
+      try {
+        await fs.rm(uniqueUserDataDir, { recursive: true, force: true });
+      } catch (cleanupError) {
+        console.warn("Failed to cleanup userDataDir:", cleanupError);
+      }
 
       // Read the generated PDF file
       const pdfBuffer = await fs.readFile(pdfPath);
