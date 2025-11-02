@@ -3,13 +3,11 @@ import fs from "fs-extra";
 import path, { dirname } from "path";
 import puppeteer from "puppeteer";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 
 import { calculatePrice } from "./priceCalculator.js";
 import prisma from "./prismaClient.js";
 import generateZatcaQrCodeForInvoice from "./zatcaQrGenerator.js";
 
-dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -141,6 +139,13 @@ class PDFGenerator {
 
       await fs.ensureDir(path.join("uploads", "pdfs"));
 
+      const uniqueUserDataDir = path.join(
+        process.cwd(),
+        "temp",
+        `puppeteer_profile_${Date.now()}_${Math.random()
+          .toString(36)
+          .substring(7)}`
+      );
       const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -148,7 +153,7 @@ class PDFGenerator {
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
         ],
-        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
+        userDataDir: uniqueUserDataDir,
       });
       const page = await browser.newPage();
       await page.setContent(htmlContent, {
@@ -168,6 +173,13 @@ class PDFGenerator {
       });
 
       await browser.close();
+
+      // Clean up temporary userDataDir
+      try {
+        await fs.rm(uniqueUserDataDir, { recursive: true, force: true });
+      } catch (cleanupError) {
+        console.warn("Failed to cleanup userDataDir:", cleanupError);
+      }
 
       return {
         absolutePath: pdfPath,
@@ -209,7 +221,14 @@ class PDFGenerator {
         calculatePrice,
       });
 
-      // Generate PDF
+      // Generate PDF with unique userDataDir to avoid conflicts
+      const uniqueUserDataDir = path.join(
+        process.cwd(),
+        "temp",
+        `puppeteer_profile_${Date.now()}_${Math.random()
+          .toString(36)
+          .substring(7)}`
+      );
       const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -217,7 +236,7 @@ class PDFGenerator {
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
         ],
-        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
+        userDataDir: uniqueUserDataDir,
       });
       const page = await browser.newPage();
       await page.setContent(html);
@@ -245,6 +264,13 @@ class PDFGenerator {
       });
 
       await browser.close();
+
+      // Clean up temporary userDataDir
+      try {
+        await fs.rm(uniqueUserDataDir, { recursive: true, force: true });
+      } catch (cleanupError) {
+        console.warn("Failed to cleanup userDataDir:", cleanupError);
+      }
 
       return {
         absolutePath,
@@ -286,7 +312,14 @@ class PDFGenerator {
         logo: LOGO_URL,
       });
 
-      // Generate PDF
+      // Generate PDF with unique userDataDir to avoid conflicts
+      const uniqueUserDataDir = path.join(
+        process.cwd(),
+        "temp",
+        `puppeteer_profile_${Date.now()}_${Math.random()
+          .toString(36)
+          .substring(7)}`
+      );
       const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -294,7 +327,7 @@ class PDFGenerator {
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
         ],
-        userDataDir: path.join(process.cwd(), "temp", "puppeteer_profile"),
+        userDataDir: uniqueUserDataDir,
       });
       const page = await browser.newPage();
       await page.setContent(html);
@@ -322,6 +355,13 @@ class PDFGenerator {
       });
 
       await browser.close();
+
+      // Clean up temporary userDataDir
+      try {
+        await fs.rm(uniqueUserDataDir, { recursive: true, force: true });
+      } catch (cleanupError) {
+        console.warn("Failed to cleanup userDataDir:", cleanupError);
+      }
 
       return {
         absolutePath,
