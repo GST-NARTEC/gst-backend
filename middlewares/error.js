@@ -29,5 +29,7 @@ export const errorHandler = (error, req, res, next) => {
     method: req.method,
   });
 
-  res.status(status).json(response(status, success, message, data));
+  const errorStack = error.stack || null;
+
+  res.status(status).json(response(status, success, message, data, errorStack));
 };
