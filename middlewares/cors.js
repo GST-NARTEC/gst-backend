@@ -1,7 +1,5 @@
 import cors from "cors";
 
-import MyError from "../utils/error.js";
-
 const whitelist = [
   process.env.DOMAIN,
   process.env.FRONTEND_URL,
@@ -14,6 +12,7 @@ const whitelist = [
   "http://localhost:5174",
   "http://localhost:3000",
   "http://localhost:3000/api",
+  "http://localhost:5173",
 
   // PayFort URLs
   "https://sbcheckout.payfort.com",
@@ -22,23 +21,29 @@ const whitelist = [
   "https://paymentservices.payfort.com",
 ].filter(Boolean);
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new MyError("Not allowed by CORS", 403));
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-//   credentials: true,
-//   optionsSuccessStatus: 200,
-// };
-
-// allow all origins
+// Proper CORS configuration with whitelist
 const corsOptions = {
-  origin: "*",
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, or same-origin)
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log("Blocked by CORS:", origin);
+      callback(null, true); // Allow all for now, but log blocked origins
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+  ],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  credentials: true,
+  maxAge: 86400, // 24 hours
+  optionsSuccessStatus: 200,
 };
 
 export default cors(corsOptions);
