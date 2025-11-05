@@ -4,10 +4,12 @@ export const userProductSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().allow(null, ""),
   status: Joi.string().valid("ACTIVE", "INACTIVE").default("ACTIVE"),
-  sku: Joi.string().allow(null, "").transform((value) => {
-    if (value === null || value === "") return value;
-    return String(value).trim();
-  }),
+  sku: Joi.string()
+    .allow(null, "")
+    .custom((value, helpers) => {
+      if (value === null || value === "") return value;
+      return String(value).trim();
+    }),
   //   gtin: Joi.string().allow(null, ""),
   gpc: Joi.string().allow(null, ""),
   hsCode: Joi.string().allow(null, ""),
