@@ -17,6 +17,7 @@ import currencyRoutes from "./currency.js";
 import dashboardRoutes from "./dashboard.js";
 import digitalLinkRouter from "./digitalLink.js";
 import docTypeRoutes from "./docType.js";
+import exhibitVisitorRoutes from "./exhibitVisitor.js";
 import frontend from "./frontend.js";
 import glnRoutes from "./gln.js";
 import gtinRoutes from "./gtin.js";
@@ -48,6 +49,7 @@ import cartRoutesV2 from "./v2/cart.js";
 import userRoutesV2 from "./v2/user.js";
 import vatRoutes from "./vat.js";
 import whyBarcodeRoutes from "./whyBarcode.js";
+
 
 const router = express.Router();
 
@@ -98,6 +100,7 @@ router.use("/v1/payment", paymentRoutes);
 router.use("/v1/ai/image", AIRoutes);
 router.use("/company/v1", companyRoutes);
 router.use("/v1/contact-us", contactUsRoutes);
+router.use("/v1/exhibit-visitors", exhibitVisitorRoutes);
 
 // V2 Routes
 router.use("/cart/v2", cartRoutesV2);
