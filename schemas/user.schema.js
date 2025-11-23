@@ -75,20 +75,21 @@ export const userDetailsSchema = Joi.object({
 });
 
 export const userUpdateSchema = Joi.object({
-  companyLicenseNo: Joi.string(),
-  companyNameEn: Joi.string(),
-  companyNameAr: Joi.string(),
+  companyLicenseNo: Joi.string().optional().allow("", null),
+  email: Joi.string().email().optional().allow("", null),
+  companyNameEn: Joi.string().optional().allow("", null),
+  companyNameAr: Joi.string().optional().allow("", null),
   landline: Joi.string().allow("", null),
-  mobile: Joi.string(),
-  country: Joi.string(),
-  region: Joi.string(),
-  city: Joi.string(),
-  zipCode: Joi.string(),
-  streetAddress: Joi.string(),
-  latitude: Joi.number().optional(),
-  longitude: Joi.number().optional(),
-  isActive: Joi.boolean(),
-  isDeleted: Joi.boolean(),
+  mobile: Joi.string().optional().allow("", null),
+  country: Joi.string().optional().allow("", null),
+  region: Joi.string().optional().allow("", null),
+  city: Joi.string().optional().allow("", null),
+  zipCode: Joi.string().optional().allow("", null),
+  streetAddress: Joi.string().optional().allow("", null),
+  latitude: Joi.number().optional().allow("", null),
+  longitude: Joi.number().optional().allow("", null),
+  isActive: Joi.boolean().optional().allow("", null),
+  isDeleted: Joi.boolean().optional().allow("", null),
 }).min(1);
 
 export const userGtinsQuerySchema = Joi.object({
