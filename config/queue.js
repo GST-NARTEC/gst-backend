@@ -96,3 +96,8 @@ export const userUpdateNotificationQueue = new Queue("user-update-notification",
   connection,
   defaultJobOptions,
 });
+
+export const orderDeletionQueue = new Queue("order-deletion", {
+  connection,
+  defaultJobOptions,
+});

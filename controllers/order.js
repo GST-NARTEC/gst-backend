@@ -1,7 +1,7 @@
 import Joi from "joi";
 import {
-  bankSlipNotificationQueue,
-  orderActivationQueue,
+    bankSlipNotificationQueue,
+    orderActivationQueue
 } from "../config/queue.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
@@ -193,6 +193,46 @@ class OrderController {
           inactiveOrdersCount,
           bankOrdersCount,
           onlineOrdersCount,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Delete an order and all related data
+   * This will queue the deletion job to be processed by a background worker
+   */
+  static async deleteOrder(req, res, next) {
+    try {
+      const { orderNumber } = req.params;
+
+      // Verify order exists
+      const order = await prisma.order.findFirst({
+        where: { orderNumber },
+      });
+
+      if (!order) {
+        throw new MyError("Order not found", 404);
+      }
+
+      // Add job to deletion queue
+      await orderDeletionQueue.add(
+        "order-deletion",
+        { orderNumber },
+        {
+          attempts: 3,
+          backoff: {
+            type: "exponential",
+            delay: 5000,
+          },
+        }
+      );
+
+      res.status(200).json(
+        response(200, true, "Order deletion is being processed", {
+          orderNumber,
         })
       );
     } catch (error) {

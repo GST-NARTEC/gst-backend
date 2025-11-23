@@ -19,4 +19,6 @@ router.get("/orders-count", OrderController.getOrdersCount);
 
 router.get("/top-sold-products", OrderController.getTopSoldProducts);
 
+router.delete("/:orderNumber", OrderController.deleteOrder);
+
 export default router;
