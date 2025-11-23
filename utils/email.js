@@ -209,6 +209,33 @@ class EmailService {
     }
   }
 
+  async sendUserUpdateEmail({ email, user }) {
+    try {
+      const templatePath = path.join(__dirname, "../view/userUpdate.ejs");
+
+      const data = {
+        user,
+        logo: LOGO_URL,
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: email,
+        subject: "Profile Updated - GST Saudi Arabia",
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending user update email:", error);
+      return false;
+    }
+  }
+
+
   async sendAccountAdminNotification(user) {
     try {
       const templatePath = path.join(

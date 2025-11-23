@@ -91,3 +91,8 @@ export const udiQueue = new Queue("udi", {
   connection,
   defaultJobOptions,
 });
+
+export const userUpdateNotificationQueue = new Queue("user-update-notification", {
+  connection,
+  defaultJobOptions,
+});

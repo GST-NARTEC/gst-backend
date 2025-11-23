@@ -48,6 +48,11 @@ const processResetPassword = async (job) => {
   await EmailService.sendResetPasswordEmail(user, newPassword);
 };
 
+const processUserUpdateNotification = async (job) => {
+  const { user } = job.data;
+  await EmailService.sendUserUpdateEmail({ email: user.email, user });
+};
+
 // Workers
 const welcomeEmailWorker = new Worker("welcome-email", processWelcomeEmail, {
   connection,
@@ -88,6 +93,14 @@ const helpTicketUserNotificationWorker = new Worker(
 const resetPasswordWorker = new Worker("reset-password", processResetPassword, {
   connection,
 });
+
+const userUpdateNotificationWorker = new Worker(
+  "user-update-notification",
+  processUserUpdateNotification,
+  {
+    connection,
+  }
+);
 
 welcomeEmailWorker.on("completed", (job) => {
   console.log(`Job ${job.id} completed successfully`);
@@ -137,12 +150,22 @@ resetPasswordWorker.on("completed", (job) => {
   console.log(`Job ${job.id} completed successfully`);
 });
 
+userUpdateNotificationWorker.on("completed", (job) => {
+  console.log(`Job ${job.id} completed successfully`);
+});
+
+userUpdateNotificationWorker.on("failed", (job, err) => {
+  console.error(`Job ${job.id} failed with error: ${err.message}`);
+});
+
 // export workers
 export {
-  accountAdminNotificationWorker,
-  bankSlipNotificationWorker,
-  helpTicketAdminNotificationWorker,
-  helpTicketUserNotificationWorker,
-  resetPasswordWorker,
-  welcomeEmailWorker,
+    accountAdminNotificationWorker,
+    bankSlipNotificationWorker,
+    helpTicketAdminNotificationWorker,
+    helpTicketUserNotificationWorker,
+    resetPasswordWorker,
+    userUpdateNotificationWorker,
+    welcomeEmailWorker
 };
+

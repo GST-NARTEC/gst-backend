@@ -1,20 +1,20 @@
 import bcrypt from "bcrypt";
 
 import {
-  checkoutQueue,
-  resetPasswordQueue,
-  userDeletionQueue,
+    checkoutQueue,
+    resetPasswordQueue,
+    userDeletionQueue
 } from "../config/queue.js";
 import {
-  emailSchema,
-  loginSchema,
-  searchSchema,
-  userDetailsSchema,
-  userGtinsQuerySchema,
-  userInfoSchema,
-  userNewOrderSchema,
-  userUpdateSchema,
-  userWithCartCheckout,
+    emailSchema,
+    loginSchema,
+    searchSchema,
+    userDetailsSchema,
+    userGtinsQuerySchema,
+    userInfoSchema,
+    userNewOrderSchema,
+    userUpdateSchema,
+    userWithCartCheckout,
 } from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
@@ -700,6 +700,12 @@ class UserController {
           updatedAt: true,
         },
       });
+
+      // Add user update notification to queue
+      await userUpdateNotificationQueue.add(
+        "user-update-notification",
+        { user: updatedUser }
+      );
 
       res.status(200).json(
         response(200, true, "User updated successfully", {

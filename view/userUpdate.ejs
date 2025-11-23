@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Updated</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .certificate {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #ccc;
+      }
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.07;
+        width: 80%;
+        height: auto;
+        z-index: 0;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 5px;
+      }
+
+      .title {
+        color: #005999;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0 30px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin: 20px 0;
+        background-color: #48bb78;
+        color: white;
+      }
+
+      .status-info {
+        margin: 30px 0;
+        padding: 20px;
+        border-radius: 5px;
+        border-left: 4px solid #005999;
+        background-color: transparent;
+        text-align: left;
+      }
+
+      .bilingual {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+        align-items: center;
+      }
+
+      .footer {
+        margin-top: 40px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .address {
+        font-size: 14px;
+        color: #666;
+        margin-top: 10px;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-color: #005999;
+      }
+
+      .message-box.rtl {
+        text-align: right;
+      }
+
+      .rtl {
+        direction: rtl;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="certificate">
+      <img src="<%= logo %>" alt="Watermark" class="watermark" />
+
+      <div class="header">
+        <img src="<%= logo %>" alt="GST Logo" class="logo" />
+        <div style="color: #005999; font-size: 14px">GST</div>
+        <h1 class="title">Profile Updated / تحديث الملف الشخصي</h1>
+      </div>
+
+      <div class="content">
+        <div class="bilingual">
+          <div class="message-box">
+            <p>Dear <%= user.companyNameEn %>,</p>
+          </div>
+          <div class="message-box rtl">
+            <p>عزيزي <%= user.companyNameAr %>,</p>
+          </div>
+        </div>
+
+        <div class="status-badge">PROFILE UPDATED</div>
+
+        <div class="status-info">
+          <div class="bilingual">
+            <div class="message-box">
+              <p>
+                Your profile information has been successfully updated in our system.
+              </p>
+              <p>
+                If you did not make these changes or believe this is an error, 
+                please contact our support team immediately.
+              </p>
+              <p>
+                For any inquiries, please contact us:<br />
+                Email: <%= process.env.SUPPORT_EMAIL %><br />
+                Phone: <%= process.env.SUPPORT_PHONE %>
+              </p>
+            </div>
+            <div class="message-box rtl">
+              <p>
+                تم تحديث معلومات ملفك الشخصي بنجاح في نظامنا.
+              </p>
+              <p>
+                إذا لم تقم بإجراء هذه التغييرات أو تعتقد أن هذا خطأ، يرجى الاتصال بفريق الدعم على الفور.
+              </p>
+              <p>
+                :لأي استفسارات، يرجى الاتصال بنا<br />
+                <%= process.env.SUPPORT_EMAIL %> :البريد الإلكتروني<br />
+                الهاتف: <%= process.env.SUPPORT_PHONE %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="address">
+          (GST) Global Standard for Technology Solution<br />
+          King Abdullah Road, Riyadh Kingdom of Saudi Arabia
+        </div>
+      </div>
+
+      <div class="bottom-bar"></div>
+    </div>
+  </body>
+</html>
