@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "exhibit-visitor-api-collection",
+		"name": "ExhibitVisitor API",
+		"description": "Complete CRUD API collection for ExhibitVisitor endpoints with pagination and search capabilities",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Exhibit Visitor",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"company\": \"Tech Corp Inc.\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors"
+					]
+				},
+				"description": "Create a new exhibit visitor. All fields are optional."
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Exhibit Visitors (Paginated)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors?page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1",
+							"description": "Page number (default: 1)"
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"description": "Items per page (default: 10, max: 100)"
+						}
+					]
+				},
+				"description": "Get all exhibit visitors with pagination. Returns 10 items per page by default."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exhibit Visitors - Global Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors?search=john&page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "john",
+							"description": "Search across all fields (name, email, phone, company)"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Search for visitors across all fields using a single search term. Case-insensitive partial matching."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exhibit Visitors - Field Specific Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors?company=tech&email=gmail",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors"
+					],
+					"query": [
+						{
+							"key": "company",
+							"value": "tech",
+							"description": "Search by company (partial match)"
+						},
+						{
+							"key": "email",
+							"value": "gmail",
+							"description": "Search by email (partial match)"
+						},
+						{
+							"key": "name",
+							"value": "",
+							"description": "Search by name (partial match)",
+							"disabled": true
+						},
+						{
+							"key": "phone",
+							"value": "",
+							"description": "Search by phone (partial match)",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Search visitors by specific fields. Multiple filters are combined with AND logic."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exhibit Visitors - Combined Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors?search=john&company=tech&page=1&limit=20",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "john",
+							"description": "Global search term"
+						},
+						{
+							"key": "company",
+							"value": "tech",
+							"description": "Company filter"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				},
+				"description": "Combine global search with field-specific filters for advanced querying."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Exhibit Visitor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors/{{visitor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors",
+						"{{visitor_id}}"
+					]
+				},
+				"description": "Get a single exhibit visitor by ID. Replace {{visitor_id}} with actual ID."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Exhibit Visitor",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"phone\": \"+0987654321\",\n  \"company\": \"Updated Corp Ltd.\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors/{{visitor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors",
+						"{{visitor_id}}"
+					]
+				},
+				"description": "Update an existing exhibit visitor. All fields are optional - only provided fields will be updated."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Exhibit Visitor - Partial",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"company\": \"New Company Name\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors/{{visitor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors",
+						"{{visitor_id}}"
+					]
+				},
+				"description": "Partial update example - update only the company field."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Exhibit Visitor",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors/{{visitor_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors",
+						"{{visitor_id}}"
+					]
+				},
+				"description": "Delete an exhibit visitor by ID."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exhibit Visitors Count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/exhibit-visitors/count",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"exhibit-visitors",
+						"count"
+					]
+				},
+				"description": "Get total count of all exhibit visitors in the database."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "visitor_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

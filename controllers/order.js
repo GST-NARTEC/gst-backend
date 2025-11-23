@@ -1,7 +1,8 @@
 import Joi from "joi";
 import {
     bankSlipNotificationQueue,
-    orderActivationQueue
+    orderActivationQueue,
+    orderDeletionQueue,
 } from "../config/queue.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";

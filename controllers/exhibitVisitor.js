@@ -80,10 +80,10 @@ class ExhibitVisitorController {
       if (search) {
         whereConditions.push({
           OR: [
-            { name: { contains: search, mode: "insensitive" } },
-            { email: { contains: search, mode: "insensitive" } },
-            { phone: { contains: search, mode: "insensitive" } },
-            { company: { contains: search, mode: "insensitive" } },
+            { name: { contains: search } },
+            { email: { contains: search } },
+            { phone: { contains: search } },
+            { company: { contains: search } },
           ],
         });
       }
@@ -91,22 +91,22 @@ class ExhibitVisitorController {
       // Specific field searches
       if (name) {
         whereConditions.push({
-          name: { contains: name, mode: "insensitive" },
+          name: { contains: name },
         });
       }
       if (email) {
         whereConditions.push({
-          email: { contains: email, mode: "insensitive" },
+          email: { contains: email },
         });
       }
       if (phone) {
         whereConditions.push({
-          phone: { contains: phone, mode: "insensitive" },
+          phone: { contains: phone },
         });
       }
       if (company) {
         whereConditions.push({
-          company: { contains: company, mode: "insensitive" },
+          company: { contains: company },
         });
       }
 
