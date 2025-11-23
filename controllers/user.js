@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import {
     checkoutQueue,
     resetPasswordQueue,
-    userDeletionQueue
+    userDeletionQueue,
+    userUpdateNotificationQueue
 } from "../config/queue.js";
 import {
     emailSchema,
