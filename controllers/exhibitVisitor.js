@@ -145,6 +145,28 @@ class ExhibitVisitorController {
   }
 
   /**
+   * Get all exhibit visitors (without pagination and search)
+   * GET /exhibit-visitors/all
+   */
+  static async getAllExhibitVisitors(req, res, next) {
+    try {
+      const exhibitVisitors = await prisma.exhibitVisitor.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      res.status(200).json(
+        response(200, true, "Exhibit visitors retrieved successfully", {
+          exhibitVisitors,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Get a single exhibit visitor by ID
    * GET /exhibit-visitors/:id
    */

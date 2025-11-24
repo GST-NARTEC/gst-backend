@@ -9,6 +9,9 @@ router.post("/", controller.createExhibitVisitor);
 // Get all exhibit visitors (with pagination and search)
 router.get("/", controller.getExhibitVisitors);
 
+// Get all exhibit visitors (without pagination and search)
+router.get("/all", controller.getAllExhibitVisitors);
+
 // Get count of exhibit visitors
 router.get("/count", controller.getExhibitVisitorsCount);
 
