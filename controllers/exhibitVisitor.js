@@ -1,10 +1,12 @@
 import Joi from "joi";
 import MyError from "../utils/error.js";
+import { generateVisitorId } from "../utils/generateUniqueId.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
 
 // Validation schemas
 const createExhibitVisitorSchema = Joi.object({
+readableId: Joi.string().allow("", null).max(255).default(() => generateVisitorId()),
   name: Joi.string().allow("", null).max(255),
   email: Joi.string().email().allow("", null).max(255),
   phone: Joi.string().allow("", null).max(50),

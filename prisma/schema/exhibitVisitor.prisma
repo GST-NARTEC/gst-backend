@@ -1,6 +1,7 @@
 model ExhibitVisitor {
     id              String @id @default(cuid())
     
+    readableId      String?
     name            String?
     email           String?
     phone           String?
