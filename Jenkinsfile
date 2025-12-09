@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        ENV_FILE_PATH = "C:\\ProgramData\\Jenkins\\.jenkins\\jenkinsEnv\\GST\\gst"
+        ENV_FILE_PATH = "C:\\Program Files\\Jenkins\\jenkinsEnv\\GST\\gst"
     }
 
     // options {
