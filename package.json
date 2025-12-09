@@ -64,5 +64,8 @@
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     }
+  },
+  "overrides": {
+    "jwa": "^2.0.0"
   }
 }
