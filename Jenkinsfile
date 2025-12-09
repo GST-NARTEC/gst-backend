@@ -34,9 +34,14 @@ pipeline {
         stage('Manage PM2 and Install Dependencies') {
             steps {
                 script {
-                    echo "Stopping PM2 process if running..."
+                    echo "Checking PM2 process status..."
                     def processStatus = bat(script: 'pm2 list', returnStdout: true).trim()
-                    if (processStatus.contains('gst-ksa') || processStatus.contains('gst-ksa-workers')) {
+                    
+                    def gstKsaExists = processStatus.contains('gst-ksa')
+                    def gstKsaWorkersExists = processStatus.contains('gst-ksa-workers')
+                    
+                    if (gstKsaExists || gstKsaWorkersExists) {
+                        echo "PM2 processes found. Stopping them..."
                         bat 'pm2 stop gst-ksa gst-ksa-workers || exit 0'
                     }
                 }
@@ -44,9 +49,24 @@ pipeline {
                 bat 'npm install'
                 echo "Generating Prisma files..."
                 bat 'npx prisma generate'
-                echo "Restarting PM2 process..."
-                bat 'pm2 restart gst-ksa gst-ksa-workers'
-                echo "Restarting PM2 process... Done"
+                
+                script {
+                    echo "Checking if PM2 processes need to be started or restarted..."
+                    def processStatus = bat(script: 'pm2 list', returnStdout: true).trim()
+                    
+                    def gstKsaExists = processStatus.contains('gst-ksa')
+                    def gstKsaWorkersExists = processStatus.contains('gst-ksa-workers')
+                    
+                    if (gstKsaExists || gstKsaWorkersExists) {
+                        echo "Restarting PM2 processes..."
+                        bat 'pm2 restart gst-ksa gst-ksa-workers'
+                    } else {
+                        echo "Starting PM2 processes for the first time..."
+                        bat 'pm2 start gst-ksa gst-ksa-workers'
+                    }
+                }
+                
+                echo "PM2 process management completed."
                 bat 'pm2 save'
             }
         }
