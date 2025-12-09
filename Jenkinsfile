@@ -62,7 +62,7 @@ pipeline {
                         bat 'pm2 restart gst-ksa gst-ksa-workers'
                     } else {
                         echo "Starting PM2 processes for the first time..."
-                        bat 'pm2 start gst-ksa gst-ksa-workers'
+                        bat 'pm2 start ecosystem.config.cjs'
                     }
                 }
                 
