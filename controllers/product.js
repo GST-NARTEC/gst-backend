@@ -1,7 +1,7 @@
 import {
-  productSchema,
-  productUpdateSchema,
-  querySchema,
+    productSchema,
+    productUpdateSchema,
+    querySchema,
 } from "../schemas/product.schema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
@@ -72,7 +72,7 @@ class ProductController {
           price: value.price,
           image: value.image,
           qty: value.qty,
-          barcodeTypeId: value.barcodeTypeId
+          barcodeType: value.barcodeTypeId
             ? {
                 connect: { id: value.barcodeTypeId },
               }
