@@ -12,7 +12,7 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const FILE_NAME = "oscar_paints.json";
+const FILE_NAME = "gtins_ORD2507.json";
 
 const prisma = new PrismaClient();
 
