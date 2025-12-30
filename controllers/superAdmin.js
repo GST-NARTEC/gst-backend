@@ -21,7 +21,7 @@ class SuperAdminController {
 
       const { email, password } = value;
 
-      // Verify credentials against env variables
+      // Verify credentials against env variables.
       if (
         email !== process.env.SUPER_ADMIN_EMAIL ||
         password !== process.env.SUPER_ADMIN_PASSWORD
