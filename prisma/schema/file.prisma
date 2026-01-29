@@ -1,0 +1,12 @@
+model File {
+  id        String   @id @default(uuid()) @db.UniqueIdentifier
+  name      String
+  path      String
+  mimeType  String?
+  size      Int?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("files")
+}
