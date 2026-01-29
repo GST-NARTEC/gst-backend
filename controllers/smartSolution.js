@@ -146,7 +146,7 @@ class SmartSolutionController {
     try {
       const smartSolutions = await prisma.smartSolution.findMany({
         where: { isActive: true },
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" },
         include: { page: true },
       });
       res.status(200).json(
