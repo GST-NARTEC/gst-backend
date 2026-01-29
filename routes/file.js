@@ -1,9 +1,17 @@
 import express from "express";
+import fs from "fs";
+import path from "path";
 import { uploadSingle } from "multermate-es";
 import FileController from "../controllers/file.js";
 import { verifyAccessToken } from "../middlewares/auth.js";
 
 const router = express.Router();
+
+// Ensure uploads/documents directory exists
+const uploadsDir = path.join(process.cwd(), "uploads/documents");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Configure file upload for documents (PDF and Word)
 const documentUpload = uploadSingle({
