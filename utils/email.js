@@ -389,6 +389,39 @@ class EmailService {
       return false;
     }
   }
+
+  async sendContactUsAdminNotification(contact) {
+    try {
+      const templatePath = path.join(
+        __dirname,
+        "../view/contactUsAdminNotification.ejs"
+      );
+
+      const data = {
+        contact,
+        logo: "https://gstsa1.org/assets/Logo-BcThuAtP.png",
+      };
+
+      const html = await ejs.renderFile(templatePath, data);
+
+      const subject = contact?.subject
+        ? `New Contact Inquiry: ${contact.subject} - GST Saudi Arabia`
+        : "New Contact Us Inquiry - GST Saudi Arabia";
+
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: process.env.SUPER_ADMIN_EMAIL,
+        subject,
+        html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error("Error sending contact us admin notification email:", error);
+      return false;
+    }
+  }
 }
 
 export default new EmailService();

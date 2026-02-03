@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #1b365d;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header img {
+        max-width: 150px;
+        margin-bottom: 15px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .contact-details {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #1b365d;
+        min-width: 120px;
+      }
+
+      .value {
+        color: #2c3e50;
+        text-align: right;
+        word-break: break-word;
+      }
+
+      .message-section {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .message-label {
+        font-weight: bold;
+        color: #1b365d;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .message-content {
+        color: #2c3e50;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        color: #6c757d;
+        font-size: 0.9em;
+      }
+
+      .highlight {
+        background: #e8f4fd;
+        border-left: 4px solid #1b365d;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 6px 6px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="<%= logo %>" alt="GST Logo" />
+        <h2>New Contact Us Inquiry</h2>
+      </div>
+
+      <div class="content">
+        <div class="highlight">
+          <strong>A new inquiry has been submitted through the Contact Us form.</strong>
+        </div>
+
+        <div class="contact-details">
+          <div class="detail-row">
+            <span class="label">Name:</span>
+            <span class="value"><%= contact?.name || 'N/A' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Email:</span>
+            <span class="value"><%= contact?.email || 'N/A' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Mobile:</span>
+            <span class="value"><%= contact?.mobile || 'N/A' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Company:</span>
+            <span class="value"><%= contact?.companyName || 'N/A' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Subject:</span>
+            <span class="value"><%= contact?.subject || 'N/A' %></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Submitted At:</span>
+            <span class="value">
+              <%= contact?.createdAt ? new Date(contact.createdAt).toLocaleString() : new Date().toLocaleString() %>
+            </span>
+          </div>
+        </div>
+
+        <% if (contact?.message) { %>
+        <div class="message-section">
+          <span class="message-label">Message:</span>
+          <div class="message-content"><%= contact.message %></div>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="footer">
+        <p>This is an automated notification from GST Saudi Arabia Contact Form</p>
+        <p>
+          &copy; <%= new Date().getFullYear() %> GST Saudi Arabia. All rights
+          reserved.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

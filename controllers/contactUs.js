@@ -2,6 +2,7 @@ import {
   contactUsQuerySchema,
   contactUsSchema,
 } from "../schemas/contactUs.schema.js";
+import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
 import prisma from "../utils/prismaClient.js";
 import response from "../utils/response.js";
@@ -15,6 +16,9 @@ class ContactUsController {
       if (error) throw new MyError(error.details[0].message, 400);
 
       const contact = await prisma.contactUs.create({ data: value });
+
+      // Send email notification to super admin
+      await EmailService.sendContactUsAdminNotification(contact);
 
       res
         .status(201)
