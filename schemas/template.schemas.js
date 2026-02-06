@@ -53,7 +53,19 @@ const buttonFieldsTemplate3 = {
   buttonNavigation2Ar: Joi.string().allow("", null),
 };
 
-// Button fields for template 4 & sunrize2027Template
+// Button fields for template 4
+const buttonFieldsTemplate4 = {
+  buttonText1En: Joi.string().allow("", null),
+  buttonText1Ar: Joi.string().allow("", null),
+  buttonText2En: Joi.string().allow("", null),
+  buttonText2Ar: Joi.string().allow("", null),
+  buttonNavigation1En: Joi.string().allow("", null),
+  buttonNavigation1Ar: Joi.string().allow("", null),
+  buttonNavigation2En: Joi.string().allow("", null),
+  buttonNavigation2Ar: Joi.string().allow("", null),
+};
+
+// Button fields for sunrize2027Template
 const buttonFieldsExtended = {
   buttonText1En: Joi.string().allow("", null),
   buttonText1Ar: Joi.string().allow("", null),
@@ -230,9 +242,7 @@ const templateSchemas = {
   template4: Joi.object({
     ...baseTemplateSchema,
     ...commonOptionalFields,
-    ...buttonFieldsExtended,
-    // description4En: Joi.string().allow("", null),
-    // description4Ar: Joi.string().allow("", null),
+    ...buttonFieldsTemplate4,
   }).unknown(false),
 
   sunrize2027Template: Joi.object({
@@ -284,9 +294,7 @@ const templateUpdateSchemas = {
   template4: Joi.object({
     ...baseUpdateSchema,
     ...commonOptionalFields,
-    ...buttonFieldsExtended,
-    // description4En: Joi.string().allow("", null),
-    // description4Ar: Joi.string().allow("", null),
+    ...buttonFieldsTemplate4,
   }).unknown(false),
 
   sunrize2027Template: Joi.object({
