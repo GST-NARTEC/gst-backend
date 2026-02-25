@@ -1,21 +1,21 @@
 import bcrypt from "bcrypt";
 
 import {
-    checkoutQueue,
-    resetPasswordQueue,
-    userDeletionQueue,
-    userUpdateNotificationQueue
+  checkoutQueue,
+  resetPasswordQueue,
+  userDeletionQueue,
+  userUpdateNotificationQueue
 } from "../config/queue.js";
 import {
-    emailSchema,
-    loginSchema,
-    searchSchema,
-    userDetailsSchema,
-    userGtinsQuerySchema,
-    userInfoSchema,
-    userNewOrderSchema,
-    userUpdateSchema,
-    userWithCartCheckout,
+  emailSchema,
+  loginSchema,
+  searchSchema,
+  userDetailsSchema,
+  userGtinsQuerySchema,
+  userInfoSchema,
+  userNewOrderSchema,
+  userUpdateSchema,
+  userWithCartCheckout,
 } from "../schemas/user.schema.js";
 import EmailService from "../utils/email.js";
 import MyError from "../utils/error.js";
@@ -202,19 +202,19 @@ class UserController {
 
       const whereClause = search
         ? {
-            isActive: true,
-            isDeleted: isDeleted,
-            OR: [
-              { email: { contains: search } },
-              { companyNameEn: { contains: search } },
-              { companyNameAr: { contains: search } },
-              { companyLicenseNo: { contains: search } },
-            ],
-          }
+          isActive: true,
+          isDeleted: isDeleted,
+          OR: [
+            { email: { contains: search } },
+            { companyNameEn: { contains: search } },
+            { companyNameAr: { contains: search } },
+            { companyLicenseNo: { contains: search } },
+          ],
+        }
         : {
-            isActive: true,
-            isDeleted: isDeleted,
-          };
+          isActive: true,
+          isDeleted: isDeleted,
+        };
 
       const [users, total] = await Promise.all([
         prisma.user.findMany({
@@ -262,6 +262,67 @@ class UserController {
       next(error);
     }
   }
+
+  static async getAllUsers(req, res, next) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const search = req.query.search || "";
+      const skip = (page - 1) * limit;
+
+      const whereClause = {
+        isDeleted: false,
+        ...(search && {
+          OR: [
+            { email: { contains: search } },
+            { companyNameEn: { contains: search } },
+            { companyNameAr: { contains: search } },
+            { companyLicenseNo: { contains: search } },
+          ],
+        }),
+      };
+
+      const [users, total] = await Promise.all([
+        prisma.user.findMany({
+          where: whereClause,
+          select: {
+            id: true,
+            email: true,
+            companyNameEn: true,
+            companyNameAr: true,
+            companyLicenseNo: true,
+            mobile: true,
+            country: true,
+            createdAt: true,
+            isActive: true,
+          },
+          skip,
+          take: limit,
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        prisma.user.count({ where: whereClause }),
+      ]);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.status(200).json(
+        response(200, true, "Users retrieved successfully", {
+          users,
+          pagination: {
+            total,
+            page,
+            totalPages,
+            limit,
+          },
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
 
   static async getUserDetails(req, res, next) {
     try {

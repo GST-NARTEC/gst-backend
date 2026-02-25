@@ -1,7 +1,7 @@
 import {
-    productSchema,
-    productUpdateSchema,
-    querySchema,
+  productSchema,
+  productUpdateSchema,
+  querySchema,
 } from "../schemas/product.schema.js";
 import MyError from "../utils/error.js";
 import { addDomain, deleteFile } from "../utils/file.js";
@@ -74,19 +74,19 @@ class ProductController {
           qty: value.qty,
           barcodeType: value.barcodeTypeId
             ? {
-                connect: { id: value.barcodeTypeId },
-              }
+              connect: { id: value.barcodeTypeId },
+            }
             : undefined,
           status: value.status,
           category: value.categoryId
             ? {
-                connect: { id: value.categoryId },
-              }
+              connect: { id: value.categoryId },
+            }
             : undefined,
           addons: value.addonIds
             ? {
-                connect: value.addonIds.map((id) => ({ id })),
-              }
+              connect: value.addonIds.map((id) => ({ id })),
+            }
             : undefined,
         },
         include: {
@@ -120,11 +120,11 @@ class ProductController {
 
       const where = search
         ? {
-            OR: [
-              { title: { contains: search } },
-              { description: { contains: search } },
-            ],
-          }
+          OR: [
+            { title: { contains: search } },
+            { description: { contains: search } },
+          ],
+        }
         : {};
 
       const [products, total] = await Promise.all([
@@ -360,11 +360,11 @@ class ProductController {
         status: "active",
         ...(search
           ? {
-              OR: [
-                { title: { contains: search } },
-                { description: { contains: search } },
-              ],
-            }
+            OR: [
+              { title: { contains: search } },
+              { description: { contains: search } },
+            ],
+          }
           : {}),
       };
 
@@ -429,6 +429,49 @@ class ProductController {
           totalProducts: productsCount,
           activeProducts: activeProductsCount,
           inactiveProducts: inactiveProductsCount,
+        })
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getProductsByUserId(req, res, next) {
+    try {
+      const { userId } = req.params;
+
+      // Determine if userId is a UUID or a custom string ID
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+
+      let userRecord = null;
+      if (isUUID) {
+        userRecord = await prisma.user.findUnique({ where: { id: userId } });
+      } else {
+        userRecord = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { userId: userId },
+              { companyLicenseNo: userId }
+            ]
+          }
+        });
+      }
+
+      if (!userRecord) {
+        throw new MyError("User not found", 404);
+      }
+
+      const products = await prisma.userProduct.findMany({
+        where: { userId: userRecord.id },
+        include: {
+          images: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      res.status(200).json(
+        response(200, true, "User products retrieved successfully", {
+          products,
         })
       );
     } catch (error) {

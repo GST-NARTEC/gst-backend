@@ -1,6 +1,6 @@
 import express from "express";
 import controller from "../controllers/user.js";
-import { verifyAccessToken, verifyRefreshToken } from "../middlewares/auth.js";
+import { verifyAccessToken, verifyRefreshToken, verifyApiKey } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ router.get(
 );
 router.get("/users-count", controller.getUsersCount);
 router.get("/search", controller.searchUsers);
+router.get("/", verifyApiKey, controller.getAllUsers);
 router.get("/:id", controller.getUserDetails);
 router.get("/member/:id", verifyAccessToken, controller.getUserDetails);
 router.put("/:id", controller.updateUser);

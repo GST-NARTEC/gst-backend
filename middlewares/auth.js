@@ -92,3 +92,15 @@ export const verifyRefreshToken = async (req, res, next) => {
     next(error);
   }
 };
+
+export const verifyApiKey = async (req, res, next) => {
+  try {
+    const apiKey = req.header("x-api-key") || req.query.apiKey;
+    if (!apiKey || apiKey !== process.env.API_KEY) {
+      throw new MyError("Invalid or missing API Key", 401);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
